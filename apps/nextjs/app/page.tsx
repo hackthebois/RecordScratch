@@ -1,10 +1,5 @@
-import { Button, Header } from "ui";
+import { Header } from "ui";
 
 export default function Page() {
-  return (
-    <>
-      <Header text="Web" />
-      <Button />
-    </>
-  );
+	return <main className="flex-1 flex justify-center items-center">Hello</main>;
 }
