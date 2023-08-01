@@ -32,6 +32,9 @@ importers:
       '@t3-oss/env-nextjs':
         specifier: ^0.6.0
         version: 0.6.0(typescript@4.9.5)(zod@3.21.4)
+      houseform:
+        specifier: ^1.11.0
+        version: 1.11.0(react@18.2.0)(zod@3.21.4)
       next:
         specifier: ^13.4.12
         version: 13.4.12(react-dom@18.2.0)(react@18.2.0)
@@ -41,6 +44,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      react-icons:
+        specifier: ^4.10.1
+        version: 4.10.1(react@18.2.0)
       ui:
         specifier: workspace:*
         version: link:../../packages/ui
@@ -2290,6 +2296,16 @@ packages:
       upper-case: 1.1.3
     dev: true
 
+  /houseform@1.11.0(react@18.2.0)(zod@3.21.4):
+    resolution: {integrity: sha512-rh0mKDHtKKtygqrT/BnmBkGavYk+hqiVtogdqxStDcP+d0a2WmABZ4v7fHk/x1YpmCmnHKjd0GBr6KR7HmFsyA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      zod: '>=3.9.0'
+    dependencies:
+      react: 18.2.0
+      zod: 3.21.4
+    dev: false
+
   /http-proxy-agent@7.0.0:
     resolution: {integrity: sha512-+ZT+iBxVUQ1asugqnD6oWoRiS25AkjNfG085dKJGtGxkdwLQrMKU5wJr2bOOFAXzKcTuqq+7fZlTMgG3SRfIYQ==}
     engines: {node: '>= 14'}
@@ -3403,6 +3419,14 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-icons@4.10.1(react@18.2.0):
+    resolution: {integrity: sha512-/ngzDP/77tlCfqthiiGNZeYFACw85fUjZtLbedmJ5DTlNDIwETxhwBzdOJ21zj4iJdvc0J3y7yOsX3PpxAJzrw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:
