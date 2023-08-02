@@ -11,7 +11,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-	title: "Note",
+	title: "Treble",
 	description: "Music rating and review app",
 };
 
@@ -20,12 +20,17 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 		<ClerkProvider>
 			<Providers>
 				<html lang="en" className="bg-elevation-1 text-white">
-					<body className={`${montserrat.className} flex flex-col min-h-screen`}>
-						<header className="bg-elevation-1 w-full flex justify-center h-14 items-center border-b border-elevation-4">
-							<nav className="flex max-w-screen-xl items-center  p-4 sm:p-8 justify-between w-full">
-								<Link href="/" className="flex items-center justify-center">
+					<body
+						className={`${montserrat.className} flex min-h-screen flex-col`}
+					>
+						<header className="flex h-14 w-full items-center justify-center border-b border-elevation-4 bg-elevation-1">
+							<nav className="flex w-full max-w-screen-xl  items-center justify-between p-4 sm:p-8">
+								<Link
+									href="/"
+									className="flex items-center justify-center"
+								>
 									<BiAlbum size={30} color="white" />
-									<h1 className="text-2xl font-medium ml-2 hidden sm:block">
+									<h1 className="ml-2 hidden text-2xl font-medium sm:block">
 										treble
 									</h1>
 								</Link>
@@ -37,13 +42,13 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 									<SignedOut>
 										<Link
 											href="/sign-in"
-											className="px-4 py-2 bg-elevation-1 border border-elevation-4 rounded mr-2 text-sm"
+											className="mr-2 rounded border border-elevation-4 bg-elevation-1 px-4 py-2 text-sm"
 										>
 											Sign In
 										</Link>
 										<Link
 											href="/sign-up"
-											className="px-4 py-2 bg-elevation-4 rounded text-sm"
+											className="rounded bg-elevation-4 px-4 py-2 text-sm"
 										>
 											Sign Up
 										</Link>
@@ -51,7 +56,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 								</div>
 							</nav>
 						</header>
-						<main className="flex-1 flex">{children}</main>
+						<main className="flex flex-1">{children}</main>
 					</body>
 				</html>
 			</Providers>

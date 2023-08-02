@@ -22,7 +22,10 @@ const search = async (q: string) => {
 	);
 	const data = await res.json();
 	return z
-		.object({ albums: SpotifyAlbumSchema.array(), artists: SpotifyArtistSchema.array() })
+		.object({
+			albums: SpotifyAlbumSchema.array(),
+			artists: SpotifyArtistSchema.array(),
+		})
 		.parse({ albums: data.albums.items, artists: data.artists.items });
 };
 
@@ -32,16 +35,21 @@ const ArtistItem = ({ artist }: { artist: SpotifyArtist }) => {
 	return (
 		<Link
 			href="/"
-			className="flex items-center flex-row hover:bg-elevation-4 p-2 rounded transition-colors"
+			className="flex flex-row items-center rounded p-2 transition-colors hover:bg-elevation-4"
 		>
-			<div className="relative min-w-[64px] w-16 h-16 rounded-full overflow-hidden">
+			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
 				{artistImage ? (
-					<Image alt={artist.name} src={artistImage.url} fill objectFit="cover" />
+					<Image
+						alt={artist.name}
+						src={artistImage.url}
+						fill
+						objectFit="cover"
+					/>
 				) : (
-					<div className="w-full h-full bg-elevation-4"></div>
+					<div className="h-full w-full bg-elevation-4"></div>
 				)}
 			</div>
-			<p className="overflow-ellipsis ml-4 text-base whitespace-nowrap overflow-hidden w-full">
+			<p className="ml-4 w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-base">
 				{artist.name}
 			</p>
 		</Link>
@@ -53,17 +61,22 @@ const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
 
 	return (
 		<Link
-			href={"/"}
-			className="flex flex-1 items-center flex-row hover:bg-elevation-4 p-2 rounded transition-colors"
+			href="/"
+			className="flex flex-1 flex-row items-center rounded p-2 transition-colors hover:bg-elevation-4"
 		>
-			<div className="relative min-w-[64px] w-16 h-16 rounded-xl overflow-hidden">
+			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">
 				{albumImage ? (
-					<Image alt={album.name} src={albumImage.url} fill objectFit="cover" />
+					<Image
+						alt={album.name}
+						src={albumImage.url}
+						fill
+						objectFit="cover"
+					/>
 				) : (
-					<div className="w-full h-full bg-elevation-4" />
+					<div className="h-full w-full bg-elevation-4" />
 				)}
 			</div>
-			<p className="overflow-ellipsis ml-4 text-base whitespace-nowrap overflow-hidden w-full">
+			<p className="ml-4 w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-base">
 				{album.name}
 			</p>
 		</Link>
@@ -95,7 +108,7 @@ const SearchBar = () => {
 		<>
 			<button
 				onClick={() => setSearchModalOpen(true)}
-				className="flex-1 flex items-center px-4 mx-4 text-sm max-w-xs bg-elevation-2 text-gray-400 py-2 rounded text-left border border-elevation-4 hover:border-gray-400 transition-colors"
+				className="mx-4 flex max-w-xs flex-1 items-center rounded border border-elevation-4 bg-elevation-2 px-4 py-2 text-left text-sm text-gray-400 transition-colors hover:border-gray-400"
 			>
 				<MdSearch size={18} className="mr-2" />
 				<p>Search</p>
@@ -107,23 +120,28 @@ const SearchBar = () => {
 						setSearchValue("");
 						setSearchModalOpen(false);
 					}}
-					className="fixed overflow-hidden cursor-pointer top-0 left-0 right-0 bottom-0 w-full h-screen flex justify-start flex-col bg-elevation-1/80 sm:py-36"
+					className="fixed bottom-0 left-0 right-0 top-0 flex h-screen w-full cursor-pointer flex-col justify-start overflow-hidden bg-elevation-1/80 sm:py-36"
 				>
 					<div
-						className="bg-elevation-2 shadow-lg h-full cursor-default mx-auto sm:max-w-md w-full sm:rounded-xl p-4 flex-col flex"
+						className="mx-auto flex h-full w-full cursor-default flex-col bg-elevation-2 p-4 shadow-lg sm:max-w-md sm:rounded"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<div className="flex mb-4">
-							<form className="focus-within:border-gray-400 flex-1 flex w-full text-gray-400 rounded text-left border border-elevation-4 hover:border-gray-400 transition-colors bg-elevation-4">
-								<label className="pl-3 flex items-center" htmlFor="search">
+						<div className="mb-4 flex">
+							<form className="flex w-full flex-1 rounded border border-elevation-4 bg-elevation-4 text-left text-gray-400 transition-colors focus-within:border-gray-400 hover:border-gray-400">
+								<label
+									className="flex items-center pl-3"
+									htmlFor="search"
+								>
 									<MdSearch size={24} />
 								</label>
 								<input
 									id="search"
 									value={searchValue}
 									autoFocus
-									onChange={(e) => setSearchValue(e.target.value)}
-									className="bg-transparent w-full h-full py-4 px-3 outline-none group"
+									onChange={(e) =>
+										setSearchValue(e.target.value)
+									}
+									className="group h-full w-full bg-transparent px-3 py-4 outline-none"
 								/>
 								{searchValue.length > 0 && (
 									<button
@@ -131,48 +149,60 @@ const SearchBar = () => {
 											e.preventDefault();
 											setSearchValue("");
 										}}
-										className="px-3 flex justify-center items-center"
+										className="flex items-center justify-center px-3"
 									>
 										<MdClose size={24} />
 									</button>
 								)}
 							</form>
 							<button
-								className="px-4 flex justify-center items-center -mr-4 text-sm sm:hidden"
+								className="-mr-4 flex items-center justify-center px-4 text-sm sm:hidden"
 								onClick={() => setSearchModalOpen(false)}
 							>
 								Cancel
 							</button>
 						</div>
 						{isFetching ? (
-							<div className="flex-1 flex justify-center items-center">
+							<div className="flex flex-1 items-center justify-center">
 								<Spinner />
 							</div>
 						) : data ? (
 							<div className="overflow-auto">
 								{data.albums.length > 0 && (
 									<div>
-										<h3 className="text-lg font-bold my-2">Albums</h3>
+										<h3 className="my-2 text-lg font-bold">
+											Albums
+										</h3>
 										<div className="flex flex-col">
 											{data.albums.map((album, index) => (
-												<AlbumItem album={album} key={index} />
+												<AlbumItem
+													album={album}
+													key={index}
+												/>
 											))}
 										</div>
 									</div>
 								)}
 								{data.artists.length > 0 && (
 									<div>
-										<h3 className="text-lg font-bold mt-4 mb-2">Artists</h3>
+										<h3 className="mb-2 mt-4 text-lg font-bold">
+											Artists
+										</h3>
 										<div className="flex flex-col">
-											{data.artists.map((artist, index) => (
-												<ArtistItem artist={artist} key={index} />
-											))}
+											{data.artists.map(
+												(artist, index) => (
+													<ArtistItem
+														artist={artist}
+														key={index}
+													/>
+												)
+											)}
 										</div>
 									</div>
 								)}
 							</div>
 						) : (
-							<div className="py-8 flex w-full justify-center items-center text-sm text-gray-400">
+							<div className="flex w-full items-center justify-center py-8 text-sm text-gray-400">
 								No recent searches
 							</div>
 						)}

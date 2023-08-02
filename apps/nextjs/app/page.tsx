@@ -19,27 +19,37 @@ const Page = async () => {
 	const albums = SpotifyAlbumSchema.array().parse(data.albums.items);
 
 	return (
-		<main className="flex-1 flex flex-col max-w-screen-lg mx-auto py-8 px-4 sm:px-8">
-			<h3 className="mb-8 text-xl sm:text-2xl md:text-3xl font-bold">New Releases</h3>
-			<div className="grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 grid">
+		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col px-4 py-8 sm:px-8">
+			<h3 className="mb-8 text-xl font-bold sm:text-2xl md:text-3xl">
+				New Releases
+			</h3>
+			<div className="grid grid-cols-2 gap-0 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
 				{albums.slice(0, 12).map((album, index) => (
-					<div key={index} className="flex-col flex items-center">
-						<Image
-							src={album.images[0].url}
-							alt={`${album.name} cover`}
-							width={0}
-							height={0}
-							sizes="100vw"
-							style={{ width: "100%", height: "auto" }}
-							className="rounded-xl mb-4"
-						/>
-						<p className="overflow-ellipsis text-center text-sm sm:text-base whitespace-nowrap overflow-hidden w-full mb-2">
+					<div
+						key={index}
+						className="flex flex-col items-center rounded p-3 transition-colors hover:bg-elevation-4"
+					>
+						<Link href={"/"}>
+							<Image
+								src={album.images[0].url}
+								alt={`${album.name} cover`}
+								width={0}
+								height={0}
+								sizes="100vw"
+								style={{ width: "100%", height: "auto" }}
+								className="hover mb-4 rounded"
+							/>
+						</Link>
+						<Link
+							href="/"
+							className="mb-2 w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-center text-sm sm:text-base"
+						>
 							{album.name}
-						</p>
+						</Link>
 						{album.artists.slice(0, 1).map((artist, index) => (
 							<Link
-								href={"/"}
-								className="hover:underline text-[#ccc] text-xs sm:text-sm overflow-ellipsis text-center whitespace-nowrap overflow-hidden w-full"
+								href="/"
+								className="w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-center text-xs text-[#ccc] hover:underline sm:text-sm"
 								key={index}
 							>
 								{artist.name}
