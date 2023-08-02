@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdClose, MdSearch } from "react-icons/md";
 import Spinner from "ui/src/Spinner";
@@ -57,6 +58,7 @@ const ArtistItem = ({ artist }: { artist: SpotifyArtist }) => {
 };
 
 const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
+	const router = useRouter();
 	const albumImage = album.images.find((i) => i.url);
 
 	return (
@@ -76,9 +78,19 @@ const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
 					<div className="h-full w-full bg-elevation-4" />
 				)}
 			</div>
-			<p className="ml-4 w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-base">
-				{album.name}
-			</p>
+			<div className="ml-4 w-full overflow-hidden">
+				<p className="w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-base">
+					{album.name}
+				</p>
+				{album.artists.map((artist) => (
+					<button
+						onClick={() => router.push("/")}
+						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
+					>
+						{artist.name}
+					</button>
+				))}
+			</div>
 		</Link>
 	);
 };
