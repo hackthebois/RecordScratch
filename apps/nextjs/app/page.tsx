@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SpotifyAlbumSchema } from "../types/spotify";
-import { getSpotifyToken } from "./lib/spotify";
+import { getSpotifyToken } from "./actions";
 
 const Page = async () => {
 	const token = await getSpotifyToken();
@@ -38,7 +38,7 @@ const Page = async () => {
 						</p>
 						{album.artists.slice(0, 1).map((artist, index) => (
 							<Link
-								href={""}
+								href={"/"}
 								className="hover:underline text-[#ccc] text-xs sm:text-sm overflow-ellipsis text-center whitespace-nowrap overflow-hidden w-full"
 								key={index}
 							>

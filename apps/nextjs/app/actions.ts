@@ -1,5 +1,7 @@
+"use server";
+
 import { z } from "zod";
-import { env } from "../../env.mjs";
+import { env } from "../env.mjs";
 
 export const getSpotifyToken = async () => {
 	const res = await fetch("https://accounts.spotify.com/api/token", {
