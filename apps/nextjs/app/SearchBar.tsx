@@ -84,6 +84,7 @@ const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
 				</p>
 				{album.artists.map((artist) => (
 					<button
+						key={artist.id}
 						onClick={() => router.push("/")}
 						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
 					>
