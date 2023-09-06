@@ -9,14 +9,18 @@ export const getSpotifyToken = async () => {
 			"Content-Type": "application/x-www-form-urlencoded",
 			Authorization:
 				"Basic " +
-				Buffer.from(env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET).toString("base64"),
+				Buffer.from(
+					env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET
+				).toString("base64"),
 		},
 		body: "grant_type=client_credentials",
 		method: "POST",
+		cache: "no-store",
 		next: {
 			revalidate: 3600,
 		},
 	});
 	const data = await res.json();
+	console.log(data);
 	return z.object({ access_token: z.string() }).parse(data).access_token;
 };
