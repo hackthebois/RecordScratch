@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Spinner from "ui/src/Spinner";
 import { z } from "zod";
@@ -38,12 +39,19 @@ const search = async (q: string) => {
 		.parse({ albums: data.albums.items, artists: data.artists.items });
 };
 
-const ArtistItem = ({ artist }: { artist: SpotifyArtist }) => {
+const ArtistItem = ({
+	artist,
+	close,
+}: {
+	artist: SpotifyArtist;
+	close: () => void;
+}) => {
 	const artistImage = artist.images?.find((i) => i.url);
 
 	return (
 		<Link
 			href="/"
+			onClick={close}
 			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
@@ -65,13 +73,20 @@ const ArtistItem = ({ artist }: { artist: SpotifyArtist }) => {
 	);
 };
 
-const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
+const AlbumItem = ({
+	album,
+	close,
+}: {
+	album: SpotifyAlbum;
+	close: () => void;
+}) => {
 	const router = useRouter();
 	const albumImage = album.images.find((i) => i.url);
 
 	return (
 		<Link
-			href="/"
+			onClick={close}
+			href={`/albums/${album.id}`}
 			className="hover:bg-elevation-4 flex flex-1 flex-row items-center rounded transition-colors"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">
@@ -93,7 +108,11 @@ const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
 				{album.artists.map((artist) => (
 					<button
 						key={artist.id}
-						onClick={() => router.push("/")}
+						onClick={(e) => {
+							e.preventDefault();
+							close();
+							router.push("/");
+						}}
 						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
 					>
 						{artist.name}
@@ -105,6 +124,7 @@ const AlbumItem = ({ album }: { album: SpotifyAlbum }) => {
 };
 
 const SearchBar = () => {
+	const [open, setOpen] = useState(false);
 	const form = useForm({
 		defaultValues: {
 			query: "",
@@ -112,8 +132,6 @@ const SearchBar = () => {
 	});
 
 	const query = form.watch("query");
-
-	console.log(query);
 
 	const { data, isFetching } = useQuery(
 		["search", query],
@@ -124,7 +142,7 @@ const SearchBar = () => {
 	);
 
 	return (
-		<Dialog>
+		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger>
 				<Input placeholder="Search" />
 			</DialogTrigger>
@@ -162,6 +180,7 @@ const SearchBar = () => {
 										{data.albums.map((album, index) => (
 											<AlbumItem
 												album={album}
+												close={() => setOpen(false)}
 												key={index}
 											/>
 										))}
@@ -174,6 +193,7 @@ const SearchBar = () => {
 									<div className="flex flex-col gap-3">
 										{data.artists.map((artist, index) => (
 											<ArtistItem
+												close={() => setOpen(false)}
 												artist={artist}
 												key={index}
 											/>
