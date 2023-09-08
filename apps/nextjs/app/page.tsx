@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { z } from "zod";
 import { SpotifyAlbum, SpotifyAlbumSchema } from "../types/spotify";
 import { getSpotifyToken } from "./actions";
 
@@ -12,7 +13,7 @@ const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 					className="mb-4 flex min-w-[144px] flex-1 flex-col"
 					key={index}
 				>
-					<Link href={"/"}>
+					<Link href={`/albums/${album.id}`}>
 						<div className="overflow-hidden rounded-md">
 							<Image
 								src={album.images[0].url}
@@ -54,8 +55,11 @@ const getNewReleases = async () => {
 		},
 	});
 	const data = await res.json();
-
-	return SpotifyAlbumSchema.array().parse(data.albums.items);
+	return z
+		.object({
+			albums: z.object({ items: SpotifyAlbumSchema.array() }),
+		})
+		.parse(data).albums.items;
 };
 
 const Page = async () => {

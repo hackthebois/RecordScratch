@@ -5,31 +5,46 @@ const SpotifyImageSchema = z.object({
 	width: z.number(),
 	height: z.number(),
 });
-type SpotifyImage = z.infer<typeof SpotifyImageSchema>;
+export type SpotifyImage = z.infer<typeof SpotifyImageSchema>;
 
 export const SpotifyArtistSchema = z.object({
 	id: z.string(),
-	followers: z.object({
-		total: z.number(),
-	}),
+	followers: z
+		.object({
+			total: z.number(),
+		})
+		.optional(),
 	external_urls: z.object({
 		spotify: z.string().url(),
 	}),
 	name: z.string(),
-	images: SpotifyImageSchema.array(),
+	images: SpotifyImageSchema.array().optional(),
 });
 export type SpotifyArtist = z.infer<typeof SpotifyArtistSchema>;
+
+export const SpotifyTrackSchema = z.object({
+	name: z.string(),
+	href: z.string().url(),
+	id: z.string(),
+	artists: SpotifyArtistSchema.array(),
+	duration_ms: z.number(),
+});
+export type SpotifyTrack = z.infer<typeof SpotifyTrackSchema>;
 
 export const SpotifyAlbumSchema = z.object({
 	name: z.string(),
 	href: z.string().url(),
+	id: z.string(),
+	external_urls: z.object({
+		spotify: z.string().url(),
+	}),
+	total_tracks: z.number(),
 	images: SpotifyImageSchema.array(),
-	artists: z
+	artists: SpotifyArtistSchema.array(),
+	tracks: z
 		.object({
-			external_urls: SpotifyArtistSchema.shape.external_urls,
-			name: SpotifyArtistSchema.shape.name,
-			id: SpotifyArtistSchema.shape.id,
+			items: SpotifyTrackSchema.array(),
 		})
-		.array(),
+		.optional(),
 });
 export type SpotifyAlbum = z.infer<typeof SpotifyAlbumSchema>;

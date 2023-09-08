@@ -20,6 +20,5 @@ export const getSpotifyToken = async () => {
 		},
 	});
 	const data = await res.json();
-	console.log(data);
 	return z.object({ access_token: z.string() }).parse(data).access_token;
 };
