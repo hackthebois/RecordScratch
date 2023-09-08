@@ -39,7 +39,7 @@ const search = async (q: string) => {
 };
 
 const ArtistItem = ({ artist }: { artist: SpotifyArtist }) => {
-	const artistImage = artist.images.find((i) => i.url);
+	const artistImage = artist.images?.find((i) => i.url);
 
 	return (
 		<Link
