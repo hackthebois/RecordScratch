@@ -15,7 +15,6 @@ export const getSpotifyToken = async () => {
 		},
 		body: "grant_type=client_credentials",
 		method: "POST",
-		cache: "no-store",
 		next: {
 			revalidate: 3600,
 		},
