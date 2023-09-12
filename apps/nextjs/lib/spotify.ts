@@ -16,9 +16,6 @@ export const getSpotifyToken = async () => {
 		},
 		body: "grant_type=client_credentials",
 		method: "POST",
-		next: {
-			revalidate: 3600,
-		},
 	});
 	const data = await res.json();
 	return z.object({ access_token: z.string() }).parse(data).access_token;
@@ -35,6 +32,7 @@ export const getNewReleases = async () => {
 		},
 	});
 	const data = await res.json();
+	console.log(data);
 	return z
 		.object({
 			albums: z.object({ items: SpotifyAlbumSchema.array() }),

@@ -96,7 +96,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 									name={song.name}
 									onSubmit={rateAlbum}
 								>
-									<Button variant="ghost">
+									<Button variant="ghost" size="sm">
 										<Star
 											color="orange"
 											size={18}
