@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { spotifySearch } from "@/lib/spotify";
+import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,27 +19,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Spinner from "ui/src/Spinner";
-import { z } from "zod";
-import { env } from "../env.mjs";
-import {
-	SpotifyAlbum,
-	SpotifyAlbumSchema,
-	SpotifyArtist,
-	SpotifyArtistSchema,
-} from "../types/spotify";
-
-const search = async (q: string) => {
-	const res = await fetch(
-		`${env.NEXT_PUBLIC_SITE_URL}/spotify/search?q=${q}&type=album,artist&limit=4`
-	);
-	const data = await res.json();
-	return z
-		.object({
-			albums: SpotifyAlbumSchema.array(),
-			artists: SpotifyArtistSchema.array(),
-		})
-		.parse({ albums: data.albums.items, artists: data.artists.items });
-};
 
 const ArtistItem = ({
 	artist,
@@ -135,7 +116,7 @@ const SearchBar = () => {
 
 	const { data, isFetching } = useQuery(
 		["search", query],
-		() => search(query),
+		() => spotifySearch(query),
 		{
 			enabled: query.length > 0,
 		}

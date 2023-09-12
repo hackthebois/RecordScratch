@@ -7,31 +7,15 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
-import { getSpotifyToken } from "app/actions";
+import { getAlbum } from "@/lib/spotify";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { SpotifyAlbumSchema } from "types/spotify";
 
 type Props = {
 	params: {
 		albumId: string;
 	};
-};
-
-const getAlbum = async (albumId: string) => {
-	const token = await getSpotifyToken();
-
-	const res = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		next: {
-			revalidate: 3600,
-		},
-	});
-	const data = await res.json();
-	return SpotifyAlbumSchema.parse(data);
 };
 
 const Page = async ({ params: { albumId } }: Props) => {

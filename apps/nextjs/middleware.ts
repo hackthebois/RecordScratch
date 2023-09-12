@@ -3,8 +3,7 @@ import { authMiddleware } from "@clerk/nextjs";
 export default authMiddleware({
 	publicRoutes: [
 		"/",
-		"/spotify/search",
-		"/spotify/token",
+		"/api/search",
 		"/albums/:albumId",
 		"/artists/:artistId",
 	],

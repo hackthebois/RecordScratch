@@ -1,9 +1,8 @@
+import { getNewReleases } from "@/lib/spotify";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { z } from "zod";
-import { SpotifyAlbum, SpotifyAlbumSchema } from "../types/spotify";
-import { getSpotifyToken } from "./actions";
+import { SpotifyAlbum } from "../types/spotify";
 
 const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 	return (
@@ -42,24 +41,6 @@ const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 			))}
 		</div>
 	);
-};
-
-const getNewReleases = async () => {
-	const token = await getSpotifyToken();
-	const res = await fetch("https://api.spotify.com/v1/browse/new-releases", {
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		next: {
-			revalidate: 3600,
-		},
-	});
-	const data = await res.json();
-	return z
-		.object({
-			albums: z.object({ items: SpotifyAlbumSchema.array() }),
-		})
-		.parse(data).albums.items;
 };
 
 const Page = async () => {
