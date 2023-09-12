@@ -27,6 +27,9 @@ export const SpotifyTrackSchema = z.object({
 	href: z.string().url(),
 	id: z.string(),
 	artists: SpotifyArtistSchema.array(),
+	external_urls: z.object({
+		spotify: z.string().url(),
+	}),
 	duration_ms: z.number(),
 });
 export type SpotifyTrack = z.infer<typeof SpotifyTrackSchema>;

@@ -13,12 +13,12 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { spotifySearch } from "@/lib/spotify";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Spinner from "ui/src/Spinner";
 
 const ArtistItem = ({
 	artist,
@@ -150,7 +150,7 @@ const SearchBar = () => {
 				<ScrollArea>
 					{isFetching ? (
 						<div className="flex flex-1 items-center justify-center">
-							<Spinner />
+							<Loader2 className="animate-spin" size={35} />
 						</div>
 					) : data ? (
 						<>

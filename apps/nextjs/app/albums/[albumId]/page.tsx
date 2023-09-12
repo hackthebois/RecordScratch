@@ -7,10 +7,13 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
+import { rateAlbum } from "@/lib/rating";
 import { getAlbum } from "@/lib/spotify";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import RatingDialog from "./RatingDialog";
+import SongActions from "./SongActions";
 
 type Props = {
 	params: {
@@ -47,10 +50,16 @@ const Page = async ({ params: { albumId } }: Props) => {
 						<p className="mr-4 text-lg">{`${(
 							Math.random() * 5
 						).toFixed(1)} / 5`}</p>
-						<Button variant="outline">
-							<Star color="orange" size={18} className="mr-2" />
-							Rate
-						</Button>
+						<RatingDialog name={album.name} onSubmit={rateAlbum}>
+							<Button variant="outline">
+								<Star
+									color="orange"
+									size={18}
+									className="mr-2"
+								/>
+								Rate
+							</Button>
+						</RatingDialog>
 					</div>
 					<div className="mt-4 flex gap-3">
 						{album.artists.map((artist, index) => (
@@ -70,19 +79,47 @@ const Page = async ({ params: { albumId } }: Props) => {
 					<TableRow>
 						<TableHead></TableHead>
 						<TableHead>Song</TableHead>
-						<TableHead className="text-right">Rating</TableHead>
+						<TableHead></TableHead>
+						<TableHead>Rating</TableHead>
+						<TableHead></TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					{album.tracks?.items.map((song, index) => (
 						<TableRow key={song.id}>
 							<TableCell className="w-12">{index}</TableCell>
-							<TableCell>{song.name}</TableCell>
-							<TableCell className="flex items-center justify-end">
-								<Star color="orange" fill="orange" size={18} />
-								<p className="w-12 text-right">{`${(
-									Math.random() * 5
-								).toFixed(1)} / 5`}</p>
+							<TableCell className="w-full whitespace-nowrap">
+								{song.name}
+							</TableCell>
+							<TableCell className="px-0">
+								<RatingDialog
+									name={song.name}
+									onSubmit={rateAlbum}
+								>
+									<Button variant="ghost">
+										<Star
+											color="orange"
+											size={18}
+											className="mr-2"
+										/>
+										Rate
+									</Button>
+								</RatingDialog>
+							</TableCell>
+							<TableCell>
+								<span className="flex items-center">
+									<Star
+										color="orange"
+										fill="orange"
+										size={18}
+									/>
+									<p className="w-12 text-right">{`${(
+										Math.random() * 5
+									).toFixed(1)} / 5`}</p>
+								</span>
+							</TableCell>
+							<TableCell className="w-12">
+								<SongActions song={song} />
 							</TableCell>
 						</TableRow>
 					))}
