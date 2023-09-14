@@ -5,6 +5,7 @@ export const env = createEnv({
 	server: {
 		SPOTIFY_CLIENT: z.string().min(1),
 		SPOTIFY_SECRET: z.string().min(1),
+		DATABASE_URL: z.string().min(1)
 	},
 	client: {
 		NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
