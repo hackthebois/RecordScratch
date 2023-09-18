@@ -14,6 +14,7 @@ export const getSpotifyToken = async () => {
 					env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET
 				).toString("base64"),
 		},
+		cache: "no-store",
 		body: "grant_type=client_credentials",
 		method: "POST",
 	});
