@@ -1,8 +1,9 @@
-import { ratings } from "./schema";
-import { db } from "./config";
 import { and, eq } from "drizzle-orm";
+import { db } from "./config";
+import { ratings } from "./schema";
 
 export type NewRating = typeof ratings.$inferInsert;
+export type Rating = typeof ratings.$inferSelect;
 
 // Inserts a new album rating
 export const insertUser = async (rating: NewRating) => {

@@ -1,10 +1,10 @@
-import { buttonVariants } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import Providers from "./Providers";
 import SearchBar from "./SearchBar";
+import SignInButton from "./SignInButton";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -40,12 +40,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 										<UserButton afterSignOutUrl="/" />
 									</SignedIn>
 									<SignedOut>
-										<Link
-											href="/sign-in"
-											className={buttonVariants()}
-										>
-											Sign In
-										</Link>
+										<SignInButton />
 									</SignedOut>
 									<ThemeToggle />
 								</div>

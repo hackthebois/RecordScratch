@@ -1,8 +1,18 @@
 "use server";
-import { NewRating, insertUser } from "@/drizzle/db/functions";
+import { Rating, insertUser } from "@/drizzle/db/functions";
+import { auth } from "@clerk/nextjs";
 
-export const rateAlbum = async (userId: string, albumId: string, rating: number) => {
-	const newRating: NewRating = { userId: userId, albumId: albumId, rating: rating };
-	await insertUser(newRating)
-  };
-  
+export type RateAlbum = {
+	rating: Rating["rating"];
+	albumId: Rating["albumId"];
+};
+
+export const rateAlbum = async (rating: RateAlbum) => {
+	const { userId } = auth();
+
+	if (!userId) {
+		throw new Error("You must be logged in to rate albums.");
+	}
+
+	await insertUser({ ...rating, userId });
+};

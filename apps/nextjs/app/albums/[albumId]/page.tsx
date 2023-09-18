@@ -50,7 +50,11 @@ const Page = async ({ params: { albumId } }: Props) => {
 						<p className="mr-4 text-lg">{`${(
 							Math.random() * 5
 						).toFixed(1)} / 5`}</p>
-						<RatingDialog name={album.name} onSubmit={rateAlbum}>
+						<RatingDialog
+							name={album.name}
+							onSubmit={rateAlbum}
+							albumId={albumId}
+						>
 							<Button variant="outline">
 								<Star
 									color="orange"
@@ -94,6 +98,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 							<TableCell className="px-0">
 								<RatingDialog
 									name={song.name}
+									albumId={albumId}
 									onSubmit={rateAlbum}
 								>
 									<Button variant="ghost" size="sm">
