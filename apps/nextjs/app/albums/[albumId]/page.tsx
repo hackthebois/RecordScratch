@@ -98,7 +98,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 							<TableCell className="px-0">
 								<RatingDialog
 									name={song.name}
-									albumId={albumId}
+									albumId={"songId"}
 									onSubmit={rateAlbum}
 								>
 									<Button variant="ghost" size="sm">

@@ -31,7 +31,11 @@ const SongActions = ({ song }: Props) => {
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>Song Actions</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<RatingDialog name={song.name} onSubmit={rateAlbum}>
+				<RatingDialog
+					name={song.name}
+					onSubmit={rateAlbum}
+					albumId={"songId"}
+				>
 					<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
 						<Star className="mr-2 h-4 w-4" />
 						Rate
