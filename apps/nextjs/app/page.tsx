@@ -1,5 +1,5 @@
 import { getNewReleases } from "@/server/spotify";
-import { cn } from "@/server/utils";
+import { cn } from "@/utils/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { SpotifyAlbum } from "../types/spotify";

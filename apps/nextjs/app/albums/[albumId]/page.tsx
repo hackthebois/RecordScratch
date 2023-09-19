@@ -7,7 +7,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
-import { rateAlbum } from "@/server/rating";
 import { getAlbum } from "@/server/spotify";
 import { Star } from "lucide-react";
 import Image from "next/image";
@@ -50,11 +49,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 						<p className="mr-4 text-lg">{`${(
 							Math.random() * 5
 						).toFixed(1)} / 5`}</p>
-						<RatingDialog
-							name={album.name}
-							onSubmit={rateAlbum}
-							albumId={albumId}
-						>
+						<RatingDialog name={album.name} albumId={albumId}>
 							<Button variant="outline">
 								<Star
 									color="orange"
@@ -99,7 +94,6 @@ const Page = async ({ params: { albumId } }: Props) => {
 								<RatingDialog
 									name={song.name}
 									albumId={"songId"}
-									onSubmit={rateAlbum}
 								>
 									<Button variant="ghost" size="sm">
 										<Star

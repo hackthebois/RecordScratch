@@ -1,9 +1,7 @@
-"use server";
-import { insertRating, getRating } from "@/drizzle/db/functions";
+import { getRating, insertRating } from "@/drizzle/db/functions";
 import { NewRatingSchema } from "@/drizzle/db/schema";
-import { protectedProcedure, router } from "./trpc";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { protectedProcedure, router } from "./trpc";
 
 export const ratingRouter = router({
 	rateAlbum: protectedProcedure

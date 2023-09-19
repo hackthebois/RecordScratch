@@ -1,5 +1,6 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/client";
 import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
@@ -10,24 +11,27 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/Dialog";
-import { Rating } from "@/drizzle/db/functions";
-import { RateAlbum } from "@/server/rating";
+
 import { SignedIn, SignedOut, useClerk } from "@clerk/nextjs";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
 	name: string;
-	onSubmit: (rating: RateAlbum) => void;
-	albumId: Rating["albumId"];
+	albumId: string;
 	children?: React.ReactNode;
 };
 
-const RatingDialog = ({ name, onSubmit, children, albumId }: Props) => {
+const RatingDialog = ({ name, children, albumId }: Props) => {
 	const [starHover, setStarHover] = useState<number | null>(null);
 	const [rating, setRating] = useState<number | null>(null);
 	const [open, setOpen] = useState(false);
 	const { openSignIn } = useClerk();
+	const { mutate } = trpc.rateAlbum.useMutation({
+		onError: (error) => {
+			console.error(error.message);
+		},
+	});
 
 	useEffect(() => {
 		// Reset the rating when the dialog is opened
@@ -81,7 +85,7 @@ const RatingDialog = ({ name, onSubmit, children, albumId }: Props) => {
 								className="w-full"
 								onClick={() => {
 									if (rating !== null) {
-										onSubmit({
+										mutate({
 											rating,
 											albumId,
 										});
