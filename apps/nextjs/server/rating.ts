@@ -1,11 +1,11 @@
 "use server";
 import { insertRating, getRating } from "@/drizzle/db/functions";
 import { NewRatingSchema } from "@/drizzle/db/schema";
-import { router, protectedProcedure } from "./trpc";
+import { protectedProcedure, router } from "./trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
-export const appRouter = router({
+export const ratingRouter = router({
 	rateAlbum: protectedProcedure
 		.input(NewRatingSchema.pick({ albumId: true, rating: true }))
 		.mutation(async (opts) => {

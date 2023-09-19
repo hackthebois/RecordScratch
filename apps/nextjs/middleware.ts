@@ -7,6 +7,7 @@ export default authMiddleware({
 		"/albums/:albumId",
 		"/artists/:artistId",
 	],
+	ignoredRoutes: ["/((?!api|trpc))(_next|.+..+)(.*)", "/api/trpc/rateAlbum"],
 });
 
 export const config = {
