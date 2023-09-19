@@ -10,15 +10,14 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { spotifySearch } from "@/server/spotify";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
-import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { trpc } from "./_trpc/client";
 
 const ArtistItem = ({
 	artist,
@@ -114,13 +113,9 @@ const SearchBar = () => {
 
 	const query = form.watch("query");
 
-	const { data, isFetching } = useQuery(
-		["search", query],
-		() => spotifySearch(query),
-		{
-			enabled: query.length > 0,
-		}
-	);
+	const { data, isFetching } = trpc.spotify.search.useQuery(query, {
+		enabled: query.length > 0,
+	});
 
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>

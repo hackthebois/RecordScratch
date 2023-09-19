@@ -1,5 +1,9 @@
 import { ratingRouter } from "./rating";
-import { mergeRouters } from "./trpc";
+import { spotifyRouter } from "./spotify";
+import { router } from "./trpc";
 
-export const appRouter = mergeRouters(ratingRouter);
+export const appRouter = router({
+	rating: ratingRouter,
+	spotify: spotifyRouter,
+});
 export type AppRouter = typeof appRouter;

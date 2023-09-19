@@ -1,3 +1,4 @@
+import { serverTrpc } from "@/app/_trpc/server";
 import { Button } from "@/components/ui/Button";
 import {
 	Table,
@@ -7,7 +8,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
-import { getAlbum } from "@/server/spotify";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +21,7 @@ type Props = {
 };
 
 const Page = async ({ params: { albumId } }: Props) => {
-	const album = await getAlbum(albumId);
+	const album = await serverTrpc.spotify.album(albumId);
 
 	return (
 		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col overflow-hidden px-4 py-8 sm:px-8">

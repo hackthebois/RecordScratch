@@ -1,8 +1,7 @@
-"use server";
-
-import { env } from "env.mjs";
+import { env } from "@/env.mjs";
 import { SpotifyAlbumSchema, SpotifyArtistSchema } from "types/spotify";
 import { z } from "zod";
+import { middleware, publicProcedure, router } from "./trpc";
 
 export const getSpotifyToken = async () => {
 	const res = await fetch("https://accounts.spotify.com/api/token", {
@@ -22,55 +21,76 @@ export const getSpotifyToken = async () => {
 	return z.object({ access_token: z.string() }).parse(data).access_token;
 };
 
-export const getNewReleases = async () => {
-	const token = await getSpotifyToken();
-	const res = await fetch("https://api.spotify.com/v1/browse/new-releases", {
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		next: {
-			revalidate: 3600,
+const spotifyMiddleware = middleware(async ({ next, ctx }) => {
+	const spotifyToken = await getSpotifyToken();
+
+	return next({
+		ctx: {
+			spotifyToken,
+			...ctx,
 		},
 	});
-	const data = await res.json();
-	console.log(data);
-	return z
-		.object({
-			albums: z.object({ items: SpotifyAlbumSchema.array() }),
-		})
-		.parse(data).albums.items;
-};
+});
 
-export const spotifySearch = async (q: string) => {
-	const token = await getSpotifyToken();
-	const res = await fetch(
-		`https://api.spotify.com/v1/search?q=${q}&type=album,artist&limit=4`,
-		{
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		}
-	);
-	const data = await res.json();
-	return z
-		.object({
-			albums: SpotifyAlbumSchema.array(),
-			artists: SpotifyArtistSchema.array(),
-		})
-		.parse({ albums: data.albums.items, artists: data.artists.items });
-};
+const spotifyProcedure = publicProcedure.use(spotifyMiddleware);
 
-export const getAlbum = async (albumId: string) => {
-	const token = await getSpotifyToken();
-
-	const res = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
-		next: {
-			revalidate: 3600,
-		},
-	});
-	const data = await res.json();
-	return SpotifyAlbumSchema.parse(data);
-};
+export const spotifyRouter = router({
+	new: spotifyProcedure.query(async ({ ctx: { spotifyToken } }) => {
+		const res = await fetch(
+			"https://api.spotify.com/v1/browse/new-releases",
+			{
+				headers: {
+					Authorization: `Bearer ${spotifyToken}`,
+				},
+				next: {
+					revalidate: 3600,
+				},
+			}
+		);
+		const data = await res.json();
+		return z
+			.object({
+				albums: z.object({ items: SpotifyAlbumSchema.array() }),
+			})
+			.parse(data).albums.items;
+	}),
+	search: spotifyProcedure
+		.input(z.string().min(1))
+		.query(async ({ ctx: { spotifyToken }, input: q }) => {
+			const res = await fetch(
+				`https://api.spotify.com/v1/search?q=${q}&type=album,artist&limit=4`,
+				{
+					headers: {
+						Authorization: `Bearer ${spotifyToken}`,
+					},
+				}
+			);
+			const data = await res.json();
+			return z
+				.object({
+					albums: SpotifyAlbumSchema.array(),
+					artists: SpotifyArtistSchema.array(),
+				})
+				.parse({
+					albums: data.albums.items,
+					artists: data.artists.items,
+				});
+		}),
+	album: spotifyProcedure
+		.input(z.string())
+		.query(async ({ ctx: { spotifyToken }, input: albumId }) => {
+			const res = await fetch(
+				`https://api.spotify.com/v1/albums/${albumId}`,
+				{
+					headers: {
+						Authorization: `Bearer ${spotifyToken}`,
+					},
+					next: {
+						revalidate: 3600,
+					},
+				}
+			);
+			const data = await res.json();
+			return SpotifyAlbumSchema.parse(data);
+		}),
+});

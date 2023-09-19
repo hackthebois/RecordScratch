@@ -1,8 +1,8 @@
-import { getNewReleases } from "@/server/spotify";
 import { cn } from "@/utils/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { SpotifyAlbum } from "../types/spotify";
+import { serverTrpc } from "./_trpc/server";
 
 const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 	return (
@@ -44,7 +44,7 @@ const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 };
 
 const Page = async () => {
-	const newReleases = await getNewReleases();
+	const newReleases = await serverTrpc.spotify.new();
 
 	return (
 		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col overflow-hidden px-4 py-8 sm:px-8">

@@ -27,7 +27,7 @@ const RatingDialog = ({ name, children, albumId }: Props) => {
 	const [rating, setRating] = useState<number | null>(null);
 	const [open, setOpen] = useState(false);
 	const { openSignIn } = useClerk();
-	const { mutate } = trpc.rateAlbum.useMutation({
+	const { mutate } = trpc.rating.rateAlbum.useMutation({
 		onError: (error) => {
 			console.error(error.message);
 		},
