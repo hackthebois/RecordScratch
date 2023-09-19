@@ -9,7 +9,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { rateAlbum } from "@/lib/rating";
+import { rateAlbum } from "@/server/rating";
 import { SpotifyTrack } from "@/types/spotify";
 import { Headphones, MoreHorizontal, Star } from "lucide-react";
 import Link from "next/link";

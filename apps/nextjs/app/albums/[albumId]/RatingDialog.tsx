@@ -11,7 +11,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/Dialog";
 import { Rating } from "@/drizzle/db/functions";
-import { RateAlbum } from "@/lib/rating";
+import { RateAlbum } from "@/server/rating";
 import { SignedIn, SignedOut, useClerk } from "@clerk/nextjs";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";

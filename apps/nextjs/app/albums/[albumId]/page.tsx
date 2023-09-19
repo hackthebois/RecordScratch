@@ -7,8 +7,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
-import { rateAlbum } from "@/lib/rating";
-import { getAlbum } from "@/lib/spotify";
+import { rateAlbum } from "@/server/rating";
+import { getAlbum } from "@/server/spotify";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

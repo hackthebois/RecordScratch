@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { spotifySearch } from "@/lib/spotify";
+import { spotifySearch } from "@/server/spotify";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
