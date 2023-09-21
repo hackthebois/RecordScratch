@@ -12,9 +12,14 @@ export const insertRating = async (rating: NewRating) => {
 };
 
 // Gets the users album rating
-export const getRating = async (userRating: AlbumRating) => {
+export const getRating = async (
+	userRating: Omit<AlbumRating, "description">
+) => {
 	const rating = await db
-		.select({ rating: album_ratings.rating })
+		.select({
+			rating: album_ratings.rating,
+			description: album_ratings.description,
+		})
 		.from(album_ratings)
 		.where(
 			and(
@@ -38,6 +43,7 @@ export const getRatingAverage = async (albumId: AlbumRating["albumId"]) => {
 	else return average[0].ratingAverage;
 };
 
+// Get the Album mean average for each album provided
 export const getAllAlbumAverages = async (albums: AlbumRating["albumId"][]) => {
 	const average = await db
 		.select({ ratingAverage: sql<number>`AVG(rating)` })

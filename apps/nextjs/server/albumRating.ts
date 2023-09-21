@@ -12,7 +12,13 @@ import { z } from "zod";
 export const albumRouter = router({
 	// Input the user rating for an album
 	rateAlbum: protectedProcedure
-		.input(NewAlbumSchema.pick({ albumId: true, rating: true }))
+		.input(
+			NewAlbumSchema.pick({
+				albumId: true,
+				rating: true,
+				description: true,
+			})
+		)
 		.mutation(async (opts) => {
 			const userId: string = opts.ctx.userId;
 			const albumId: string = opts.input.albumId;
@@ -24,10 +30,20 @@ export const albumRouter = router({
 			else throw new TRPCError({ code: "CONFLICT" });
 		}),
 
+	// Gets the users rating for an album
+	getUserRating: protectedProcedure
+		.input(SelectAlbumSchema.pick({ albumId: true }))
+		.query(async (opts) => {
+			const userId: string = opts.ctx.userId;
+			const albumId: string = opts.input.albumId;
+
+			return await getRating({ albumId, userId });
+		}),
+
 	// Get the overall mean average for one album
 	getAlbumAverage: publicProcedure
 		.input(SelectAlbumSchema.pick({ albumId: true }))
-		.mutation(async (opts) => {
+		.query(async (opts) => {
 			const albumId: string = opts.input.albumId;
 
 			return getRatingAverage(albumId);
@@ -36,7 +52,7 @@ export const albumRouter = router({
 	// Get the overall mean average for All given albums
 	getEveryAlbumAverage: publicProcedure
 		.input(z.object({ albums: z.string().array() }))
-		.mutation(async (opts) => {
+		.query(async (opts) => {
 			const albumIds: string[] = opts.input.albums;
 
 			return getAllAlbumAverages(albumIds);

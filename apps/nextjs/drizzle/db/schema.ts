@@ -3,6 +3,7 @@ import {
 	varchar,
 	mysqlTable,
 	primaryKey,
+	text,
 } from "drizzle-orm/mysql-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -13,6 +14,7 @@ export const album_ratings = mysqlTable(
 		userId: varchar("userId", { length: 256 }).notNull(),
 		albumId: varchar("albumId", { length: 256 }).notNull(),
 		rating: tinyint("rating").notNull(),
+		description: text("description").notNull(),
 	},
 	(table) => {
 		return {
