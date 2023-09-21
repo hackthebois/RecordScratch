@@ -33,7 +33,7 @@ export const albumRouter = router({
 	// Gets the users rating for an album
 	getUserRating: protectedProcedure
 		.input(SelectAlbumSchema.pick({ albumId: true }))
-		.query(async (opts) => {
+		.mutation(async (opts) => {
 			const userId: string = opts.ctx.userId;
 			const albumId: string = opts.input.albumId;
 
@@ -43,7 +43,7 @@ export const albumRouter = router({
 	// Get the overall mean average for one album
 	getAlbumAverage: publicProcedure
 		.input(SelectAlbumSchema.pick({ albumId: true }))
-		.query(async (opts) => {
+		.mutation(async (opts) => {
 			const albumId: string = opts.input.albumId;
 
 			return getRatingAverage(albumId);

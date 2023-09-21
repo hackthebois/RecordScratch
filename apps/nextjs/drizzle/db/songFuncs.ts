@@ -28,7 +28,7 @@ export const getSongRating = async (userRating: SongRating) => {
 };
 
 // gets the average rating for all songs individually for a specified album
-export const getSongAverage = async (albumId: SongRating["albumId"]) => {
+export const getAllSongAverages = async (albumId: SongRating["albumId"]) => {
 	const allSongRatings = await db
 		.select({
 			songId: song_ratings.songId,

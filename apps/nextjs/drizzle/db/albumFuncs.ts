@@ -35,12 +35,15 @@ export const getRating = async (
 // Gets the total mean average rating for an album
 export const getRatingAverage = async (albumId: AlbumRating["albumId"]) => {
 	const average = await db
-		.select({ ratingAverage: sql<number>`AVG(rating)` })
+		.select({
+			ratingAverage: sql<number>`ROUND(AVG(rating))`,
+			totalRatings: sql<number>`COUNT(*)`,
+		})
 		.from(album_ratings)
 		.where(eq(album_ratings.albumId, albumId));
 
 	if (!average.length) return null;
-	else return average[0].ratingAverage;
+	else return average[0];
 };
 
 // Get the Album mean average for each album provided
