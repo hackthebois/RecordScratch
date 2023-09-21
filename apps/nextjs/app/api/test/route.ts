@@ -1,4 +1,5 @@
 import { serverTrpc } from "@/app/_trpc/server";
+import { NextResponse } from "next/server";
 
 export const GET = async () => {
 	//const album = await serverTrpc.spotify.album("albumId");
@@ -9,4 +10,6 @@ export const GET = async () => {
 	// });
 
 	console.log(rating);
+
+	return NextResponse.json(rating);
 };
