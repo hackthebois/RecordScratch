@@ -7,6 +7,7 @@ export default authMiddleware({
 		"/artists/:artistId",
 		"/api/trpc/album.getAlbumAverage",
 		"/api/trpc/album.getEveryAlbumAverage",
+		"/api(.*)",
 	],
 });
 
