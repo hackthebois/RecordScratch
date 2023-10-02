@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "./config";
 import { NewSongRating, SongRating, song_ratings } from "./schema";
 
@@ -9,6 +9,19 @@ import { NewSongRating, SongRating, song_ratings } from "./schema";
 // Inserts a new song rating
 export const insertSongRating = async (rating: NewSongRating) => {
 	return db.insert(song_ratings).values(rating);
+};
+
+// Updates an existing song rating
+export const updateSongRating = async (rating: SongRating) => {
+	return db
+		.update(song_ratings)
+		.set(rating)
+		.where(
+			and(
+				eq(song_ratings.albumId, rating.albumId),
+				eq(song_ratings.songId, rating.songId)
+			)
+		);
 };
 
 // Gets the users song rating
@@ -26,6 +39,7 @@ export const getSongRating = async (userRating: SongRating) => {
 	if (!rating.length) return null;
 	else return rating[0];
 };
+export type UserSongRating = Awaited<ReturnType<typeof getSongRating>>;
 
 // gets the average rating for all songs individually for a specified album
 export const getAllSongAverages = async (albumId: SongRating["albumId"]) => {
@@ -41,3 +55,4 @@ export const getAllSongAverages = async (albumId: SongRating["albumId"]) => {
 	if (!allSongRatings.length) return null;
 	else return allSongRatings;
 };
+export type SongRatingAverages = Awaited<ReturnType<typeof getAllSongAverages>>;

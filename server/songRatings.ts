@@ -1,11 +1,11 @@
 import { NewSongSchema, SelectSongSchema } from "@/drizzle/db/schema";
-import { TRPCError } from "@trpc/server";
-import { protectedProcedure, publicProcedure, router } from "./trpc";
 import {
 	getAllSongAverages,
 	getSongRating,
 	insertSongRating,
+	updateSongRating,
 } from "@/drizzle/db/songFuncs";
+import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const songRouter = router({
 	// Input the user rating for a song
@@ -18,12 +18,17 @@ export const songRouter = router({
 			const albumId: string = opts.input.albumId;
 			const songId: string = opts.input.songId;
 
-			const ratingExists: boolean =
-				(await getSongRating({ userId, songId, albumId })) != null;
+			const existingRating = await getSongRating({
+				userId,
+				songId,
+				albumId,
+			});
 
-			if (!ratingExists)
+			if (!existingRating)
 				await insertSongRating({ ...opts.input, userId });
-			else throw new TRPCError({ code: "CONFLICT" });
+			else {
+				await updateSongRating({ ...opts.input, userId });
+			}
 		}),
 
 	// Gets the users rating for a song

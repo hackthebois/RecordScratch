@@ -1,9 +1,9 @@
 import {
-	tinyint,
-	varchar,
 	mysqlTable,
 	primaryKey,
 	text,
+	tinyint,
+	varchar,
 } from "drizzle-orm/mysql-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";

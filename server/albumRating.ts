@@ -1,13 +1,13 @@
 import {
-	getRatingAverage,
-	getRating,
-	insertRating,
+	getAlbumRating,
 	getAllAlbumAverages,
+	getRatingAverage,
+	insertAlbumRating,
+	updateAlbumRating,
 } from "@/drizzle/db/albumFuncs";
 import { NewAlbumSchema, SelectAlbumSchema } from "@/drizzle/db/schema";
-import { TRPCError } from "@trpc/server";
-import { protectedProcedure, publicProcedure, router } from "./trpc";
 import { z } from "zod";
+import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const albumRouter = router({
 	// Input the user rating for an album
@@ -23,11 +23,15 @@ export const albumRouter = router({
 			const userId: string = opts.ctx.userId;
 			const albumId: string = opts.input.albumId;
 
-			const ratingExists: boolean =
-				(await getRating({ albumId, userId })) != null;
+			const existingRating = await getAlbumRating({ albumId, userId });
 
-			if (!ratingExists) await insertRating({ ...opts.input, userId });
-			else throw new TRPCError({ code: "CONFLICT" });
+			if (!existingRating)
+				await insertAlbumRating({ ...opts.input, userId });
+			else {
+				await updateAlbumRating({ ...opts.input, userId });
+			}
+
+			return existingRating;
 		}),
 
 	// Gets the users rating for an album
@@ -37,7 +41,7 @@ export const albumRouter = router({
 			const userId: string = opts.ctx.userId;
 			const albumId: string = opts.input.albumId;
 
-			return await getRating({ albumId, userId });
+			return await getAlbumRating({ albumId, userId });
 		}),
 
 	// Get the overall mean average for one album

@@ -1,5 +1,4 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import { Button } from "@/components/ui/Button";
 import {
 	Table,
 	TableBody,
@@ -8,10 +7,14 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
-import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import RatingDialog from "./RatingDialog";
+import {
+	AlbumRating,
+	AlbumRatingDialog,
+	SongRating,
+	SongRatingDialog,
+} from "./Ratings";
 import SongActions from "./SongActions";
 
 type Props = {
@@ -22,6 +25,11 @@ type Props = {
 
 const Page = async ({ params: { albumId } }: Props) => {
 	const album = await serverTrpc.spotify.album(albumId);
+	const albumRating = await serverTrpc.album.getAlbumAverage({ albumId });
+	const userRating = await serverTrpc.album.getUserRating({ albumId });
+	const songRatings = await serverTrpc.song.getAllAverageSongRatings({
+		albumId,
+	});
 
 	return (
 		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col overflow-hidden px-4 py-8 sm:px-8">
@@ -39,26 +47,15 @@ const Page = async ({ params: { albumId } }: Props) => {
 					<h1 className="mb-6 text-center sm:text-left">
 						{album.name}
 					</h1>
-					<div className="flex items-center">
-						<Star
-							color="orange"
-							fill="orange"
-							size={23}
-							className="mr-2"
+					<div className="flex items-center gap-3">
+						<AlbumRating
+							albumId={albumId}
+							initialData={albumRating}
 						/>
-						<p className="mr-4 text-lg">{`${(
-							Math.random() * 5
-						).toFixed(1)} / 5`}</p>
-						<RatingDialog name={album.name} albumId={albumId}>
-							<Button variant="outline">
-								<Star
-									color="orange"
-									size={18}
-									className="mr-2"
-								/>
-								Rate
-							</Button>
-						</RatingDialog>
+						<AlbumRatingDialog
+							album={album}
+							initialData={userRating}
+						/>
 					</div>
 					<div className="mt-4 flex gap-3">
 						{album.artists.map((artist, index) => (
@@ -90,35 +87,21 @@ const Page = async ({ params: { albumId } }: Props) => {
 							<TableCell className="w-full whitespace-nowrap">
 								{song.name}
 							</TableCell>
-							<TableCell className="px-0">
-								<RatingDialog
-									name={song.name}
-									albumId={"songId"}
-								>
-									<Button variant="ghost" size="sm">
-										<Star
-											color="orange"
-											size={18}
-											className="mr-2"
-										/>
-										Rate
-									</Button>
-								</RatingDialog>
-							</TableCell>
 							<TableCell>
-								<span className="flex items-center">
-									<Star
-										color="orange"
-										fill="orange"
-										size={18}
-									/>
-									<p className="w-12 text-right">{`${(
-										Math.random() * 5
-									).toFixed(1)} / 5`}</p>
-								</span>
+								<SongRating
+									albumId={albumId}
+									songId={song.id}
+									initialData={songRatings}
+								/>
+							</TableCell>
+							<TableCell className="px-0">
+								<SongRatingDialog
+									song={song}
+									albumId={albumId}
+								/>
 							</TableCell>
 							<TableCell className="w-12">
-								<SongActions song={song} />
+								<SongActions song={song} albumId={albumId} />
 							</TableCell>
 						</TableRow>
 					))}

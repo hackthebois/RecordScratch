@@ -12,13 +12,14 @@ import {
 import { SpotifyTrack } from "@/types/spotify";
 import { Headphones, MoreHorizontal, Star } from "lucide-react";
 import Link from "next/link";
-import RatingDialog from "./RatingDialog";
+import { SongRatingDialog } from "./Ratings";
 
 type Props = {
 	song: SpotifyTrack;
+	albumId: string;
 };
 
-const SongActions = ({ song }: Props) => {
+const SongActions = ({ song, albumId }: Props) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -30,12 +31,12 @@ const SongActions = ({ song }: Props) => {
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>Song Actions</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<RatingDialog name={song.name} albumId={"songId"}>
+				<SongRatingDialog albumId={albumId} song={song}>
 					<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
 						<Star className="mr-2 h-4 w-4" />
 						Rate
 					</DropdownMenuItem>
-				</RatingDialog>
+				</SongRatingDialog>
 				<DropdownMenuItem asChild>
 					<Link target="_blank" href={song.external_urls.spotify}>
 						<Headphones className="mr-2 h-4 w-4" />
