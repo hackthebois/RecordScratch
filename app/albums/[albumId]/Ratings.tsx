@@ -228,18 +228,27 @@ const AlbumRating = ({
 	);
 
 	return (
-		<>
+		<div className="flex items-center gap-2">
 			<Star
 				color="orange"
 				fill={albumRating?.ratingAverage ? "orange" : "none"}
-				size={23}
+				size={30}
 			/>
-			<p>
-				{albumRating?.ratingAverage
-					? albumRating.ratingAverage
-					: "No Ratings"}
-			</p>
-		</>
+			{albumRating?.ratingAverage ? (
+				<div>
+					<p className="text-lg font-semibold">
+						{albumRating?.ratingAverage
+							? `${albumRating.ratingAverage} / 10`
+							: "No Ratings"}
+					</p>
+					<p className="text-xs text-muted-foreground">
+						{albumRating.totalRatings}
+					</p>
+				</div>
+			) : (
+				<p>No Ratings</p>
+			)}
+		</div>
 	);
 };
 

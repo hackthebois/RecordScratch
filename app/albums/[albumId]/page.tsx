@@ -54,7 +54,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 					<h1 className="mb-6 text-center sm:text-left">
 						{album.name}
 					</h1>
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-4">
 						<AlbumRating
 							albumId={albumId}
 							initialData={albumRating}
