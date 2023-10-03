@@ -11,6 +11,8 @@ import {
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
+import { useDebounce } from "@/utils/hooks";
+import { useRecents } from "@/utils/recents";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,17 +23,17 @@ import { trpc } from "./_trpc/client";
 
 const ArtistItem = ({
 	artist,
-	close,
+	onClick,
 }: {
 	artist: SpotifyArtist;
-	close: () => void;
+	onClick: () => void;
 }) => {
 	const artistImage = artist.images?.find((i) => i.url);
 
 	return (
 		<Link
 			href="/"
-			onClick={close}
+			onClick={onClick}
 			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
@@ -55,17 +57,17 @@ const ArtistItem = ({
 
 const AlbumItem = ({
 	album,
-	close,
+	onClick,
 }: {
 	album: SpotifyAlbum;
-	close: () => void;
+	onClick: () => void;
 }) => {
 	const router = useRouter();
 	const albumImage = album.images.find((i) => i.url);
 
 	return (
 		<Link
-			onClick={close}
+			onClick={onClick}
 			href={`/albums/${album.id}`}
 			className="hover:bg-elevation-4 flex flex-1 flex-row items-center rounded transition-colors"
 		>
@@ -105,24 +107,28 @@ const AlbumItem = ({
 
 const SearchBar = () => {
 	const [open, setOpen] = useState(false);
+	const { recents, addRecent } = useRecents();
 	const form = useForm({
 		defaultValues: {
 			query: "",
 		},
 	});
 
-	const query = form.watch("query");
+	const q = form.watch("query");
+
+	const query = useDebounce(q, 500);
 
 	const { data, isFetching } = trpc.spotify.search.useQuery(query, {
 		enabled: query.length > 0,
+		refetchOnWindowFocus: false,
 	});
 
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger>
-				<Input placeholder="Search" />
+				<Input placeholder="Search" value={q} />
 			</DialogTrigger>
-			<DialogContent className="h-full w-full sm:max-h-[70%] sm:max-w-[500px]">
+			<DialogContent className="flex h-full w-full flex-col sm:max-h-[70%] sm:max-w-[500px]">
 				<Form {...form}>
 					<FormField
 						control={form.control}
@@ -142,48 +148,87 @@ const SearchBar = () => {
 						)}
 					/>
 				</Form>
-				<ScrollArea>
-					{isFetching ? (
-						<div className="flex flex-1 items-center justify-center">
-							<Loader2 className="animate-spin" size={35} />
+				{isFetching ? (
+					<div className="flex flex-1 items-center justify-center">
+						<Loader2 className="animate-spin" size={35} />
+					</div>
+				) : data ? (
+					<>
+						{data.albums.length > 0 || data.artists.length > 0 ? (
+							<ScrollArea>
+								{data.albums.length > 0 && (
+									<>
+										<h4 className="my-4">Albums</h4>
+										<div className="flex flex-col gap-3">
+											{data.albums.map((album, index) => (
+												<AlbumItem
+													album={album}
+													onClick={() => {
+														addRecent(album);
+														setOpen(false);
+													}}
+													key={index}
+												/>
+											))}
+										</div>
+									</>
+								)}
+								{data.artists.length > 0 && (
+									<>
+										<h4 className="my-4">Artists</h4>
+										<div className="flex flex-col gap-3">
+											{data.artists.map(
+												(artist, index) => (
+													<ArtistItem
+														onClick={() => {
+															addRecent(artist);
+															setOpen(false);
+														}}
+														artist={artist}
+														key={index}
+													/>
+												)
+											)}
+										</div>
+									</>
+								)}
+							</ScrollArea>
+						) : (
+							<div className="flex flex-1 items-center justify-center">
+								<p className="text-muted-foreground">
+									No results found
+								</p>
+							</div>
+						)}
+					</>
+				) : recents.length > 0 ? (
+					<ScrollArea>
+						<h4 className="my-4">Recents</h4>
+						<div className="flex flex-1 flex-col justify-start gap-3">
+							{recents.map((recent, index) =>
+								"followers" in recent ? (
+									<ArtistItem
+										onClick={() => setOpen(false)}
+										artist={recent}
+										key={index}
+									/>
+								) : (
+									<AlbumItem
+										album={recent as SpotifyAlbum}
+										onClick={() => setOpen(false)}
+										key={index}
+									/>
+								)
+							)}
 						</div>
-					) : data ? (
-						<>
-							{data.albums.length > 0 && (
-								<>
-									<h4 className="my-4">Albums</h4>
-									<div className="flex flex-col gap-3">
-										{data.albums.map((album, index) => (
-											<AlbumItem
-												album={album}
-												close={() => setOpen(false)}
-												key={index}
-											/>
-										))}
-									</div>
-								</>
-							)}
-							{data.artists.length > 0 && (
-								<>
-									<h4 className="my-4">Artists</h4>
-									<div className="flex flex-col gap-3">
-										{data.artists.map((artist, index) => (
-											<ArtistItem
-												close={() => setOpen(false)}
-												artist={artist}
-												key={index}
-											/>
-										))}
-									</div>
-								</>
-							)}
-						</>
-					) : (
-						<p className="text-center text-muted-foreground">
+					</ScrollArea>
+				) : (
+					<div className="flex flex-1 items-center justify-center">
+						<p className="text-muted-foreground">
 							No recent searches
 						</p>
-					)}
-				</ScrollArea>
+					</div>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

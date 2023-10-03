@@ -40,7 +40,8 @@
     "react-icons": "^4.10.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zustand": "^4.4.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.45",
