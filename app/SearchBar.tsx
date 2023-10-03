@@ -126,7 +126,7 @@ const SearchBar = () => {
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger>
-				<Input placeholder="Search" value={q} />
+				<Input placeholder="Search" value={q} readOnly />
 			</DialogTrigger>
 			<DialogContent className="flex h-full w-full flex-col sm:max-h-[70%] sm:max-w-[500px]">
 				<Form {...form}>
