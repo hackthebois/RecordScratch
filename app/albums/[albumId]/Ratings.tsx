@@ -96,7 +96,7 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 				</Dialog>
 			</SignedIn>
 			<SignedOut>
-				<button onClick={() => openSignIn()}>{children}</button>
+				<div onClick={() => openSignIn()}>{children}</div>
 			</SignedOut>
 		</>
 	);

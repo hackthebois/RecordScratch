@@ -7,6 +7,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/Table";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -24,9 +25,15 @@ type Props = {
 };
 
 const Page = async ({ params: { albumId } }: Props) => {
+	const { userId } = auth();
+
+	let userRating = undefined;
+
 	const album = await serverTrpc.spotify.album(albumId);
 	const albumRating = await serverTrpc.album.getAlbumAverage({ albumId });
-	const userRating = await serverTrpc.album.getUserRating({ albumId });
+	if (userId) {
+		userRating = await serverTrpc.album.getUserRating({ albumId });
+	}
 	const songRatings = await serverTrpc.song.getAllAverageSongRatings({
 		albumId,
 	});
