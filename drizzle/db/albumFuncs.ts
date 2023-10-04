@@ -45,12 +45,12 @@ export type UserAlbumRating = Awaited<ReturnType<typeof getAlbumRating>>;
 export const getRatingAverage = async (albumId: AlbumRating["albumId"]) => {
 	const average = await db
 		.select({
-			ratingAverage: sql<number | null>`ROUND(AVG(rating))`,
-			totalRatings: sql<number>`COUNT(*)`,
+			ratingAverage: sql<string | null>`ROUND(AVG(rating), 1)`,
+			totalRatings: sql<string>`COUNT(*)`,
 		})
 		.from(album_ratings)
 		.where(eq(album_ratings.albumId, albumId));
-
+	console.log(average);
 	if (!average.length) return null;
 	else return average[0];
 };
@@ -59,7 +59,7 @@ export type AlbumRatingAverage = Awaited<ReturnType<typeof getRatingAverage>>;
 // Get the Album mean average for each album provided
 export const getAllAlbumAverages = async (albums: AlbumRating["albumId"][]) => {
 	const average = await db
-		.select({ ratingAverage: sql<number>`AVG(rating)` })
+		.select({ ratingAverage: sql<string | null>`AVG(rating)` })
 		.from(album_ratings)
 		.where(inArray(album_ratings.albumId, albums));
 

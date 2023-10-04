@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import {
 	Form,
@@ -13,7 +14,7 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -126,7 +127,23 @@ const SearchBar = () => {
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger>
-				<Input placeholder="Search" value={q} readOnly />
+				<>
+					<Input
+						placeholder="Search"
+						value={q}
+						readOnly
+						className="hidden sm:block"
+					/>
+					<div
+						className={buttonVariants({
+							size: "icon",
+							variant: "outline",
+							className: "sm:hidden",
+						})}
+					>
+						<Search size={20} />
+					</div>
+				</>
 			</DialogTrigger>
 			<DialogContent className="flex h-full w-full flex-col sm:max-h-[70%] sm:max-w-[500px]">
 				<Form {...form}>

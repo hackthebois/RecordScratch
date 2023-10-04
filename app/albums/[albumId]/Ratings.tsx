@@ -238,7 +238,7 @@ const AlbumRating = ({
 				<div>
 					<p className="text-lg font-semibold">
 						{albumRating?.ratingAverage
-							? `${albumRating.ratingAverage} / 10`
+							? `${albumRating.ratingAverage}`
 							: "No Ratings"}
 					</p>
 					<p className="text-xs text-muted-foreground">
@@ -270,8 +270,6 @@ const SongRating = ({
 		}
 	);
 
-	console.log(ratings);
-
 	const rating = findSongAverage(ratings, songId);
 
 	return (
@@ -282,7 +280,9 @@ const SongRating = ({
 			)}
 		>
 			<Star color="orange" fill={rating ? "orange" : "none"} size={18} />
-			<p>{rating ? Number(rating).toFixed(1) : "0.0"}</p>
+			<p className="font-medium">
+				{rating ? Number(rating).toFixed(1) : ""}
+			</p>
 		</span>
 	);
 };

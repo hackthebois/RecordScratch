@@ -80,34 +80,33 @@ const Page = async ({ params: { albumId } }: Props) => {
 			<Table className="mt-10">
 				<TableHeader>
 					<TableRow>
-						<TableHead></TableHead>
+						<TableHead className="pl-4 pr-0">#</TableHead>
 						<TableHead>Song</TableHead>
-						<TableHead></TableHead>
-						<TableHead>Rating</TableHead>
+						<TableHead className="p-0">Rating</TableHead>
 						<TableHead></TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					{album.tracks?.items.map((song, index) => (
 						<TableRow key={song.id}>
-							<TableCell className="w-12">{index}</TableCell>
+							<TableCell className="p-0 text-right text-muted-foreground">
+								{index + 1}
+							</TableCell>
 							<TableCell className="w-full whitespace-nowrap">
 								{song.name}
 							</TableCell>
-							<TableCell>
+							<TableCell className="flex gap-4 px-0">
 								<SongRating
 									albumId={albumId}
 									songId={song.id}
 									initialData={songRatings}
 								/>
-							</TableCell>
-							<TableCell className="px-0">
 								<SongRatingDialog
 									song={song}
 									albumId={albumId}
 								/>
 							</TableCell>
-							<TableCell className="w-12">
+							<TableCell>
 								<SongActions song={song} albumId={albumId} />
 							</TableCell>
 						</TableRow>

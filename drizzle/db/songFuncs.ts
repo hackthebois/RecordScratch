@@ -46,7 +46,7 @@ export const getAllSongAverages = async (albumId: SongRating["albumId"]) => {
 	const allSongRatings = await db
 		.select({
 			songId: song_ratings.songId,
-			ratingAverage: sql<number>`AVG(rating)`,
+			ratingAverage: sql<string | null>`AVG(rating)`,
 		})
 		.from(song_ratings)
 		.groupBy(song_ratings.songId)
