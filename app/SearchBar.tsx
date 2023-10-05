@@ -183,6 +183,7 @@ const SearchBar = () => {
 													onClick={() => {
 														addRecent(album);
 														setOpen(false);
+														form.reset();
 													}}
 													key={index}
 												/>
@@ -200,6 +201,7 @@ const SearchBar = () => {
 														onClick={() => {
 															addRecent(artist);
 															setOpen(false);
+															form.reset();
 														}}
 														artist={artist}
 														key={index}
