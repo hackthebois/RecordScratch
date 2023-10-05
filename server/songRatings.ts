@@ -40,9 +40,7 @@ export const songRouter = router({
 	// Gets the mean average rating for a song
 	getAllAverageSongRatings: publicProcedure
 		.input(SelectSongSchema.pick({ albumId: true }))
-		.query(async (opts) => {
-			const albumId: string = opts.input.albumId;
-
+		.query(async ({ input: { albumId } }) => {
 			return getAllSongAverages(albumId);
 		}),
 });

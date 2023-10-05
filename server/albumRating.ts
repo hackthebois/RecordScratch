@@ -8,7 +8,6 @@ import {
 } from "@/drizzle/db/albumFuncs";
 import { NewAlbumSchema, SelectAlbumSchema } from "@/drizzle/db/schema";
 import redis from "@/redis/config";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 
@@ -57,19 +56,14 @@ export const albumRouter = router({
 	// Gets the users rating for an album
 	getUserRating: protectedProcedure
 		.input(SelectAlbumSchema.pick({ albumId: true }))
-		.query(async (opts) => {
-			const userId: string = opts.ctx.userId;
-			const albumId: string = opts.input.albumId;
-
+		.query(async ({ ctx: { userId }, input: { albumId } }) => {
 			return await getUserRating({ albumId, userId });
 		}),
 
 	// Get the overall mean average for one album
 	getAlbumAverage: publicProcedure
 		.input(SelectAlbumSchema.pick({ albumId: true }))
-		.query(async (opts) => {
-			const albumId: string = opts.input.albumId;
-
+		.query(async ({ input: { albumId } }) => {
 			// Retrieve the value from Redis
 			const cachedValue: RatingData = (await redis.get(
 				albumId
@@ -87,9 +81,7 @@ export const albumRouter = router({
 	// Get the overall mean average for All given albums
 	getEveryAlbumAverage: publicProcedure
 		.input(z.object({ albums: z.string().array() }))
-		.query(async (opts) => {
-			const albumIds: string[] = opts.input.albums;
-
-			return getAllAlbumAverages(albumIds);
+		.query(async ({ input: { albums } }) => {
+			return getAllAlbumAverages(albums);
 		}),
 });
