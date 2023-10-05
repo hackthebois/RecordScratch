@@ -17,8 +17,36 @@ export const updateAlbumRating = async (rating: NewRating) => {
 	return db
 		.update(album_ratings)
 		.set(rating)
-		.where(eq(album_ratings.albumId, rating.albumId));
+		.where(
+			and(
+				eq(album_ratings.albumId, rating.albumId),
+				eq(album_ratings.userId, rating.userId)
+			)
+		);
 };
+
+export const getUserRating = async (
+	userRating: Omit<AlbumRating, "description">
+) => {
+	const rating = await db
+		.select({
+			albumId: album_ratings.albumId,
+			userId: album_ratings.userId,
+			rating: album_ratings.rating,
+			description: album_ratings.description,
+		})
+		.from(album_ratings)
+		.where(
+			and(
+				eq(album_ratings.userId, userRating.userId),
+				eq(album_ratings.albumId, userRating.albumId)
+			)
+		);
+
+	if (!rating.length) return null;
+	else return rating[0];
+};
+export type GetUserRating = Awaited<ReturnType<typeof getUserRating>>;
 
 // Gets the users album rating
 export const userRatingExists = async (

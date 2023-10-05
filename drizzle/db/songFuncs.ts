@@ -26,6 +26,29 @@ export const updateSongRating = async (rating: NewSongRating) => {
 };
 
 // Gets the users song rating
+export const getUserRating = async (userRating: SongRating) => {
+	const rating = await db
+		.select({
+			albumId: song_ratings.albumId,
+			songId: song_ratings.songId,
+			userId: song_ratings.userId,
+			rating: song_ratings.rating,
+		})
+		.from(song_ratings)
+		.where(
+			and(
+				eq(song_ratings.userId, userRating.userId),
+				eq(song_ratings.songId, userRating.songId),
+				eq(song_ratings.albumId, userRating.albumId)
+			)
+		);
+
+	if (!rating.length) return null;
+	else return rating[0];
+};
+export type GetUserRating = Awaited<ReturnType<typeof getUserRating>>;
+
+// Gets the users song rating
 export const userRatingExists = async (userRating: SongRating) => {
 	return (
 		(
@@ -42,7 +65,7 @@ export const userRatingExists = async (userRating: SongRating) => {
 		).length != 0
 	);
 };
-export type UserSongRating = Awaited<ReturnType<typeof boolean>>;
+export type UserRatingExists = Awaited<ReturnType<typeof boolean>>;
 
 // gets the average rating for all songs individually for a specified album
 export const getAllSongAverages = async (albumId: SongRating["albumId"]) => {

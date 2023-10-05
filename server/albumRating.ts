@@ -4,6 +4,7 @@ import {
 	getRatingAverage,
 	insertAlbumRating,
 	updateAlbumRating,
+	getUserRating,
 } from "@/drizzle/db/albumFuncs";
 import { NewAlbumSchema, SelectAlbumSchema } from "@/drizzle/db/schema";
 import redis from "@/redis/config";
@@ -31,8 +32,6 @@ export const albumRouter = router({
 				ctx: { userId },
 				input: { albumId, rating, description },
 			}) => {
-				console.log(userId);
-
 				const ratingExists: boolean = await userRatingExists({
 					albumId,
 					userId,
@@ -62,7 +61,7 @@ export const albumRouter = router({
 			const userId: string = opts.ctx.userId;
 			const albumId: string = opts.input.albumId;
 
-			return await userRatingExists({ albumId, userId });
+			return await getUserRating({ albumId, userId });
 		}),
 
 	// Get the overall mean average for one album
@@ -76,14 +75,11 @@ export const albumRouter = router({
 				albumId
 			)) as RatingData;
 
-			console.log(cachedValue);
-
 			// Database Call
 			const average = await getRatingAverage(albumId);
 
 			// Set a key-value pair in Redis
 			await redis.set(albumId, JSON.stringify(average));
-			console.log(JSON.stringify(average));
 
 			return average;
 		}),
