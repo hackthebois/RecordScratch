@@ -1,12 +1,12 @@
 import {
-	userRatingExists,
+	userAlbumRatingExists,
 	getAllAlbumAverages,
 	getRatingAverage,
 	insertAlbumRating,
 	updateAlbumRating,
-	getUserRating,
+	getUserAlbumRating,
 } from "@/drizzle/db/albumFuncs";
-import { NewAlbumSchema, SelectAlbumSchema } from "@/drizzle/db/schema";
+import { AlbumSchema, SelectAlbumSchema } from "@/drizzle/db/schema";
 import redis from "@/redis/config";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
@@ -20,7 +20,7 @@ export const albumRouter = router({
 	// Input the user rating for an album
 	rateAlbum: protectedProcedure
 		.input(
-			NewAlbumSchema.pick({
+			AlbumSchema.pick({
 				albumId: true,
 				rating: true,
 				description: true,
@@ -31,7 +31,7 @@ export const albumRouter = router({
 				ctx: { userId },
 				input: { albumId, rating, description },
 			}) => {
-				const ratingExists: boolean = await userRatingExists({
+				const ratingExists: boolean = await userAlbumRatingExists({
 					albumId,
 					userId,
 				});
@@ -57,7 +57,7 @@ export const albumRouter = router({
 	getUserRating: protectedProcedure
 		.input(SelectAlbumSchema.pick({ albumId: true }))
 		.query(async ({ ctx: { userId }, input: { albumId } }) => {
-			return await getUserRating({ albumId, userId });
+			return await getUserAlbumRating({ albumId, userId });
 		}),
 
 	// Get the overall mean average for one album

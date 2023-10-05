@@ -41,21 +41,21 @@ export const song_ratings = mysqlTable(
 /******************************
   Album Zod Schemas and Types
  ******************************/
-export const NewAlbumSchema = createInsertSchema(album_ratings);
-export type NewRating = z.infer<typeof NewAlbumSchema>;
+export const AlbumSchema = createInsertSchema(album_ratings);
+export type AlbumRating = z.infer<typeof AlbumSchema>;
 
 export const SelectAlbumSchema = createSelectSchema(album_ratings).omit({
 	rating: true,
 });
-export type AlbumRating = z.infer<typeof SelectAlbumSchema>;
+export type SelectAlbumRating = z.infer<typeof SelectAlbumSchema>;
 
 /******************************
   Song Zod Schemas and Types
  ******************************/
-export const NewSongSchema = createInsertSchema(song_ratings);
-export type NewSongRating = z.infer<typeof NewSongSchema>;
+export const SongSchema = createInsertSchema(song_ratings);
+export type SongRating = z.infer<typeof SongSchema>;
 
 export const SelectSongSchema = createSelectSchema(song_ratings).omit({
 	rating: true,
 });
-export type SongRating = z.infer<typeof SelectSongSchema>;
+export type SelectSongRating = z.infer<typeof SelectSongSchema>;

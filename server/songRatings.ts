@@ -1,22 +1,20 @@
-import { NewSongSchema, SelectSongSchema } from "@/drizzle/db/schema";
+import { SongSchema, SelectSongSchema } from "@/drizzle/db/schema";
 import {
 	getAllSongAverages,
-	userRatingExists,
+	userSongRatingExists,
 	insertSongRating,
 	updateSongRating,
-	getUserRating,
+	getUserSongRating,
 } from "@/drizzle/db/songFuncs";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const songRouter = router({
 	// Input the user rating for a song
 	rateSong: protectedProcedure
-		.input(
-			NewSongSchema.pick({ albumId: true, songId: true, rating: true })
-		)
+		.input(SongSchema.pick({ albumId: true, songId: true, rating: true }))
 		.mutation(
 			async ({ ctx: { userId }, input: { albumId, songId, rating } }) => {
-				const existingRating = await userRatingExists({
+				const existingRating = await userSongRatingExists({
 					userId,
 					songId,
 					albumId,
@@ -34,7 +32,7 @@ export const songRouter = router({
 	getUserRating: protectedProcedure
 		.input(SelectSongSchema.pick({ songId: true, albumId: true }))
 		.query(async ({ ctx: { userId }, input: { albumId, songId } }) => {
-			return await getUserRating({ songId, albumId, userId });
+			return await getUserSongRating({ songId, albumId, userId });
 		}),
 
 	// Gets the mean average rating for a song
