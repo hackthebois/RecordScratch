@@ -1,7 +1,7 @@
 import { NewSongSchema, SelectSongSchema } from "@/drizzle/db/schema";
 import {
 	getAllSongAverages,
-	getSongRating,
+	userRatingExists,
 	insertSongRating,
 	updateSongRating,
 } from "@/drizzle/db/songFuncs";
@@ -13,23 +13,21 @@ export const songRouter = router({
 		.input(
 			NewSongSchema.pick({ albumId: true, songId: true, rating: true })
 		)
-		.mutation(async (opts) => {
-			const userId: string = opts.ctx.userId;
-			const albumId: string = opts.input.albumId;
-			const songId: string = opts.input.songId;
+		.mutation(
+			async ({ ctx: { userId }, input: { albumId, songId, rating } }) => {
+				const existingRating = await userRatingExists({
+					userId,
+					songId,
+					albumId,
+				});
 
-			const existingRating = await getSongRating({
-				userId,
-				songId,
-				albumId,
-			});
-
-			if (!existingRating)
-				await insertSongRating({ ...opts.input, userId });
-			else {
-				await updateSongRating({ ...opts.input, userId });
+				if (!existingRating)
+					await insertSongRating({ albumId, songId, userId, rating });
+				else {
+					await updateSongRating({ albumId, songId, userId, rating });
+				}
 			}
-		}),
+		),
 
 	// Gets the users rating for a song
 	getUserRating: protectedProcedure
@@ -39,7 +37,7 @@ export const songRouter = router({
 			const songId: string = opts.input.songId;
 			const userId: string = opts.ctx.userId;
 
-			return await getSongRating({ songId, albumId, userId });
+			return await userRatingExists({ songId, albumId, userId });
 		}),
 
 	// Gets the mean average rating for a song

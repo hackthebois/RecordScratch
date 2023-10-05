@@ -1,6 +1,7 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
 import { AlbumRating, NewRating, album_ratings } from "./schema";
+import { boolean } from "drizzle-orm/mysql-core";
 
 /**********************************
 	Album Rating Database Functions
@@ -12,7 +13,7 @@ export const insertAlbumRating = async (rating: NewRating) => {
 };
 
 // Updates an existing album rating
-export const updateAlbumRating = async (rating: AlbumRating) => {
+export const updateAlbumRating = async (rating: NewRating) => {
 	return db
 		.update(album_ratings)
 		.set(rating)
@@ -20,39 +21,52 @@ export const updateAlbumRating = async (rating: AlbumRating) => {
 };
 
 // Gets the users album rating
-export const getAlbumRating = async (
+export const userRatingExists = async (
 	userRating: Omit<AlbumRating, "description">
 ) => {
-	const rating = await db
-		.select({
-			rating: album_ratings.rating,
-			description: album_ratings.description,
-		})
-		.from(album_ratings)
-		.where(
-			and(
-				eq(album_ratings.userId, userRating.userId),
-				eq(album_ratings.albumId, userRating.albumId)
-			)
-		);
-
-	if (!rating.length) return null;
-	else return rating[0];
+	return (
+		(
+			await db
+				.select({ count: sql<string>`1` })
+				.from(album_ratings)
+				.where(
+					and(
+						eq(album_ratings.userId, userRating.userId),
+						eq(album_ratings.albumId, userRating.albumId)
+					)
+				)
+				.limit(1)
+		).length != 0
+	);
 };
-export type UserAlbumRating = Awaited<ReturnType<typeof getAlbumRating>>;
+export type UserAlbumRating = Awaited<ReturnType<typeof boolean>>;
 
 // Gets the total mean average rating for an album
+const albumRatingExists = async (albumID: AlbumRating["albumId"]) => {
+	return (
+		(
+			await db
+				.select({ count: sql<string>`1` })
+				.from(album_ratings)
+				.where(eq(album_ratings.albumId, albumID))
+				.limit(1)
+		).length != 0
+	);
+};
 export const getRatingAverage = async (albumId: AlbumRating["albumId"]) => {
-	const average = await db
-		.select({
-			ratingAverage: sql<string | null>`ROUND(AVG(rating), 1)`,
-			totalRatings: sql<string>`COUNT(*)`,
-		})
-		.from(album_ratings)
-		.where(eq(album_ratings.albumId, albumId));
-	console.log(average);
-	if (!average.length) return null;
-	else return average[0];
+	const albumExists = await albumRatingExists(albumId);
+
+	if (albumExists) {
+		const average = await db
+			.select({
+				ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
+				totalRatings: sql<number>`COUNT(*)`,
+			})
+			.from(album_ratings)
+			.where(eq(album_ratings.albumId, albumId));
+
+		return average[0];
+	} else return null;
 };
 export type AlbumRatingAverage = Awaited<ReturnType<typeof getRatingAverage>>;
 

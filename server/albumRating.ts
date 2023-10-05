@@ -1,8 +1,9 @@
 import {
-	getAlbumRating,
+	userRatingExists,
 	getAllAlbumAverages,
 	getRatingAverage,
 	insertAlbumRating,
+	updateAlbumRating,
 } from "@/drizzle/db/albumFuncs";
 import { NewAlbumSchema, SelectAlbumSchema } from "@/drizzle/db/schema";
 import redis from "@/redis/config";
@@ -25,17 +26,34 @@ export const albumRouter = router({
 				description: true,
 			})
 		)
-		.mutation(async (opts) => {
-			const userId: string = opts.ctx.userId;
-			const albumId: string = opts.input.albumId;
+		.mutation(
+			async ({
+				ctx: { userId },
+				input: { albumId, rating, description },
+			}) => {
+				console.log(userId);
 
-			const ratingExists: boolean =
-				(await getAlbumRating({ albumId, userId })) != null;
+				const ratingExists: boolean = await userRatingExists({
+					albumId,
+					userId,
+				});
 
-			if (!ratingExists)
-				await insertAlbumRating({ ...opts.input, userId });
-			else throw new TRPCError({ code: "CONFLICT" });
-		}),
+				if (!ratingExists)
+					await insertAlbumRating({
+						albumId,
+						rating,
+						description,
+						userId,
+					});
+				else
+					await updateAlbumRating({
+						albumId,
+						rating,
+						description,
+						userId,
+					});
+			}
+		),
 
 	// Gets the users rating for an album
 	getUserRating: protectedProcedure
@@ -44,7 +62,7 @@ export const albumRouter = router({
 			const userId: string = opts.ctx.userId;
 			const albumId: string = opts.input.albumId;
 
-			return await getAlbumRating({ albumId, userId });
+			return await userRatingExists({ albumId, userId });
 		}),
 
 	// Get the overall mean average for one album
@@ -64,8 +82,7 @@ export const albumRouter = router({
 			const average = await getRatingAverage(albumId);
 
 			// Set a key-value pair in Redis
-			if (average?.ratingAverage !== null)
-				await redis.set(albumId, JSON.stringify(average));
+			await redis.set(albumId, JSON.stringify(average));
 			console.log(JSON.stringify(average));
 
 			return average;
