@@ -11,11 +11,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/Dialog";
-import {
-	AlbumRatingAverage,
-	UserAlbumRatingExists,
-} from "@/drizzle/db/albumFuncs";
-import { SongRatingAverages, UserSongRating } from "@/drizzle/db/songFuncs";
+import { AlbumRatingAverage } from "@/drizzle/db/albumFuncs";
+import { AlbumRating, SongRating } from "@/drizzle/db/schema";
+import { SongRatingAverages } from "@/drizzle/db/songFuncs";
 import { SpotifyAlbum, SpotifyTrack } from "@/types/spotify";
 import { cn, findSongAverage } from "@/utils/utils";
 
@@ -113,7 +111,7 @@ const SongRatingDialog = ({
 }: {
 	song: SpotifyTrack;
 	albumId: string;
-	initialData?: UserSongRating;
+	initialData?: SongRating;
 	children?: React.ReactNode;
 }) => {
 	const utils = trpc.useContext();
@@ -167,7 +165,7 @@ const AlbumRatingDialog = ({
 	children,
 }: {
 	album: SpotifyAlbum;
-	initialData?: UserAlbumRatingExists;
+	initialData?: AlbumRating | null;
 	children?: React.ReactNode;
 }) => {
 	const utils = trpc.useContext();
