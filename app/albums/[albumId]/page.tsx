@@ -95,15 +95,15 @@ const Page = async ({ params: { albumId } }: Props) => {
 							<TableCell className="w-full whitespace-nowrap">
 								{song.name}
 							</TableCell>
-							<TableCell className="flex gap-4 px-0">
+							<TableCell className="flex flex-row-reverse gap-4 px-0">
+								<SongRatingDialog
+									song={song}
+									albumId={albumId}
+								/>
 								<SongRating
 									albumId={albumId}
 									songId={song.id}
 									initialData={songRatings}
-								/>
-								<SongRatingDialog
-									song={song}
-									albumId={albumId}
 								/>
 							</TableCell>
 							<TableCell>
