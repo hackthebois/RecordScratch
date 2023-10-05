@@ -33,7 +33,7 @@ const ArtistItem = ({
 
 	return (
 		<Link
-			href="/"
+			href={`/artist/${artist.id}`}
 			onClick={onClick}
 			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
 		>
@@ -69,7 +69,7 @@ const AlbumItem = ({
 	return (
 		<Link
 			onClick={onClick}
-			href={`/albums/${album.id}`}
+			href={`/album/${album.id}`}
 			className="hover:bg-elevation-4 flex flex-1 flex-row items-center rounded transition-colors"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">

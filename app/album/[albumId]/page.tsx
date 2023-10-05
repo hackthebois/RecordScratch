@@ -67,7 +67,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 					<div className="mt-4 flex gap-3">
 						{album.artists.map((artist, index) => (
 							<Link
-								href="/"
+								href={`/artist/${artist.id}`}
 								className="text-muted-foreground hover:underline"
 								key={index}
 							>

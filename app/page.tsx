@@ -12,7 +12,7 @@ const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 					className="mb-4 flex min-w-[144px] flex-1 flex-col"
 					key={index}
 				>
-					<Link href={`/albums/${album.id}`}>
+					<Link href={`/album/${album.id}`}>
 						<div className="overflow-hidden rounded-md">
 							<Image
 								src={album.images[0].url}
@@ -30,7 +30,7 @@ const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 					</Link>
 					{album.artists.slice(0, 1).map((artist, index) => (
 						<Link
-							href="/"
+							href={`/artist/${artist.id}`}
 							className="text-xs text-muted-foreground hover:underline"
 							key={index}
 						>

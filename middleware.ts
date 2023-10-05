@@ -1,7 +1,7 @@
 import { authMiddleware } from "@clerk/nextjs";
 
 export default authMiddleware({
-	publicRoutes: ["/", "/albums/:albumId", "/artists/:artistId", "/api(.*)"],
+	publicRoutes: ["/", "/album/:albumId", "/artists/:artistId", "/api(.*)"],
 });
 
 export const config = {
