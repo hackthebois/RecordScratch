@@ -14,15 +14,15 @@ export const insertSongRating = async (rating: SongRating) => {
 export type InsertSongRating = Awaited<ReturnType<typeof insertSongRating>>;
 
 // Updates an existing song rating
-export const updateSongRating = async (rating: SongRating) => {
+export const updateSongRating = async (songRating: SongRating) => {
 	return db
 		.update(song_ratings)
-		.set(rating)
+		.set({ rating: songRating.rating })
 		.where(
 			and(
-				eq(song_ratings.albumId, rating.albumId),
-				eq(song_ratings.songId, rating.songId),
-				eq(song_ratings.userId, rating.userId)
+				eq(song_ratings.albumId, songRating.albumId),
+				eq(song_ratings.songId, songRating.songId),
+				eq(song_ratings.userId, songRating.userId)
 			)
 		);
 };

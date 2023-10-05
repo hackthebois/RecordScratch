@@ -13,14 +13,17 @@ export const insertAlbumRating = async (rating: AlbumRating) => {
 };
 
 // Updates an existing album rating
-export const updateAlbumRating = async (rating: AlbumRating) => {
+export const updateAlbumRating = async (albumRating: AlbumRating) => {
 	return db
 		.update(album_ratings)
-		.set(rating)
+		.set({
+			rating: albumRating.rating,
+			description: albumRating.description,
+		})
 		.where(
 			and(
-				eq(album_ratings.albumId, rating.albumId),
-				eq(album_ratings.userId, rating.userId)
+				eq(album_ratings.albumId, albumRating.albumId),
+				eq(album_ratings.userId, albumRating.userId)
 			)
 		);
 };
