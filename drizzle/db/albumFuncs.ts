@@ -70,35 +70,19 @@ export type UserAlbumRatingExists = Awaited<
 >;
 
 // Gets the total mean average rating for an album
-const albumRatingExists = async (
-	albumID: SelectAlbumRating["albumId"]
-): Promise<boolean> => {
-	return (
-		(
-			await db
-				.select({ count: sql<string>`1` })
-				.from(album_ratings)
-				.where(eq(album_ratings.albumId, albumID))
-				.limit(1)
-		).length != 0
-	);
-};
 export const getRatingAverage = async (
 	albumId: SelectAlbumRating["albumId"]
 ) => {
-	const albumExists = await albumRatingExists(albumId);
+	const average = await db
+		.select({
+			ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
+			totalRatings: sql<number>`COUNT(*)`,
+		})
+		.from(album_ratings)
+		.where(eq(album_ratings.albumId, albumId));
 
-	if (albumExists) {
-		const average = await db
-			.select({
-				ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
-				totalRatings: sql<number>`COUNT(*)`,
-			})
-			.from(album_ratings)
-			.where(eq(album_ratings.albumId, albumId));
-
-		return average[0];
-	} else return null;
+	if (average[0].totalRatings == 0) return null;
+	else return average[0];
 };
 export type AlbumRatingAverage = Awaited<ReturnType<typeof getRatingAverage>>;
 
