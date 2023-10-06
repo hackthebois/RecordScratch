@@ -94,7 +94,7 @@ export const albumRouter = router({
 			if (cachedValue) return cachedValue;
 			else {
 				// Database Call
-				const average = await getRatingAverage({ resourceId });
+				const average = await getRatingAverage(resourceId);
 
 				// Set a key-value pair in Redis
 				await redis.set(resourceId, JSON.stringify(average));

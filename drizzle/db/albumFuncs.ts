@@ -1,12 +1,6 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
-import {
-	SelectAlbumRating,
-	AlbumRating,
-	album_ratings,
-	SelectRatingType,
-	RatingType,
-} from "./schema";
+import { album_ratings, SelectRatingType, RatingType } from "./schema";
 
 /**********************************
 	Album Rating Database Functions
@@ -93,9 +87,7 @@ export type UserAlbumRatingExists = Awaited<
 >;
 
 // Gets the total mean average rating for an album
-export const getRatingAverage = async ({
-	resourceId,
-}: Omit<SelectRatingType, "userId">) => {
+export const getRatingAverage = async (resourceId: string) => {
 	const average = await db
 		.select({
 			ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,

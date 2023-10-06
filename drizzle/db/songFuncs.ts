@@ -1,14 +1,6 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
-import {
-	SongRating,
-	SelectSongRating,
-	song_ratings,
-	SelectRatingType,
-	RatingType,
-} from "./schema";
-import { boolean } from "drizzle-orm/mysql-core";
-import { type } from "os";
+import { song_ratings, SelectRatingType, RatingType } from "./schema";
 
 /**********************************
 	Album Rating Database Functions
@@ -65,9 +57,10 @@ export const getUserSongRating = async ({
 export type GetUserSongRating = Awaited<ReturnType<typeof getUserSongRating>>;
 
 // Gets the users song rating
-export const userSongRatingExists = async (
-	userRating: Omit<SelectRatingType, "type">
-) => {
+export const userSongRatingExists = async ({
+	userId,
+	resourceId,
+}: SelectRatingType) => {
 	return (
 		(
 			await db
@@ -75,8 +68,8 @@ export const userSongRatingExists = async (
 				.from(song_ratings)
 				.where(
 					and(
-						eq(song_ratings.userId, userRating.userId),
-						eq(song_ratings.songId, userRating.resourceId)
+						eq(song_ratings.userId, userId),
+						eq(song_ratings.songId, resourceId)
 					)
 				)
 		).length != 0
