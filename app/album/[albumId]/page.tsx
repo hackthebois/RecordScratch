@@ -27,12 +27,12 @@ type Props = {
 const Page = async ({ params: { albumId } }: Props) => {
 	const { userId } = auth();
 
-	let userRating = undefined;
+	let albumUserRating: AlbumRating | null = null;
 
 	const album = await serverTrpc.spotify.album(albumId);
 	const albumRating = await serverTrpc.album.getAlbumAverage({ albumId });
 	if (userId) {
-		userRating = await serverTrpc.album.getUserRating({ albumId });
+		albumUserRating = await serverTrpc.album.getUserRating({ albumId });
 	}
 	const songRatings = await serverTrpc.song.getAllAverageSongRatings({
 		albumId,
@@ -61,7 +61,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 						/>
 						<AlbumRatingDialog
 							album={album}
-							initialData={userRating}
+							initialData={albumUserRating}
 						/>
 					</div>
 					<div className="mt-4 flex gap-3">
