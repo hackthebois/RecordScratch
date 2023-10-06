@@ -1,42 +1,61 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
-import { SongRating, SelectSongRating, song_ratings } from "./schema";
+import {
+	SongRating,
+	SelectSongRating,
+	song_ratings,
+	SelectRatingType,
+	RatingType,
+} from "./schema";
 import { boolean } from "drizzle-orm/mysql-core";
+import { type } from "os";
 
 /**********************************
 	Album Rating Database Functions
 ***********************************/
 
 // Inserts a new song rating
-export const insertSongRating = async (rating: SongRating) => {
-	await db.insert(song_ratings).values(rating);
+export const insertSongRating = async ({
+	resourceId,
+	userId,
+	rating,
+}: RatingType) => {
+	await db
+		.insert(song_ratings)
+		.values({ songId: resourceId, rating: rating, userId: userId });
 };
 export type InsertSongRating = Awaited<ReturnType<typeof insertSongRating>>;
 
 // Updates an existing song rating
-export const updateSongRating = async (songRating: SongRating) => {
-	return db
+export const updateSongRating = async ({
+	resourceId,
+	userId,
+	rating,
+}: RatingType) => {
+	await db
 		.update(song_ratings)
-		.set({ rating: songRating.rating })
+		.set({ rating: rating })
 		.where(
 			and(
-				eq(song_ratings.albumId, songRating.albumId),
-				eq(song_ratings.songId, songRating.songId),
-				eq(song_ratings.userId, songRating.userId)
+				eq(song_ratings.songId, resourceId),
+				eq(song_ratings.userId, userId)
 			)
 		);
 };
+export type UpdateSongRating = Awaited<ReturnType<typeof updateSongRating>>;
 
 // Gets the users song rating
-export const getUserSongRating = async (userRating: SelectSongRating) => {
+export const getUserSongRating = async ({
+	userId,
+	resourceId,
+}: SelectRatingType) => {
 	const rating = await db
 		.select()
 		.from(song_ratings)
 		.where(
 			and(
-				eq(song_ratings.userId, userRating.userId),
-				eq(song_ratings.songId, userRating.songId),
-				eq(song_ratings.albumId, userRating.albumId)
+				eq(song_ratings.userId, userId),
+				eq(song_ratings.songId, resourceId)
 			)
 		);
 
@@ -46,7 +65,9 @@ export const getUserSongRating = async (userRating: SelectSongRating) => {
 export type GetUserSongRating = Awaited<ReturnType<typeof getUserSongRating>>;
 
 // Gets the users song rating
-export const userSongRatingExists = async (userRating: SelectSongRating) => {
+export const userSongRatingExists = async (
+	userRating: Omit<SelectRatingType, "type">
+) => {
 	return (
 		(
 			await db
@@ -55,19 +76,18 @@ export const userSongRatingExists = async (userRating: SelectSongRating) => {
 				.where(
 					and(
 						eq(song_ratings.userId, userRating.userId),
-						eq(song_ratings.songId, userRating.songId),
-						eq(song_ratings.albumId, userRating.albumId)
+						eq(song_ratings.songId, userRating.resourceId)
 					)
 				)
 		).length != 0
 	);
 };
-export type UserSongRatingExists = Awaited<ReturnType<typeof boolean>>;
+export type UserSongRatingExists = Awaited<
+	ReturnType<typeof userSongRatingExists>
+>;
 
 // gets the average rating for all songs individually for a specified album
-export const getAllSongAverages = async (
-	albumId: SelectSongRating["albumId"]
-) => {
+export const getAllSongAverages = async (songIds: string[]) => {
 	const allSongRatings = await db
 		.select({
 			songId: song_ratings.songId,
@@ -75,7 +95,7 @@ export const getAllSongAverages = async (
 		})
 		.from(song_ratings)
 		.groupBy(song_ratings.songId)
-		.where(eq(song_ratings.albumId, albumId));
+		.where(inArray(song_ratings.songId, songIds));
 
 	if (!allSongRatings.length) return null;
 	else return allSongRatings;
