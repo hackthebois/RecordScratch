@@ -1,7 +1,6 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
 import { SelectAlbumRating, AlbumRating, album_ratings } from "./schema";
-import { boolean } from "drizzle-orm/mysql-core";
 
 /**********************************
 	Album Rating Database Functions
@@ -28,6 +27,7 @@ export const updateAlbumRating = async (albumRating: AlbumRating) => {
 		);
 };
 
+// Gets the users album rating
 export const getUserAlbumRating = async (
 	userRating: Omit<SelectAlbumRating, "description">
 ) => {
@@ -98,3 +98,6 @@ export const getAllAlbumAverages = async (
 	if (!average.length) return null;
 	else return average[0].ratingAverage;
 };
+export type GetAllAlbumAverages = Awaited<
+	ReturnType<typeof getAllAlbumAverages>
+>;
