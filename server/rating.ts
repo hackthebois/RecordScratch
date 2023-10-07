@@ -7,7 +7,6 @@ import {
 	userAlbumRatingExists,
 } from "@/drizzle/db/albumFuncs";
 import {
-	Rating,
 	RatingCategory,
 	SelectRatingDTO,
 	UpdateUserRatingDTO,
@@ -20,7 +19,6 @@ import {
 	updateSongRating,
 	userSongRatingExists,
 } from "@/drizzle/db/songFuncs";
-import redis from "@/redis/config";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 
@@ -47,7 +45,7 @@ export const ratingRouter = router({
 				else await insertSongRating({ ...userRating, userId });
 			} else {
 				if (type == RatingCategory.ALBUM) {
-					await redis.del(resourceId);
+					// await redis.del(resourceId);
 					await updateAlbumRating({ ...userRating, userId });
 				} else await updateSongRating({ ...userRating, userId });
 			}
@@ -68,19 +66,19 @@ export const ratingRouter = router({
 		.input(SelectRatingDTO)
 		.query(async ({ input: { resourceId, type } }) => {
 			// Retrieve the value from Redis
-			const cachedValue: Rating = (await redis.get(resourceId)) as Rating;
+			// const cachedValue: Rating = (await redis.get(resourceId)) as Rating;
 
-			if (cachedValue) return cachedValue;
-			else {
-				// Database Call
-				const average = await getRatingAverage(resourceId, type);
+			// if (cachedValue) return cachedValue;
+			// else {
+			// Database Call
+			const average = await getRatingAverage(resourceId, type);
 
-				// Set a key-value pair in Redis
-				await redis.set(resourceId, JSON.stringify(average));
-				await redis.expire(resourceId, 86400); // 24h experation
+			// Set a key-value pair in Redis
+			// await redis.set(resourceId, JSON.stringify(average));
+			// await redis.expire(resourceId, 86400); // 24h experation
 
-				return average;
-			}
+			return average;
+			// }
 		}),
 
 	// Get the overall mean average for All given albums
@@ -88,20 +86,20 @@ export const ratingRouter = router({
 		.input(z.object({ id: z.string(), albums: z.string().array() }))
 		.query(async ({ input: { id, albums } }) => {
 			// Retrieve the value from Redis
-			const cachedValue = (await redis.get(id)) as Rating;
+			// const cachedValue = (await redis.get(id)) as Rating;
 
-			if (cachedValue) {
-				return cachedValue;
-			} else {
-				// Database Call
-				const average = await getAllAlbumAverages(albums);
+			// if (cachedValue) {
+			// 	return cachedValue;
+			// } else {
+			// Database Call
+			const average = await getAllAlbumAverages(albums);
 
-				// Set a key-value pair in Redis
-				await redis.set(id, JSON.stringify(average));
-				await redis.expire(id, 60 * 5); // 5 mins experation
+			// // Set a key-value pair in Redis
+			// await redis.set(id, JSON.stringify(average));
+			// await redis.expire(id, 60 * 5); // 5 mins experation
 
-				return average;
-			}
+			return average;
+			// }
 		}),
 
 	// Gets the mean average rating for a song
@@ -114,6 +112,6 @@ export const ratingRouter = router({
 	invalidateResource: protectedProcedure
 		.input(z.object({ resourceId: z.string() }))
 		.mutation(async ({ input: { resourceId } }) => {
-			await redis.del(resourceId);
+			// await redis.del(resourceId);
 		}),
 });
