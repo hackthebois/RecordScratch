@@ -23,7 +23,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 	const ratings = await getRatings(resource);
 
 	return (
-		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col overflow-hidden px-4 py-8 sm:px-8">
+		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col gap-12 overflow-hidden px-4 py-8 sm:px-8">
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				{album.images && (
 					<Image

@@ -171,31 +171,34 @@ const SearchBar = () => {
 					</div>
 				) : data ? (
 					<>
-						{data.albums.length > 0 || data.artists.length > 0 ? (
+						{data.albums.items.length > 0 ||
+						data.artists.items.length > 0 ? (
 							<ScrollArea>
-								{data.albums.length > 0 && (
+								{data.albums.items.length > 0 && (
 									<>
 										<h4 className="my-4">Albums</h4>
 										<div className="flex flex-col gap-3">
-											{data.albums.map((album, index) => (
-												<AlbumItem
-													album={album}
-													onClick={() => {
-														addRecent(album);
-														setOpen(false);
-														form.reset();
-													}}
-													key={index}
-												/>
-											))}
+											{data.albums.items.map(
+												(album, index) => (
+													<AlbumItem
+														album={album}
+														onClick={() => {
+															addRecent(album);
+															setOpen(false);
+															form.reset();
+														}}
+														key={index}
+													/>
+												)
+											)}
 										</div>
 									</>
 								)}
-								{data.artists.length > 0 && (
+								{data.artists.items.length > 0 && (
 									<>
 										<h4 className="my-4">Artists</h4>
 										<div className="flex flex-col gap-3">
-											{data.artists.map(
+											{data.artists.items.map(
 												(artist, index) => (
 													<ArtistItem
 														onClick={() => {

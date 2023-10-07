@@ -151,8 +151,11 @@ const RatingProvider = ({
 		initialData: initialRatings?.rating,
 	});
 
+	const { mutate: invalidate } = trpc.rating.invalidateResource.useMutation();
+
 	const { mutate } = trpc.rating.rate.useMutation({
 		onSuccess: () => {
+			invalidate({ ...resource });
 			utils.rating.getAverage.invalidate(resource);
 			utils.rating.getUserRating.invalidate(resource);
 		},
