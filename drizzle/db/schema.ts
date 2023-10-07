@@ -6,7 +6,6 @@ import {
 	varchar,
 } from "drizzle-orm/mysql-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { type } from "os";
 import { z } from "zod";
 
 export const album_ratings = mysqlTable(
@@ -63,19 +62,23 @@ export type SelectSongRating = z.infer<typeof SelectSongSchema>;
 /******************************
   Rating Type
  ******************************/
+export type Rating = {
+	ratingAverage: number;
+	totalRatings: number;
+};
+
 export enum RatingCategory {
 	ALBUM = "ALBUM",
 	SONG = "SONG",
 }
-export const RatingDTO = z.object({
+export const UserRatingDTO = z.object({
 	resourceId: z.string(),
 	type: z.enum([RatingCategory.ALBUM, RatingCategory.SONG]),
 	rating: z.number(),
-	description: z.string().optional(),
+	description: z.string(),
+	userId: z.string(),
 });
-export type RatingType = Omit<z.infer<typeof RatingDTO>, "type"> & {
-	userId: string;
-};
+export type UserRating = z.infer<typeof UserRatingDTO>;
 
 export const SelectRatingDTO = z.object({
 	resourceId: z.string(),
@@ -84,3 +87,6 @@ export const SelectRatingDTO = z.object({
 export type SelectRatingType = Omit<z.infer<typeof SelectRatingDTO>, "type"> & {
 	userId: string;
 };
+
+export const UpdateUserRatingDTO = UserRatingDTO.omit({ userId: true });
+export type UpdateUserRating = z.infer<typeof UpdateUserRatingDTO>;

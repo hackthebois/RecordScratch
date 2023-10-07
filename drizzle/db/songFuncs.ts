@@ -1,6 +1,11 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
-import { song_ratings, SelectRatingType, RatingType } from "./schema";
+import {
+	RatingCategory,
+	SelectRatingType,
+	UserRating,
+	song_ratings,
+} from "./schema";
 
 /**********************************
 	Album Rating Database Functions
@@ -11,7 +16,7 @@ export const insertSongRating = async ({
 	resourceId,
 	userId,
 	rating,
-}: RatingType) => {
+}: UserRating) => {
 	await db
 		.insert(song_ratings)
 		.values({ songId: resourceId, rating: rating, userId: userId });
@@ -23,7 +28,7 @@ export const updateSongRating = async ({
 	resourceId,
 	userId,
 	rating,
-}: RatingType) => {
+}: UserRating) => {
 	await db
 		.update(song_ratings)
 		.set({ rating: rating })
@@ -40,7 +45,7 @@ export type UpdateSongRating = Awaited<ReturnType<typeof updateSongRating>>;
 export const getUserSongRating = async ({
 	userId,
 	resourceId,
-}: SelectRatingType) => {
+}: SelectRatingType): Promise<UserRating | null> => {
 	const rating = await db
 		.select()
 		.from(song_ratings)
@@ -52,7 +57,15 @@ export const getUserSongRating = async ({
 		);
 
 	if (!rating.length) return null;
-	else return rating[0];
+	else {
+		const { songId, ...rest } = rating[0];
+		return {
+			resourceId: songId,
+			description: "",
+			type: RatingCategory.SONG,
+			...rest,
+		};
+	}
 };
 export type GetUserSongRating = Awaited<ReturnType<typeof getUserSongRating>>;
 

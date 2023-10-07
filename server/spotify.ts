@@ -93,4 +93,21 @@ export const spotifyRouter = router({
 			const data = await res.json();
 			return SpotifyAlbumSchema.parse(data);
 		}),
+	artist: spotifyProcedure
+		.input(z.string())
+		.query(async ({ ctx: { spotifyToken }, input: artistId }) => {
+			const res = await fetch(
+				`https://api.spotify.com/v1/artists/${artistId}`,
+				{
+					headers: {
+						Authorization: `Bearer ${spotifyToken}`,
+					},
+					next: {
+						revalidate: 3600,
+					},
+				}
+			);
+			const data = await res.json();
+			return SpotifyArtistSchema.parse(data);
+		}),
 });

@@ -1,6 +1,12 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./config";
-import { album_ratings, SelectRatingType, RatingType } from "./schema";
+import {
+	RatingCategory,
+	SelectRatingType,
+	UserRating,
+	album_ratings,
+	song_ratings,
+} from "./schema";
 
 /**********************************
 	Album Rating Database Functions
@@ -12,8 +18,8 @@ export const insertAlbumRating = async ({
 	userId,
 	rating,
 	description,
-}: RatingType) => {
-	db.insert(album_ratings).values({
+}: UserRating) => {
+	return db.insert(album_ratings).values({
 		albumId: resourceId,
 		userId: userId,
 		rating: rating,
@@ -27,7 +33,7 @@ export const updateAlbumRating = async ({
 	userId,
 	rating,
 	description,
-}: RatingType) => {
+}: UserRating) => {
 	return db
 		.update(album_ratings)
 		.set({
@@ -46,7 +52,7 @@ export const updateAlbumRating = async ({
 export const getUserAlbumRating = async ({
 	userId,
 	resourceId,
-}: SelectRatingType) => {
+}: SelectRatingType): Promise<UserRating | null> => {
 	const rating = await db
 		.select()
 		.from(album_ratings)
@@ -58,7 +64,10 @@ export const getUserAlbumRating = async ({
 		);
 
 	if (!rating.length) return null;
-	else return rating[0];
+	else {
+		const { albumId, ...rest } = rating[0];
+		return { resourceId: albumId, type: RatingCategory.ALBUM, ...rest };
+	}
 };
 export type GetUserAlbumRating = Awaited<ReturnType<typeof getUserAlbumRating>>;
 
@@ -87,17 +96,32 @@ export type UserAlbumRatingExists = Awaited<
 >;
 
 // Gets the total mean average rating for an album
-export const getRatingAverage = async (resourceId: string) => {
-	const average = await db
-		.select({
-			ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
-			totalRatings: sql<number>`COUNT(*)`,
-		})
-		.from(album_ratings)
-		.where(eq(album_ratings.albumId, resourceId));
+export const getRatingAverage = async (
+	resourceId: string,
+	type: RatingCategory
+) => {
+	if (type == RatingCategory.ALBUM) {
+		const average = await db
+			.select({
+				ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
+				totalRatings: sql<number>`COUNT(*)`,
+			})
+			.from(album_ratings)
+			.where(eq(album_ratings.albumId, resourceId));
 
-	if (average[0].totalRatings == 0) return null;
-	else return average[0];
+		if (average[0].totalRatings == 0) return null;
+		else return average[0];
+	} else {
+		const average = await db
+			.select({
+				ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
+				totalRatings: sql<number>`COUNT(*)`,
+			})
+			.from(song_ratings)
+			.where(eq(song_ratings.songId, resourceId));
+		if (average[0].totalRatings == 0) return null;
+		else return average[0];
+	}
 };
 export type AlbumRatingAverage = Awaited<ReturnType<typeof getRatingAverage>>;
 
