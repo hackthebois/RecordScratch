@@ -1,11 +1,26 @@
 import { SpotifyAlbum } from "@/types/spotify";
+import { cn } from "@/utils/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
+type Props = {
+	albums: SpotifyAlbum[];
+	type?: "wrap" | "scroll";
+	field?: "date" | "artist";
+};
+
+const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
+	const listAlbums = type === "scroll" ? albums.slice(0, 6) : albums;
+
 	return (
-		<div className="flex w-full gap-4 overflow-hidden overflow-x-auto">
-			{albums.slice(0, 6).map((album, index) => (
+		<div
+			className={cn(
+				type === "scroll"
+					? "flex w-full gap-4 overflow-hidden overflow-x-auto"
+					: "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+			)}
+		>
+			{listAlbums.map((album, index) => (
 				<div
 					className="mb-4 flex min-w-[144px] flex-1 flex-col"
 					key={index}
@@ -24,15 +39,21 @@ const AlbumList = ({ albums }: { albums: SpotifyAlbum[] }) => {
 							{album.name}
 						</p>
 					</Link>
-					{album.artists.slice(0, 1).map((artist, index) => (
-						<Link
-							href={`/artists/${artist.id}`}
-							className="text-xs text-muted-foreground hover:underline"
-							key={index}
-						>
-							{artist.name}
-						</Link>
-					))}
+					{field === "artist" ? (
+						album.artists.slice(0, 1).map((artist, index) => (
+							<Link
+								href={`/artists/${artist.id}`}
+								className="text-xs text-muted-foreground hover:underline"
+								key={index}
+							>
+								{artist.name}
+							</Link>
+						))
+					) : (
+						<p className="text-xs text-muted-foreground">
+							{album.release_date}
+						</p>
+					)}
 				</div>
 			))}
 		</div>

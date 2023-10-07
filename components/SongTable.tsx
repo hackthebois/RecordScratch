@@ -26,12 +26,12 @@ import {
 
 const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 	return (
-		<Table className="mt-10 w-full">
+		<Table className="w-full">
 			<TableHeader>
 				<TableRow>
 					<TableHead className="pl-4 pr-0">#</TableHead>
 					<TableHead>Song</TableHead>
-					<TableHead className="p-0">Rating</TableHead>
+					<TableHead className="p-0 text-right">Ratings</TableHead>
 					<TableHead></TableHead>
 				</TableRow>
 			</TableHeader>
