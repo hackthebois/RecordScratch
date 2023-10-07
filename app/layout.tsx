@@ -20,7 +20,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<html
 			lang="en"
-			className="bg-elevation-1 m-0 h-full w-full overflow-hidden text-white"
+			className="bg-elevation-1 m-0 w-full overflow-x-hidden text-white"
 		>
 			<body
 				className={`${montserrat.className} m-0 flex h-full w-full flex-col overflow-hidden`}
