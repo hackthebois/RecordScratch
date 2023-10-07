@@ -30,6 +30,7 @@ export const ratingRouter = router({
 		.input(UpdateUserRatingDTO)
 		.mutation(async ({ ctx: { userId }, input: userRating }) => {
 			const { resourceId, rating, description, type } = userRating;
+			await redis.set(resourceId, null);
 			const ratingExists =
 				userRating.type == RatingCategory.ALBUM
 					? await userAlbumRatingExists({
@@ -40,7 +41,6 @@ export const ratingRouter = router({
 							userId,
 							resourceId,
 					  });
-			console.log(ratingExists);
 
 			if (!ratingExists) {
 				if (type == RatingCategory.ALBUM)
@@ -67,14 +67,14 @@ export const ratingRouter = router({
 	// Get the overall mean average for one album
 	getAverage: publicProcedure
 		.input(SelectRatingDTO)
-		.query(async ({ input: { resourceId } }) => {
+		.query(async ({ input: { resourceId, type } }) => {
 			// Retrieve the value from Redis
 			const cachedValue: Rating = (await redis.get(resourceId)) as Rating;
 
 			if (cachedValue) return cachedValue;
 			else {
 				// Database Call
-				const average = await getRatingAverage(resourceId);
+				const average = await getRatingAverage(resourceId, type);
 
 				// Set a key-value pair in Redis
 				await redis.set(resourceId, JSON.stringify(average));

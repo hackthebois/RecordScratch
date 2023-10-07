@@ -11,6 +11,6 @@ export type Resource = {
 };
 
 export type Ratings = {
-	rating: Rating | null;
-	userRating: UserRating | null;
+	rating?: Rating | null;
+	userRating?: UserRating | null;
 };

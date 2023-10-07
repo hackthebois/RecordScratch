@@ -1,5 +1,5 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import { SongTable } from "@/components/songs";
+import SongTable from "@/components/SongTable";
 import { RatingCategory } from "@/drizzle/db/schema";
 import { getRatings } from "@/utils/ratings";
 import Image from "next/image";

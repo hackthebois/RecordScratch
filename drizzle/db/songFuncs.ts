@@ -56,8 +56,6 @@ export const getUserSongRating = async ({
 			)
 		);
 
-	console.log(rating);
-
 	if (!rating.length) return null;
 	else {
 		const { songId, ...rest } = rating[0];

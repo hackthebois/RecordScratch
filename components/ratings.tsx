@@ -166,8 +166,6 @@ const RatingProvider = ({
 		});
 	};
 
-	console.log({ userRating, rating });
-
 	return children({
 		userRating,
 		rating,
