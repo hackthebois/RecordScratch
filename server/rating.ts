@@ -1,21 +1,18 @@
 import {
-	userAlbumRatingExists,
 	getAllAlbumAverages,
 	getRatingAverage,
+	getUserAlbumRating,
 	insertAlbumRating,
 	updateAlbumRating,
-	getUserAlbumRating,
+	userAlbumRatingExists,
 } from "@/drizzle/db/albumFuncs";
 import {
-	AlbumSchema,
+	Rating,
 	RatingCategory,
-	RatingDTO,
-	SelectAlbumSchema,
 	SelectRatingDTO,
+	UpdateUserRatingDTO,
+	UserRatingDTO,
 } from "@/drizzle/db/schema";
-import redis from "@/redis/config";
-import { z } from "zod";
-import { protectedProcedure, publicProcedure, router } from "./trpc";
 import {
 	getAllSongAverages,
 	getUserSongRating,
@@ -23,59 +20,44 @@ import {
 	updateSongRating,
 	userSongRatingExists,
 } from "@/drizzle/db/songFuncs";
+import redis from "@/redis/config";
+import { z } from "zod";
+import { protectedProcedure, publicProcedure, router } from "./trpc";
 
-interface RatingData {
-	ratingAverage: string;
-	totalRatings: string;
-}
-
-export const albumRouter = router({
+export const ratingRouter = router({
 	// Input the user rating for an album
-	rateAlbum: protectedProcedure
-		.input(RatingDTO)
-		.mutation(
-			async ({
-				ctx: { userId },
-				input: { resourceId, type, rating, description },
-			}) => {
-				const ratingExists =
-					type == RatingCategory.ALBUM
-						? await userAlbumRatingExists({
-								resourceId,
-								userId,
-						  })
-						: await userSongRatingExists({
-								userId,
-								resourceId,
-						  });
+	rate: protectedProcedure
+		.input(UpdateUserRatingDTO)
+		.mutation(async ({ ctx: { userId }, input: userRating }) => {
+			const { resourceId, rating, description, type } = userRating;
+			const ratingExists =
+				userRating.type == RatingCategory.ALBUM
+					? await userAlbumRatingExists({
+							resourceId,
+							userId,
+					  })
+					: await userSongRatingExists({
+							userId,
+							resourceId,
+					  });
+			console.log(ratingExists);
 
-				if (!ratingExists) {
-					if (type == RatingCategory.ALBUM)
-						await insertAlbumRating({
-							resourceId,
-							userId,
-							rating,
-							description,
-						});
-					else await insertSongRating({ resourceId, userId, rating });
-				} else {
-					if (type == RatingCategory.ALBUM) {
-						await redis.del(resourceId);
-						await updateAlbumRating({
-							resourceId,
-							rating,
-							description,
-							userId,
-						});
-					} else
-						await updateSongRating({ resourceId, userId, rating });
-				}
+			if (!ratingExists) {
+				if (type == RatingCategory.ALBUM)
+					await insertAlbumRating({ ...userRating, userId });
+				else await insertSongRating({ ...userRating, userId });
+			} else {
+				if (type == RatingCategory.ALBUM) {
+					await redis.del(resourceId);
+					await updateAlbumRating({ ...userRating, userId });
+				} else await updateSongRating({ ...userRating, userId });
 			}
-		),
+		}),
 
 	// Gets the users rating for an album
 	getUserRating: protectedProcedure
 		.input(SelectRatingDTO)
+		.output(UserRatingDTO.nullable())
 		.query(async ({ ctx: { userId }, input: { resourceId, type } }) => {
 			return type == RatingCategory.ALBUM
 				? await getUserAlbumRating({ resourceId, userId })
@@ -83,13 +65,11 @@ export const albumRouter = router({
 		}),
 
 	// Get the overall mean average for one album
-	getAlbumAverage: publicProcedure
+	getAverage: publicProcedure
 		.input(SelectRatingDTO)
 		.query(async ({ input: { resourceId } }) => {
 			// Retrieve the value from Redis
-			const cachedValue: RatingData = (await redis.get(
-				resourceId
-			)) as RatingData;
+			const cachedValue: Rating = (await redis.get(resourceId)) as Rating;
 
 			if (cachedValue) return cachedValue;
 			else {

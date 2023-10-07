@@ -1,11 +1,9 @@
-import { albumRouter } from "./albumRating";
-import { songRouter } from "./songRatings";
+import { ratingRouter } from "./rating";
 import { spotifyRouter } from "./spotify";
 import { router } from "./trpc";
 
 export const appRouter = router({
-	album: albumRouter,
+	rating: ratingRouter,
 	spotify: spotifyRouter,
-	song: songRouter,
 });
 export type AppRouter = typeof appRouter;
