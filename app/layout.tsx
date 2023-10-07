@@ -18,9 +18,12 @@ export const metadata = {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<html lang="en" className="bg-elevation-1 text-white">
+		<html
+			lang="en"
+			className="bg-elevation-1 m-0 h-full w-full overflow-hidden text-white"
+		>
 			<body
-				className={`${montserrat.className} flex min-h-screen flex-col`}
+				className={`${montserrat.className} m-0 flex h-full w-full flex-col overflow-hidden`}
 			>
 				<ClerkProvider>
 					<Providers>
