@@ -6,6 +6,7 @@ import {
 	varchar,
 } from "drizzle-orm/mysql-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { type } from "os";
 import { z } from "zod";
 
 export const album_ratings = mysqlTable(
@@ -28,7 +29,6 @@ export const song_ratings = mysqlTable(
 	{
 		userId: varchar("userId", { length: 256 }).notNull(),
 		songId: varchar("songId", { length: 256 }).notNull(),
-		albumId: varchar("albumId", { length: 256 }).notNull(),
 		rating: tinyint("rating").notNull(),
 	},
 	(table) => {
@@ -59,3 +59,28 @@ export const SelectSongSchema = createSelectSchema(song_ratings).omit({
 	rating: true,
 });
 export type SelectSongRating = z.infer<typeof SelectSongSchema>;
+
+/******************************
+  Rating Type
+ ******************************/
+export enum RatingCategory {
+	ALBUM = "ALBUM",
+	SONG = "SONG",
+}
+export const RatingDTO = z.object({
+	resourceId: z.string(),
+	type: z.enum([RatingCategory.ALBUM, RatingCategory.SONG]),
+	rating: z.number(),
+	description: z.string().optional(),
+});
+export type RatingType = Omit<z.infer<typeof RatingDTO>, "type"> & {
+	userId: string;
+};
+
+export const SelectRatingDTO = z.object({
+	resourceId: z.string(),
+	type: z.enum([RatingCategory.ALBUM, RatingCategory.SONG]),
+});
+export type SelectRatingType = Omit<z.infer<typeof SelectRatingDTO>, "type"> & {
+	userId: string;
+};
