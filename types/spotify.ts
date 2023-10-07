@@ -45,6 +45,7 @@ export const SpotifyAlbumSchema = z.object({
 	total_tracks: z.number(),
 	images: SpotifyImageSchema.array(),
 	artists: SpotifyArtistSchema.array(),
+	release_date: z.string(),
 	tracks: z
 		.object({
 			items: SpotifyTrackSchema.array(),

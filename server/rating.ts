@@ -30,7 +30,6 @@ export const ratingRouter = router({
 		.input(UpdateUserRatingDTO)
 		.mutation(async ({ ctx: { userId }, input: userRating }) => {
 			const { resourceId, rating, description, type } = userRating;
-			await redis.set(resourceId, null);
 			const ratingExists =
 				userRating.type == RatingCategory.ALBUM
 					? await userAlbumRatingExists({
@@ -89,7 +88,7 @@ export const ratingRouter = router({
 		.input(z.object({ id: z.string(), albums: z.string().array() }))
 		.query(async ({ input: { id, albums } }) => {
 			// Retrieve the value from Redis
-			const cachedValue = (await redis.get(id)) as string;
+			const cachedValue = (await redis.get(id)) as Rating;
 
 			if (cachedValue) {
 				return cachedValue;
@@ -99,7 +98,7 @@ export const ratingRouter = router({
 
 				// Set a key-value pair in Redis
 				await redis.set(id, JSON.stringify(average));
-				await redis.expire(id, 86400); // 24h experation
+				await redis.expire(id, 60 * 5); // 5 mins experation
 
 				return average;
 			}
@@ -110,5 +109,11 @@ export const ratingRouter = router({
 		.input(z.object({ songIds: z.string().array() }))
 		.query(async ({ input: { songIds } }) => {
 			return getAllSongAverages(songIds);
+		}),
+
+	invalidateResource: protectedProcedure
+		.input(z.object({ resourceId: z.string() }))
+		.mutation(async ({ input: { resourceId } }) => {
+			await redis.del(resourceId);
 		}),
 });
