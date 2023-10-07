@@ -33,7 +33,7 @@ const ArtistItem = ({
 
 	return (
 		<Link
-			href="/"
+			href={`/artists/${artist.id}`}
 			onClick={onClick}
 			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
 		>

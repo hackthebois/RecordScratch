@@ -19,6 +19,7 @@ export const SpotifyArtistSchema = z.object({
 	}),
 	name: z.string(),
 	images: SpotifyImageSchema.array().optional(),
+	genres: z.string().array().optional(),
 });
 export type SpotifyArtist = z.infer<typeof SpotifyArtistSchema>;
 

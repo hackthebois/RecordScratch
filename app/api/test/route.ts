@@ -1,4 +1,3 @@
-import { serverTrpc } from "@/app/_trpc/server";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -24,18 +23,18 @@ export const GET = async () => {
 	// 	rating: 8,
 	// });
 
-	const artistRating = await serverTrpc.album.getEveryAlbumAverage({
-		id: "2",
-		albums: [
-			"0ETFjACtuP2ADo6LFhL6HN",
-			"0jTGHV5xqHPvEcwL8f6YU5",
-			"0lzhEDgoe7Y6bhT42NWrp2",
-			"1klALx0u4AavZNEvC4LrTL",
-			"20r762YmB5HeofjMCiPMLv",
-			"49LA20VMk65fQyEaIzYdvf",
-			"2nkto6YNI4rUYTLqEwWJ3o",
-		],
-	});
+	// const artistRating = await serverTrpc.album.getEveryAlbumAverage({
+	// 	id: "2",
+	// 	albums: [
+	// 		"0ETFjACtuP2ADo6LFhL6HN",
+	// 		"0jTGHV5xqHPvEcwL8f6YU5",
+	// 		"0lzhEDgoe7Y6bhT42NWrp2",
+	// 		"1klALx0u4AavZNEvC4LrTL",
+	// 		"20r762YmB5HeofjMCiPMLv",
+	// 		"49LA20VMk65fQyEaIzYdvf",
+	// 		"2nkto6YNI4rUYTLqEwWJ3o",
+	// 	],
+	// });
 
-	return NextResponse.json({ artistRating });
+	return NextResponse.json({});
 };
