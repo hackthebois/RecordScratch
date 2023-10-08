@@ -39,6 +39,12 @@ export const ratingRouter = router({
 							resourceId,
 					  });
 
+			if (rating === null && ratingExists) {
+				if (type == RatingCategory.ALBUM)
+					await updateAlbumRating({ ...userRating, userId });
+				else await updateSongRating({ ...userRating, userId });
+			}
+
 			if (!ratingExists) {
 				if (type == RatingCategory.ALBUM)
 					await insertAlbumRating({ ...userRating, userId });

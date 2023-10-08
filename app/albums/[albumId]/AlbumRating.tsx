@@ -5,11 +5,12 @@ import { Ratings, Resource } from "@/types/ratings";
 import { Star } from "lucide-react";
 
 type Props = {
+	name: string;
 	resource: Resource;
 	ratings: Ratings;
 };
 
-const AlbumRating = ({ ratings, resource }: Props) => {
+const AlbumRating = ({ name, ratings, resource }: Props) => {
 	return (
 		<RatingProvider resource={resource} initialRatings={ratings}>
 			{({ rating, userRating, onChange }) => {
@@ -31,6 +32,7 @@ const AlbumRating = ({ ratings, resource }: Props) => {
 							</p>
 						</div>
 						<RatingDialog.Button
+							name={name}
 							userRating={userRating}
 							onChange={onChange}
 						/>

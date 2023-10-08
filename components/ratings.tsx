@@ -20,20 +20,21 @@ import { useEffect, useState } from "react";
 
 type Props = {
 	name: string;
-	onChange: (rating: number) => void;
+	rating: number | null;
+	onChange: (rating: number | null) => void;
 	children?: React.ReactNode;
 };
 
-const RatingDialog = ({ name, children, onChange }: Props) => {
+const RatingDialog = ({ name, children, onChange, rating }: Props) => {
 	const [starHover, setStarHover] = useState<number | null>(null);
-	const [rating, setRating] = useState<number | null>(null);
+	const [newRating, setNewRating] = useState<number | null>(null);
 	const [open, setOpen] = useState(false);
 	const { openSignIn } = useClerk();
 
 	useEffect(() => {
 		// Reset the rating when the dialog is opened
 		if (open) {
-			setRating(null);
+			setNewRating(null);
 			setStarHover(null);
 		}
 	}, [open]);
@@ -45,7 +46,7 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 					<DialogTrigger asChild>{children}</DialogTrigger>
 					<DialogContent className="w-full sm:max-w-[425px]">
 						<DialogHeader>
-							<DialogTitle>Rate {name}</DialogTitle>
+							<DialogTitle>Rate "{name}"</DialogTitle>
 							<DialogDescription>
 								Select a star amount
 							</DialogDescription>
@@ -54,7 +55,7 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 							{Array.from(Array(10).keys()).map((index) => (
 								<div
 									key={index}
-									onClick={() => setRating(index)}
+									onClick={() => setNewRating(index)}
 									onMouseOver={() => setStarHover(index)}
 									onMouseLeave={() => setStarHover(null)}
 									className="flex flex-1 justify-center py-2 hover:cursor-pointer"
@@ -62,11 +63,15 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 									<Star
 										color="orange"
 										fill={
-											starHover !== null
+											starHover
 												? index <= starHover
 													? "orange"
 													: "none"
-												: rating !== null
+												: newRating
+												? index <= newRating
+													? "orange"
+													: "none"
+												: rating
 												? index <= rating
 													? "orange"
 													: "none"
@@ -81,11 +86,12 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 								variant="outline"
 								className="w-full"
 								onClick={() => {
-									if (rating !== null) {
-										onChange(rating + 1);
+									if (newRating !== null) {
+										onChange(newRating + 1);
 										setOpen(false);
 									}
 								}}
+								disabled={newRating === null}
 							>
 								Rate
 							</Button>
@@ -111,12 +117,19 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 RatingDialog.Button = ({
 	userRating,
 	onChange,
+	name,
 }: {
+	name: string;
 	userRating: UserRating | null;
-	onChange: (rating: number) => void;
+	onChange: (rating: number | null) => void;
 }) => {
+	console.log(userRating?.rating ?? null);
 	return (
-		<RatingDialog name="Album" onChange={onChange}>
+		<RatingDialog
+			name={name}
+			onChange={onChange}
+			rating={userRating?.rating ?? null}
+		>
 			<Button variant="outline" size="sm">
 				<Star
 					color="orange"
@@ -144,7 +157,7 @@ const RatingProvider = ({
 	}: {
 		userRating: UserRating | null;
 		rating: Rating | null;
-		onChange: (rating: number) => void;
+		onChange: (rating: number | null) => void;
 	}) => JSX.Element;
 }) => {
 	const utils = trpc.useContext();
@@ -169,12 +182,16 @@ const RatingProvider = ({
 		},
 	});
 
-	const onChange = (rating: number) => {
-		mutate({
-			...resource,
-			rating,
-			description: "",
-		});
+	const onChange = (rating: number | null) => {
+		if (rating === null) {
+			// TODO: Delete rating
+		} else {
+			mutate({
+				...resource,
+				rating,
+				description: "",
+			});
+		}
 	};
 
 	return children({
