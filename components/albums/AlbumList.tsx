@@ -46,8 +46,8 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	if (type === "scroll") {
 		return (
-			<ScrollArea orientation="horizontal">
-				<div className="flex gap-4 px-4">{listItems}</div>
+			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
+				<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
 			</ScrollArea>
 		);
 	} else {

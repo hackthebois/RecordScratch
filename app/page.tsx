@@ -6,7 +6,7 @@ const Page = async () => {
 
 	return (
 		<div className="w-full">
-			<h2 className="p-4">New Releases</h2>
+			<h2 className="pb-6">New Releases</h2>
 			<AlbumList albums={newReleases} />
 		</div>
 	);
