@@ -73,6 +73,7 @@ const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 								</span>
 								<div className="hidden sm:block">
 									<RatingDialog.Button
+										name={song.name}
 										userRating={userRating}
 										onChange={onChange}
 									/>
@@ -111,10 +112,11 @@ const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 									type: RatingCategory.SONG,
 								}}
 							>
-								{({ onChange }) => (
+								{({ onChange, userRating }) => (
 									<RatingDialog
 										name={song.name}
 										onChange={onChange}
+										rating={userRating?.rating ?? null}
 									>
 										<DropdownMenuItem
 											onSelect={(e) => e.preventDefault()}

@@ -45,7 +45,11 @@ const Page = async ({ params: { albumId } }: Props) => {
 						</h1>
 					</div>
 					<div className="flex items-center gap-4">
-						<AlbumRating resource={resource} ratings={ratings} />
+						<AlbumRating
+							name={album.name}
+							resource={resource}
+							ratings={ratings}
+						/>
 					</div>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
