@@ -52,7 +52,7 @@ const RatingDialog = ({ name, children, onChange, rating }: Props) => {
 							</DialogDescription>
 						</DialogHeader>
 						<div className="flex justify-between">
-							{Array.from(Array(10).keys()).map((index) => (
+							{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
 								<div
 									key={index}
 									onClick={() => setNewRating(index)}
@@ -87,7 +87,7 @@ const RatingDialog = ({ name, children, onChange, rating }: Props) => {
 								className="w-full"
 								onClick={() => {
 									if (newRating !== null) {
-										onChange(newRating + 1);
+										onChange(newRating);
 										setOpen(false);
 									}
 								}}
