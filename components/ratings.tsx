@@ -94,7 +94,15 @@ const RatingDialog = ({ name, children, onChange }: Props) => {
 				</Dialog>
 			</SignedIn>
 			<SignedOut>
-				<div onClick={() => openSignIn()}>{children}</div>
+				<div
+					onClick={() =>
+						openSignIn({
+							redirectUrl: window.location.href,
+						})
+					}
+				>
+					{children}
+				</div>
 			</SignedOut>
 		</>
 	);
