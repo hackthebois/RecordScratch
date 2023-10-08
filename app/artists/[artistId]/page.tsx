@@ -24,7 +24,7 @@ const Artist = async ({ params: { artistId } }: Props) => {
 	});
 
 	return (
-		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col gap-6 overflow-hidden px-4 py-8 sm:px-8">
+		<div className="flex flex-col gap-6">
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				{artist.images && (
 					<Image
@@ -44,7 +44,7 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							{artist.name}
 						</h1>
 					</div>
-					<div className="flex gap-3">
+					<div className="flex flex-wrap justify-center gap-3">
 						{artist.genres?.map((genre, index) => (
 							<Badge variant="outline" key={index}>
 								{genre}
@@ -78,17 +78,14 @@ const Artist = async ({ params: { artistId } }: Props) => {
 					<TabsTrigger value="top-tracks">Popular Songs</TabsTrigger>
 					<TabsTrigger value="discography">Discography</TabsTrigger>
 				</TabsList>
-				<TabsContent
-					value="top-tracks"
-					className="flex w-full flex-col gap-3 pt-6"
-				>
+				<TabsContent value="top-tracks" className="w-full pt-6">
 					<SongTable songs={topTracks} />
 				</TabsContent>
-				<TabsContent value="discography">
+				<TabsContent value="discography" className="pt-8">
 					<AlbumList albums={discography} type="wrap" field="date" />
 				</TabsContent>
 			</Tabs>
-		</main>
+		</div>
 	);
 };
 

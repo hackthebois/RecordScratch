@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Montserrat } from "next/font/google";
@@ -18,13 +19,8 @@ export const metadata = {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<html
-			lang="en"
-			className="bg-elevation-1 m-0 w-full overflow-x-hidden text-white"
-		>
-			<body
-				className={`${montserrat.className} m-0 flex h-full w-full flex-col overflow-hidden`}
-			>
+		<html lang="en">
+			<body className={`${montserrat.className} flex h-screen flex-col`}>
 				<ClerkProvider>
 					<Providers>
 						<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
@@ -49,7 +45,11 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 								</div>
 							</nav>
 						</header>
-						<main className="flex flex-1">{children}</main>
+						<ScrollArea className="flex h-full w-screen flex-1">
+							<main className="mx-auto w-screen max-w-screen-lg p-4 sm:p-8">
+								{children}
+							</main>
+						</ScrollArea>
 					</Providers>
 				</ClerkProvider>
 			</body>

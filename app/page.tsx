@@ -5,10 +5,10 @@ const Page = async () => {
 	const newReleases = await serverTrpc.spotify.new();
 
 	return (
-		<main className="mx-auto flex max-w-screen-lg flex-1 flex-col overflow-hidden px-4 py-8 sm:px-8">
-			<h2 className="mb-6">New Releases</h2>
+		<div className="w-full">
+			<h2 className="p-4">New Releases</h2>
 			<AlbumList albums={newReleases} />
-		</main>
+		</div>
 	);
 };
 
