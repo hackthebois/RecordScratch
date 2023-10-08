@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Disc3 } from "lucide-react";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import Providers from "./Providers";
@@ -26,16 +28,18 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 				<ClerkProvider>
 					<Providers>
 						<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
-							<nav className="flex w-full max-w-screen-xl items-center justify-between gap-3 p-4 sm:p-8">
-								<Link
-									href="/"
-									className="hidden items-center justify-center sm:flex"
-								>
-									<h1 className="text-2xl font-medium">
-										treble
-									</h1>
-								</Link>
-								<SearchBar />
+							<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-8">
+								<div className="flex items-center gap-3">
+									<Link
+										href="/"
+										className="flex items-center gap-3"
+									>
+										<Button size="icon" variant="outline">
+											<Disc3 size={22} />
+										</Button>
+									</Link>
+									<SearchBar />
+								</div>
 								<div className="flex items-center justify-center gap-3">
 									<SignedIn>
 										<UserButton afterSignOutUrl="/" />
