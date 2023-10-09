@@ -26,6 +26,9 @@ type Props = {
 	children: React.ReactNode;
 };
 
+export const runtime = "edge";
+export const preferredRegion = "cle1";
+
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">

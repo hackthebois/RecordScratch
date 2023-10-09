@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 
+import { unstable_cache } from "next/cache";
+
 type Props = {
 	params: {
 		artistId: string;
@@ -13,11 +15,17 @@ type Props = {
 };
 
 const Artist = async ({ params: { artistId } }: Props) => {
-	const [artist, discography, topTracks] = await Promise.all([
-		serverTrpc.spotify.artist.findOne.query(artistId),
-		serverTrpc.spotify.artist.albums.query(artistId),
-		serverTrpc.spotify.artist.topTracks.query(artistId),
-	]);
+	const [artist, discography, topTracks] = await unstable_cache(
+		async () => {
+			return await Promise.all([
+				serverTrpc.spotify.artist.findOne.query(artistId),
+				serverTrpc.spotify.artist.albums.query(artistId),
+				serverTrpc.spotify.artist.topTracks.query(artistId),
+			]);
+		},
+		[artistId],
+		{ revalidate: 60 * 60 }
+	)();
 	const rating = await serverTrpc.rating.getEveryAlbumAverage.query({
 		id: artistId,
 		albums: discography.map((album) => album.id),
