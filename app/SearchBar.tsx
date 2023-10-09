@@ -2,13 +2,6 @@
 
 import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
-} from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
@@ -19,7 +12,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { trpc } from "./_trpc/react";
 
 const ArtistItem = ({
@@ -85,9 +77,7 @@ const AlbumItem = ({
 				)}
 			</div>
 			<div className="ml-4 w-full overflow-hidden">
-				<p className="w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-base">
-					{album.name}
-				</p>
+				<p className="w-full truncate text-base">{album.name}</p>
 				{album.artists.map((artist) => (
 					<button
 						key={artist.id}
@@ -109,28 +99,29 @@ const AlbumItem = ({
 const SearchBar = () => {
 	const [open, setOpen] = useState(false);
 	const { recents, addRecent } = useRecents();
-	const form = useForm({
-		defaultValues: {
-			query: "",
-		},
-	});
+	const [query, setQuery] = useState("");
 
-	const q = form.watch("query");
+	const q = useDebounce(query, 500);
 
-	const query = useDebounce(q, 500);
-
-	const { data, isFetching } = trpc.spotify.search.useQuery(query, {
+	const { data, isFetching } = trpc.spotify.search.useQuery(q, {
 		enabled: query.length > 0,
 		refetchOnWindowFocus: false,
 	});
 
 	return (
-		<Dialog onOpenChange={setOpen} open={open}>
+		<Dialog
+			onOpenChange={(open) => {
+				if (!open) {
+					setQuery("");
+				}
+				setOpen(open);
+			}}
+			open={open}
+		>
 			<DialogTrigger>
 				<>
 					<Input
 						placeholder="Search"
-						value={q}
 						readOnly
 						className="hidden sm:block"
 					/>
@@ -145,26 +136,18 @@ const SearchBar = () => {
 					</div>
 				</>
 			</DialogTrigger>
-			<DialogContent className="flex h-full w-full flex-col sm:max-h-[70%] sm:max-w-[500px]">
-				<Form {...form}>
-					<FormField
-						control={form.control}
-						name="query"
-						render={({ field }) => (
-							<FormItem>
-								<FormControl>
-									<Input
-										id="name"
-										placeholder="Search"
-										className="mt-6"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+			<DialogContent className="flex h-full w-full flex-col gap-0 p-0 sm:max-h-[70%] sm:max-w-[500px] sm:p-0">
+				<div className="flex items-center border-b pr-10">
+					<Search size={20} className="ml-4 text-muted-foreground" />
+					<input
+						id="name"
+						autoComplete="off"
+						placeholder="Search"
+						value={query}
+						className="flex-1 border-0 py-4 pl-4 text-base outline-none"
+						onChange={(e) => setQuery(e.target.value)}
 					/>
-				</Form>
+				</div>
 				{isFetching ? (
 					<div className="flex flex-1 items-center justify-center">
 						<Loader2 className="animate-spin" size={35} />
@@ -173,7 +156,7 @@ const SearchBar = () => {
 					<>
 						{data.albums.items.length > 0 ||
 						data.artists.items.length > 0 ? (
-							<ScrollArea>
+							<ScrollArea className="px-4">
 								{data.albums.items.length > 0 && (
 									<>
 										<h4 className="my-4">Albums</h4>
@@ -185,7 +168,7 @@ const SearchBar = () => {
 														onClick={() => {
 															addRecent(album);
 															setOpen(false);
-															form.reset();
+															setQuery("");
 														}}
 														key={index}
 													/>
@@ -204,7 +187,7 @@ const SearchBar = () => {
 														onClick={() => {
 															addRecent(artist);
 															setOpen(false);
-															form.reset();
+															setQuery("");
 														}}
 														artist={artist}
 														key={index}
@@ -224,7 +207,7 @@ const SearchBar = () => {
 						)}
 					</>
 				) : recents.length > 0 ? (
-					<ScrollArea>
+					<ScrollArea className="px-4">
 						<h4 className="my-4">Recents</h4>
 						<div className="flex flex-1 flex-col justify-start gap-3">
 							{recents.map((recent, index) =>
