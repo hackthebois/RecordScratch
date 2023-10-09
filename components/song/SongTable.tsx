@@ -3,7 +3,7 @@
 import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
 import { Suspense } from "react";
-import SongRating from "./SongRating";
+import { SongRating, SongRatingSkeleton } from "./SongRating";
 
 const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 	return (
@@ -30,7 +30,7 @@ const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 									.join(", ")}
 							</p>
 						</div>
-						<Suspense>
+						<Suspense fallback={<SongRatingSkeleton />}>
 							<SongRating
 								song={song}
 								songIds={songs.map((song) => song.id)}

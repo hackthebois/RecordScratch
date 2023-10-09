@@ -1,8 +1,9 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/react";
-import Rating from "@/components/rating/Rating";
+import { Rating } from "@/components/rating/Rating";
 import { RatingButton } from "@/components/rating/RatingButton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
 
 type Props = {
@@ -26,4 +27,8 @@ const AlbumRating = ({ resource, name }: Props) => {
 	);
 };
 
-export default AlbumRating;
+const AlbumRatingSkeleton = () => {
+	return <Skeleton className="h-10 w-44 rounded-lg" />;
+};
+
+export { AlbumRating, AlbumRatingSkeleton };
