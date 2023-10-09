@@ -1,11 +1,10 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import AlbumList from "@/components/album/AlbumList";
-import Rating from "@/components/rating/Rating";
+import { Rating } from "@/components/rating/Rating";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Suspense } from "react";
 
 type Props = {
 	params: {
@@ -13,25 +12,16 @@ type Props = {
 	};
 };
 
-const ArtistRating = async ({
-	id,
-	albums,
-}: {
-	id: string;
-	albums: string[];
-}) => {
-	const rating = await serverTrpc.rating.getEveryAlbumAverage.query({
-		id,
-		albums,
-	});
-
-	return <Rating rating={rating} />;
-};
-
 const Artist = async ({ params: { artistId } }: Props) => {
-	const artist = await serverTrpc.spotify.artist.findOne.query(artistId);
-	const discography = await serverTrpc.spotify.artist.albums.query(artistId);
-	const topTracks = await serverTrpc.spotify.artist.topTracks.query(artistId);
+	const [artist, discography, topTracks] = await Promise.all([
+		serverTrpc.spotify.artist.findOne.query(artistId),
+		serverTrpc.spotify.artist.albums.query(artistId),
+		serverTrpc.spotify.artist.topTracks.query(artistId),
+	]);
+	const rating = await serverTrpc.rating.getEveryAlbumAverage.query({
+		id: artistId,
+		albums: discography.map((album) => album.id),
+	});
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -61,12 +51,7 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							</Badge>
 						))}
 					</div>
-					<Suspense>
-						<ArtistRating
-							id={artist.id}
-							albums={discography.map((album) => album.id)}
-						/>
-					</Suspense>
+					<Rating rating={rating} />
 				</div>
 			</div>
 			<Tabs

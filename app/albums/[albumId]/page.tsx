@@ -5,7 +5,7 @@ import { RatingCategory } from "@/drizzle/db/schema";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import AlbumRating from "./AlbumRating";
+import { AlbumRating, AlbumRatingSkeleton } from "./AlbumRating";
 
 type Props = {
 	params: {
@@ -43,7 +43,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 						</h1>
 					</div>
 					<div className="flex items-center gap-4">
-						<Suspense>
+						<Suspense fallback={<AlbumRatingSkeleton />}>
 							<AlbumRating
 								resource={resource}
 								name={album.name}

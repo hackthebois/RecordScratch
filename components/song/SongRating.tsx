@@ -4,6 +4,7 @@ import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
 import { Star } from "lucide-react";
 import { RatingButton } from "../rating/RatingButton";
+import { Skeleton } from "../ui/skeleton";
 
 type Props = {
 	song: SpotifyTrack;
@@ -55,4 +56,8 @@ const SongRating = ({ songIds, song }: Props) => {
 	);
 };
 
-export default SongRating;
+const SongRatingSkeleton = () => {
+	return <Skeleton className="h-9 w-28 rounded-lg" />;
+};
+
+export { SongRating, SongRatingSkeleton };
