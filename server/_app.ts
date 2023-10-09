@@ -6,4 +6,5 @@ export const appRouter = router({
 	rating: ratingRouter,
 	spotify: spotifyRouter,
 });
+
 export type AppRouter = typeof appRouter;

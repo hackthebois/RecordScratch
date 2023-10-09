@@ -1,46 +1,34 @@
 "use client";
 
-import { RatingDialog, RatingProvider } from "@/components/ratings";
-import { Ratings, Resource } from "@/types/ratings";
-import { Star } from "lucide-react";
+import { trpc } from "@/app/_trpc/react";
+import { Rating } from "@/components/rating/Rating";
+import { RatingButton } from "@/components/rating/RatingButton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Resource } from "@/types/ratings";
 
 type Props = {
-	name: string;
 	resource: Resource;
-	ratings: Ratings;
+	name: string;
 };
 
-const AlbumRating = ({ name, ratings, resource }: Props) => {
+const AlbumRating = ({ resource, name }: Props) => {
+	const [rating] = trpc.rating.getAverage.useSuspenseQuery(resource);
+	const [userRating] = trpc.rating.getUserRating.useSuspenseQuery(resource);
+
 	return (
-		<RatingProvider resource={resource} initialRatings={ratings}>
-			{({ rating, userRating, onChange }) => {
-				return (
-					<>
-						<Star
-							color="orange"
-							fill={rating?.ratingAverage ? "orange" : "none"}
-							size={30}
-						/>
-						<div>
-							<p className="text-lg font-semibold">
-								{rating?.ratingAverage
-									? `${rating?.ratingAverage}`
-									: "No ratings"}
-							</p>
-							<p className="text-xs text-muted-foreground">
-								{rating?.totalRatings ?? "0"}
-							</p>
-						</div>
-						<RatingDialog.Button
-							name={name}
-							userRating={userRating}
-							onChange={onChange}
-						/>
-					</>
-				);
-			}}
-		</RatingProvider>
+		<div className="flex items-center gap-4">
+			<Rating rating={rating} />
+			<RatingButton
+				name={name}
+				resource={resource}
+				initialRating={userRating?.rating ?? null}
+			/>
+		</div>
 	);
 };
 
-export default AlbumRating;
+const AlbumRatingSkeleton = () => {
+	return <Skeleton className="h-10 w-44 rounded-lg" />;
+};
+
+export { AlbumRating, AlbumRatingSkeleton };

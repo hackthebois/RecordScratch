@@ -1,11 +1,11 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import SongTable from "@/components/SongTable";
+import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { RatingCategory } from "@/drizzle/db/schema";
-import { getRatings } from "@/utils/ratings";
 import Image from "next/image";
 import Link from "next/link";
-import AlbumRating from "./AlbumRating";
+import { Suspense } from "react";
+import { AlbumRating, AlbumRatingSkeleton } from "./AlbumRating";
 
 type Props = {
 	params: {
@@ -14,14 +14,12 @@ type Props = {
 };
 
 const Page = async ({ params: { albumId } }: Props) => {
-	const album = await serverTrpc.spotify.album(albumId);
+	const album = await serverTrpc.spotify.album.query(albumId);
 
 	const resource = {
 		resourceId: albumId,
 		type: RatingCategory.ALBUM,
 	};
-
-	const ratings = await getRatings(resource);
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -45,11 +43,12 @@ const Page = async ({ params: { albumId } }: Props) => {
 						</h1>
 					</div>
 					<div className="flex items-center gap-4">
-						<AlbumRating
-							name={album.name}
-							resource={resource}
-							ratings={ratings}
-						/>
+						<Suspense fallback={<AlbumRatingSkeleton />}>
+							<AlbumRating
+								resource={resource}
+								name={album.name}
+							/>
+						</Suspense>
 					</div>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
