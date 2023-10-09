@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { trpc } from "./_trpc/client";
+import { trpc } from "./_trpc/react";
 
 const ArtistItem = ({
 	artist,

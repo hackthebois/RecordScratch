@@ -14,6 +14,7 @@ import {
 } from "@/drizzle/db/schema";
 import {
 	getAllSongAverages,
+	getAllUserSongRatings,
 	getUserSongRating,
 	insertSongRating,
 	updateSongRating,
@@ -113,6 +114,12 @@ export const ratingRouter = router({
 		.input(z.object({ songIds: z.string().array() }))
 		.query(async ({ input: { songIds } }) => {
 			return getAllSongAverages(songIds);
+		}),
+
+	getAllUserSongRatings: protectedProcedure
+		.input(z.object({ songIds: z.string().array() }))
+		.query(async ({ ctx: { userId }, input: { songIds } }) => {
+			return getAllUserSongRatings(songIds, userId);
 		}),
 
 	invalidateResource: protectedProcedure

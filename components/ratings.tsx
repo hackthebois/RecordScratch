@@ -1,7 +1,7 @@
 "use client";
 
-import { trpc } from "@/app/_trpc/client";
-import { Button } from "@/components/ui/Button";
+import { trpc } from "@/app/_trpc/react";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -9,169 +9,53 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/Dialog";
-import { Rating, UserRating } from "@/drizzle/db/schema";
-import { Ratings, Resource } from "@/types/ratings";
+import { RatingCategory, UserRating } from "@/drizzle/db/schema";
+import { Resource } from "@/types/ratings";
 
-import { SignedIn, SignedOut, useClerk } from "@clerk/nextjs";
 import { Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
-type Props = {
-	name: string;
-	rating: number | null;
-	onChange: (rating: number | null) => void;
-	children?: React.ReactNode;
-};
+export const RatingDialogProvider = () => {
+	const searchParams = useSearchParams();
 
-const RatingDialog = ({ name, children, onChange, rating }: Props) => {
-	const [starHover, setStarHover] = useState<number | null>(null);
-	const [newRating, setNewRating] = useState<number | null>(null);
-	const [open, setOpen] = useState(false);
-	const { openSignIn } = useClerk();
+	const type =
+		searchParams.get("type") === "SONG"
+			? RatingCategory.SONG
+			: searchParams.get("type") === "ALBUM"
+			? RatingCategory.ALBUM
+			: null;
+	const resourceId = searchParams.get("resourceId");
+	const name = searchParams.get("name");
+	const initialRating = searchParams.get("rating") ?? undefined;
 
-	useEffect(() => {
-		// Reset the rating when the dialog is opened
-		if (open) {
-			setNewRating(null);
-			setStarHover(null);
-		}
-	}, [open]);
+	if (!type || !resourceId || !name) {
+		return null;
+	}
 
-	return (
-		<>
-			<SignedIn>
-				<Dialog open={open} onOpenChange={(open) => setOpen(open)}>
-					<DialogTrigger asChild>{children}</DialogTrigger>
-					<DialogContent className="w-full sm:max-w-[425px]">
-						<DialogHeader>
-							<DialogTitle>Rate "{name}"</DialogTitle>
-							<DialogDescription>
-								Select a star amount
-							</DialogDescription>
-						</DialogHeader>
-						<div className="flex justify-between">
-							{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
-								<div
-									key={index}
-									onClick={() => setNewRating(index)}
-									onMouseOver={() => setStarHover(index)}
-									onMouseLeave={() => setStarHover(null)}
-									className="flex flex-1 justify-center py-2 hover:cursor-pointer"
-								>
-									<Star
-										color="orange"
-										fill={
-											starHover
-												? index <= starHover
-													? "orange"
-													: "none"
-												: newRating
-												? index <= newRating
-													? "orange"
-													: "none"
-												: rating
-												? index <= rating
-													? "orange"
-													: "none"
-												: "none"
-										}
-									/>
-								</div>
-							))}
-						</div>
-						<DialogFooter>
-							<Button
-								variant="outline"
-								className="w-full"
-								onClick={() => {
-									if (newRating !== null) {
-										onChange(newRating);
-										setOpen(false);
-									}
-								}}
-								disabled={newRating === null}
-							>
-								Rate
-							</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			</SignedIn>
-			<SignedOut>
-				<div
-					onClick={() =>
-						openSignIn({
-							redirectUrl: window.location.href,
-						})
-					}
-				>
-					{children}
-				</div>
-			</SignedOut>
-		</>
-	);
-};
-
-RatingDialog.Button = ({
-	userRating,
-	onChange,
-	name,
-}: {
-	name: string;
-	userRating: UserRating | null;
-	onChange: (rating: number | null) => void;
-}) => {
-	console.log(userRating?.rating ?? null);
 	return (
 		<RatingDialog
+			resource={{ type, resourceId }}
 			name={name}
-			onChange={onChange}
-			rating={userRating?.rating ?? null}
-		>
-			<Button variant="outline" size="sm">
-				<Star
-					color="orange"
-					fill={userRating ? "orange" : "none"}
-					size={18}
-					className="mr-2"
-				/>
-				{userRating?.rating ? userRating.rating : "Rate"}
-			</Button>
-		</RatingDialog>
+			initialRating={initialRating}
+		/>
 	);
 };
 
-const RatingProvider = ({
+export const RatingDialog = ({
 	resource,
-	children,
-	initialRatings,
+	name,
+	initialRating,
 }: {
 	resource: Resource;
-	initialRatings?: Ratings;
-	children: ({
-		rating,
-		userRating,
-		onChange,
-	}: {
-		userRating: UserRating | null;
-		rating: Rating | null;
-		onChange: (rating: number | null) => void;
-	}) => JSX.Element;
+	name: string;
+	initialRating?: string;
 }) => {
+	const router = useRouter();
+	const pathname = usePathname();
 	const utils = trpc.useContext();
-	const { data: userRating = null } = trpc.rating.getUserRating.useQuery(
-		resource,
-		{
-			initialData: initialRatings?.userRating,
-		}
-	);
-
-	const { data: rating = null } = trpc.rating.getAverage.useQuery(resource, {
-		initialData: initialRatings?.rating,
-	});
-
 	const { mutate: invalidate } = trpc.rating.invalidateResource.useMutation();
 
 	const { mutate } = trpc.rating.rate.useMutation({
@@ -182,23 +66,114 @@ const RatingProvider = ({
 		},
 	});
 
-	const onChange = (rating: number | null) => {
-		if (rating === null) {
-			// TODO: Delete rating
-		} else {
-			mutate({
-				...resource,
-				rating,
-				description: "",
-			});
-		}
-	};
+	const [starHover, setStarHover] = useState<number | null>(null);
+	const [newRating, setNewRating] = useState<number | null>(null);
+	const [open, setOpen] = useState(true);
 
-	return children({
-		userRating,
-		rating,
-		onChange,
-	});
+	return (
+		<Dialog
+			open={open}
+			onOpenChange={(open) => {
+				setOpen(open);
+				if (!open) {
+					router.push(pathname);
+				}
+			}}
+		>
+			<DialogContent className="w-full sm:max-w-[425px]">
+				<DialogHeader>
+					<DialogTitle>Rate "{name}"</DialogTitle>
+					<DialogDescription>Select a star amount</DialogDescription>
+				</DialogHeader>
+				<div className="flex justify-between">
+					{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
+						<div
+							key={index}
+							onClick={() => setNewRating(index)}
+							onMouseOver={() => setStarHover(index)}
+							onMouseLeave={() => setStarHover(null)}
+							className="flex flex-1 justify-center py-2 hover:cursor-pointer"
+						>
+							<Star
+								color="orange"
+								fill={
+									starHover
+										? index <= starHover
+											? "orange"
+											: "none"
+										: newRating
+										? index <= newRating
+											? "orange"
+											: "none"
+										: initialRating
+										? index <= Number(initialRating)
+											? "orange"
+											: "none"
+										: "none"
+								}
+							/>
+						</div>
+					))}
+				</div>
+				<DialogFooter>
+					<Button
+						variant="outline"
+						className="w-full"
+						onClick={() => {
+							if (newRating !== null) {
+								mutate({
+									...resource,
+									rating: newRating,
+									description: "",
+								});
+								setOpen(false);
+							}
+						}}
+						disabled={newRating === null}
+					>
+						Rate
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
 };
 
-export { RatingDialog, RatingProvider };
+export const RatingButton = ({
+	name,
+	resource,
+	initialUserRating,
+}: {
+	resource: Resource;
+	name: string;
+	initialUserRating?: UserRating | null;
+}) => {
+	const { data: userRating } = trpc.rating.getUserRating.useQuery(resource, {
+		initialData: initialUserRating,
+		staleTime: Infinity,
+		refetchOnMount: false,
+		refetchOnWindowFocus: false,
+	});
+
+	return (
+		<Link
+			href={{
+				query: {
+					...resource,
+					name,
+				},
+			}}
+			className={buttonVariants({
+				variant: "outline",
+			})}
+		>
+			<Star
+				color="orange"
+				fill={userRating ? "orange" : "none"}
+				size={18}
+				className="mr-2"
+			/>
+			{userRating?.rating ? userRating.rating : "Rate"}
+		</Link>
+	);
+};

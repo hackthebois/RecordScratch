@@ -97,7 +97,8 @@ export const getAllSongAverages = async (songIds: string[]) => {
 	const allSongRatings = await db
 		.select({
 			songId: song_ratings.songId,
-			ratingAverage: sql<number>`AVG(rating)`,
+			ratingAverage: sql<number>`ROUND(AVG(rating), 1)`,
+			totalRatings: sql<number>`COUNT(*)`,
 		})
 		.from(song_ratings)
 		.groupBy(song_ratings.songId)
@@ -107,3 +108,31 @@ export const getAllSongAverages = async (songIds: string[]) => {
 	else return allSongRatings;
 };
 export type SongRatingAverages = Awaited<ReturnType<typeof getAllSongAverages>>;
+
+// gets the average rating for all songs individually for a specified album
+export const getAllUserSongRatings = async (
+	songIds: string[],
+	userId: string
+) => {
+	const allSongRatings = await db
+		.select()
+		.from(song_ratings)
+		.where(
+			and(
+				inArray(song_ratings.songId, songIds),
+				eq(song_ratings.userId, userId)
+			)
+		);
+
+	if (!allSongRatings.length) return null;
+	else
+		return allSongRatings.map(({ songId, ...rest }) => {
+			return {
+				resourceId: songId,
+				description: "",
+				type: RatingCategory.SONG,
+				...rest,
+			};
+		});
+};
+export type UserSongRatings = Awaited<ReturnType<typeof getAllUserSongRatings>>;
