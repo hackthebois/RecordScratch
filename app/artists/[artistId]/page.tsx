@@ -1,10 +1,11 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import SongTable from "@/components/SongTable";
-import AlbumList from "@/components/albums/AlbumList";
+import AlbumList from "@/components/album/AlbumList";
+import Rating from "@/components/rating/Rating";
+import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
 import Image from "next/image";
+import { Suspense } from "react";
 
 type Props = {
 	params: {
@@ -12,15 +13,25 @@ type Props = {
 	};
 };
 
-const Artist = async ({ params: { artistId } }: Props) => {
-	const artist = await serverTrpc.spotify.artist.findOne(artistId);
-	const discography = await serverTrpc.spotify.artist.albums(artistId);
-	const topTracks = await serverTrpc.spotify.artist.topTracks(artistId);
-
-	const rating = await serverTrpc.rating.getEveryAlbumAverage({
-		id: artistId,
-		albums: discography.map((album) => album.id),
+const ArtistRating = async ({
+	id,
+	albums,
+}: {
+	id: string;
+	albums: string[];
+}) => {
+	const rating = await serverTrpc.rating.getEveryAlbumAverage.query({
+		id,
+		albums,
 	});
+
+	return <Rating rating={rating} />;
+};
+
+const Artist = async ({ params: { artistId } }: Props) => {
+	const artist = await serverTrpc.spotify.artist.findOne.query(artistId);
+	const discography = await serverTrpc.spotify.artist.albums.query(artistId);
+	const topTracks = await serverTrpc.spotify.artist.topTracks.query(artistId);
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -50,23 +61,12 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							</Badge>
 						))}
 					</div>
-					<div className="flex items-center gap-4">
-						<Star
-							color="orange"
-							fill={rating?.ratingAverage ? "orange" : "none"}
-							size={30}
+					<Suspense>
+						<ArtistRating
+							id={artist.id}
+							albums={discography.map((album) => album.id)}
 						/>
-						<div>
-							<p className="text-lg font-semibold">
-								{rating?.ratingAverage
-									? `${rating?.ratingAverage}`
-									: "No ratings"}
-							</p>
-							<p className="text-xs text-muted-foreground">
-								{rating?.totalRatings ?? "0"}
-							</p>
-						</div>
-					</div>
+					</Suspense>
 				</div>
 			</div>
 			<Tabs

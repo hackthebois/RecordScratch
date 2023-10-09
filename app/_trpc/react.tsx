@@ -3,6 +3,7 @@
 import { env } from "@/env.mjs";
 import type { AppRouter } from "@/server/_app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import { unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
@@ -31,9 +32,14 @@ export function TRPCReactProvider(props: {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<trpc.Provider client={trpcClient} queryClient={queryClient}>
-				{props.children}
-			</trpc.Provider>
+			<ReactQueryStreamedHydration>
+				<trpc.Provider
+					client={trpcClient}
+					queryClient={queryClient as any}
+				>
+					{props.children}
+				</trpc.Provider>
+			</ReactQueryStreamedHydration>
 		</QueryClientProvider>
 	);
 }

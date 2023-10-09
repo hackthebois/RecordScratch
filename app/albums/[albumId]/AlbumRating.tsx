@@ -1,41 +1,28 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/react";
-import { Rating } from "@/drizzle/db/schema";
+import Rating from "@/components/rating/Rating";
+import { RatingButton } from "@/components/rating/RatingButton";
 import { Resource } from "@/types/ratings";
-import { Star } from "lucide-react";
 
 type Props = {
 	resource: Resource;
-	initialRating?: Rating | null;
+	name: string;
 };
 
-const AlbumRating = ({ resource, initialRating }: Props) => {
-	const { data: rating } = trpc.rating.getAverage.useQuery(resource, {
-		initialData: initialRating,
-		staleTime: Infinity,
-		refetchOnMount: false,
-		refetchOnWindowFocus: false,
-	});
+const AlbumRating = ({ resource, name }: Props) => {
+	const [rating] = trpc.rating.getAverage.useSuspenseQuery(resource);
+	const [userRating] = trpc.rating.getUserRating.useSuspenseQuery(resource);
 
 	return (
-		<>
-			<Star
-				color="orange"
-				fill={rating?.ratingAverage ? "orange" : "none"}
-				size={30}
+		<div className="flex items-center gap-4">
+			<Rating rating={rating} />
+			<RatingButton
+				name={name}
+				resource={resource}
+				initialRating={userRating?.rating ?? null}
 			/>
-			<div>
-				<p className="text-lg font-semibold">
-					{rating?.ratingAverage
-						? `${rating?.ratingAverage}`
-						: "No ratings"}
-				</p>
-				<p className="text-xs text-muted-foreground">
-					{rating?.totalRatings ?? "0"}
-				</p>
-			</div>
-		</>
+		</div>
 	);
 };
 

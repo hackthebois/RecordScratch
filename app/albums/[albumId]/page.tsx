@@ -1,11 +1,10 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import SongTable from "@/components/SongTable";
-import { RatingButton } from "@/components/ratings";
+import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { RatingCategory, UserRating } from "@/drizzle/db/schema";
-import { auth } from "@clerk/nextjs";
+import { RatingCategory } from "@/drizzle/db/schema";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import AlbumRating from "./AlbumRating";
 
 type Props = {
@@ -15,23 +14,12 @@ type Props = {
 };
 
 const Page = async ({ params: { albumId } }: Props) => {
-	const album = await serverTrpc.spotify.album(albumId);
+	const album = await serverTrpc.spotify.album.query(albumId);
 
 	const resource = {
 		resourceId: albumId,
 		type: RatingCategory.ALBUM,
 	};
-
-	const { userId } = auth();
-	let userRating: UserRating | null = null;
-	if (userId) {
-		userRating = await serverTrpc.rating.getUserRating(resource);
-	}
-
-	const rating = await serverTrpc.rating.getAverage({
-		resourceId: albumId,
-		type: RatingCategory.ALBUM,
-	});
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -55,15 +43,12 @@ const Page = async ({ params: { albumId } }: Props) => {
 						</h1>
 					</div>
 					<div className="flex items-center gap-4">
-						<AlbumRating
-							resource={resource}
-							initialRating={rating}
-						/>
-						<RatingButton
-							name={album.name}
-							resource={resource}
-							initialUserRating={userRating}
-						/>
+						<Suspense>
+							<AlbumRating
+								resource={resource}
+								name={album.name}
+							/>
+						</Suspense>
 					</div>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
