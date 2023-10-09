@@ -1,4 +1,4 @@
-import { RatingDialogProvider } from "@/components/ratings";
+import { RatingDialogProvider } from "@/components/rating/RatingDialog";
 import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";

@@ -63,6 +63,7 @@ export const ratingRouter = router({
 		.input(SelectRatingDTO)
 		.output(UserRatingDTO.nullable())
 		.query(async ({ ctx: { userId }, input: { resourceId, type } }) => {
+			console.log(resourceId, type);
 			return type == RatingCategory.ALBUM
 				? await getUserAlbumRating({ resourceId, userId })
 				: await getUserSongRating({ resourceId, userId });
