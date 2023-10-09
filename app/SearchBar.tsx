@@ -94,7 +94,7 @@ const AlbumItem = ({
 						onClick={(e) => {
 							e.preventDefault();
 							close();
-							router.push("/");
+							router.push(`/artists/${artist.id}`);
 						}}
 						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
 					>
