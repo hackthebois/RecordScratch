@@ -2,7 +2,6 @@ import { serverTrpc } from "@/app/_trpc/server";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { RatingCategory } from "@/drizzle/db/schema";
-import { unstable_cache } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -17,13 +16,7 @@ type Props = {
 export const revalidate = 60 * 60;
 
 const Page = async ({ params: { albumId } }: Props) => {
-	const album = await unstable_cache(
-		async () => {
-			return await serverTrpc.spotify.album.query(albumId);
-		},
-		[`${albumId}`],
-		{ revalidate: 60 * 60 }
-	)();
+	const album = await serverTrpc.spotify.album.query(albumId);
 
 	const resource = {
 		resourceId: albumId,
