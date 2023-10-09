@@ -13,7 +13,6 @@ type Props = {
 };
 
 const Artist = async ({ params: { artistId } }: Props) => {
-	console.log(artistId);
 	const artist = await serverTrpc.spotify.artist.findOne(artistId);
 	const discography = await serverTrpc.spotify.artist.albums(artistId);
 	const topTracks = await serverTrpc.spotify.artist.topTracks(artistId);

@@ -3,14 +3,16 @@
 import { trpc } from "@/app/_trpc/react";
 import { Rating } from "@/drizzle/db/schema";
 import { Resource } from "@/types/ratings";
+import { cn } from "@/utils/utils";
 import { Star } from "lucide-react";
 
-type Props = {
+const SongRating = ({
+	resource,
+	initialRating,
+}: {
 	resource: Resource;
-	initialRating?: Rating | null;
-};
-
-const AlbumRating = ({ resource, initialRating }: Props) => {
+	initialRating?: Rating;
+}) => {
 	const { data: rating } = trpc.rating.getAverage.useQuery(resource, {
 		initialData: initialRating,
 		staleTime: Infinity,
@@ -19,24 +21,22 @@ const AlbumRating = ({ resource, initialRating }: Props) => {
 	});
 
 	return (
-		<>
+		<span
+			className={cn(
+				"flex items-center justify-center gap-2",
+				!rating?.ratingAverage && "hidden"
+			)}
+		>
 			<Star
 				color="orange"
 				fill={rating?.ratingAverage ? "orange" : "none"}
-				size={30}
+				size={18}
 			/>
-			<div>
-				<p className="text-lg font-semibold">
-					{rating?.ratingAverage
-						? `${rating?.ratingAverage}`
-						: "No ratings"}
-				</p>
-				<p className="text-xs text-muted-foreground">
-					{rating?.totalRatings ?? "0"}
-				</p>
-			</div>
-		</>
+			<p className="text-sm font-medium sm:text-base">
+				{rating ? Number(rating.ratingAverage).toFixed(1) : ""}
+			</p>
+		</span>
 	);
 };
 
-export default AlbumRating;
+export default SongRating;

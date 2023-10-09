@@ -1,8 +1,9 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import SongTable from "@/components/SongTable";
+import { RatingButton } from "@/components/ratings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { RatingCategory } from "@/drizzle/db/schema";
-import { getRatings } from "@/utils/ratings";
+import { RatingCategory, UserRating } from "@/drizzle/db/schema";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import AlbumRating from "./AlbumRating";
@@ -21,7 +22,16 @@ const Page = async ({ params: { albumId } }: Props) => {
 		type: RatingCategory.ALBUM,
 	};
 
-	const ratings = await getRatings(resource);
+	const { userId } = auth();
+	let userRating: UserRating | null = null;
+	if (userId) {
+		userRating = await serverTrpc.rating.getUserRating(resource);
+	}
+
+	const rating = await serverTrpc.rating.getAverage({
+		resourceId: albumId,
+		type: RatingCategory.ALBUM,
+	});
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -46,9 +56,13 @@ const Page = async ({ params: { albumId } }: Props) => {
 					</div>
 					<div className="flex items-center gap-4">
 						<AlbumRating
+							resource={resource}
+							initialRating={rating}
+						/>
+						<RatingButton
 							name={album.name}
 							resource={resource}
-							ratings={ratings}
+							initialUserRating={userRating}
 						/>
 					</div>
 					<div className="flex gap-3">

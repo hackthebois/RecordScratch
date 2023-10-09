@@ -1,11 +1,12 @@
-"use client";
-
-import { RatingCategory } from "@/drizzle/db/schema";
+import { serverTrpc } from "@/app/_trpc/server";
+import { RatingCategory, UserRating } from "@/drizzle/db/schema";
 import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
+import { auth } from "@clerk/nextjs";
 import { Headphones, MoreHorizontal, Star } from "lucide-react";
 import Link from "next/link";
-import { RatingDialog, RatingProvider } from "./ratings";
+import SongRating from "./SongRating";
+import { RatingButton } from "./ratings";
 import { Button } from "./ui/Button";
 import {
 	DropdownMenu,
@@ -16,7 +17,21 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/DropdownMenu";
 
-const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
+const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
+	const songRatings = await serverTrpc.rating.getAllAverageSongRatings({
+		songIds: songs.map((song) => song.id),
+	});
+
+	const { userId } = auth();
+	let userSongRatings: UserRating[] | null = null;
+	if (userId) {
+		userSongRatings = await serverTrpc.rating.getAllUserSongRatings({
+			songIds: songs.map((song) => song.id),
+		});
+	}
+
+	console.log(userSongRatings);
+
 	return (
 		<div className="w-full">
 			{songs.map((song, index) => (
@@ -40,47 +55,27 @@ const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 								.join(", ")}
 						</p>
 					</div>
-					<RatingProvider
+					<SongRating
 						resource={{
 							resourceId: song.id,
 							type: RatingCategory.SONG,
 						}}
-					>
-						{({ rating, userRating, onChange }) => (
-							<>
-								<span
-									className={cn(
-										"flex items-center justify-center gap-2",
-										!rating?.ratingAverage && "hidden"
-									)}
-								>
-									<Star
-										color="orange"
-										fill={
-											rating?.ratingAverage
-												? "orange"
-												: "none"
-										}
-										size={18}
-									/>
-									<p className="text-sm font-medium sm:text-base">
-										{rating
-											? Number(
-													rating.ratingAverage
-											  ).toFixed(1)
-											: ""}
-									</p>
-								</span>
-								<div className="hidden sm:block">
-									<RatingDialog.Button
-										name={song.name}
-										userRating={userRating}
-										onChange={onChange}
-									/>
-								</div>
-							</>
+						initialRating={songRatings?.find(
+							(rating) => rating.songId === song.id
 						)}
-					</RatingProvider>
+					/>
+					<div className="hidden sm:block">
+						<RatingButton
+							name={song.name}
+							resource={{
+								resourceId: song.id,
+								type: RatingCategory.SONG,
+							}}
+							initialUserRating={userSongRatings?.find(
+								(rating) => rating.resourceId === song.id
+							)}
+						/>
+					</div>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button
@@ -106,29 +101,20 @@ const SongTable = ({ songs }: { songs: SpotifyTrack[] }) => {
 									Listen
 								</Link>
 							</DropdownMenuItem>
-							<RatingProvider
-								resource={{
-									resourceId: song.id,
-									type: RatingCategory.SONG,
-								}}
-							>
-								{({ onChange, userRating }) => (
-									<RatingDialog
-										name={song.name}
-										onChange={onChange}
-										rating={userRating?.rating ?? null}
-									>
-										<DropdownMenuItem
-											onSelect={(e) => e.preventDefault()}
-										>
-											<>
-												<Star className="mr-2 h-4 w-4" />
-												Rate
-											</>
-										</DropdownMenuItem>
-									</RatingDialog>
-								)}
-							</RatingProvider>
+							<DropdownMenuItem asChild>
+								<Link
+									href={{
+										query: {
+											resourceId: song.id,
+											type: RatingCategory.SONG,
+											name: song.name,
+										},
+									}}
+								>
+									<Star className="mr-2 h-4 w-4" />
+									Rate
+								</Link>
+							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>

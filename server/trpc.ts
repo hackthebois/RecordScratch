@@ -18,6 +18,8 @@ const isAuthed = middleware(({ ctx: { userId: initialUserId }, next }) => {
 
 	const { userId } = auth();
 
+	console.log("userId", userId);
+
 	// user not identified
 	if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" });
 
