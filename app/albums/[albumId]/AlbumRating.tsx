@@ -17,7 +17,7 @@ const AlbumRating = ({ resource, name }: Props) => {
 
 	return (
 		<div className="flex items-center gap-4">
-			<Rating rating={rating} />
+			<Rating rating={rating} emptyText="Be first to rate!" />
 			<RatingButton
 				name={name}
 				resource={resource}

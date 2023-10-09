@@ -51,7 +51,7 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							</Badge>
 						))}
 					</div>
-					<Rating rating={rating} />
+					<Rating rating={rating} emptyText="No ratings yet" />
 				</div>
 			</div>
 			<Tabs
