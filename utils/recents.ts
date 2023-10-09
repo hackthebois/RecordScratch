@@ -17,7 +17,9 @@ export const useRecents = create<RecentStore>()(
 				set({
 					recents: [
 						recent,
-						...get().recents.filter(({ id }) => id !== recent.id),
+						...get()
+							.recents.filter(({ id }) => id !== recent.id)
+							.slice(0, 5),
 					],
 				});
 			},
