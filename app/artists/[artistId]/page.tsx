@@ -1,9 +1,9 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import SongTable from "@/components/SongTable";
-import AlbumList from "@/components/albums/AlbumList";
+import AlbumList from "@/components/album/AlbumList";
+import { Rating } from "@/components/rating/Rating";
+import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
 import Image from "next/image";
 
 type Props = {
@@ -13,12 +13,12 @@ type Props = {
 };
 
 const Artist = async ({ params: { artistId } }: Props) => {
-	console.log(artistId);
-	const artist = await serverTrpc.spotify.artist.findOne(artistId);
-	const discography = await serverTrpc.spotify.artist.albums(artistId);
-	const topTracks = await serverTrpc.spotify.artist.topTracks(artistId);
-
-	const rating = await serverTrpc.rating.getEveryAlbumAverage({
+	const [artist, discography, topTracks] = await Promise.all([
+		serverTrpc.spotify.artist.findOne.query(artistId),
+		serverTrpc.spotify.artist.albums.query(artistId),
+		serverTrpc.spotify.artist.topTracks.query(artistId),
+	]);
+	const rating = await serverTrpc.rating.getEveryAlbumAverage.query({
 		id: artistId,
 		albums: discography.map((album) => album.id),
 	});
@@ -51,23 +51,7 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							</Badge>
 						))}
 					</div>
-					<div className="flex items-center gap-4">
-						<Star
-							color="orange"
-							fill={rating?.ratingAverage ? "orange" : "none"}
-							size={30}
-						/>
-						<div>
-							<p className="text-lg font-semibold">
-								{rating?.ratingAverage
-									? `${rating?.ratingAverage}`
-									: "No ratings"}
-							</p>
-							<p className="text-xs text-muted-foreground">
-								{rating?.totalRatings ?? "0"}
-							</p>
-						</div>
-					</div>
+					<Rating rating={rating} />
 				</div>
 			</div>
 			<Tabs

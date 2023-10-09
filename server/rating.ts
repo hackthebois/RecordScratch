@@ -14,6 +14,7 @@ import {
 } from "@/drizzle/db/schema";
 import {
 	getAllSongAverages,
+	getAllUserSongRatings,
 	getUserSongRating,
 	insertSongRating,
 	updateSongRating,
@@ -62,6 +63,7 @@ export const ratingRouter = router({
 		.input(SelectRatingDTO)
 		.output(UserRatingDTO.nullable())
 		.query(async ({ ctx: { userId }, input: { resourceId, type } }) => {
+			console.log(resourceId, type);
 			return type == RatingCategory.ALBUM
 				? await getUserAlbumRating({ resourceId, userId })
 				: await getUserSongRating({ resourceId, userId });
@@ -113,6 +115,12 @@ export const ratingRouter = router({
 		.input(z.object({ songIds: z.string().array() }))
 		.query(async ({ input: { songIds } }) => {
 			return getAllSongAverages(songIds);
+		}),
+
+	getAllUserSongRatings: protectedProcedure
+		.input(z.object({ songIds: z.string().array() }))
+		.query(async ({ ctx: { userId }, input: { songIds } }) => {
+			return getAllUserSongRatings(songIds, userId);
 		}),
 
 	invalidateResource: protectedProcedure
