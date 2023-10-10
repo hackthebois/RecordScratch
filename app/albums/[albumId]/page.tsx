@@ -16,9 +16,7 @@ type Props = {
 
 const Page = async ({ params: { albumId } }: Props) => {
 	const album = await unstable_cache(
-		async () => {
-			return await serverTrpc.spotify.album.query(albumId);
-		},
+		async () => await serverTrpc.spotify.album.query(albumId),
 		[albumId],
 		{ revalidate: 60 * 60 }
 	)();
