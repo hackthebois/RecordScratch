@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { Disc3 } from "lucide-react";
+import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -73,6 +74,7 @@ const RootLayout = ({ children }: Props) => {
 							</ScrollArea>
 							<RatingDialogProvider />
 							<Analytics />
+							<AxiomWebVitals />
 						</Providers>
 					</TRPCReactProvider>
 				</ClerkProvider>
