@@ -28,7 +28,7 @@ const AlbumRating = ({ resource, name }: Props) => {
 };
 
 const AlbumRatingSkeleton = () => {
-	return <Skeleton className="h-10 w-44 rounded-lg" />;
+	return <Skeleton className="h-10 w-44" />;
 };
 
 export { AlbumRating, AlbumRatingSkeleton };
