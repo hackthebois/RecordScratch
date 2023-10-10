@@ -5,24 +5,47 @@ import { Rating } from "@/components/rating/Rating";
 import { RatingButton } from "@/components/rating/RatingButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
+import { useAuth } from "@clerk/nextjs";
 
 type Props = {
 	resource: Resource;
 	name: string;
 };
 
-const AlbumRating = ({ resource, name }: Props) => {
-	const [rating] = trpc.rating.getAverage.useSuspenseQuery(resource);
+const UserRating = ({
+	resource,
+	name,
+}: {
+	resource: Resource;
+	name: string;
+}) => {
 	const [userRating] = trpc.rating.getUserRating.useSuspenseQuery(resource);
+
+	return (
+		<RatingButton
+			name={name}
+			resource={resource}
+			initialRating={userRating?.rating ?? null}
+		/>
+	);
+};
+
+const AlbumRating = ({ resource, name }: Props) => {
+	const { userId } = useAuth();
+	const [rating] = trpc.rating.getAverage.useSuspenseQuery(resource);
 
 	return (
 		<div className="flex items-center gap-4">
 			<Rating rating={rating} emptyText="Be first to rate!" />
-			<RatingButton
-				name={name}
-				resource={resource}
-				initialRating={userRating?.rating ?? null}
-			/>
+			{userId ? (
+				<UserRating resource={resource} name={name} />
+			) : (
+				<RatingButton
+					name={name}
+					resource={resource}
+					initialRating={null}
+				/>
+			)}
 		</div>
 	);
 };
