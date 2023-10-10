@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Analytics } from "@vercel/analytics/react";
 import { Disc3 } from "lucide-react";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
@@ -34,6 +33,7 @@ export const preferredRegion = "cle1";
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
+			<AxiomWebVitals />
 			<body
 				className={`${montserrat.className} flex h-[100svh] flex-col`}
 			>
@@ -73,8 +73,6 @@ const RootLayout = ({ children }: Props) => {
 								</main>
 							</ScrollArea>
 							<RatingDialogProvider />
-							<Analytics />
-							<AxiomWebVitals />
 						</Providers>
 					</TRPCReactProvider>
 				</ClerkProvider>
