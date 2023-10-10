@@ -38,6 +38,7 @@
 		"lucide-react": "^0.274.0",
 		"mysql2": "^3.6.1",
 		"next": "latest",
+		"next-axiom": "^1.0.0",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
