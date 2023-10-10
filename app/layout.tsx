@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 import { Disc3 } from "lucide-react";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
@@ -71,6 +72,7 @@ const RootLayout = ({ children }: Props) => {
 								</main>
 							</ScrollArea>
 							<RatingDialogProvider />
+							<Analytics />
 						</Providers>
 					</TRPCReactProvider>
 				</ClerkProvider>
