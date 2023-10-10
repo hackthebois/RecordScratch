@@ -144,7 +144,7 @@ const SearchBar = () => {
 						autoComplete="off"
 						placeholder="Search"
 						value={query}
-						className="flex-1 border-0 py-4 pl-4 text-base outline-none"
+						className="flex-1 border-0 bg-background py-4 pl-4 text-base outline-none"
 						onChange={(e) => setQuery(e.target.value)}
 					/>
 				</div>
