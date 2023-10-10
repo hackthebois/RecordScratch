@@ -4,7 +4,10 @@ import { Rating } from "@/components/rating/Rating";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { unstable_cache } from "next/cache";
 import Image from "next/image";
+import { Suspense } from "react";
 
 type Props = {
 	params: {
@@ -12,18 +15,28 @@ type Props = {
 	};
 };
 
-export const revalidate = 60 * 60;
+const ArtistRating = async (input: { id: string; albums: string[] }) => {
+	const rating = await serverTrpc.rating.getEveryAlbumAverage.query(input);
+
+	return <Rating rating={rating} emptyText="No ratings yet" />;
+};
+
+const ArtistRatingSkeleton = () => {
+	return <Skeleton className="h-10 w-20" />;
+};
 
 const Artist = async ({ params: { artistId } }: Props) => {
-	const [artist, discography, topTracks] = await Promise.all([
-		serverTrpc.spotify.artist.findOne.query(artistId),
-		serverTrpc.spotify.artist.albums.query(artistId),
-		serverTrpc.spotify.artist.topTracks.query(artistId),
-	]);
-	const rating = await serverTrpc.rating.getEveryAlbumAverage.query({
-		id: artistId,
-		albums: discography.map((album) => album.id),
-	});
+	const [artist, discography, topTracks] = await unstable_cache(
+		async () => {
+			return await Promise.all([
+				serverTrpc.spotify.artist.findOne.query(artistId),
+				serverTrpc.spotify.artist.albums.query(artistId),
+				serverTrpc.spotify.artist.topTracks.query(artistId),
+			]);
+		},
+		[artistId],
+		{ revalidate: 60 * 60 }
+	)();
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -53,7 +66,12 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							</Badge>
 						))}
 					</div>
-					<Rating rating={rating} emptyText="No ratings yet" />
+					<Suspense fallback={<ArtistRatingSkeleton />}>
+						<ArtistRating
+							id={artistId}
+							albums={discography.map((album) => album.id)}
+						/>
+					</Suspense>
 				</div>
 			</div>
 			<Tabs

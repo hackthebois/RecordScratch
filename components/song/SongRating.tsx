@@ -57,7 +57,7 @@ const SongRating = ({ songIds, song }: Props) => {
 };
 
 const SongRatingSkeleton = () => {
-	return <Skeleton className="h-9 w-28 rounded-lg" />;
+	return <Skeleton className="h-9 w-28" />;
 };
 
 export { SongRating, SongRatingSkeleton };
