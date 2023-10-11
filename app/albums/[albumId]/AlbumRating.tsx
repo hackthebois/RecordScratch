@@ -5,7 +5,7 @@ import { Rating } from "@/components/rating/Rating";
 import { RatingButton } from "@/components/rating/RatingButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
-import { useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 type Props = {
 	resource: Resource;
@@ -22,7 +22,7 @@ const UserRating = ({
 	const [userRating] = trpc.rating.getUserRating.useSuspenseQuery(resource);
 
 	return (
-		<RatingButton
+		<RatingButton.SignedIn
 			name={name}
 			resource={resource}
 			initialRating={userRating?.rating ?? null}
@@ -31,21 +31,17 @@ const UserRating = ({
 };
 
 const AlbumRating = ({ resource, name }: Props) => {
-	const { userId } = useAuth();
 	const [rating] = trpc.rating.getAverage.useSuspenseQuery(resource);
 
 	return (
 		<div className="flex items-center gap-4">
 			<Rating rating={rating} emptyText="Be first to rate!" />
-			{userId ? (
+			<SignedIn>
 				<UserRating resource={resource} name={name} />
-			) : (
-				<RatingButton
-					name={name}
-					resource={resource}
-					initialRating={null}
-				/>
-			)}
+			</SignedIn>
+			<SignedOut>
+				<RatingButton.SignedOut />
+			</SignedOut>
 		</div>
 	);
 };
