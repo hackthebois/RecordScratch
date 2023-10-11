@@ -20,6 +20,7 @@ const UserRating = ({ songIds, song }: Props) => {
 	const userRating = userSongRatings?.find(
 		(rating) => rating.resourceId === song.id
 	);
+
 	return (
 		<RatingButton.SignedIn
 			name={song.name}
@@ -27,7 +28,7 @@ const UserRating = ({ songIds, song }: Props) => {
 				type: RatingCategory.SONG,
 				resourceId: song.id,
 			}}
-			initialRating={userRating?.rating ?? null}
+			initialRating={userRating ?? null}
 		/>
 	);
 };
