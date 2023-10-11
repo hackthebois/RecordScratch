@@ -2,7 +2,7 @@ import { trpc } from "@/app/_trpc/react";
 import { RatingCategory } from "@/drizzle/db/schema";
 import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
-import { useAuth } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Star } from "lucide-react";
 import { RatingButton } from "../rating/RatingButton";
 import { Skeleton } from "../ui/skeleton";
@@ -21,7 +21,7 @@ const UserRating = ({ songIds, song }: Props) => {
 		(rating) => rating.resourceId === song.id
 	);
 	return (
-		<RatingButton
+		<RatingButton.SignedIn
 			name={song.name}
 			resource={{
 				type: RatingCategory.SONG,
@@ -33,7 +33,6 @@ const UserRating = ({ songIds, song }: Props) => {
 };
 
 const SongRating = ({ songIds, song }: Props) => {
-	const { userId } = useAuth();
 	const [songRatings] = trpc.rating.getAllAverageSongRatings.useSuspenseQuery(
 		{
 			songIds,
@@ -58,18 +57,12 @@ const SongRating = ({ songIds, song }: Props) => {
 					{rating ? Number(rating.ratingAverage).toFixed(1) : ""}
 				</p>
 			</span>
-			{userId ? (
+			<SignedIn>
 				<UserRating song={song} songIds={songIds} />
-			) : (
-				<RatingButton
-					name={song.name}
-					resource={{
-						type: RatingCategory.SONG,
-						resourceId: song.id,
-					}}
-					initialRating={null}
-				/>
-			)}
+			</SignedIn>
+			<SignedOut>
+				<RatingButton.SignedOut />
+			</SignedOut>
 		</>
 	);
 };
