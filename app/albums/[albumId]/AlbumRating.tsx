@@ -25,7 +25,7 @@ const UserRating = ({
 		<RatingButton.SignedIn
 			name={name}
 			resource={resource}
-			initialRating={userRating?.rating ?? null}
+			initialRating={userRating ?? null}
 		/>
 	);
 };
