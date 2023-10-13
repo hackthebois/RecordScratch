@@ -44,6 +44,6 @@ export const getAllUserSongRatings = async (
 		);
 
 	if (!allSongRatings.length) return null;
-	else return allSongRatings[0];
+	else return allSongRatings;
 };
 export type UserSongRatings = Awaited<ReturnType<typeof getAllUserSongRatings>>;

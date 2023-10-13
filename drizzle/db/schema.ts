@@ -44,7 +44,7 @@ export const UserRatingDTO = z.object({
 	resourceId: z.string(),
 	category: z.enum([RatingCategory.ALBUM, RatingCategory.SONG]),
 	rating: z.number(),
-	description: z.string(),
+	description: z.string().nullable(),
 	userId: z.string(),
 });
 export type UserRating = z.infer<typeof UserRatingDTO>;

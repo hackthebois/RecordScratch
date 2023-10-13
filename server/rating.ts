@@ -6,7 +6,11 @@ import {
 	updateRating,
 	userRatingExists,
 } from "@/drizzle/db/ratingsUtils";
-import { SelectRatingDTO, UpdateUserRatingDTO } from "@/drizzle/db/schema";
+import {
+	SelectRatingDTO,
+	UpdateUserRatingDTO,
+	UserRatingDTO,
+} from "@/drizzle/db/schema";
 import {
 	getAllSongAverages,
 	getAllUserSongRatings,
@@ -67,6 +71,7 @@ export const ratingRouter = router({
 	// Get the mean average for each individual song
 	getAllUserSongRatings: protectedProcedure
 		.input(z.object({ songIds: z.string().array() }))
+		.output(z.array(UserRatingDTO).nullable())
 		.query(async ({ ctx: { userId }, input: { songIds } }) => {
 			return getAllUserSongRatings(songIds, userId);
 		}),
