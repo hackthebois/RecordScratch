@@ -13,6 +13,8 @@ import SearchBar from "./SearchBar";
 import SignInButton from "./SignInButton";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
+import { dark } from "@clerk/themes";
+import { useTheme } from "next-themes";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -31,13 +33,19 @@ export const runtime = "edge";
 export const preferredRegion = "cle1";
 
 const RootLayout = ({ children }: Props) => {
+	//const clerkTheme = useTheme().theme === "dark" ? dark : undefined;
+
 	return (
 		<html lang="en">
 			<AxiomWebVitals />
 			<body
 				className={`${montserrat.className} flex h-[100svh] flex-col`}
 			>
-				<ClerkProvider>
+				<ClerkProvider
+					appearance={{
+						baseTheme: dark,
+					}}
+				>
 					<TRPCReactProvider headers={headers()}>
 						<Providers>
 							<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
