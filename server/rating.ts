@@ -1,3 +1,4 @@
+import { getAllAlbumAverages } from "@/drizzle/db/albumUtils";
 import {
 	deleteUserRating,
 	getAllUserRatings,
@@ -18,7 +19,6 @@ import {
 } from "@/drizzle/db/songUtils";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
-import { getAllAlbumAverages } from "@/drizzle/db/albumUtils";
 
 export const ratingRouter = router({
 	// Input the user rating for an album
@@ -29,6 +29,7 @@ export const ratingRouter = router({
 				...userRating,
 				userId,
 			});
+			console.log(ratingExists);
 
 			if (ratingExists) await updateRating({ ...userRating, userId });
 			else await insertRating({ ...userRating, userId });

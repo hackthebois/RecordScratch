@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "./config";
 import {
 	RatingCategory,
@@ -35,7 +35,8 @@ export const updateRating = async ({
 	rating,
 	description,
 }: UserRating) => {
-	db.update(ratings)
+	return db
+		.update(ratings)
 		.set({
 			rating: rating,
 			description: description,
