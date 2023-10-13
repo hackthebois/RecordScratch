@@ -82,7 +82,7 @@ export const RatingDialogProvider = () => {
 
 	const { mutate } = trpc.rating.rate.useMutation({
 		onSuccess: async (_, resource) => {
-			if (resource.type === RatingCategory.SONG) {
+			if (resource.category === RatingCategory.SONG) {
 				utils.rating.getAllUserSongRatings.invalidate();
 				utils.rating.getAllAverageSongRatings.invalidate();
 			} else {
