@@ -24,7 +24,7 @@ const UserRating = ({ songIds, song }: Props) => {
 		<RatingButton.SignedIn
 			name={song.name}
 			resource={{
-				type: RatingCategory.SONG,
+				category: RatingCategory.SONG,
 				resourceId: song.id,
 			}}
 			initialRating={userRating?.rating ?? null}
