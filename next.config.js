@@ -6,6 +6,7 @@ module.exports = withAxiom({
 		serverActions: true,
 	},
 	images: {
+		unoptimized: true,
 		remotePatterns: [
 			{
 				protocol: "https",
