@@ -1,5 +1,6 @@
 import {
 	deleteUserRating,
+	getAllUserRatings,
 	getRatingAverage,
 	getUserRating,
 	insertRating,
@@ -74,5 +75,11 @@ export const ratingRouter = router({
 		.output(z.array(UserRatingDTO).nullable())
 		.query(async ({ ctx: { userId }, input: { songIds } }) => {
 			return getAllUserSongRatings(songIds, userId);
+		}),
+
+	getEveryUserRating: protectedProcedure
+		.input(SelectRatingDTO)
+		.query(async ({ ctx: { userId }, input: { category } }) => {
+			return await getAllUserRatings({ userId, category });
 		}),
 });

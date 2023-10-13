@@ -109,7 +109,7 @@ export const getRatingAverage = async (
 };
 export type GetRatingAverage = Awaited<ReturnType<typeof getRatingAverage>>;
 
-// Gets the users album rating
+// Deletes the users rating
 export const deleteUserRating = async ({
 	userId,
 	resourceId,
@@ -121,3 +121,18 @@ export const deleteUserRating = async ({
 		);
 };
 export type DeleteUserRating = Awaited<ReturnType<typeof deleteUserRating>>;
+
+// Gets all of the users ratings
+export const getAllUserRatings = async ({
+	userId,
+	category,
+}: Omit<SelectRatingType, "resourceId">) => {
+	const userRatings = await db
+		.select()
+		.from(ratings)
+		.where(and(eq(ratings.userId, userId), eq(ratings.category, category)));
+
+	if (!userRatings.length) return null;
+	else return userRatings;
+};
+export type GetAllUserRatings = Awaited<ReturnType<typeof getAllUserRatings>>;
