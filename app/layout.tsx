@@ -2,7 +2,7 @@ import { RatingDialogProvider } from "@/components/rating/RatingDialog";
 import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Disc3 } from "lucide-react";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
@@ -11,10 +11,9 @@ import Link from "next/link";
 import { Providers } from "./Providers";
 import SearchBar from "./SearchBar";
 import SignInButton from "./SignInButton";
+import UserButton from "./UserButton";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
-import { dark } from "@clerk/themes";
-import { useTheme } from "next-themes";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -33,8 +32,6 @@ export const runtime = "edge";
 export const preferredRegion = "cle1";
 
 const RootLayout = ({ children }: Props) => {
-	//const clerkTheme = useTheme().theme === "dark" ? dark : undefined;
-
 	return (
 		<html lang="en">
 			<AxiomWebVitals />
@@ -43,7 +40,11 @@ const RootLayout = ({ children }: Props) => {
 			>
 				<ClerkProvider
 					appearance={{
-						baseTheme: dark,
+						variables: {
+							colorPrimary: "hsl(0 0% 9%)",
+							colorDanger: "hsl(0 84.2% 60.2%)",
+							borderRadius: "0.5rem",
+						},
 					}}
 				>
 					<TRPCReactProvider headers={headers()}>
@@ -66,7 +67,7 @@ const RootLayout = ({ children }: Props) => {
 									</div>
 									<div className="flex items-center justify-center gap-3">
 										<SignedIn>
-											<UserButton afterSignOutUrl="/" />
+											<UserButton />
 										</SignedIn>
 										<SignedOut>
 											<SignInButton />
