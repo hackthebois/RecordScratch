@@ -7,7 +7,7 @@ export type SongRatingAverages = Awaited<ReturnType<typeof getAllSongAverages>>;
 
 export type Resource = {
 	resourceId: string;
-	type: RatingCategory;
+	category: RatingCategory;
 };
 
 export type Ratings = {
