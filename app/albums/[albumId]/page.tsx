@@ -23,7 +23,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 
 	const resource = {
 		resourceId: albumId,
-		type: RatingCategory.ALBUM,
+		category: RatingCategory.ALBUM,
 	};
 
 	return (

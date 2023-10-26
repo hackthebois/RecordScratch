@@ -8,12 +8,18 @@ dependencies:
   '@clerk/nextjs':
     specifier: ^4.25.3
     version: 4.25.3(next@13.5.4)(react-dom@18.2.0)(react@18.2.0)
+  '@clerk/themes':
+    specifier: ^1.7.7
+    version: 1.7.7(react@18.2.0)
   '@hookform/resolvers':
     specifier: ^3.3.1
     version: 3.3.1(react-hook-form@7.47.0)
   '@planetscale/database':
     specifier: ^1.11.0
     version: 1.11.0
+  '@radix-ui/react-avatar':
+    specifier: ^1.0.4
+    version: 1.0.4(@types/react-dom@18.2.12)(@types/react@18.2.27)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-dialog':
     specifier: ^1.0.5
     version: 1.0.5(@types/react-dom@18.2.12)(@types/react@18.2.27)(react-dom@18.2.0)(react@18.2.0)
@@ -236,6 +242,15 @@ packages:
       js-cookie: 3.0.1
       react: 18.2.0
       swr: 2.2.0(react@18.2.0)
+    dev: false
+
+  /@clerk/themes@1.7.7(react@18.2.0):
+    resolution: {integrity: sha512-nQqqaGVwfUK7A4y/STuYBj1Bdxk2PG48ChwxXz/ldC7+VRK3mtY5K7VLe76UGWpqrehrWL/vV6GAYu51K9UFeQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@clerk/types@3.54.0:
@@ -689,6 +704,30 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.1
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.12)(@types/react@18.2.27)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.27
+      '@types/react-dom': 18.2.12
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@radix-ui/react-avatar@1.0.4(@types/react-dom@18.2.12)(@types/react@18.2.27)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-kVK2K7ZD3wwj3qhle0ElXhOjbezIgyl2hVvgwfIdexL3rN6zJmy5AqqIf+D31lxVppdzV8CjAfZ6PklkmInZLw==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.1
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.27)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.12)(@types/react@18.2.27)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.27)(react@18.2.0)
+      '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.2.27)(react@18.2.0)
       '@types/react': 18.2.27
       '@types/react-dom': 18.2.12
       react: 18.2.0

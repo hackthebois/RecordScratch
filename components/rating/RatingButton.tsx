@@ -1,7 +1,9 @@
 "use client";
 
 import { useClerk } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Star } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Button } from "../ui/Button";
 import { Rate, useRatingDialog } from "./RatingDialog";
 
@@ -38,11 +40,17 @@ RatingButton.SignedIn = ({ resource, name, initialRating }: Rate) => {
 
 RatingButton.SignedOut = () => {
 	const { openSignIn } = useClerk();
+	const clerkTheme = useTheme().theme === "dark" ? dark : undefined;
 
 	return (
 		<RatingButton
 			rating={null}
-			onClick={() => openSignIn({ redirectUrl: undefined })}
+			onClick={() =>
+				openSignIn({
+					redirectUrl: undefined,
+					appearance: { baseTheme: clerkTheme },
+				})
+			}
 		/>
 	);
 };

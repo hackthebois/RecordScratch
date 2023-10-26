@@ -2,7 +2,7 @@ import { RatingDialogProvider } from "@/components/rating/RatingDialog";
 import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Disc3 } from "lucide-react";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Providers } from "./Providers";
 import SearchBar from "./SearchBar";
 import SignInButton from "./SignInButton";
+import UserButton from "./UserButton";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
@@ -37,7 +38,15 @@ const RootLayout = ({ children }: Props) => {
 			<body
 				className={`${montserrat.className} flex h-[100svh] flex-col`}
 			>
-				<ClerkProvider>
+				<ClerkProvider
+					appearance={{
+						variables: {
+							colorPrimary: "hsl(0 0% 9%)",
+							colorDanger: "hsl(0 84.2% 60.2%)",
+							borderRadius: "0.5rem",
+						},
+					}}
+				>
 					<TRPCReactProvider headers={headers()}>
 						<Providers>
 							<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
@@ -58,7 +67,7 @@ const RootLayout = ({ children }: Props) => {
 									</div>
 									<div className="flex items-center justify-center gap-3">
 										<SignedIn>
-											<UserButton afterSignOutUrl="/" />
+											<UserButton />
 										</SignedIn>
 										<SignedOut>
 											<SignInButton />
