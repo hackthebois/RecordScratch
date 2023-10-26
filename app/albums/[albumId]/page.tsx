@@ -52,7 +52,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 						<Badge variant="outline">{album.release_date}</Badge>
 						{album.tracks && (
 							<Badge variant="outline">
-								{album.tracks.items.length} Tracks
+								{album.tracks.items.length} Songs
 							</Badge>
 						)}
 					</div>
