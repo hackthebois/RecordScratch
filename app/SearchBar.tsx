@@ -136,7 +136,7 @@ const SearchBar = () => {
 					</div>
 				</>
 			</DialogTrigger>
-			<DialogContent className="flex h-full w-full flex-col gap-0 p-0 sm:max-h-[70%] sm:max-w-[500px] sm:p-0">
+			<DialogContent className="flex h-full w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
 				<div className="flex items-center border-b pr-10">
 					<Search size={20} className="ml-4 text-muted-foreground" />
 					<input
