@@ -20,7 +20,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-	title: "Treble",
+	title: "RecordScratch",
 	description: "Music rating and review app",
 };
 
