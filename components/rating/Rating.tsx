@@ -12,8 +12,8 @@ const Rating = ({ rating, emptyText }: Props) => {
 	return (
 		<div className="flex items-center gap-2">
 			<Star
-				color="orange"
-				fill={rating?.ratingAverage ? "orange" : "none"}
+				color="#ffb703"
+				fill={rating?.ratingAverage ? "#ffb703" : "none"}
 				size={30}
 			/>
 			<div>

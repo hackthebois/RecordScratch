@@ -49,8 +49,8 @@ const SongRating = ({ songIds, song }: Props) => {
 				)}
 			>
 				<Star
-					color="orange"
-					fill={rating?.ratingAverage ? "orange" : "none"}
+					color="#ffb703"
+					fill={rating?.ratingAverage ? "#ffb703" : "none"}
 					size={18}
 				/>
 				<p className="text-sm font-medium sm:text-base">

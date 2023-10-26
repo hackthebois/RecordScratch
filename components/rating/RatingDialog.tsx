@@ -113,19 +113,19 @@ export const RatingDialogProvider = () => {
 							className="flex flex-1 justify-center py-2 hover:cursor-pointer"
 						>
 							<Star
-								color="orange"
+								color="#ffb703"
 								fill={
 									hoverRating
 										? index <= hoverRating
-											? "orange"
+											? "#ffb703"
 											: "none"
 										: newRating
 										? index <= newRating
-											? "orange"
+											? "#ffb703"
 											: "none"
 										: initialRating
 										? index <= Number(initialRating)
-											? "orange"
+											? "#ffb703"
 											: "none"
 										: "none"
 								}
