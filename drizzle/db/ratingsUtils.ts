@@ -1,11 +1,7 @@
+import { RatingCategory, SelectRatingType, UserRating } from "@/types/ratings";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "./config";
-import {
-	RatingCategory,
-	SelectRatingType,
-	UserRating,
-	ratings,
-} from "./schema";
+import { ratings } from "./schema";
 
 /**********************************
 	Rating Database Functions
