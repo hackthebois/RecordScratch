@@ -17,8 +17,8 @@ export const RatingButton = ({
 	return (
 		<Button variant="outline" size="sm" onClick={onClick}>
 			<Star
-				color="#219ebc"
-				fill={rating ? "#219ebc" : "none"}
+				color="#fb8500"
+				fill={rating ? "#fb8500" : "none"}
 				size={18}
 				className="mr-2"
 			/>
