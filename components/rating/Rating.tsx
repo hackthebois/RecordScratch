@@ -1,6 +1,6 @@
 "use client";
 
-import { Rating as RatingType } from "@/drizzle/db/schema";
+import { Rating as RatingType } from "@/types/ratings";
 import { Star } from "lucide-react";
 
 type Props = {

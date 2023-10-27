@@ -10,8 +10,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/Dialog";
-import { RatingCategory, UserRating } from "@/drizzle/db/schema";
-import { Resource } from "@/types/ratings";
+import { Resource, UserRating } from "@/types/ratings";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Star } from "lucide-react";
@@ -113,7 +112,7 @@ export const RatingDialogProvider = () => {
 
 	const { mutate } = trpc.rating.rate.useMutation({
 		onSuccess: async (_, resource) => {
-			if (resource.category === RatingCategory.SONG) {
+			if (resource.category === "SONG") {
 				utils.rating.getAllUserSongRatings.invalidate();
 				utils.rating.getAllAverageSongRatings.invalidate();
 			} else {

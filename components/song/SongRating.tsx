@@ -1,5 +1,4 @@
 import { trpc } from "@/app/_trpc/react";
-import { RatingCategory } from "@/drizzle/db/schema";
 import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
@@ -25,7 +24,7 @@ const UserRating = ({ songIds, song }: Props) => {
 		<RatingButton.SignedIn
 			name={song.name}
 			resource={{
-				category: RatingCategory.SONG,
+				category: "SONG",
 				resourceId: song.id,
 			}}
 			initialRating={userRating ?? null}
