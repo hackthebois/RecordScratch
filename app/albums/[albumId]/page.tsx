@@ -1,6 +1,7 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Badge } from "@/components/ui/badge";
 import { RatingCategory } from "@/drizzle/db/schema";
 import { unstable_cache } from "next/cache";
 import Image from "next/image";
@@ -46,6 +47,14 @@ const Page = async ({ params: { albumId } }: Props) => {
 						<h1 className="text-center sm:text-left">
 							{album.name}
 						</h1>
+					</div>
+					<div className="flex gap-3">
+						<Badge variant="outline">{album.release_date}</Badge>
+						{album.tracks && (
+							<Badge variant="outline">
+								{album.tracks.items.length} Songs
+							</Badge>
+						)}
 					</div>
 					<div className="flex items-center gap-4">
 						<Suspense fallback={<AlbumRatingSkeleton />}>

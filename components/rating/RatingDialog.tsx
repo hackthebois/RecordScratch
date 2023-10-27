@@ -128,7 +128,11 @@ export const RatingDialogProvider = () => {
 	});
 
 	useEffect(() => {
-		form.reset({ ...initialRating });
+		form.reset({
+			...initialRating,
+			title: initialRating?.title ?? "",
+			description: initialRating?.description ?? "",
+		});
 	}, [initialRating]);
 
 	if (!resource || !name) {
@@ -145,6 +149,7 @@ export const RatingDialogProvider = () => {
 			...resource,
 			description,
 			rating,
+			title,
 		});
 		setOpen(false);
 	};
@@ -200,6 +205,7 @@ export const RatingDialogProvider = () => {
 										<Textarea
 											placeholder="Detail your thoughts..."
 											{...field}
+											className="h-40"
 										/>
 									</FormControl>
 								</FormItem>
