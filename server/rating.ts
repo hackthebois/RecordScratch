@@ -9,14 +9,14 @@ import {
 	userRatingExists,
 } from "@/drizzle/db/ratingsUtils";
 import {
-	SelectRatingDTO,
-	UpdateUserRatingDTO,
-	UserRatingDTO,
-} from "@/drizzle/db/schema";
-import {
 	getAllSongAverages,
 	getAllUserSongRatings,
 } from "@/drizzle/db/songUtils";
+import {
+	SelectRatingDTO,
+	UpdateUserRatingDTO,
+	UserRatingDTO,
+} from "@/types/ratings";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 

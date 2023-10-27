@@ -1,31 +1,15 @@
+import { RatingCategory, SelectRatingType, UserRating } from "@/types/ratings";
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "./config";
-import {
-	RatingCategory,
-	SelectRatingType,
-	UserRating,
-	ratings,
-} from "./schema";
+import { ratings } from "./schema";
 
 /**********************************
 	Rating Database Functions
 ***********************************/
 
 // Inserts a new album rating
-export const insertRating = async ({
-	resourceId,
-	userId,
-	rating,
-	description,
-	category,
-}: UserRating) => {
-	return db.insert(ratings).values({
-		resourceId: resourceId,
-		userId: userId,
-		rating: rating,
-		description: description,
-		category: category,
-	});
+export const insertRating = async (rating: UserRating) => {
+	return db.insert(ratings).values(rating);
 };
 
 // Updates an existing album rating
@@ -33,13 +17,15 @@ export const updateRating = async ({
 	resourceId,
 	userId,
 	rating,
+	title,
 	description,
 }: UserRating) => {
 	return db
 		.update(ratings)
 		.set({
-			rating: rating,
-			description: description,
+			rating,
+			title,
+			description,
 		})
 		.where(
 			and(eq(ratings.resourceId, resourceId), eq(ratings.userId, userId))

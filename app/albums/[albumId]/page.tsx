@@ -1,13 +1,14 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import SongTable from "@/components/song/SongTable";
+// import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/badge";
-import { RatingCategory } from "@/drizzle/db/schema";
-import { unstable_cache } from "next/cache";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Resource } from "@/types/ratings";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { AlbumRating, AlbumRatingSkeleton } from "./AlbumRating";
+import AlbumRating from "./AlbumRating";
 
 type Props = {
 	params: {
@@ -15,16 +16,14 @@ type Props = {
 	};
 };
 
-const Page = async ({ params: { albumId } }: Props) => {
-	const album = await unstable_cache(
-		async () => await serverTrpc.spotify.album.query(albumId),
-		[albumId],
-		{ revalidate: 60 * 60 }
-	)();
+export const revalidate = 60 * 60 * 24;
 
-	const resource = {
+const Page = async ({ params: { albumId } }: Props) => {
+	const album = await serverTrpc.spotify.album.query(albumId);
+
+	const resource: Resource = {
 		resourceId: albumId,
-		category: RatingCategory.ALBUM,
+		category: "ALBUM",
 	};
 
 	return (
@@ -57,7 +56,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 						)}
 					</div>
 					<div className="flex items-center gap-4">
-						<Suspense fallback={<AlbumRatingSkeleton />}>
+						<Suspense fallback={<Skeleton className="h-10 w-44" />}>
 							<AlbumRating
 								resource={resource}
 								name={album.name}

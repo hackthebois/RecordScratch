@@ -3,7 +3,6 @@
 import { trpc } from "@/app/_trpc/react";
 import { Rating } from "@/components/rating/Rating";
 import { RatingButton } from "@/components/rating/RatingButton";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 
@@ -25,7 +24,7 @@ const UserRating = ({
 		<RatingButton.SignedIn
 			name={name}
 			resource={resource}
-			initialRating={userRating?.rating ?? null}
+			initialRating={userRating ?? null}
 		/>
 	);
 };
@@ -46,8 +45,4 @@ const AlbumRating = ({ resource, name }: Props) => {
 	);
 };
 
-const AlbumRatingSkeleton = () => {
-	return <Skeleton className="h-10 w-44" />;
-};
-
-export { AlbumRating, AlbumRatingSkeleton };
+export default AlbumRating;

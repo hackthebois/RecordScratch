@@ -32,7 +32,7 @@ RatingButton.SignedIn = ({ resource, name, initialRating }: Rate) => {
 
 	return (
 		<RatingButton
-			rating={initialRating}
+			rating={initialRating?.rating ?? null}
 			onClick={() => rate({ resource, name, initialRating })}
 		/>
 	);
