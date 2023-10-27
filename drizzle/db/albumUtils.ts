@@ -1,6 +1,6 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { RatingCategory, ratings } from "./schema";
 import { db } from "./config";
+import { ratings } from "./schema";
 
 /**********************************
 	Song  Rating Database Functions
@@ -17,7 +17,7 @@ export const getAllAlbumAverages = async (albums: string[]) => {
 		.where(
 			and(
 				inArray(ratings.resourceId, albums),
-				eq(ratings.category, RatingCategory.ALBUM)
+				eq(ratings.category, "ALBUM")
 			)
 		);
 
