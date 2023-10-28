@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/app/_trpc/react";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -18,6 +18,17 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { create } from "zustand";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/AlertDialog";
 import { Form, FormControl, FormField, FormItem } from "../ui/Form";
 import { Input } from "../ui/Input";
 import { Textarea } from "../ui/Textarea";
@@ -122,15 +133,27 @@ export const RatingDialogProvider = () => {
 		},
 	});
 
+	const { mutate: deleteMutate } = trpc.rating.deleteUserRating.useMutation({
+		onSuccess: async (_, resource) => {
+			if (resource.category === "SONG") {
+				utils.rating.getAllUserSongRatings.invalidate();
+				utils.rating.getAllAverageSongRatings.invalidate();
+			} else {
+				utils.rating.getAverage.invalidate();
+				utils.rating.getUserRating.invalidate();
+			}
+		},
+	});
+
 	const form = useForm<RatingForm>({
 		resolver: zodResolver(RatingFormSchema),
 	});
 
 	useEffect(() => {
 		form.reset({
-			...initialRating,
-			title: initialRating?.title ?? "",
-			description: initialRating?.description ?? "",
+			rating: initialRating?.rating,
+			title: initialRating?.title ?? undefined,
+			description: initialRating?.description ?? undefined,
 		});
 	}, [initialRating]);
 
@@ -212,12 +235,54 @@ export const RatingDialogProvider = () => {
 						/>
 						<DialogFooter>
 							<Button
-								className="w-full"
+								className="flex-[4]"
 								type="submit"
-								disabled={!form.formState.isValid}
+								disabled={
+									!(
+										form.formState.isValid &&
+										form.formState.isDirty
+									)
+								}
 							>
 								Review
 							</Button>
+
+							{initialRating && (
+								<AlertDialog>
+									<AlertDialogTrigger
+										className={buttonVariants({
+											variant: "destructive",
+										})}
+									>
+										Delete
+									</AlertDialogTrigger>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
+												Are you absolutely sure?
+											</AlertDialogTitle>
+											<AlertDialogDescription>
+												This action cannot be undone.
+												This will permanently delete
+												your review for this resource.
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>
+												Cancel
+											</AlertDialogCancel>
+											<AlertDialogAction
+												onClick={() => {
+													deleteMutate(resource);
+													setOpen(false);
+												}}
+											>
+												Continue
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
+							)}
 						</DialogFooter>
 					</form>
 				</Form>
