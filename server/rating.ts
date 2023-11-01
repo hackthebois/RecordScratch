@@ -88,7 +88,9 @@ export const ratingRouter = router({
 				limit: 10,
 				// TODO: order by date, and paginate
 			});
-			const users = await clerkClient.users.getUserList();
+			const users = await clerkClient.users.getUserList({
+				userId: commmunityRatings.map((r) => r.userId),
+			});
 
 			return commmunityRatings.map((rating) => {
 				const user = users.find((user) => user.id === rating.userId);
@@ -98,7 +100,7 @@ export const ratingRouter = router({
 						id: user?.id,
 						firstName: user?.firstName,
 						lastName: user?.lastName,
-						profileImageUrl: user?.profileImageUrl,
+						imageUrl: user?.imageUrl,
 					},
 				};
 			});
