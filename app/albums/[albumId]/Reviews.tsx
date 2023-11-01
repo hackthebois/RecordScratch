@@ -18,8 +18,6 @@ const Reviews = async ({ resourceId }: Props) => {
 		resourceId
 	);
 
-	console.log(reviews);
-
 	return (
 		<div className="w-full">
 			{reviews.length > 0 ? (
@@ -47,9 +45,7 @@ const Reviews = async ({ resourceId }: Props) => {
 						)}
 						<CardFooter className="gap-3">
 							<Avatar className="h-8 w-8">
-								<AvatarImage
-									src={review.user.profileImageUrl}
-								/>
+								<AvatarImage src={review.user.imageUrl} />
 								<AvatarFallback />
 							</Avatar>
 							<p>
