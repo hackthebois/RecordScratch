@@ -1,7 +1,7 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import SongTable from "@/components/song/SongTable";
-import { Badge } from "@/components/ui/Badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
 import Image from "next/image";
@@ -48,11 +48,11 @@ const Page = async ({ params: { albumId } }: Props) => {
 						</h1>
 					</div>
 					<div className="flex gap-3">
-						<Badge variant="outline">{album.release_date}</Badge>
+						<Tag variant="outline">{album.release_date}</Tag>
 						{album.tracks && (
-							<Badge variant="outline">
+							<Tag variant="outline">
 								{album.tracks.items.length} Songs
-							</Badge>
+							</Tag>
 						)}
 					</div>
 					<div className="flex items-center gap-4">

@@ -2,8 +2,8 @@ import { serverTrpc } from "@/app/_trpc/server";
 import AlbumList from "@/components/album/AlbumList";
 import { Rating } from "@/components/rating/Rating";
 import SongTable from "@/components/song/SongTable";
-import { Badge } from "@/components/ui/Badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
 import { unstable_cache } from "next/cache";
 import Image from "next/image";
@@ -61,9 +61,9 @@ const Artist = async ({ params: { artistId } }: Props) => {
 					</div>
 					<div className="flex flex-wrap justify-center gap-3">
 						{artist.genres?.map((genre, index) => (
-							<Badge variant="outline" key={index}>
+							<Tag variant="outline" key={index}>
 								{genre}
-							</Badge>
+							</Tag>
 						))}
 					</div>
 					<Suspense fallback={<ArtistRatingSkeleton />}>
