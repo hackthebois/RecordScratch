@@ -1,14 +1,14 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import SongTable from "@/components/song/SongTable";
-// import SongTable from "@/components/song/SongTable";
+import { Badge } from "@/components/ui/Badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import AlbumRating from "./AlbumRating";
+import Reviews from "./Reviews";
 
 type Props = {
 	params: {
@@ -87,8 +87,10 @@ const Page = async ({ params: { albumId } }: Props) => {
 				<TabsContent value="songs" className="w-full pt-6">
 					<SongTable songs={album.tracks?.items ?? []} />
 				</TabsContent>
-				<TabsContent value="reviews" className="pt-8">
-					<div>No reviews yet</div>
+				<TabsContent value="reviews" className="w-full pt-8">
+					<Suspense fallback={<></>}>
+						<Reviews resourceId={albumId} />
+					</Suspense>
 				</TabsContent>
 			</Tabs>
 		</div>
