@@ -147,7 +147,14 @@ export const RatingDialogProvider = () => {
 
 	const form = useForm<RatingForm>({
 		resolver: zodResolver(RatingFormSchema),
+		defaultValues: {
+			rating: undefined,
+			title: undefined,
+			description: undefined,
+		},
 	});
+
+	console.log(form.watch(), initialRating);
 
 	useEffect(() => {
 		form.reset({
@@ -173,6 +180,7 @@ export const RatingDialogProvider = () => {
 			rating,
 			title,
 		});
+		form.reset();
 		setOpen(false);
 	};
 
@@ -237,16 +245,10 @@ export const RatingDialogProvider = () => {
 							<Button
 								className="flex-[4]"
 								type="submit"
-								disabled={
-									!(
-										form.formState.isValid &&
-										form.formState.isDirty
-									)
-								}
+								disabled={!form.formState.isValid}
 							>
-								Review
+								{initialRating ? "Update" : "Review"}
 							</Button>
-
 							{initialRating && (
 								<AlertDialog>
 									<AlertDialogTrigger

@@ -1,4 +1,5 @@
 import { getAllAlbumAverages } from "@/drizzle/db/albumUtils";
+import { db } from "@/drizzle/db/config";
 import {
 	deleteUserRating,
 	getAllUserRatings,
@@ -8,6 +9,7 @@ import {
 	updateRating,
 	userRatingExists,
 } from "@/drizzle/db/ratingsUtils";
+import { ratings } from "@/drizzle/db/schema";
 import {
 	getAllSongAverages,
 	getAllUserSongRatings,
@@ -17,6 +19,8 @@ import {
 	UpdateUserRatingDTO,
 	UserRatingDTO,
 } from "@/types/ratings";
+import { clerkClient } from "@clerk/nextjs";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 
@@ -75,5 +79,28 @@ export const ratingRouter = router({
 		.input(SelectRatingDTO)
 		.query(async ({ ctx: { userId }, input: { category } }) => {
 			return await getAllUserRatings({ userId, category });
+		}),
+	getCommunityRatings: publicProcedure
+		.input(z.string())
+		.query(async ({ input: resourceId }) => {
+			const commmunityRatings = await db.query.ratings.findMany({
+				where: eq(ratings.resourceId, resourceId),
+				limit: 10,
+				// TODO: order by date, and paginate
+			});
+			const users = await clerkClient.users.getUserList();
+
+			return commmunityRatings.map((rating) => {
+				const user = users.find((user) => user.id === rating.userId);
+				return {
+					...rating,
+					user: {
+						id: user?.id,
+						firstName: user?.firstName,
+						lastName: user?.lastName,
+						profileImageUrl: user?.profileImageUrl,
+					},
+				};
+			});
 		}),
 });
