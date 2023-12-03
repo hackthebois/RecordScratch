@@ -12,12 +12,11 @@ export const trpc = createTRPCReact<AppRouter>();
 
 export function TRPCReactProvider(props: {
 	children: React.ReactNode;
-	headers: Headers; // <-- Important
+	headers: Headers;
 }) {
 	const [queryClient] = useState(() => new QueryClient());
 	const [trpcClient] = useState(() =>
 		trpc.createClient({
-			// transformer,
 			links: [
 				unstable_httpBatchStreamLink({
 					url: `${env.NEXT_PUBLIC_SITE_URL}/api/trpc`,

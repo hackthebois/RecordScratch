@@ -1,6 +1,5 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import AlbumList from "@/components/album/AlbumList";
-import { Rating } from "@/components/rating/Rating";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
@@ -15,11 +14,11 @@ type Props = {
 	};
 };
 
-const ArtistRating = async (input: { id: string; albums: string[] }) => {
-	const rating = await serverTrpc.rating.getEveryAlbumAverage.query(input);
+// const ArtistRating = async (input: { id: string; albums: string[] }) => {
+// 	const rating = await serverTrpc.re.getEveryAlbumAverage.query(input);
 
-	return <Rating rating={rating} emptyText="No ratings yet" />;
-};
+// 	return <Rating rating={rating} emptyText="No ratings yet" />;
+// };
 
 const ArtistRatingSkeleton = () => {
 	return <Skeleton className="h-10 w-20" />;
@@ -29,9 +28,9 @@ const Artist = async ({ params: { artistId } }: Props) => {
 	const [artist, discography, topTracks] = await unstable_cache(
 		async () => {
 			return await Promise.all([
-				serverTrpc.spotify.artist.findOne.query(artistId),
-				serverTrpc.spotify.artist.albums.query(artistId),
-				serverTrpc.spotify.artist.topTracks.query(artistId),
+				serverTrpc.resource.artist.get(artistId),
+				serverTrpc.resource.artist.albums(artistId),
+				serverTrpc.resource.artist.topTracks(artistId),
 			]);
 		},
 		[artistId],
@@ -67,10 +66,10 @@ const Artist = async ({ params: { artistId } }: Props) => {
 						))}
 					</div>
 					<Suspense fallback={<ArtistRatingSkeleton />}>
-						<ArtistRating
+						{/* <ArtistRating
 							id={artistId}
 							albums={discography.map((album) => album.id)}
-						/>
+						/> */}
 					</Suspense>
 				</div>
 			</div>

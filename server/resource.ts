@@ -1,5 +1,9 @@
+import { ratings } from "@/drizzle/db/schema";
 import { env } from "@/env.mjs";
+import { ResourceSchema } from "@/types/ratings";
+import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
+import { and, avg, count, eq } from "drizzle-orm";
 import {
 	SpotifyAlbumSchema,
 	SpotifyArtistSchema,
@@ -46,7 +50,53 @@ const spotifyFetch = async (url: string) => {
 	return { data, res };
 };
 
-export const spotifyRouter = router({
+export const resourceRouter = router({
+	rating: router({
+		get: publicProcedure
+			.input(ResourceSchema)
+			.query(async ({ ctx: { db }, input: { resourceId, category } }) => {
+				const rating = await db
+					.select({
+						average: avg(ratings.rating),
+						total: count(ratings.rating),
+					})
+					.from(ratings)
+					.where(
+						and(
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category)
+						)
+					);
+				return rating.length ? rating[0] : null;
+			}),
+		community: publicProcedure
+			.input(z.string())
+			.query(async ({ ctx: { db }, input: resourceId }) => {
+				const commmunityRatings = await db.query.ratings.findMany({
+					where: eq(ratings.resourceId, resourceId),
+					limit: 10,
+					// TODO: order by date, and paginate
+				});
+				const users = await clerkClient.users.getUserList({
+					userId: commmunityRatings.map((r) => r.userId),
+				});
+
+				return commmunityRatings.map((rating) => {
+					const user = users.find(
+						(user) => user.id === rating.userId
+					);
+					return {
+						...rating,
+						user: {
+							id: user?.id,
+							firstName: user?.firstName,
+							lastName: user?.lastName,
+							imageUrl: user?.imageUrl,
+						},
+					};
+				});
+			}),
+	}),
 	new: publicProcedure.query(async () => {
 		const { data } = await spotifyFetch("/browse/new-releases");
 		return z
@@ -70,14 +120,16 @@ export const spotifyRouter = router({
 				})
 				.parse(data);
 		}),
-	album: publicProcedure
-		.input(z.string())
-		.query(async ({ input: albumId }) => {
-			const { data } = await spotifyFetch(`/albums/${albumId}`);
-			return SpotifyAlbumSchema.parse(data);
-		}),
+	album: router({
+		get: publicProcedure
+			.input(z.string())
+			.query(async ({ input: albumId }) => {
+				const { data } = await spotifyFetch(`/albums/${albumId}`);
+				return SpotifyAlbumSchema.parse(data);
+			}),
+	}),
 	artist: router({
-		findOne: publicProcedure
+		get: publicProcedure
 			.input(z.string())
 			.query(async ({ input: artistId }) => {
 				const { data } = await spotifyFetch(`/artists/${artistId}`);
