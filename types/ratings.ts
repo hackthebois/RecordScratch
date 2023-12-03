@@ -16,5 +16,5 @@ export const ResourceRatingSchema = z.object({
 });
 export type ResourceRating = z.infer<typeof ResourceRatingSchema>;
 
-export const UserRatingSchema = createSelectSchema(ratings);
-export type Rating = z.infer<typeof UserRatingSchema>;
+export const RatingSchema = createSelectSchema(ratings);
+export type Rating = z.infer<typeof RatingSchema>;

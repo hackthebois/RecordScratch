@@ -1,4 +1,3 @@
-import { RatingDialogProvider } from "@/components/rating/RatingDialog";
 import { Button } from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -81,7 +80,6 @@ const RootLayout = ({ children }: Props) => {
 									{children}
 								</main>
 							</ScrollArea>
-							<RatingDialogProvider />
 						</Providers>
 					</TRPCReactProvider>
 				</ClerkProvider>

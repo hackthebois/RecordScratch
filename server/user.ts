@@ -1,12 +1,12 @@
 import { ratings } from "@/drizzle/db/schema";
-import { ResourceSchema, UserRatingSchema } from "@/types/ratings";
+import { RatingSchema, ResourceSchema } from "@/types/ratings";
 import { and, eq } from "drizzle-orm";
 import { protectedProcedure, router } from "./trpc";
 
 export const userRouter = router({
-	ratings: router({
+	rating: router({
 		rate: protectedProcedure
-			.input(UserRatingSchema)
+			.input(RatingSchema.omit({ userId: true }))
 			.mutation(async ({ ctx: { db, userId }, input: userRating }) => {
 				return db
 					.insert(ratings)
