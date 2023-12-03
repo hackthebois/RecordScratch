@@ -1,7 +1,7 @@
 import { SpotifyAlbum } from "@/types/spotify";
 import Image from "next/image";
 import Link from "next/link";
-import { ScrollArea } from "../ui/ScrollArea";
+import { ScrollArea } from "./ui/ScrollArea";
 
 type Props = {
 	albums: SpotifyAlbum[];

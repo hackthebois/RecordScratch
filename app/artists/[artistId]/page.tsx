@@ -1,5 +1,5 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import AlbumList from "@/components/album/AlbumList";
+import AlbumList from "@/components/AlbumList";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
