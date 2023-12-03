@@ -1,14 +1,31 @@
 import { serverTrpc } from "@/app/_trpc/server";
+import { RatingButton } from "@/components/rating/RatingButton";
 import SongTable from "@/components/song/SongTable";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/Card";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/Dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import AlbumRating from "./AlbumRating";
-import Reviews from "./Reviews";
 
 type Props = {
 	params: {
@@ -18,13 +35,115 @@ type Props = {
 
 export const revalidate = 60 * 60 * 24;
 
+const AlbumRating = async ({ resource }: { resource: Resource }) => {
+	const rating = await serverTrpc.resource.rating.get(resource);
+
+	return (
+		<>
+			<div className="flex items-center gap-2">
+				<Star
+					color="#ffb703"
+					fill={rating?.average ? "#ffb703" : "none"}
+					size={30}
+				/>
+				<div>
+					{rating?.average && (
+						<p className="text-lg font-semibold">
+							{rating.average}
+						</p>
+					)}
+					<p className="text-xs text-muted-foreground">
+						{rating?.total && Number(rating.total) !== 0
+							? rating.total
+							: "Be the first to rate"}
+					</p>
+				</div>
+			</div>
+			<SignedIn>
+				<Dialog>
+					<DialogTrigger>Open</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>
+								Are you sure absolutely sure?
+							</DialogTitle>
+							<DialogDescription>
+								This action cannot be undone. This will
+								permanently delete your account and remove your
+								data from our servers.
+							</DialogDescription>
+						</DialogHeader>
+					</DialogContent>
+				</Dialog>
+			</SignedIn>
+			<SignedOut>
+				<RatingButton.SignedOut />
+			</SignedOut>
+		</>
+	);
+};
+
+const Reviews = async ({
+	resource: { resourceId },
+}: {
+	resource: Resource;
+}) => {
+	const reviews = await serverTrpc.resource.rating.community(resourceId);
+
+	return (
+		<div className="w-full">
+			{reviews.length > 0 ? (
+				reviews.map((review, index) => (
+					<Card className="w-full" key={index}>
+						<CardHeader className="gap-3">
+							{review.title && (
+								<CardTitle>{review.title}</CardTitle>
+							)}
+							<div className="flex gap-1">
+								{Array.from(Array(review.rating)).map(
+									(_, i) => (
+										<Star
+											key={i}
+											size={20}
+											color="#ffb703"
+											fill="#ffb703"
+										/>
+									)
+								)}
+							</div>
+						</CardHeader>
+						{review.description && (
+							<CardContent>{review.description}</CardContent>
+						)}
+						<CardFooter className="gap-3">
+							<Avatar className="h-8 w-8">
+								<AvatarImage src={review.user.imageUrl} />
+								<AvatarFallback />
+							</Avatar>
+							<p>
+								{review.user.firstName} {review.user.lastName}
+							</p>
+						</CardFooter>
+					</Card>
+				))
+			) : (
+				<p>No reviews yet</p>
+			)}
+		</div>
+	);
+};
+
 const Page = async ({ params: { albumId } }: Props) => {
-	const album = await serverTrpc.spotify.album.query(albumId);
+	const album = await serverTrpc.resource.album.get(albumId);
 
 	const resource: Resource = {
-		resourceId: albumId,
 		category: "ALBUM",
+		resourceId: albumId,
 	};
+
+	const rating = await serverTrpc.resource.rating.get(resource);
+
+	console.log(rating);
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -57,10 +176,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 					</div>
 					<div className="flex items-center gap-4">
 						<Suspense fallback={<Skeleton className="h-10 w-44" />}>
-							<AlbumRating
-								resource={resource}
-								name={album.name}
-							/>
+							<AlbumRating resource={resource} />
 						</Suspense>
 					</div>
 					<div className="flex gap-3">
@@ -89,7 +205,7 @@ const Page = async ({ params: { albumId } }: Props) => {
 				</TabsContent>
 				<TabsContent value="reviews" className="w-full pt-8">
 					<Suspense fallback={<></>}>
-						<Reviews resourceId={albumId} />
+						<Reviews resource={resource} />
 					</Suspense>
 				</TabsContent>
 			</Tabs>

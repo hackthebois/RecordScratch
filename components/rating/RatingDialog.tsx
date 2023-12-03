@@ -31,6 +31,7 @@ import {
 } from "../ui/AlertDialog";
 import { Form, FormControl, FormField, FormItem } from "../ui/Form";
 import { Input } from "../ui/Input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/Tabs";
 import { Textarea } from "../ui/Textarea";
 
 export type Rate = {
@@ -212,35 +213,44 @@ export const RatingDialogProvider = () => {
 								</FormItem>
 							)}
 						/>
-						<FormField
-							control={form.control}
-							name="title"
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<Input
-											placeholder="Review title"
-											{...field}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="description"
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<Textarea
-											placeholder="Detail your thoughts..."
-											{...field}
-											className="h-40"
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
+						<Tabs>
+							<TabsList>
+								<TabsTrigger value="rate">Rate</TabsTrigger>
+								<TabsTrigger value="review">Review</TabsTrigger>
+							</TabsList>
+							<TabsContent value="rate"></TabsContent>
+							<TabsContent value="review">
+								<FormField
+									control={form.control}
+									name="title"
+									render={({ field }) => (
+										<FormItem>
+											<FormControl>
+												<Input
+													placeholder="Review title"
+													{...field}
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormControl>
+												<Textarea
+													placeholder="Detail your thoughts..."
+													{...field}
+													className="h-40"
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+							</TabsContent>
+						</Tabs>
 						<DialogFooter>
 							<Button
 								className="flex-[4]"

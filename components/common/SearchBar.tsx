@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { trpc } from "./_trpc/react";
+import { trpc } from "../../app/_trpc/react";
 
 const ArtistItem = ({
 	artist,
@@ -103,7 +103,7 @@ const SearchBar = () => {
 
 	const q = useDebounce(query, 500);
 
-	const { data, isFetching } = trpc.spotify.search.useQuery(q, {
+	const { data, isFetching } = trpc.resource.search.useQuery(q, {
 		enabled: query.length > 0,
 		refetchOnWindowFocus: false,
 	});

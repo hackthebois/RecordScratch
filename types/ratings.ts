@@ -4,26 +4,17 @@ import { z } from "zod";
 
 export type RatingCategory = "ALBUM" | "SONG";
 
-export type Resource = {
-	resourceId: string;
-	category: RatingCategory;
-};
-
-export type Rating = {
-	ratingAverage: number;
-	totalRatings: number;
-};
-
-export const UserRatingDTO = createSelectSchema(ratings);
-export type UserRating = z.infer<typeof UserRatingDTO>;
-
-export const SelectRatingDTO = UserRatingDTO.pick({
-	category: true,
-	resourceId: true,
+export const ResourceSchema = z.object({
+	resourceId: z.string(),
+	category: z.enum(["ALBUM", "SONG"]),
 });
-export type SelectRatingType = z.infer<typeof SelectRatingDTO> & {
-	userId: string;
-};
+export type Resource = z.infer<typeof ResourceSchema>;
 
-export const UpdateUserRatingDTO = UserRatingDTO.omit({ userId: true });
-export type UpdateUserRating = z.infer<typeof UpdateUserRatingDTO>;
+export const ResourceRatingSchema = z.object({
+	average: z.string().nullable(),
+	total: z.number(),
+});
+export type ResourceRating = z.infer<typeof ResourceRatingSchema>;
+
+export const UserRatingSchema = createSelectSchema(ratings);
+export type Rating = z.infer<typeof UserRatingSchema>;

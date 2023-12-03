@@ -8,10 +8,10 @@ import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import Link from "next/link";
+import SearchBar from "../components/common/SearchBar";
+import SignInButton from "../components/common/SignInButton";
+import UserButton from "../components/common/UserButton";
 import { Providers } from "./Providers";
-import SearchBar from "./SearchBar";
-import SignInButton from "./SignInButton";
-import UserButton from "./UserButton";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
