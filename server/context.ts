@@ -1,4 +1,4 @@
-import { db } from "@/drizzle/db/config";
+import { db } from "@/server/db/db";
 
 export const createContext = () => {
 	return {

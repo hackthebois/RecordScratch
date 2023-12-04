@@ -12,5 +12,5 @@ export const ratings = mysqlTable("ratings", {
 	rating: tinyint("rating").notNull(),
 	description: text("description"),
 	title: text("title"),
-	category: mysqlEnum("category", ["ALBUM", "SONG"]).notNull(),
+	category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
 });

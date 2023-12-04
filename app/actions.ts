@@ -11,5 +11,5 @@ export const rateAction = async (
 	input: RouterInput["user"]["rating"]["rate"]
 ) => {
 	await serverTrpc.user.rating.rate(input);
-	revalidateTag(`rating:${input.resourceId}`);
+	revalidateTag(input.resourceId);
 };
