@@ -14,6 +14,7 @@ export const Tabs = ({
 	}[];
 }) => {
 	const pathname = usePathname();
+
 	return (
 		<div className="inline-flex h-10 max-w-min items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
 			{tabs.map(({ href, label }) => (

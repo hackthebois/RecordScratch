@@ -39,7 +39,7 @@
     "drizzle-zod": "0.5.1",
     "lucide-react": "^0.274.0",
     "mysql2": "^3.6.1",
-    "next": "14.0.4-canary.39",
+    "next": "^14.0.3",
     "next-axiom": "^1.0.0",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
