@@ -1,20 +1,6 @@
-import { env } from "@/env.mjs";
-import { AppRouter } from "@/server/_app";
-import { auth } from "@clerk/nextjs";
-import {
-	createTRPCProxyClient,
-	unstable_httpBatchStreamLink,
-} from "@trpc/client";
+import { appRouter } from "@/server/_app";
+import { db } from "@/server/db/db";
 
-export const serverTrpc = createTRPCProxyClient<AppRouter>({
-	links: [
-		unstable_httpBatchStreamLink({
-			url: env.NEXT_PUBLIC_SITE_URL + "/api/trpc",
-			headers: async () => {
-				return {
-					Authorization: `Bearer ${await auth().getToken()}`,
-				};
-			},
-		}),
-	],
+export const serverTrpc = appRouter.createCaller({
+	db: db,
 });

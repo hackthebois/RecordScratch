@@ -1,29 +1,26 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import SongTable from "@/components/song/SongTable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Ratings, RatingsSkeleton } from "@/components/Ratings";
+import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/ratings";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import AlbumRating from "./AlbumRating";
-import Reviews from "./Reviews";
 
-type Props = {
+const Layout = async ({
+	params: { albumId },
+	children,
+}: {
 	params: {
 		albumId: string;
 	};
-};
-
-export const revalidate = 60 * 60 * 24;
-
-const Page = async ({ params: { albumId } }: Props) => {
-	const album = await serverTrpc.spotify.album.query(albumId);
+	children: React.ReactNode;
+}) => {
+	const album = await serverTrpc.resource.album.get(albumId);
 
 	const resource: Resource = {
-		resourceId: albumId,
 		category: "ALBUM",
+		resourceId: albumId,
 	};
 
 	return (
@@ -56,17 +53,14 @@ const Page = async ({ params: { albumId } }: Props) => {
 						)}
 					</div>
 					<div className="flex items-center gap-4">
-						<Suspense fallback={<Skeleton className="h-10 w-44" />}>
-							<AlbumRating
-								resource={resource}
-								name={album.name}
-							/>
+						<Suspense fallback={<RatingsSkeleton />}>
+							<Ratings resource={resource} name={album.name} />
 						</Suspense>
 					</div>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
 							<Link
-								href={`/artists/${artist.id}`}
+								href={`/artists/${artist.id}/top-songs`}
 								className="text-muted-foreground hover:underline"
 								key={index}
 							>
@@ -77,24 +71,20 @@ const Page = async ({ params: { albumId } }: Props) => {
 				</div>
 			</div>
 			<Tabs
-				defaultValue="songs"
-				className="flex flex-col items-center sm:items-start"
-			>
-				<TabsList>
-					<TabsTrigger value="songs">Song List</TabsTrigger>
-					<TabsTrigger value="reviews">Reviews</TabsTrigger>
-				</TabsList>
-				<TabsContent value="songs" className="w-full pt-6">
-					<SongTable songs={album.tracks?.items ?? []} />
-				</TabsContent>
-				<TabsContent value="reviews" className="w-full pt-8">
-					<Suspense fallback={<></>}>
-						<Reviews resourceId={albumId} />
-					</Suspense>
-				</TabsContent>
-			</Tabs>
+				tabs={[
+					{
+						label: "Songs List",
+						href: `/albums/${albumId}/songs`,
+					},
+					{
+						label: "Reviews",
+						href: `/albums/${albumId}/reviews`,
+					},
+				]}
+			/>
+			{children}
 		</div>
 	);
 };
 
-export default Page;
+export default Layout;
