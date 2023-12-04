@@ -83,3 +83,11 @@ export const getUserRatingList = cache((resources: Resource[]) => {
 		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
 	)();
 });
+
+export const getNewReleases = cache(() => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.album.newReleases(),
+		[`resource:album:getNewReleases`],
+		{ revalidate: 60 * 60 }
+	)();
+});

@@ -1,8 +1,8 @@
 import AlbumList from "@/components/AlbumList";
-import { serverTrpc } from "./_trpc/server";
+import { getNewReleases } from "./_trpc/cached";
 
 const Page = async () => {
-	const newReleases = await serverTrpc.resource.new();
+	const newReleases = await getNewReleases();
 
 	return (
 		<div className="w-full">

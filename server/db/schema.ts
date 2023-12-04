@@ -4,7 +4,6 @@ import {
 	primaryKey,
 	text,
 	tinyint,
-	uniqueIndex,
 	varchar,
 } from "drizzle-orm/mysql-core";
 
@@ -19,10 +18,8 @@ export const ratings = mysqlTable(
 		category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
 	},
 	(table) => ({
-		pk_ratings: primaryKey({ columns: [table.resourceId, table.userId] }),
-		resourceIdx: uniqueIndex("resource_idx").on(
-			table.resourceId,
-			table.category
-		),
+		pk_ratings: primaryKey({
+			columns: [table.resourceId, table.userId],
+		}),
 	})
 );
