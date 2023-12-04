@@ -107,6 +107,12 @@ export const Ratings = async ({
 	);
 };
 
-export const RatingsSkeleton = () => {
-	return <Skeleton className="h-10 w-40" />;
+export const RatingsSkeleton = ({
+	type = "page",
+}: {
+	type?: "page" | "list";
+}) => {
+	return (
+		<Skeleton className={cn(type === "page" ? "h-10 w-40" : "h-8 w-24")} />
+	);
 };
