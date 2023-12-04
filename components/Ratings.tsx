@@ -13,12 +13,14 @@ export const Ratings = async ({
 	resource,
 	initial,
 	type = "page",
+	name,
 }: {
 	resource: Resource;
 	initial?: {
 		rating?: ResourceRating;
 		userRating?: Rating;
 	};
+	name?: string;
 	type?: "page" | "list";
 }) => {
 	let rating: ResourceRating | null = initial?.rating ?? null;
@@ -75,6 +77,7 @@ export const Ratings = async ({
 				<RatingDialog
 					resource={resource}
 					initialRating={userRating ?? undefined}
+					name={name}
 				>
 					<Button variant="outline" size="sm">
 						<Star

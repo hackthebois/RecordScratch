@@ -60,6 +60,7 @@ const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
 							</p>
 						</div>
 						<Ratings
+							name={song.name}
 							resource={{
 								resourceId: song.id,
 								category: "SONG",
