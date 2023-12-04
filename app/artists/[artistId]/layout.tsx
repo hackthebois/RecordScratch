@@ -51,7 +51,7 @@ const Layout = async ({
 						))}
 					</div>
 					<Suspense fallback={<RatingsSkeleton />}>
-						<Ratings resource={resource} />
+						<Ratings resource={resource} name={artist.name} />
 					</Suspense>
 				</div>
 			</div>

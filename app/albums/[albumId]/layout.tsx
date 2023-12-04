@@ -54,7 +54,7 @@ const Layout = async ({
 					</div>
 					<div className="flex items-center gap-4">
 						<Suspense fallback={<RatingsSkeleton />}>
-							<Ratings resource={resource} />
+							<Ratings resource={resource} name={album.name} />
 						</Suspense>
 					</div>
 					<div className="flex gap-3">

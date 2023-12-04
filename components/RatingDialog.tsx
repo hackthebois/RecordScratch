@@ -68,8 +68,10 @@ export const RatingDialog = ({
 	resource,
 	initialRating,
 	children,
+	name,
 }: {
 	resource: Resource;
+	name?: string;
 	initialRating?: Rating;
 	children: React.ReactNode;
 }) => {
@@ -96,7 +98,7 @@ export const RatingDialog = ({
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle className="text-center text-2xl">
-						Rate
+						{name ?? "Rate"}
 					</DialogTitle>
 					<DialogDescription className="text-center">
 						{resource.category === "ALBUM"
