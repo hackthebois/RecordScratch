@@ -1,10 +1,10 @@
 import { serverTrpc } from "@/app/_trpc/server";
 import AlbumList from "@/components/AlbumList";
+import Ratings, { RatingsSkeleton } from "@/components/rating/Ratings";
 import SongTable from "@/components/song/SongTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { Skeleton } from "@/components/ui/skeleton";
-import { unstable_cache } from "next/cache";
+import { Resource } from "@/types/ratings";
 import Image from "next/image";
 import { Suspense } from "react";
 
@@ -14,28 +14,15 @@ type Props = {
 	};
 };
 
-// const ArtistRating = async (input: { id: string; albums: string[] }) => {
-// 	const rating = await serverTrpc.re.getEveryAlbumAverage.query(input);
-
-// 	return <Rating rating={rating} emptyText="No ratings yet" />;
-// };
-
-const ArtistRatingSkeleton = () => {
-	return <Skeleton className="h-10 w-20" />;
-};
-
 const Artist = async ({ params: { artistId } }: Props) => {
-	const [artist, discography, topTracks] = await unstable_cache(
-		async () => {
-			return await Promise.all([
-				serverTrpc.resource.artist.get(artistId),
-				serverTrpc.resource.artist.albums(artistId),
-				serverTrpc.resource.artist.topTracks(artistId),
-			]);
-		},
-		[artistId],
-		{ revalidate: 60 * 60 }
-	)();
+	const artist = await serverTrpc.resource.artist.get(artistId);
+	const discography = await serverTrpc.resource.artist.albums(artistId);
+	const topTracks = await serverTrpc.resource.artist.topTracks(artistId);
+
+	const resource: Resource = {
+		resourceId: artistId,
+		category: "ARTIST",
+	};
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -65,11 +52,8 @@ const Artist = async ({ params: { artistId } }: Props) => {
 							</Tag>
 						))}
 					</div>
-					<Suspense fallback={<ArtistRatingSkeleton />}>
-						{/* <ArtistRating
-							id={artistId}
-							albums={discography.map((album) => album.id)}
-						/> */}
+					<Suspense fallback={<RatingsSkeleton />}>
+						<Ratings resource={resource} />
 					</Suspense>
 				</div>
 			</div>

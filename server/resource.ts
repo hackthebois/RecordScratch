@@ -1,5 +1,5 @@
-import { ratings } from "@/drizzle/db/schema";
 import { env } from "@/env.mjs";
+import { ratings } from "@/server/db/schema";
 import { ResourceSchema } from "@/types/ratings";
 import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";

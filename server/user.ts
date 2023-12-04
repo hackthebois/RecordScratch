@@ -1,4 +1,4 @@
-import { ratings } from "@/drizzle/db/schema";
+import { ratings } from "@/server/db/schema";
 import { RatingSchema, ResourceSchema } from "@/types/ratings";
 import { and, eq } from "drizzle-orm";
 import { protectedProcedure, router } from "./trpc";

@@ -1,5 +1,5 @@
-import { db } from "@/drizzle/db/config";
 import { appRouter } from "@/server/_app";
+import { db } from "@/server/db/db";
 
 export const serverTrpc = appRouter.createCaller({
 	db: db,
