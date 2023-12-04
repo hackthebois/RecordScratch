@@ -17,15 +17,21 @@ export const userRouter = router({
 			}),
 		get: protectedProcedure
 			.input(ResourceSchema)
-			.query(async ({ ctx: { userId, db }, input: { resourceId } }) => {
-				const userRating = await db.query.ratings.findFirst({
-					where: and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.userId, userId)
-					),
-				});
-				return userRating ? userRating : null;
-			}),
+			.query(
+				async ({
+					ctx: { userId, db },
+					input: { resourceId, category },
+				}) => {
+					const userRating = await db.query.ratings.findFirst({
+						where: and(
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category),
+							eq(ratings.userId, userId)
+						),
+					});
+					return userRating ? userRating : null;
+				}
+			),
 		getList: protectedProcedure
 			.input(ResourceSchema.array())
 			.query(async ({ ctx: { db }, input: resources }) => {

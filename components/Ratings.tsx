@@ -1,9 +1,8 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getRating, getUserRating } from "@/app/_trpc/cached";
 import { Rating, Resource, ResourceRating } from "@/types/ratings";
 import { cn } from "@/utils/utils";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Star } from "lucide-react";
-import { unstable_cache } from "next/cache";
 import { RatingDialog } from "./RatingDialog";
 import { SignInWrapper } from "./SignInWrapper";
 import { Button } from "./ui/Button";
@@ -27,19 +26,11 @@ export const Ratings = async ({
 	let userRating: Rating | null = initial?.userRating ?? null;
 
 	if (!initial) {
-		rating = await unstable_cache(
-			async () => await serverTrpc.resource.rating.get(resource),
-			[`resource:rating:get:${resource.resourceId}`],
-			{ tags: [resource.resourceId] }
-		)();
+		rating = await getRating(resource);
 
 		const { userId } = auth();
 		if (userId) {
-			userRating = await unstable_cache(
-				async () => await serverTrpc.user.rating.get(resource),
-				[`user:rating:get:${resource.resourceId}`],
-				{ tags: [resource.resourceId] }
-			)();
+			userRating = await getUserRating(resource);
 		}
 	}
 
