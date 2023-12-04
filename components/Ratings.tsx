@@ -79,7 +79,7 @@ export const Ratings = async ({
 					<Button variant="outline" size="sm">
 						<Star
 							color="#fb8500"
-							fill={rating ? "#fb8500" : "none"}
+							fill={userRating ? "#fb8500" : "none"}
 							size={18}
 							className="mr-2"
 						/>
