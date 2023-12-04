@@ -1,23 +1,21 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import AlbumList from "@/components/AlbumList";
-import Ratings, { RatingsSkeleton } from "@/components/rating/Ratings";
-import SongTable from "@/components/song/SongTable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Ratings, RatingsSkeleton } from "@/components/Ratings";
+import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { Resource } from "@/types/ratings";
 import Image from "next/image";
 import { Suspense } from "react";
 
-type Props = {
+const Layout = async ({
+	params: { artistId },
+	children,
+}: {
 	params: {
 		artistId: string;
 	};
-};
-
-const Artist = async ({ params: { artistId } }: Props) => {
+	children: React.ReactNode;
+}) => {
 	const artist = await serverTrpc.resource.artist.get(artistId);
-	const discography = await serverTrpc.resource.artist.albums(artistId);
-	const topTracks = await serverTrpc.resource.artist.topTracks(artistId);
 
 	const resource: Resource = {
 		resourceId: artistId,
@@ -58,22 +56,20 @@ const Artist = async ({ params: { artistId } }: Props) => {
 				</div>
 			</div>
 			<Tabs
-				defaultValue="top-tracks"
-				className="flex flex-col items-center sm:items-start"
-			>
-				<TabsList>
-					<TabsTrigger value="top-tracks">Popular Songs</TabsTrigger>
-					<TabsTrigger value="discography">Discography</TabsTrigger>
-				</TabsList>
-				<TabsContent value="top-tracks" className="w-full pt-6">
-					<SongTable songs={topTracks} />
-				</TabsContent>
-				<TabsContent value="discography" className="pt-8">
-					<AlbumList albums={discography} type="wrap" field="date" />
-				</TabsContent>
-			</Tabs>
+				tabs={[
+					{
+						label: "Top Songs",
+						href: `/artists/${artistId}/top-songs`,
+					},
+					{
+						label: "Discography",
+						href: `/artists/${artistId}/discography`,
+					},
+				]}
+			/>
+			{children}
 		</div>
 	);
 };
 
-export default Artist;
+export default Layout;

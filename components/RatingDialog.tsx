@@ -18,7 +18,7 @@ import { Star } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem } from "../ui/Form";
+import { Form, FormControl, FormField, FormItem } from "./ui/Form";
 
 const RatingInput = ({
 	value: rating,
@@ -95,8 +95,16 @@ export const RatingDialog = ({
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Rate</DialogTitle>
-					<DialogDescription>Select a rating</DialogDescription>
+					<DialogTitle className="text-center text-2xl">
+						Rate
+					</DialogTitle>
+					<DialogDescription className="text-center">
+						{resource.category === "ALBUM"
+							? "Rate this album"
+							: resource.category === "ARTIST"
+							? "Rate this artist"
+							: "Rate this song"}
+					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form

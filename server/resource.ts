@@ -3,7 +3,7 @@ import { ratings } from "@/server/db/schema";
 import { ResourceSchema } from "@/types/ratings";
 import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
-import { and, avg, count, eq } from "drizzle-orm";
+import { and, avg, count, eq, inArray } from "drizzle-orm";
 import {
 	SpotifyAlbumSchema,
 	SpotifyArtistSchema,
@@ -67,7 +67,25 @@ export const resourceRouter = router({
 							eq(ratings.category, category)
 						)
 					);
-				return rating.length ? rating[0] : null;
+				return rating.length ? { ...rating[0], resourceId } : null;
+			}),
+		getList: publicProcedure
+			.input(ResourceSchema.array())
+			.query(async ({ ctx: { db }, input: resources }) => {
+				return await db
+					.select({
+						average: avg(ratings.rating),
+						total: count(ratings.rating),
+						resourceId: ratings.resourceId,
+					})
+					.from(ratings)
+					.where(
+						inArray(
+							ratings.resourceId,
+							resources.map((r) => r.resourceId)
+						)
+					)
+					.groupBy(ratings.resourceId);
 			}),
 		community: publicProcedure
 			.input(z.string())
@@ -133,7 +151,6 @@ export const resourceRouter = router({
 			.input(z.string())
 			.query(async ({ input: artistId }) => {
 				const { data } = await spotifyFetch(`/artists/${artistId}`);
-				console.log(data);
 				return SpotifyArtistSchema.parse(data);
 			}),
 		albums: publicProcedure

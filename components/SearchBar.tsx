@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { trpc } from "../../app/_trpc/react";
+import { trpc } from "../app/_trpc/react";
 
 const ArtistItem = ({
 	artist,
@@ -25,7 +25,7 @@ const ArtistItem = ({
 
 	return (
 		<Link
-			href={`/artists/${artist.id}`}
+			href={`/artists/${artist.id}/top-songs`}
 			onClick={onClick}
 			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
 		>
@@ -61,7 +61,7 @@ const AlbumItem = ({
 	return (
 		<Link
 			onClick={onClick}
-			href={`/albums/${album.id}`}
+			href={`/albums/${album.id}/songs`}
 			className="hover:bg-elevation-4 flex flex-1 flex-row items-center rounded transition-colors"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">
