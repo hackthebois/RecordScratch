@@ -4,7 +4,8 @@ import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import { unstable_cache } from "next/cache";
-import { Ratings } from "./Ratings";
+import { Suspense } from "react";
+import { Ratings, RatingsSkeleton } from "./Ratings";
 
 const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
@@ -59,22 +60,24 @@ const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
 									.join(", ")}
 							</p>
 						</div>
-						<Ratings
-							name={song.name}
-							resource={{
-								resourceId: song.id,
-								category: "SONG",
-							}}
-							type="list"
-							initial={{
-								rating: ratingsList.find(
-									(r) => r.resourceId === song.id
-								),
-								userRating: userRatingsList.find(
-									(r) => r.resourceId === song.id
-								),
-							}}
-						/>
+						<Suspense fallback={<RatingsSkeleton type="list" />}>
+							<Ratings
+								name={song.name}
+								resource={{
+									resourceId: song.id,
+									category: "SONG",
+								}}
+								type="list"
+								initial={{
+									rating: ratingsList.find(
+										(r) => r.resourceId === song.id
+									),
+									userRating: userRatingsList.find(
+										(r) => r.resourceId === song.id
+									),
+								}}
+							/>
+						</Suspense>
 					</div>
 				);
 			})}

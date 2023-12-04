@@ -1,4 +1,5 @@
 import {
+	index,
 	mysqlEnum,
 	mysqlTable,
 	primaryKey,
@@ -19,5 +20,6 @@ export const ratings = mysqlTable(
 	},
 	(table) => ({
 		pk_ratings: primaryKey({ columns: [table.resourceId, table.userId] }),
+		resourceIdx: index("resource_idx").on(table.resourceId),
 	})
 );
