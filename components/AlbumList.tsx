@@ -1,7 +1,7 @@
 import { SpotifyAlbum } from "@/types/spotify";
 import Image from "next/image";
 import Link from "next/link";
-import { ScrollArea } from "../ui/ScrollArea";
+import { ScrollArea } from "./ui/ScrollArea";
 
 type Props = {
 	albums: SpotifyAlbum[];
@@ -14,7 +14,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	const listItems = listAlbums.map((album, index) => (
 		<div className="mb-4 flex min-w-[144px] flex-1 flex-col" key={index}>
-			<Link href={`/albums/${album.id}`}>
+			<Link href={`/albums/${album.id}/songs`}>
 				<div className="overflow-hidden rounded-md">
 					<Image
 						src={album.images[0].url}
@@ -29,7 +29,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 			{field === "artist" ? (
 				album.artists.slice(0, 1).map((artist, index) => (
 					<Link
-						href={`/artists/${artist.id}`}
+						href={`/artists/${artist.id}/top-songs`}
 						className="text-xs text-muted-foreground hover:underline"
 						key={index}
 					>

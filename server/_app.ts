@@ -1,10 +1,10 @@
-import { ratingRouter } from "./rating";
-import { spotifyRouter } from "./spotify";
+import { resourceRouter } from "./resource";
 import { router } from "./trpc";
+import { userRouter } from "./user";
 
 export const appRouter = router({
-	rating: ratingRouter,
-	spotify: spotifyRouter,
+	resource: resourceRouter,
+	user: userRouter,
 });
 
 export type AppRouter = typeof appRouter;
