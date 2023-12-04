@@ -45,13 +45,17 @@ export const userRouter = router({
 		delete: protectedProcedure
 			.input(ResourceSchema)
 			.mutation(
-				async ({ ctx: { userId, db }, input: { resourceId } }) => {
+				async ({
+					ctx: { userId, db },
+					input: { resourceId, category },
+				}) => {
 					await db
 						.delete(ratings)
 						.where(
 							and(
 								eq(ratings.userId, userId),
-								eq(ratings.resourceId, resourceId)
+								eq(ratings.resourceId, resourceId),
+								eq(ratings.category, category)
 							)
 						);
 				}

@@ -115,14 +115,6 @@ export const resourceRouter = router({
 				});
 			}),
 	}),
-	new: publicProcedure.query(async () => {
-		const { data } = await spotifyFetch("/browse/new-releases");
-		return z
-			.object({
-				albums: z.object({ items: SpotifyAlbumSchema.array() }),
-			})
-			.parse(data).albums.items;
-	}),
 	search: publicProcedure
 		.input(z.string().min(1))
 		.query(async ({ input: q }) => {
@@ -145,6 +137,14 @@ export const resourceRouter = router({
 				const { data } = await spotifyFetch(`/albums/${albumId}`);
 				return SpotifyAlbumSchema.parse(data);
 			}),
+		newReleases: publicProcedure.query(async () => {
+			const { data } = await spotifyFetch("/browse/new-releases");
+			return z
+				.object({
+					albums: z.object({ items: SpotifyAlbumSchema.array() }),
+				})
+				.parse(data).albums.items;
+		}),
 	}),
 	artist: router({
 		get: publicProcedure
