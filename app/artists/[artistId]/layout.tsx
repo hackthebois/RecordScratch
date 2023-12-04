@@ -1,4 +1,4 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getArtist } from "@/app/_trpc/cached";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
@@ -15,7 +15,7 @@ const Layout = async ({
 	};
 	children: React.ReactNode;
 }) => {
-	const artist = await serverTrpc.resource.artist.get(artistId);
+	const artist = await getArtist(artistId);
 
 	const resource: Resource = {
 		resourceId: artistId,
@@ -27,6 +27,7 @@ const Layout = async ({
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				{artist.images && (
 					<Image
+						priority
 						width={200}
 						height={200}
 						alt={`${artist.name} cover`}
@@ -43,7 +44,7 @@ const Layout = async ({
 							{artist.name}
 						</h1>
 					</div>
-					<div className="flex flex-wrap justify-center gap-3">
+					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						{artist.genres?.map((genre, index) => (
 							<Tag variant="outline" key={index}>
 								{genre}

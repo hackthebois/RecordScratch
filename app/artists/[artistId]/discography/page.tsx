@@ -1,4 +1,4 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getArtistDiscography } from "@/app/_trpc/cached";
 import AlbumList from "@/components/AlbumList";
 
 const Page = async ({
@@ -8,7 +8,7 @@ const Page = async ({
 		artistId: string;
 	};
 }) => {
-	const discography = await serverTrpc.resource.artist.albums(artistId);
+	const discography = await getArtistDiscography(artistId);
 
 	return <AlbumList albums={discography} type="wrap" field="date" />;
 };

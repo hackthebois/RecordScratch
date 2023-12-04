@@ -35,7 +35,7 @@ const ArtistItem = ({
 						alt={artist.name}
 						src={artistImage.url}
 						fill
-						objectFit="cover"
+						className="object-cover"
 					/>
 				) : (
 					<div className="h-full w-full bg-secondary"></div>
@@ -70,7 +70,7 @@ const AlbumItem = ({
 						alt={album.name}
 						src={albumImage.url}
 						fill
-						objectFit="cover"
+						className="object-cover"
 					/>
 				) : (
 					<div className="bg-elevation-4 h-full w-full" />
@@ -84,7 +84,7 @@ const AlbumItem = ({
 						onClick={(e) => {
 							e.preventDefault();
 							close();
-							router.push(`/artists/${artist.id}`);
+							router.push(`/artists/${artist.id}/top-songs`);
 						}}
 						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
 					>

@@ -1,10 +1,10 @@
 import {
-	index,
 	mysqlEnum,
 	mysqlTable,
 	primaryKey,
 	text,
 	tinyint,
+	uniqueIndex,
 	varchar,
 } from "drizzle-orm/mysql-core";
 
@@ -20,6 +20,9 @@ export const ratings = mysqlTable(
 	},
 	(table) => ({
 		pk_ratings: primaryKey({ columns: [table.resourceId, table.userId] }),
-		resourceIdx: index("resource_idx").on(table.resourceId),
+		resourceIdx: uniqueIndex("resource_idx").on(
+			table.resourceId,
+			table.category
+		),
 	})
 );

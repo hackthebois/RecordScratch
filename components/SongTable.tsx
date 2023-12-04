@@ -1,40 +1,48 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getRatingsList, getUserRatingList } from "@/app/_trpc/cached";
 import { Rating, Resource } from "@/types/ratings";
 import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
-import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 import { Ratings, RatingsSkeleton } from "./Ratings";
+
+const SongRatings = async ({
+	song,
+	resources,
+}: {
+	song: SpotifyTrack;
+	resources: Resource[];
+}) => {
+	const ratingsList = await getRatingsList(resources);
+
+	let userRatingsList: Rating[] = [];
+	const { userId } = auth();
+	if (userId) {
+		userRatingsList = await getUserRatingList(resources);
+	}
+
+	return (
+		<Ratings
+			resource={{
+				resourceId: song.id,
+				category: "SONG",
+			}}
+			type="list"
+			initial={{
+				rating: ratingsList.find((r) => r.resourceId === song.id),
+				userRating: userRatingsList.find(
+					(r) => r.resourceId === song.id
+				),
+			}}
+		/>
+	);
+};
 
 const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: song.id,
 		category: "SONG",
 	}));
-	const ratingsList = await unstable_cache(
-		async () => await serverTrpc.resource.rating.getList(resources),
-		[
-			`resource:rating:getList:[${resources
-				.map((r) => r.resourceId)
-				.join(",")}]`,
-		],
-		{ tags: resources.map((r) => r.resourceId) }
-	)();
-
-	let userRatingsList: Rating[] = [];
-	const { userId } = auth();
-	if (userId) {
-		userRatingsList = await unstable_cache(
-			async () => await serverTrpc.user.rating.getList(resources),
-			[
-				`user:rating:getList:[${resources
-					.map((r) => r.resourceId)
-					.join(",")}]`,
-			],
-			{ tags: resources.map((r) => r.resourceId) }
-		)();
-	}
 
 	return (
 		<div className="w-full">
@@ -61,22 +69,7 @@ const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
 							</p>
 						</div>
 						<Suspense fallback={<RatingsSkeleton type="list" />}>
-							<Ratings
-								name={song.name}
-								resource={{
-									resourceId: song.id,
-									category: "SONG",
-								}}
-								type="list"
-								initial={{
-									rating: ratingsList.find(
-										(r) => r.resourceId === song.id
-									),
-									userRating: userRatingsList.find(
-										(r) => r.resourceId === song.id
-									),
-								}}
-							/>
+							<SongRatings song={song} resources={resources} />
 						</Suspense>
 					</div>
 				);

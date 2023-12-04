@@ -1,4 +1,4 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getCommunityReviews } from "@/app/_trpc/cached";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Star } from "lucide-react";
 
@@ -9,7 +9,10 @@ const Page = async ({
 		albumId: string;
 	};
 }) => {
-	const reviews = await serverTrpc.resource.rating.community(albumId);
+	const reviews = await getCommunityReviews({
+		resourceId: albumId,
+		category: "ALBUM",
+	});
 
 	return (
 		<div className="w-full">

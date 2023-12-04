@@ -1,4 +1,4 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getAlbum } from "@/app/_trpc/cached";
 import SongTable from "@/components/SongTable";
 
 const Page = async ({
@@ -8,7 +8,7 @@ const Page = async ({
 		albumId: string;
 	};
 }) => {
-	const album = await serverTrpc.resource.album.get(albumId);
+	const album = await getAlbum(albumId);
 
 	return <SongTable songs={album.tracks?.items ?? []} />;
 };

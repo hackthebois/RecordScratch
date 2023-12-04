@@ -1,4 +1,4 @@
-import { serverTrpc } from "@/app/_trpc/server";
+import { getAlbum } from "@/app/_trpc/cached";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
@@ -16,7 +16,7 @@ const Layout = async ({
 	};
 	children: React.ReactNode;
 }) => {
-	const album = await serverTrpc.resource.album.get(albumId);
+	const album = await getAlbum(albumId);
 
 	const resource: Resource = {
 		category: "ALBUM",
@@ -28,6 +28,7 @@ const Layout = async ({
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				{album.images && (
 					<Image
+						priority
 						width={200}
 						height={200}
 						alt={`${album.name} cover`}
