@@ -8,4 +8,4 @@ const connection = connect({
 	url: env.DATABASE_URL,
 });
 
-export const db = drizzle(connection, { schema });
+export const db = drizzle(connection, { schema, logger: true });
