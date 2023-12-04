@@ -3,8 +3,8 @@ import { authMiddleware } from "@clerk/nextjs";
 export default authMiddleware({
 	publicRoutes: [
 		"/",
-		"/albums/:albumId",
-		"/artists/:artistId",
+		"/albums/:albumId/:tab",
+		"/artists/:artistId/:tab",
 		"/api(.*)",
 		"/_axiom/web-vitals",
 	],
