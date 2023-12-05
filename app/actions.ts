@@ -13,3 +13,10 @@ export const rateAction = async (
 	await serverTrpc.user.rating.rate(input);
 	revalidateTag(input.resourceId);
 };
+
+export const reviewAction = async (
+	input: RouterInput["user"]["rating"]["review"]
+) => {
+	await serverTrpc.user.rating.review(input);
+	revalidateTag(input.resourceId);
+};
