@@ -12,14 +12,15 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { rateAction } from "@/app/actions";
-import { Rate, RateSchema, Rating, Resource } from "@/types/ratings";
+import { reviewAction } from "@/app/actions";
+import { RatingInput } from "@/components/RatingInput";
+import { Rating, Resource, Review, ReviewSchema } from "@/types/ratings";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { RatingInput } from "./RatingInput";
-import { Form, FormControl, FormField, FormItem } from "./ui/Form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
+import { Textarea } from "./ui/Textarea";
 
-export const RatingDialog = ({
+export const ReviewDialog = ({
 	resource,
 	initialRating,
 	children,
@@ -32,36 +33,36 @@ export const RatingDialog = ({
 }) => {
 	const [open, setOpen] = useState(false);
 
-	const form = useForm<Rate>({
-		resolver: zodResolver(RateSchema),
+	const form = useForm<Review>({
+		resolver: zodResolver(ReviewSchema),
 		defaultValues: initialRating,
 	});
 
-	const onSubmit = async (rate: Rate) => {
-		rateAction(rate);
+	const onSubmit = async (review: Review) => {
+		reviewAction(review);
 		setOpen(false);
 	};
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent className="w-full sm:max-w-[425px]">
+			<DialogContent className="w-full sm:max-w-[600px]">
 				<DialogHeader>
 					<DialogTitle className="text-center text-2xl">
-						{name ?? "Rate"}
+						{name ?? "Review"}
 					</DialogTitle>
 					<DialogDescription className="text-center">
 						{resource.category === "ALBUM"
-							? "Rate this album"
+							? "Review this album"
 							: resource.category === "ARTIST"
-							? "Rate this artist"
-							: "Rate this song"}
+							? "Review this artist"
+							: "Review this song"}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className="space-y-4"
+						className="flex flex-col gap-4"
 					>
 						<FormField
 							control={form.control}
@@ -69,11 +70,32 @@ export const RatingDialog = ({
 							render={({ field: { onChange, value } }) => (
 								<FormItem>
 									<FormControl>
-										<RatingInput
-											value={value}
-											onChange={onChange}
+										<div className="flex justify-center">
+											<span className="w-[375px] max-w-[375px]">
+												<RatingInput
+													value={value}
+													onChange={onChange}
+												/>
+											</span>
+										</div>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="content"
+							render={({ field: { value, ...rest } }) => (
+								<FormItem>
+									<FormControl>
+										<Textarea
+											{...rest}
+											placeholder="Write your thoughts!"
+											value={value ?? undefined}
+											className="min-h-[300px]"
 										/>
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>
@@ -83,7 +105,7 @@ export const RatingDialog = ({
 								type="submit"
 								disabled={!form.formState.isValid}
 							>
-								Rate
+								Review
 							</Button>
 						</DialogFooter>
 					</form>
