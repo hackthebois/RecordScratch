@@ -39,7 +39,7 @@ export const getCommunityReviews = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.rating.community({ resource }),
 		[`resource:rating:getList:${resource.resourceId}`],
-		{ revalidate: 60 }
+		{ revalidate: 60, tags: [resource.resourceId] }
 	)();
 });
 

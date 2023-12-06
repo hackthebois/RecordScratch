@@ -89,10 +89,29 @@ const Review = ({
 	);
 };
 
-const Reviews = async ({ resource }: { resource: Resource }) => {
+const ReviewsList = async ({ resource }: { resource: Resource }) => {
 	unstable_noStore();
-	const userRating = await getUserRating(resource);
 	const reviews = await getCommunityReviews(resource);
+
+	return (
+		<>
+			{reviews.length > 0 ? (
+				<div className="gap-4">
+					{reviews.map((review, index) => (
+						<Review key={index} review={review} />
+					))}
+				</div>
+			) : (
+				<p className="mt-10 text-center text-muted-foreground">
+					No reviews yet
+				</p>
+			)}
+		</>
+	);
+};
+
+const Reviews = async ({ resource }: { resource: Resource }) => {
+	const userRating = await getUserRating(resource);
 	let name = undefined;
 	if (resource.category === "ALBUM") {
 		name = (await getAlbum(resource.resourceId)).name;
@@ -118,17 +137,7 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 					</ReviewDialog>
 				)}
 			</div>
-			{reviews.length > 0 ? (
-				<div className="gap-4">
-					{reviews.map((review, index) => (
-						<Review key={index} review={review} />
-					))}
-				</div>
-			) : (
-				<p className="mt-10 text-center text-muted-foreground">
-					No reviews yet
-				</p>
-			)}
+			<ReviewsList resource={resource} />
 		</div>
 	);
 };
