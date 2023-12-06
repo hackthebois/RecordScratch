@@ -1,7 +1,9 @@
 import { ratings } from "@/server/db/schema";
 import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/ratings";
+import { HandleSchema } from "@/types/users";
 import { clerkClient } from "@clerk/nextjs";
 import { and, desc, eq, inArray } from "drizzle-orm";
+import { z } from "zod";
 import { protectedProcedure, router } from "./trpc";
 
 export const userRouter = router({
@@ -82,4 +84,17 @@ export const userRouter = router({
 			where: eq(ratings.userId, userId),
 		});
 	}),
+	update: protectedProcedure
+		.input(
+			z.object({
+				handle: HandleSchema,
+			})
+		)
+		.mutation(async ({ ctx: { userId }, input: { handle } }) => {
+			await clerkClient.users.updateUserMetadata(userId, {
+				publicMetadata: {
+					handle,
+				},
+			});
+		}),
 });

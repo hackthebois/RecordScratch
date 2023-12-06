@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { trpc } from "../app/(app)/albums/_trpc/react";
+import { trpc } from "../app/_trpc/react";
 
 const ArtistItem = ({
 	artist,

@@ -1,4 +1,4 @@
-import { getArtistTopTracks } from "@/app/(app)/albums/_trpc/cached";
+import { getArtistTopTracks } from "@/app/_trpc/cached";
 import SongTable from "@/components/SongTable";
 
 const Page = async ({

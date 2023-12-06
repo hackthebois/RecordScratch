@@ -1,4 +1,4 @@
-import { getAlbum } from "@/app/(app)/albums/_trpc/cached";
+import { getAlbum } from "@/app/_trpc/cached";
 import SongTable from "@/components/SongTable";
 
 const Page = async ({
