@@ -13,6 +13,7 @@ import {
 import { useClerk, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 const UserButton = () => {
 	const clerkTheme = useTheme().theme === "dark" ? dark : undefined;
@@ -26,9 +27,9 @@ const UserButton = () => {
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="ghost"
-					className="relative h-8 w-8 rounded-full"
+					className="relative h-9 w-9 rounded-full"
 				>
-					<Avatar className="h-8 w-8">
+					<Avatar className="h-9 w-9">
 						<AvatarImage src={user.imageUrl} alt="User icon" />
 						<AvatarFallback>
 							{user.firstName ? user.firstName[0] : "U"}
@@ -48,6 +49,9 @@ const UserButton = () => {
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
+				<DropdownMenuItem asChild>
+					<Link href={`/${user.username}`}>Profile</Link>
+				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={() =>
 						openUserProfile({

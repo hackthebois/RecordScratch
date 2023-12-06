@@ -3,7 +3,7 @@
 import { AppRouter } from "@/server/_app";
 import { inferRouterInputs } from "@trpc/server";
 import { revalidateTag } from "next/cache";
-import { serverTrpc } from "./_trpc/server";
+import { serverTrpc } from "./(app)/albums/_trpc/server";
 
 export type RouterInput = inferRouterInputs<AppRouter>;
 

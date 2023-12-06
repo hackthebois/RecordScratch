@@ -3,7 +3,7 @@ import {
 	getArtist,
 	getCommunityReviews,
 	getUserRating,
-} from "@/app/_trpc/cached";
+} from "@/app/(app)/albums/_trpc/cached";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Rating, Resource } from "@/types/ratings";
 import { UserDTO } from "@/types/users";

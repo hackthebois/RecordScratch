@@ -1,4 +1,4 @@
-import { getRating, getUserRating } from "@/app/_trpc/cached";
+import { getRating, getUserRating } from "@/app/(app)/albums/_trpc/cached";
 import { Rating, Resource, ResourceRating } from "@/types/ratings";
 import { cn } from "@/utils/utils";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
