@@ -3,6 +3,7 @@ import {
 	mysqlTable,
 	primaryKey,
 	text,
+	timestamp,
 	tinyint,
 	varchar,
 } from "drizzle-orm/mysql-core";
@@ -13,9 +14,10 @@ export const ratings = mysqlTable(
 		resourceId: varchar("resource_id", { length: 256 }).notNull(),
 		userId: varchar("user_id", { length: 256 }).notNull(),
 		rating: tinyint("rating").notNull(),
-		description: text("description"),
-		title: text("title"),
+		content: text("content"),
 		category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({

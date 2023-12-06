@@ -8,7 +8,9 @@ export const ResourceRatingSchema = z.object({
 });
 export type ResourceRating = z.infer<typeof ResourceRatingSchema>;
 
-export const RatingSchema = createSelectSchema(ratings);
+export const RatingSchema = createSelectSchema(ratings, {
+	content: z.string().min(1).max(10000),
+});
 export type Rating = z.infer<typeof RatingSchema>;
 
 export const ResourceSchema = RatingSchema.pick({
@@ -16,3 +18,18 @@ export const ResourceSchema = RatingSchema.pick({
 	category: true,
 });
 export type Resource = z.infer<typeof ResourceSchema>;
+
+export const RateSchema = RatingSchema.pick({
+	resourceId: true,
+	category: true,
+	rating: true,
+});
+export type Rate = z.infer<typeof RateSchema>;
+
+export const ReviewSchema = RatingSchema.pick({
+	resourceId: true,
+	category: true,
+	content: true,
+	rating: true,
+});
+export type Review = z.infer<typeof ReviewSchema>;
