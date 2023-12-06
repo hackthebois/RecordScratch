@@ -1,17 +1,17 @@
 import Reviews from "@/components/Reviews";
 
 const Page = async ({
-	params: { albumId },
+	params: { artistId },
 }: {
 	params: {
-		albumId: string;
+		artistId: string;
 	};
 }) => {
 	return (
 		<Reviews
 			resource={{
-				resourceId: albumId,
-				category: "ALBUM",
+				resourceId: artistId,
+				category: "ARTIST",
 			}}
 		/>
 	);

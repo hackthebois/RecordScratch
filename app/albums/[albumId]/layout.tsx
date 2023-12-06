@@ -25,27 +25,23 @@ const Layout = async ({
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+			<div className="flex flex-col gap-6 sm:flex-row sm:items-start">
 				{album.images && (
 					<Image
 						priority
-						width={200}
-						height={200}
+						width={250}
+						height={250}
 						alt={`${album.name} cover`}
 						src={album.images[0].url}
-						className="rounded-xl"
+						className="w-full rounded-xl sm:w-[250px]"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<div className="flex flex-col items-center gap-1 sm:items-start">
-						<p className="text-sm tracking-widest text-muted-foreground">
-							ALBUM
-						</p>
-						<h1 className="text-center sm:text-left">
-							{album.name}
-						</h1>
-					</div>
-					<div className="flex gap-3">
+					<p className="text-sm tracking-widest text-muted-foreground">
+						ALBUM
+					</p>
+					<h1 className="text-center sm:text-left">{album.name}</h1>
+					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						<Tag variant="outline">{album.release_date}</Tag>
 						{album.tracks && (
 							<Tag variant="outline">
@@ -53,7 +49,7 @@ const Layout = async ({
 							</Tag>
 						)}
 					</div>
-					<div className="flex items-center gap-4">
+					<div className="flex gap-4">
 						<Suspense fallback={<RatingsSkeleton />}>
 							<Ratings resource={resource} name={album.name} />
 						</Suspense>
@@ -74,7 +70,7 @@ const Layout = async ({
 			<Tabs
 				tabs={[
 					{
-						label: "Songs List",
+						label: "Songs",
 						href: `/albums/${albumId}/songs`,
 					},
 					{
