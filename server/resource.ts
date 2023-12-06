@@ -89,31 +89,47 @@ export const resourceRouter = router({
 					.groupBy(ratings.resourceId);
 			}),
 		community: publicProcedure
-			.input(ResourceSchema)
-			.query(async ({ ctx: { db }, input: { resourceId, category } }) => {
-				const commmunityRatings = await db.query.ratings.findMany({
-					where: and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.category, category),
-						isNotNull(ratings.content)
-					),
-					limit: 10,
-					// TODO: order by date, and paginate
-				});
-				const users = await clerkClient.users.getUserList({
-					userId: commmunityRatings.map((r) => r.userId),
-				});
+			.input(
+				z.object({
+					resource: ResourceSchema,
+					sort: z.enum(["newest"]).optional(),
+				})
+			)
+			.query(
+				async ({
+					ctx: { db },
+					input: {
+						resource: { resourceId, category },
+						sort = "newest",
+					},
+				}) => {
+					const commmunityRatings = await db.query.ratings.findMany({
+						where: and(
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category),
+							isNotNull(ratings.content)
+						),
+						limit: 10,
+						orderBy: (ratings, { desc }) => [
+							desc(ratings.createdAt),
+						],
+						// TODO: order by date, and paginate
+					});
+					const users = await clerkClient.users.getUserList({
+						userId: commmunityRatings.map((r) => r.userId),
+					});
 
-				return commmunityRatings.map((rating) => {
-					const user = users.find(
-						(user) => user.id === rating.userId
-					);
-					return {
-						...rating,
-						user: UserDTOSchema.optional().parse(user),
-					};
-				});
-			}),
+					return commmunityRatings.map((rating) => {
+						const user = users.find(
+							(user) => user.id === rating.userId
+						);
+						return {
+							...rating,
+							user: UserDTOSchema.optional().parse(user),
+						};
+					});
+				}
+			),
 	}),
 	search: publicProcedure
 		.input(z.string().min(1))
