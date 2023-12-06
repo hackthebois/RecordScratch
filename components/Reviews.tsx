@@ -112,7 +112,7 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 						name={name}
 					>
 						<Button variant="outline" className="gap-2 self-end">
-							<Text size={18} />
+							<Text size={18} color="#fb8500" />
 							Review
 						</Button>
 					</ReviewDialog>
