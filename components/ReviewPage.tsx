@@ -19,7 +19,7 @@ type Props = {
 	initialRating?: Rating;
 };
 
-const ReviewInput = ({ initialRating }: Props) => {
+export const ReviewPage = ({ initialRating }: Props) => {
 	const { user } = useUser();
 	const form = useForm<Review>({
 		resolver: zodResolver(ReviewSchema),
@@ -72,5 +72,3 @@ const ReviewInput = ({ initialRating }: Props) => {
 		</div>
 	);
 };
-
-export default ReviewInput;

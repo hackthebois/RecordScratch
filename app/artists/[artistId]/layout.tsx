@@ -24,26 +24,22 @@ const Layout = async ({
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+			<div className="flex flex-col gap-6 sm:flex-row">
 				{artist.images && (
 					<Image
 						priority
-						width={200}
-						height={200}
+						width={250}
+						height={250}
 						alt={`${artist.name} cover`}
 						src={artist.images[0].url}
-						className="rounded-xl"
+						className="w-full rounded-xl sm:w-[250px]"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<div className="flex flex-col items-center gap-1 sm:items-start">
-						<p className="text-sm tracking-widest text-muted-foreground">
-							ARTIST
-						</p>
-						<h1 className="text-center sm:text-left">
-							{artist.name}
-						</h1>
-					</div>
+					<p className="text-sm tracking-widest text-muted-foreground">
+						ARTIST
+					</p>
+					<h1 className="text-center sm:text-left">{artist.name}</h1>
 					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						{artist.genres?.map((genre, index) => (
 							<Tag variant="outline" key={index}>
@@ -65,6 +61,10 @@ const Layout = async ({
 					{
 						label: "Discography",
 						href: `/artists/${artistId}/discography`,
+					},
+					{
+						label: "Reviews",
+						href: `/artists/${artistId}/reviews`,
 					},
 				]}
 			/>

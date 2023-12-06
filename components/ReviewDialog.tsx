@@ -71,7 +71,7 @@ export const ReviewDialog = ({
 								<FormItem>
 									<FormControl>
 										<div className="flex justify-center">
-											<span className="w-[375px] max-w-[375px]">
+											<span className="w-full max-w-[375px]">
 												<RatingInput
 													value={value}
 													onChange={onChange}
