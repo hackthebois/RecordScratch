@@ -1,12 +1,22 @@
 import { ratings } from "@/server/db/schema";
-import { RatingSchema, ResourceSchema } from "@/types/ratings";
+import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/ratings";
 import { and, eq, inArray } from "drizzle-orm";
 import { protectedProcedure, router } from "./trpc";
 
 export const userRouter = router({
 	rating: router({
 		rate: protectedProcedure
-			.input(RatingSchema.omit({ userId: true }))
+			.input(RateSchema)
+			.mutation(async ({ ctx: { db, userId }, input: userRating }) => {
+				await db
+					.insert(ratings)
+					.values({ ...userRating, userId })
+					.onDuplicateKeyUpdate({
+						set: { ...userRating, userId },
+					});
+			}),
+		review: protectedProcedure
+			.input(ReviewSchema)
 			.mutation(async ({ ctx: { db, userId }, input: userRating }) => {
 				await db
 					.insert(ratings)

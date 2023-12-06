@@ -37,8 +37,7 @@ export const getArtistDiscography = cache((artistId: string) => {
 
 export const getCommunityReviews = cache((resource: Resource) => {
 	return unstable_cache(
-		async () =>
-			await serverTrpc.resource.rating.community(resource.resourceId),
+		async () => await serverTrpc.resource.rating.community({ resource }),
 		[`resource:rating:getList:${resource.resourceId}`],
 		{ revalidate: 60 }
 	)();

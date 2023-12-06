@@ -1,9 +1,10 @@
 import { env } from "@/env.mjs";
 import { ratings } from "@/server/db/schema";
 import { ResourceSchema } from "@/types/ratings";
+import { UserDTOSchema } from "@/types/users";
 import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
-import { and, avg, count, eq, inArray } from "drizzle-orm";
+import { and, avg, count, eq, inArray, isNotNull } from "drizzle-orm";
 import {
 	SpotifyAlbumSchema,
 	SpotifyArtistSchema,
@@ -88,32 +89,47 @@ export const resourceRouter = router({
 					.groupBy(ratings.resourceId);
 			}),
 		community: publicProcedure
-			.input(z.string())
-			.query(async ({ ctx: { db }, input: resourceId }) => {
-				const commmunityRatings = await db.query.ratings.findMany({
-					where: eq(ratings.resourceId, resourceId),
-					limit: 10,
-					// TODO: order by date, and paginate
-				});
-				const users = await clerkClient.users.getUserList({
-					userId: commmunityRatings.map((r) => r.userId),
-				});
+			.input(
+				z.object({
+					resource: ResourceSchema,
+					sort: z.enum(["newest"]).optional(),
+				})
+			)
+			.query(
+				async ({
+					ctx: { db },
+					input: {
+						resource: { resourceId, category },
+						sort = "newest",
+					},
+				}) => {
+					const commmunityRatings = await db.query.ratings.findMany({
+						where: and(
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category),
+							isNotNull(ratings.content)
+						),
+						limit: 10,
+						orderBy: (ratings, { desc }) => [
+							desc(ratings.createdAt),
+						],
+						// TODO: order by date, and paginate
+					});
+					const users = await clerkClient.users.getUserList({
+						userId: commmunityRatings.map((r) => r.userId),
+					});
 
-				return commmunityRatings.map((rating) => {
-					const user = users.find(
-						(user) => user.id === rating.userId
-					);
-					return {
-						...rating,
-						user: {
-							id: user?.id,
-							firstName: user?.firstName,
-							lastName: user?.lastName,
-							imageUrl: user?.imageUrl,
-						},
-					};
-				});
-			}),
+					return commmunityRatings.map((rating) => {
+						const user = users.find(
+							(user) => user.id === rating.userId
+						);
+						return {
+							...rating,
+							user: UserDTOSchema.optional().parse(user),
+						};
+					});
+				}
+			),
 	}),
 	search: publicProcedure
 		.input(z.string().min(1))
