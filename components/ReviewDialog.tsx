@@ -35,8 +35,10 @@ export const ReviewDialog = ({
 
 	const form = useForm<Review>({
 		resolver: zodResolver(ReviewSchema),
-		defaultValues: initialRating,
+		defaultValues: { ...resource, ...initialRating },
 	});
+
+	console.log(form.formState.errors);
 
 	const onSubmit = async (review: Review) => {
 		reviewAction(review);
