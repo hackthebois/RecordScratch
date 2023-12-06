@@ -1,4 +1,4 @@
-import { getAlbum } from "@/app/(app)/albums/_trpc/cached";
+import { getAlbum } from "@/app/_trpc/cached";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";

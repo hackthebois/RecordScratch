@@ -2,8 +2,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
-import { TRPCReactProvider } from "./(app)/albums/_trpc/react";
 import { Providers } from "./Providers";
+import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
 const montserrat = Montserrat({

@@ -1,5 +1,4 @@
-import { Input } from "@/components/ui/Input";
-import { AtSign } from "lucide-react";
+import HandleForm from "./HandleForm";
 
 const Page = () => {
 	return (
@@ -8,13 +7,7 @@ const Page = () => {
 			<p className="text-muted-foreground">
 				To complete the sign up you must create a handle
 			</p>
-			<div className="relative flex items-center">
-				<AtSign
-					className="absolute left-2 text-muted-foreground"
-					size={16}
-				/>
-				<Input placeholder="handle" className="pl-7 lowercase" />
-			</div>
+			<HandleForm />
 		</div>
 	);
 };

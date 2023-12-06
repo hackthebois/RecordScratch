@@ -1,45 +1,63 @@
+"use client";
+
+import { Button } from "@/components/ui/Button";
 import {
+	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
-	FormLabel,
 	FormMessage,
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
+import { HandleSchema } from "@/types/users";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AtSign } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-type Props = {};
+const HandleFormSchema = z.object({
+	handle: HandleSchema,
+});
+type HandleForm = z.infer<typeof HandleFormSchema>;
 
-const HandleForm = ({}: Props) => {
-	const form = useForm();
+const HandleForm = () => {
+	const form = useForm<HandleForm>({
+		resolver: zodResolver(HandleFormSchema),
+		mode: "onChange",
+	});
+
+	const onSubmit = async (values: HandleForm) => {
+		console.log(values);
+	};
 
 	return (
-		<div className="relative flex items-center">
-			<AtSign
-				className="absolute left-2 text-muted-foreground"
-				size={16}
-			/>
-			<FormField
-				control={form.control}
-				name="username"
-				render={({ field }) => (
-					<FormItem>
-						<FormLabel>Username</FormLabel>
-						<FormControl>
-							<Input placeholder="shadcn" {...field} />
-						</FormControl>
-						<FormDescription>
-							This is your public display name.
-						</FormDescription>
-						<FormMessage />
-					</FormItem>
-				)}
-			/>
-
-			<Input placeholder="handle" className="pl-7 lowercase" />
-		</div>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-3">
+				<FormField
+					control={form.control}
+					name="handle"
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<div className="relative flex items-center">
+									<AtSign
+										className="absolute left-3 text-muted-foreground"
+										size={16}
+									/>
+									<Input
+										{...field}
+										placeholder="handle"
+										className="pl-9 lowercase"
+									/>
+								</div>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<Button type="submit">Create</Button>
+			</form>
+		</Form>
 	);
 };
 
