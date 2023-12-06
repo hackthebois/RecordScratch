@@ -1,6 +1,7 @@
 import { ratings } from "@/server/db/schema";
 import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/ratings";
-import { and, eq, inArray } from "drizzle-orm";
+import { clerkClient } from "@clerk/nextjs";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { protectedProcedure, router } from "./trpc";
 
 export const userRouter = router({
@@ -70,5 +71,15 @@ export const userRouter = router({
 						);
 				}
 			),
+	}),
+	me: protectedProcedure.query(async ({ ctx: { userId } }) => {
+		return await clerkClient.users.getUser(userId);
+	}),
+	recent: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
+		return await db.query.ratings.findMany({
+			limit: 10,
+			orderBy: desc(ratings.updatedAt),
+			where: eq(ratings.userId, userId),
+		});
 	}),
 });

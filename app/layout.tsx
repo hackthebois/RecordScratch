@@ -1,17 +1,9 @@
-import { Button } from "@/components/ui/Button";
-import { ScrollArea } from "@/components/ui/ScrollArea";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
-import { Disc3 } from "lucide-react";
+import { ClerkProvider } from "@clerk/nextjs";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
-import Link from "next/link";
-import SearchBar from "../components/SearchBar";
-import SignInButton from "../components/SignInButton";
-import UserButton from "../components/UserButton";
+import { TRPCReactProvider } from "./(app)/albums/_trpc/react";
 import { Providers } from "./Providers";
-import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -47,40 +39,7 @@ const RootLayout = ({ children }: Props) => {
 					}}
 				>
 					<TRPCReactProvider headers={headers()}>
-						<Providers>
-							<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
-								<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-6">
-									<div className="flex items-center gap-3">
-										<Link
-											href="/"
-											className="flex items-center gap-3"
-										>
-											<Button
-												size="icon"
-												variant="outline"
-											>
-												<Disc3 size={22} />
-											</Button>
-										</Link>
-										<SearchBar />
-									</div>
-									<div className="flex items-center justify-center gap-3">
-										<SignedIn>
-											<UserButton />
-										</SignedIn>
-										<SignedOut>
-											<SignInButton />
-										</SignedOut>
-										<ThemeToggle />
-									</div>
-								</nav>
-							</header>
-							<ScrollArea className="flex h-full w-screen flex-1">
-								<main className="mx-auto w-screen max-w-screen-lg p-4 sm:p-6">
-									{children}
-								</main>
-							</ScrollArea>
-						</Providers>
+						<Providers>{children}</Providers>
 					</TRPCReactProvider>
 				</ClerkProvider>
 			</body>
