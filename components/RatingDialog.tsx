@@ -34,13 +34,15 @@ export const RatingDialog = ({
 
 	const form = useForm<Rate>({
 		resolver: zodResolver(RateSchema),
-		defaultValues: initialRating,
+		defaultValues: { ...resource, ...initialRating },
 	});
 
 	const onSubmit = async (rate: Rate) => {
 		rateAction(rate);
 		setOpen(false);
 	};
+
+	console.log(form.formState);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
