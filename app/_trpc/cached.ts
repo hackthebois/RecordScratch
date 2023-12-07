@@ -47,7 +47,7 @@ export const getRating = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.rating.get(resource),
 		[`resource:rating:get:${resource.resourceId}`],
-		{ revalidate: 60 }
+		{ revalidate: 60, tags: [resource.resourceId] }
 	)();
 });
 
@@ -55,7 +55,7 @@ export const getUserRating = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.user.rating.get(resource),
 		[`user:rating:get:${resource.resourceId}`],
-		{ revalidate: 60 }
+		{ revalidate: 60, tags: [resource.resourceId] }
 	)();
 });
 
