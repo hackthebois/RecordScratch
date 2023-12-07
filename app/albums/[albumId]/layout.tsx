@@ -33,7 +33,7 @@ const Layout = async ({
 						height={250}
 						alt={`${album.name} cover`}
 						src={album.images[0].url}
-						className="w-full rounded-xl sm:w-[250px]"
+						className="w-[250px] self-center rounded-xl"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
