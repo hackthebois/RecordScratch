@@ -90,3 +90,15 @@ export const getNewReleases = cache(() => {
 		{ revalidate: 60 * 60 }
 	)();
 });
+
+export const getRatingListAverage = cache((resources: Resource[]) => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.rating.getListAverage(resources),
+		[
+			`resource:rating:getListAverage:[${resources
+				.map((r) => r.resourceId)
+				.join(",")}]`,
+		],
+		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
+	)();
+});
