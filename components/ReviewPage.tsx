@@ -1,6 +1,6 @@
 "use client";
 
-import { reviewAction } from "@/app/actions";
+import { reviewAction } from "@/app/(app)/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import {
 	Form,
@@ -10,7 +10,7 @@ import {
 	FormMessage,
 } from "@/components/ui/Form";
 import { Textarea } from "@/components/ui/Textarea";
-import { Rating, Review, ReviewSchema } from "@/types/ratings";
+import { Rating, Review, ReviewSchema } from "@/types/rating";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

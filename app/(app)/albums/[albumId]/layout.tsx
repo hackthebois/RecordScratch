@@ -2,7 +2,7 @@ import { getAlbum } from "@/app/_trpc/cached";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { Resource } from "@/types/ratings";
+import { Resource } from "@/types/rating";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";

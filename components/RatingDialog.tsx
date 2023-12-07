@@ -13,7 +13,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { rateAction } from "@/app/actions";
-import { Rate, RateSchema, Rating, Resource } from "@/types/ratings";
+import { Rate, RateSchema, Rating, Resource } from "@/types/rating";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
