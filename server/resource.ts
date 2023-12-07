@@ -4,6 +4,7 @@ import { ResourceSchema } from "@/types/rating";
 import { TRPCError } from "@trpc/server";
 import { and, avg, count, eq, inArray, isNotNull } from "drizzle-orm";
 import {
+	SpotifyAlbum,
 	SpotifyAlbumSchema,
 	SpotifyArtistSchema,
 	SpotifyTrackSchema,
@@ -41,7 +42,7 @@ const spotifyFetch = async (url: string) => {
 	if (!res.ok) {
 		throw new TRPCError({
 			code: "INTERNAL_SERVER_ERROR",
-			message: "Spotify API Error",
+			message: "Spotify API error",
 		});
 	}
 
@@ -85,6 +86,25 @@ export const resourceRouter = router({
 						)
 					)
 					.groupBy(ratings.resourceId);
+			}),
+		getListAverage: publicProcedure
+			.input(ResourceSchema.array())
+			.query(async ({ ctx: { db }, input: resources }) => {
+				const rating = await db
+					.select({
+						average: avg(ratings.rating),
+						total: count(ratings.rating),
+					})
+					.from(ratings)
+					.where(
+						and(
+							inArray(
+								ratings.resourceId,
+								resources.map((a) => a.resourceId)
+							)
+						)
+					);
+				return rating.length ? { ...rating[0] } : null;
 			}),
 		community: publicProcedure
 			.input(
@@ -159,14 +179,23 @@ export const resourceRouter = router({
 		albums: publicProcedure
 			.input(z.string())
 			.query(async ({ input: artistId }) => {
-				const { data } = await spotifyFetch(
-					`/artists/${artistId}/albums`
-				);
-				return z
-					.object({
-						items: SpotifyAlbumSchema.array(),
-					})
-					.parse(data).items;
+				const albums: SpotifyAlbum[] = [];
+				const getAllAlbums = async (offset = 0) => {
+					const { data } = await spotifyFetch(
+						`/artists/${artistId}/albums?include_groups=album,single&offset=${offset}&limit=50`
+					);
+					const { items } = z
+						.object({
+							items: SpotifyAlbumSchema.array(),
+						})
+						.parse(data);
+					albums.push(...items);
+					if (items.length !== 0) {
+						await getAllAlbums(offset + 50);
+					}
+				};
+				await getAllAlbums();
+				return albums;
 			}),
 		topTracks: publicProcedure
 			.input(z.string())

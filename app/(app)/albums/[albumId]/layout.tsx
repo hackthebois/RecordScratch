@@ -33,7 +33,7 @@ const Layout = async ({
 						height={250}
 						alt={`${album.name} cover`}
 						src={album.images[0].url}
-						className="w-full rounded-xl sm:w-[250px]"
+						className="w-[250px] self-center rounded-xl"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
@@ -49,11 +49,9 @@ const Layout = async ({
 							</Tag>
 						)}
 					</div>
-					<div className="flex gap-4">
-						<Suspense fallback={<RatingsSkeleton />}>
-							<Ratings resource={resource} name={album.name} />
-						</Suspense>
-					</div>
+					<Suspense fallback={<RatingsSkeleton />}>
+						<Ratings resource={resource} name={album.name} />
+					</Suspense>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
 							<Link
