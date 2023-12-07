@@ -6,11 +6,13 @@ import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 import { and, avg, count, eq, inArray, isNotNull } from "drizzle-orm";
 import {
+	SpotifyAlbum,
 	SpotifyAlbumSchema,
 	SpotifyArtistSchema,
 	SpotifyTrackSchema,
 } from "types/spotify";
 import { z } from "zod";
+import { db } from "./db/db";
 import { publicProcedure, router } from "./trpc";
 
 export const getSpotifyToken = async () => {
@@ -43,7 +45,7 @@ const spotifyFetch = async (url: string) => {
 	if (!res.ok) {
 		throw new TRPCError({
 			code: "INTERNAL_SERVER_ERROR",
-			message: "Spotify API Error",
+			message: "Spotify API error",
 		});
 	}
 
@@ -163,6 +165,46 @@ export const resourceRouter = router({
 		}),
 	}),
 	artist: router({
+		rating: publicProcedure
+			.input(z.string())
+			.query(async ({ input: artistId }) => {
+				const albums: SpotifyAlbum[] = [];
+				console.log("data");
+				const getAllAlbums = async (offset = 0) => {
+					const { data } = await spotifyFetch(
+						`/artists/${artistId}/albums?include_groups=album,single&offset=${offset}&limit=50`
+					);
+					const { items } = z
+						.object({
+							items: SpotifyAlbumSchema.array(),
+						})
+						.parse(data);
+					albums.push(...items);
+					if (items.length !== 0) {
+						await getAllAlbums(offset + 50);
+					}
+				};
+				await getAllAlbums();
+				if (albums.length === 0) {
+					return null;
+				}
+				const [rating] = await db
+					.select({
+						average: avg(ratings.rating),
+						total: count(ratings.rating),
+					})
+					.from(ratings)
+					.where(
+						and(
+							inArray(
+								ratings.resourceId,
+								albums.map((a) => a.id)
+							),
+							eq(ratings.category, "ALBUM")
+						)
+					);
+				return rating;
+			}),
 		get: publicProcedure
 			.input(z.string())
 			.query(async ({ input: artistId }) => {

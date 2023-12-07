@@ -1,10 +1,15 @@
 import { getArtist } from "@/app/_trpc/cached";
-import { Ratings, RatingsSkeleton } from "@/components/Ratings";
+import { serverTrpc } from "@/app/_trpc/server";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { Resource } from "@/types/ratings";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info, Star } from "lucide-react";
 import Image from "next/image";
-import { Suspense } from "react";
 
 const Layout = async ({
 	params: { artistId },
@@ -16,11 +21,7 @@ const Layout = async ({
 	children: React.ReactNode;
 }) => {
 	const artist = await getArtist(artistId);
-
-	const resource: Resource = {
-		resourceId: artistId,
-		category: "ARTIST",
-	};
+	const rating = await serverTrpc.resource.artist.rating(artistId);
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -32,7 +33,7 @@ const Layout = async ({
 						height={250}
 						alt={`${artist.name} cover`}
 						src={artist.images[0].url}
-						className="w-full rounded-xl sm:w-[250px]"
+						className="w-[250px] self-center rounded-xl"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
@@ -47,9 +48,35 @@ const Layout = async ({
 							</Tag>
 						))}
 					</div>
-					<Suspense fallback={<RatingsSkeleton />}>
-						<Ratings resource={resource} name={artist.name} />
-					</Suspense>
+					<div className="flex items-center gap-2">
+						<Star
+							color="#ffb703"
+							fill={rating?.average ? "#ffb703" : "none"}
+							size={30}
+						/>
+						<div>
+							{rating?.average && (
+								<p className="text-lg font-semibold">
+									{Number(rating.average).toFixed(1)}
+								</p>
+							)}
+							<p className="flex items-center gap-1 text-sm text-muted-foreground">
+								{rating?.total && Number(rating.total) !== 0
+									? rating.total
+									: "No ratings yet"}
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger>
+											<Info size={15} />
+										</TooltipTrigger>
+										<TooltipContent>
+											<p>Average of albums</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
 			<Tabs
@@ -61,10 +88,6 @@ const Layout = async ({
 					{
 						label: "Discography",
 						href: `/artists/${artistId}/discography`,
-					},
-					{
-						label: "Reviews",
-						href: `/artists/${artistId}/reviews`,
 					},
 				]}
 			/>
