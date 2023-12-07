@@ -1,5 +1,5 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import { Resource } from "@/types/ratings";
+import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 

@@ -1,8 +1,6 @@
 import { env } from "@/env.mjs";
 import { ratings } from "@/server/db/schema";
-import { ResourceSchema } from "@/types/ratings";
-import { UserDTOSchema } from "@/types/users";
-import { clerkClient } from "@clerk/nextjs";
+import { ResourceSchema } from "@/types/rating";
 import { TRPCError } from "@trpc/server";
 import { and, avg, count, eq, inArray, isNotNull } from "drizzle-orm";
 import {
@@ -103,7 +101,7 @@ export const resourceRouter = router({
 						sort = "newest",
 					},
 				}) => {
-					const commmunityRatings = await db.query.ratings.findMany({
+					return await db.query.ratings.findMany({
 						where: and(
 							eq(ratings.resourceId, resourceId),
 							eq(ratings.category, category),
@@ -113,20 +111,9 @@ export const resourceRouter = router({
 						orderBy: (ratings, { desc }) => [
 							desc(ratings.createdAt),
 						],
-						// TODO: order by date, and paginate
-					});
-					const users = await clerkClient.users.getUserList({
-						userId: commmunityRatings.map((r) => r.userId),
-					});
-
-					return commmunityRatings.map((rating) => {
-						const user = users.find(
-							(user) => user.id === rating.userId
-						);
-						return {
-							...rating,
-							user: UserDTOSchema.optional().parse(user),
-						};
+						with: {
+							profile: true,
+						},
 					});
 				}
 			),

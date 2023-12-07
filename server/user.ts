@@ -1,10 +1,10 @@
-import { ratings } from "@/server/db/schema";
-import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/ratings";
-import { HandleSchema } from "@/types/users";
+import { profile, ratings } from "@/server/db/schema";
+import { ProfileSchema } from "@/types/profile";
+import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/rating";
 import { clerkClient } from "@clerk/nextjs";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import { protectedProcedure, router } from "./trpc";
+import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const userRouter = router({
 	rating: router({
@@ -84,17 +84,29 @@ export const userRouter = router({
 			where: eq(ratings.userId, userId),
 		});
 	}),
-	update: protectedProcedure
-		.input(
-			z.object({
-				handle: HandleSchema,
-			})
-		)
-		.mutation(async ({ ctx: { userId }, input: { handle } }) => {
-			await clerkClient.users.updateUserMetadata(userId, {
-				publicMetadata: {
-					handle,
-				},
+	profile: router({
+		me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
+			return await db.query.profile.findFirst({
+				where: eq(ratings.userId, userId),
 			});
 		}),
+		get: publicProcedure
+			.input(z.string())
+			.query(async ({ ctx: { db }, input: userId }) => {
+				return await db.query.profile.findFirst({
+					where: eq(ratings.userId, userId),
+				});
+			}),
+		create: protectedProcedure
+			.input(
+				ProfileSchema.pick({
+					name: true,
+					handle: true,
+					imageUrl: true,
+				})
+			)
+			.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
+				await db.insert(profile).values({ ...newProfile, userId });
+			}),
+	}),
 });

@@ -5,9 +5,9 @@ import {
 	getUserRating,
 } from "@/app/_trpc/cached";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import { Rating, Resource } from "@/types/ratings";
-import { UserDTO } from "@/types/users";
-import { currentUser } from "@clerk/nextjs";
+import { Profile } from "@/types/profile";
+import { Rating, Resource } from "@/types/rating";
+import { auth } from "@clerk/nextjs";
 import { Star, Text } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import { ReviewDialog } from "./ReviewDialog";
@@ -47,20 +47,20 @@ const Review = ({
 	review,
 }: {
 	review: Rating & {
-		user?: UserDTO;
+		profile?: Profile;
 	};
 }) => {
 	return (
 		<div className="flex gap-4 rounded-lg bg-card py-4 text-card-foreground shadow-sm">
 			<Avatar className="h-10 w-10">
-				<AvatarImage src={review.user?.imageUrl} />
+				<AvatarImage src={review.profile?.imageUrl ?? undefined} />
 				<AvatarFallback />
 			</Avatar>
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex flex-1 justify-between">
 					<div className="flex items-center gap-2">
 						<p className="flex font-semibold">
-							{review.user?.firstName} {review.user?.lastName}
+							{review.profile?.name}
 						</p>
 						<p className="text-sm font-medium text-muted-foreground">
 							•
@@ -119,12 +119,12 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 		name = (await getArtist(resource.resourceId)).name;
 	}
 	// TODO: Add song
-	const user = await currentUser();
+	const { userId } = auth();
 
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
-				{user && (
+				{userId && (
 					<ReviewDialog
 						resource={resource}
 						initialRating={userRating ?? undefined}
