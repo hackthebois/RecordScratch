@@ -7,7 +7,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Rating, Resource } from "@/types/ratings";
 import { UserDTO } from "@/types/users";
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 import { Star, Text } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import { ReviewDialog } from "./ReviewDialog";
@@ -111,7 +111,6 @@ const ReviewsList = async ({ resource }: { resource: Resource }) => {
 };
 
 const Reviews = async ({ resource }: { resource: Resource }) => {
-	const userRating = await getUserRating(resource);
 	let name = undefined;
 	if (resource.category === "ALBUM") {
 		name = (await getAlbum(resource.resourceId)).name;
@@ -119,12 +118,17 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 		name = (await getArtist(resource.resourceId)).name;
 	}
 	// TODO: Add song
-	const user = await currentUser();
+
+	let userRating: Rating | null = null;
+	const { userId } = await auth();
+	if (userId) {
+		userRating = await getUserRating(resource);
+	}
 
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
-				{user && (
+				{userId && (
 					<ReviewDialog
 						resource={resource}
 						initialRating={userRating ?? undefined}
