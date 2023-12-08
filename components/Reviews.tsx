@@ -6,11 +6,11 @@ import {
 } from "@/app/_trpc/cached";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Rating, Resource } from "@/types/ratings";
-import { UserDTO } from "@/types/users";
-import { auth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Star, Text } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import { ReviewDialog } from "./ReviewDialog";
+import { SignInWrapper } from "./SignInWrapper";
 import { Button } from "./ui/Button";
 
 const timeAgo = (date: Date): string => {
@@ -43,52 +43,6 @@ const timeAgo = (date: Date): string => {
 	return `${Math.floor(seconds)} seconds ago`;
 };
 
-const Review = ({
-	review,
-}: {
-	review: Rating & {
-		user?: UserDTO;
-	};
-}) => {
-	return (
-		<div className="flex gap-4 rounded-lg bg-card py-4 text-card-foreground shadow-sm">
-			<Avatar className="h-10 w-10">
-				<AvatarImage src={review.user?.imageUrl} />
-				<AvatarFallback />
-			</Avatar>
-			<div className="flex flex-1 flex-col gap-3">
-				<div className="flex flex-1 justify-between">
-					<div className="flex items-center gap-2">
-						<p className="flex font-semibold">
-							{review.user?.firstName} {review.user?.lastName}
-						</p>
-						<p className="text-sm font-medium text-muted-foreground">
-							•
-						</p>
-						<p className="text-sm font-medium text-muted-foreground">
-							{timeAgo(new Date(review.updatedAt))}
-						</p>
-					</div>
-				</div>
-				<div className="flex items-center gap-1">
-					{Array.from(Array(review.rating)).map((_, i) => (
-						<Star
-							key={i}
-							size={18}
-							color="#ffb703"
-							fill="#ffb703"
-						/>
-					))}
-					{Array.from(Array(10 - review.rating)).map((_, i) => (
-						<Star key={i} size={18} color="#ffb703" />
-					))}
-				</div>
-				<p className="whitespace-pre-line text-sm">{review.content}</p>
-			</div>
-		</div>
-	);
-};
-
 const ReviewsList = async ({ resource }: { resource: Resource }) => {
 	unstable_noStore();
 	const reviews = await getCommunityReviews(resource);
@@ -98,7 +52,57 @@ const ReviewsList = async ({ resource }: { resource: Resource }) => {
 			{reviews.length > 0 ? (
 				<div className="gap-4">
 					{reviews.map((review, index) => (
-						<Review key={index} review={review} />
+						<div
+							key={index}
+							className="flex gap-4 rounded-lg bg-card py-4 text-card-foreground shadow-sm"
+						>
+							<Avatar className="h-10 w-10">
+								<AvatarImage src={review.user?.imageUrl} />
+								<AvatarFallback />
+							</Avatar>
+							<div className="flex flex-1 flex-col gap-3">
+								<div className="flex flex-1 justify-between">
+									<div className="flex items-center gap-2">
+										<p className="flex font-semibold">
+											{review.user?.firstName}{" "}
+											{review.user?.lastName}
+										</p>
+										<p className="text-sm font-medium text-muted-foreground">
+											•
+										</p>
+										<p className="text-sm font-medium text-muted-foreground">
+											{timeAgo(
+												new Date(review.updatedAt)
+											)}
+										</p>
+									</div>
+								</div>
+								<div className="flex items-center gap-1">
+									{Array.from(Array(review.rating)).map(
+										(_, i) => (
+											<Star
+												key={i}
+												size={18}
+												color="#ffb703"
+												fill="#ffb703"
+											/>
+										)
+									)}
+									{Array.from(Array(10 - review.rating)).map(
+										(_, i) => (
+											<Star
+												key={i}
+												size={18}
+												color="#ffb703"
+											/>
+										)
+									)}
+								</div>
+								<p className="whitespace-pre-line text-sm">
+									{review.content}
+								</p>
+							</div>
+						</div>
 					))}
 				</div>
 			) : (
@@ -118,7 +122,6 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 		name = (await getArtist(resource.resourceId)).name;
 	}
 	// TODO: Add song
-
 	let userRating: Rating | null = null;
 	const { userId } = await auth();
 	if (userId) {
@@ -128,7 +131,7 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
-				{userId && (
+				<SignedIn>
 					<ReviewDialog
 						resource={resource}
 						initialRating={userRating ?? undefined}
@@ -139,7 +142,15 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 							Review
 						</Button>
 					</ReviewDialog>
-				)}
+				</SignedIn>
+				<SignedOut>
+					<SignInWrapper>
+						<Button variant="outline" className="gap-2 self-end">
+							<Text size={18} color="#fb8500" />
+							Review
+						</Button>
+					</SignInWrapper>
+				</SignedOut>
 			</div>
 			<ReviewsList resource={resource} />
 		</div>
