@@ -10,27 +10,59 @@ import {
 	FormMessage,
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
-import { CreateProfile, CreateProfileSchema } from "@/types/profile";
+import { Tag } from "@/components/ui/Tag";
+import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { cn } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { AtSign, Disc3 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const SlideWrapper = ({
+	page,
+	pageIndex,
+	children,
+}: {
+	page: number;
+	pageIndex: number;
+	children: React.ReactNode;
+}) => {
+	return (
+		<div
+			className={cn(
+				"flex-col items-center",
+				page === pageIndex
+					? "duration-1000 animate-in fade-in"
+					: "duration-1000 animate-out fade-out",
+				page === pageIndex ? "flex" : "hidden"
+			)}
+		>
+			{children}
+		</div>
+	);
+};
+
+const CreateProfileFormSchema = CreateProfileSchema.omit({
+	imageUrl: true,
+}).extend({
+	image: z.custom<File>((v) => v instanceof File),
+});
+type CreateProfileForm = z.infer<typeof CreateProfileFormSchema>;
 
 export const Onboard = () => {
 	const [page, setPage] = useState(0);
-	const form = useForm<CreateProfile>({
-		resolver: zodResolver(CreateProfileSchema),
+	const form = useForm<CreateProfileForm>({
+		resolver: zodResolver(CreateProfileFormSchema),
 		mode: "onChange",
 		defaultValues: {
 			handle: "",
 			name: "",
-			imageUrl: null,
 		},
 	});
 
-	const onSubmit = async (values: CreateProfile) => {
+	const onSubmit = async (values: CreateProfileForm) => {
 		console.log(values);
 	};
 
@@ -40,19 +72,28 @@ export const Onboard = () => {
 
 	const name = form.watch("name");
 
+	useEffect(() => {
+		if (name && !form.getFieldState("handle").isDirty) {
+			form.setValue(
+				"handle",
+				name
+					.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "")
+					.replace(" ", "")
+			);
+		}
+	}, [name]);
+
+	useEffect(() => {
+		if (page === 1) {
+			form.setFocus("name");
+		}
+	}, [page]);
+
 	return (
 		<>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<div
-						className={cn(
-							"flex-col items-center",
-							page === 0
-								? "duration-1000 animate-in fade-in"
-								: "duration-1000 animate-out fade-out",
-							page === 0 ? "flex" : "hidden"
-						)}
-					>
+					<SlideWrapper page={page} pageIndex={0}>
 						<Disc3 size={200} />
 						<h1 className="mt-12">Welcome to RecordScratch!</h1>
 						<p className="mt-6 text-muted-foreground">
@@ -72,31 +113,34 @@ export const Onboard = () => {
 						>
 							Next
 						</Button>
-					</div>
-					<div
-						className={cn(
-							"flex-col items-center",
-							page === 1
-								? "duration-1000 animate-in fade-in"
-								: "duration-1000 animate-out fade-out",
-							page === 1 ? "flex" : "hidden"
-						)}
-					>
-						<p className="text-sm tracking-widest text-muted-foreground">
-							STEP 1/3
-						</p>
-						<h1 className="mt-4">Handle</h1>
-						<p className="mt-6 text-muted-foreground">
-							Create a unique handle that will be used to identify
-							you (e.g. @johndoe)
-						</p>
+					</SlideWrapper>
+					<SlideWrapper page={page} pageIndex={1}>
+						<Tag>STEP 1/2</Tag>
+						<h1 className="mt-6">Pick a name</h1>
+						<FormField
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											{...field}
+											placeholder="Name"
+											className="mt-8 w-80"
+											autoComplete="off"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name="handle"
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<div className="relative mt-8 flex items-center">
+										<div className="relative mt-4 flex w-80 items-center">
 											<AtSign
 												className="absolute left-3 text-muted-foreground"
 												size={16}
@@ -105,6 +149,7 @@ export const Onboard = () => {
 												{...field}
 												placeholder="handle"
 												className="pl-9 lowercase"
+												autoComplete="off"
 											/>
 										</div>
 									</FormControl>
@@ -122,89 +167,29 @@ export const Onboard = () => {
 							<Button
 								onClick={next}
 								disabled={
-									form.getFieldState("handle").invalid ||
-									!form.getFieldState("handle").isDirty
+									(form.getFieldState("handle").invalid ||
+										!form.getFieldState("handle")
+											.isDirty) &&
+									(form.getFieldState("name").invalid ||
+										!form.getFieldState("name").isDirty)
 								}
 								variant="secondary"
 							>
 								Next
 							</Button>
 						</div>
-					</div>
-					<div
-						className={cn(
-							"flex-col items-center",
-							page === 2
-								? "duration-1000 animate-in fade-in"
-								: "duration-1000 animate-out fade-out",
-							page === 2 ? "flex" : "hidden"
-						)}
-					>
+					</SlideWrapper>
+					<SlideWrapper page={page} pageIndex={2}>
 						<p className="text-sm tracking-widest text-muted-foreground">
-							STEP 2/3
-						</p>
-						<h1 className="mt-4">Name</h1>
-						<p className="mt-6 text-muted-foreground">
-							Create a name for your profile (e.g. John Doe)
-						</p>
-						<FormField
-							control={form.control}
-							name="name"
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<Input
-											{...field}
-											placeholder="Name"
-											className="mt-8 w-96"
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<div className="mt-8 flex gap-3">
-							<Button
-								variant="outline"
-								onClick={() => setPage((page) => page - 1)}
-							>
-								Back
-							</Button>
-							<Button
-								onClick={next}
-								disabled={
-									form.getFieldState("name").invalid ||
-									!form.getFieldState("name").isDirty
-								}
-								variant="secondary"
-							>
-								Next
-							</Button>
-						</div>
-					</div>
-					<div
-						className={cn(
-							"flex-col items-center",
-							page === 3
-								? "duration-1000 animate-in fade-in"
-								: "duration-1000 animate-out fade-out",
-							page === 3 ? "flex" : "hidden"
-						)}
-					>
-						<p className="text-sm tracking-widest text-muted-foreground">
-							STEP 3/3
+							STEP 2/2
 						</p>
 						<h1 className="mt-4">Image</h1>
-						<p className="mt-6 text-muted-foreground">
-							Upload an image for your profile (optional)
-						</p>
 						<Avatar className="mt-8 h-40 w-40">
 							<AvatarImage src="" />
 							<AvatarFallback className="text-7xl">
 								{name[0] && name[0].toUpperCase()}
 							</AvatarFallback>
 						</Avatar>
-						<p className="mt-4">Upload image</p>
 						<div className="mt-8 flex gap-3">
 							<Button
 								variant="outline"
@@ -220,10 +205,12 @@ export const Onboard = () => {
 								}
 								variant="secondary"
 							>
-								Next
+								{form.getFieldState("image").invalid
+									? "Skip"
+									: "Next"}
 							</Button>
 						</div>
-					</div>
+					</SlideWrapper>
 				</form>
 			</Form>
 		</>
