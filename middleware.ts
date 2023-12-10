@@ -9,12 +9,11 @@ export default authMiddleware({
 		"/api(.*)",
 		"/_axiom/web-vitals",
 	],
-	afterAuth: ({ user }, req) => {
-		if (
-			!user?.publicMetadata.handle &&
-			req.nextUrl.pathname !== "/onboard"
-		) {
-			return NextResponse.redirect(new URL("/onboard", req.url));
+	afterAuth: async ({ userId, sessionClaims }, req) => {
+		if (userId && req.nextUrl.pathname !== "/onboard") {
+			if (!sessionClaims.onboarded) {
+				return NextResponse.redirect(new URL("/onboard", req.url));
+			}
 		}
 	},
 });

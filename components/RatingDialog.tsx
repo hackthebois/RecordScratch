@@ -42,8 +42,6 @@ export const RatingDialog = ({
 		setOpen(false);
 	};
 
-	console.log(form.formState);
-
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>

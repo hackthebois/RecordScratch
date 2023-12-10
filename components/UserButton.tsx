@@ -1,6 +1,4 @@
-"use client";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { serverTrpc } from "@/app/_trpc/server";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
@@ -10,17 +8,15 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { useClerk, useUser } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
-import { useTheme } from "next-themes";
 import Link from "next/link";
+import UserAvatar from "./UserAvatar";
 
-const UserButton = () => {
-	const clerkTheme = useTheme().theme === "dark" ? dark : undefined;
-	const { openUserProfile, signOut } = useClerk();
-	const { user } = useUser();
+const UserButton = async () => {
+	const profile = await serverTrpc.user.profile.me();
 
-	if (!user) return null;
+	if (!profile) {
+		return null;
+	}
 
 	return (
 		<DropdownMenu>
@@ -29,42 +25,27 @@ const UserButton = () => {
 					variant="ghost"
 					className="relative h-9 w-9 rounded-full"
 				>
-					<Avatar className="h-9 w-9">
-						<AvatarImage src={user.imageUrl} alt="User icon" />
-						<AvatarFallback>
-							{user.firstName ? user.firstName[0] : "U"}
-						</AvatarFallback>
-					</Avatar>
+					<UserAvatar
+						imageUrl={profile.imageUrl ?? undefined}
+						name={profile.name}
+						size={36}
+					/>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56" align="end" forceMount>
 				<DropdownMenuLabel className="font-normal">
 					<div className="flex flex-col space-y-1">
 						<p className="text-sm font-medium leading-none">
-							{user.firstName} {user.lastName}
+							{profile.name}
 						</p>
 						<p className="text-xs leading-none text-muted-foreground">
-							{user.emailAddresses[0].emailAddress}
+							{profile.handle}
 						</p>
 					</div>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
-					<Link href={`/${user.username}`}>Profile</Link>
-				</DropdownMenuItem>
-				<DropdownMenuItem
-					onClick={() =>
-						openUserProfile({
-							appearance: {
-								baseTheme: clerkTheme,
-							},
-						})
-					}
-				>
-					Account
-				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => signOut()}>
-					Sign out
+					<Link href={`/${profile.handle}`}>Profile</Link>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

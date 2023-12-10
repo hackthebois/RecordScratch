@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import {
 	Form,
@@ -11,14 +11,16 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
-import { CreateProfileSchema, handleRegex } from "@/types/profile";
+import { ProfileSchema, handleRegex } from "@/types/profile";
 import { cn } from "@/utils/utils";
+import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AvatarImage } from "@radix-ui/react-avatar";
 import { AtSign, Disc3 } from "lucide-react";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { createProfile } from "../actions";
 
 const SlideWrapper = ({
 	page,
@@ -44,36 +46,49 @@ const SlideWrapper = ({
 	);
 };
 
-const CreateProfileFormSchema = CreateProfileSchema.omit({
-	imageUrl: true,
+export const OnboardSchema = ProfileSchema.pick({
+	name: true,
+	handle: true,
 }).extend({
-	image: z.custom<File>((v) => v instanceof File),
+	image: z.custom<File>((v) => v instanceof File).optional(),
 });
-type CreateProfileForm = z.infer<typeof CreateProfileFormSchema>;
+export type Onboard = z.infer<typeof OnboardSchema>;
 
-export const Onboard = () => {
+export const Onboarding = () => {
 	const [page, setPage] = useState(0);
-	const form = useForm<CreateProfileForm>({
-		resolver: zodResolver(CreateProfileFormSchema),
+	const { user } = useUser();
+	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+	const form = useForm<Onboard>({
+		resolver: zodResolver(OnboardSchema),
 		mode: "onChange",
 		defaultValues: {
 			handle: "",
 			name: "",
 		},
 	});
-
-	const onSubmit = async (values: CreateProfileForm) => {
-		console.log(values);
-	};
-
-	const next = () => {
-		setPage((page) => page + 1);
-	};
-
 	const name = form.watch("name");
+	const image = form.watch("image");
+	const imageRef = useRef<HTMLInputElement>(null);
+	const handle = form.watch("handle");
+
+	const onSubmit = async ({ name, handle, image }: Onboard) => {
+		let imageUrl: string | null = null;
+		if (image) {
+			const profileImage = await user?.setProfileImage({
+				file: image,
+			});
+			imageUrl = profileImage?.publicUrl ?? null;
+		}
+
+		await createProfile({
+			name,
+			handle,
+			imageUrl,
+		});
+	};
 
 	useEffect(() => {
-		if (name && !form.getFieldState("handle").isDirty) {
+		if (!form.getFieldState("handle").isTouched) {
 			form.setValue(
 				"handle",
 				name
@@ -89,10 +104,34 @@ export const Onboard = () => {
 		}
 	}, [page]);
 
+	useEffect(() => {
+		if (image && image instanceof File) {
+			setImageUrl(URL.createObjectURL(image));
+		}
+	}, [image]);
+
+	const pageValid = (pageIndex: number) => {
+		if (pageIndex === 0) {
+			return true;
+		}
+		if (pageIndex === 1) {
+			return (
+				!form.getFieldState("name").invalid &&
+				name.length > 0 &&
+				!form.getFieldState("handle").invalid &&
+				handle.length > 0
+			);
+		}
+		if (pageIndex === 2) {
+			return true;
+		}
+		return false;
+	};
+
 	return (
 		<>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
+				<form>
 					<SlideWrapper page={page} pageIndex={0}>
 						<Disc3 size={200} />
 						<h1 className="mt-12">Welcome to RecordScratch!</h1>
@@ -103,16 +142,6 @@ export const Onboard = () => {
 						<p className="mt-3 text-muted-foreground">
 							Press next below to get started.
 						</p>
-						<Button
-							onClick={(e) => {
-								e.preventDefault();
-								next();
-							}}
-							className="mt-10"
-							variant="secondary"
-						>
-							Next
-						</Button>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={1}>
 						<Tag>STEP 1/2</Tag>
@@ -148,7 +177,7 @@ export const Onboard = () => {
 											<Input
 												{...field}
 												placeholder="handle"
-												className="pl-9 lowercase"
+												className="pl-9"
 												autoComplete="off"
 											/>
 										</div>
@@ -157,27 +186,6 @@ export const Onboard = () => {
 								</FormItem>
 							)}
 						/>
-						<div className="mt-8 flex gap-4">
-							<Button
-								variant="outline"
-								onClick={() => setPage((page) => page - 1)}
-							>
-								Back
-							</Button>
-							<Button
-								onClick={next}
-								disabled={
-									(form.getFieldState("handle").invalid ||
-										!form.getFieldState("handle")
-											.isDirty) &&
-									(form.getFieldState("name").invalid ||
-										!form.getFieldState("name").isDirty)
-								}
-								variant="secondary"
-							>
-								Next
-							</Button>
-						</div>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={2}>
 						<p className="text-sm tracking-widest text-muted-foreground">
@@ -185,34 +193,82 @@ export const Onboard = () => {
 						</p>
 						<h1 className="mt-4">Image</h1>
 						<Avatar className="mt-8 h-40 w-40">
-							<AvatarImage src="" />
+							<AvatarImage asChild src={imageUrl}>
+								{imageUrl && (
+									<Image
+										src={imageUrl}
+										alt="Profile photo"
+										width={160}
+										height={160}
+										className="object-cover"
+									/>
+								)}
+							</AvatarImage>
 							<AvatarFallback className="text-7xl">
-								{name[0] && name[0].toUpperCase()}
+								{name && name[0] && name[0].toUpperCase()}
 							</AvatarFallback>
 						</Avatar>
-						<div className="mt-8 flex gap-3">
+						<Input
+							className="hidden"
+							id="image"
+							ref={imageRef}
+							type="file"
+							onChange={(e) => {
+								if (e.target.files) {
+									form.setValue("image", e.target.files[0]);
+								}
+							}}
+						/>
+						{image ? (
 							<Button
 								variant="outline"
-								onClick={() => setPage((page) => page - 1)}
+								className="mt-4"
+								onClick={(e) => {
+									e.preventDefault();
+									form.resetField("image");
+									setImageUrl(undefined);
+								}}
 							>
-								Back
+								Clear Image
 							</Button>
+						) : (
 							<Button
-								onClick={next}
-								disabled={
-									form.getFieldState("name").invalid ||
-									!form.getFieldState("name").isDirty
-								}
-								variant="secondary"
+								variant="ghost"
+								className="mt-4"
+								onClick={(e) => {
+									e.preventDefault();
+									imageRef.current?.click();
+								}}
 							>
-								{form.getFieldState("image").invalid
-									? "Skip"
-									: "Next"}
+								Add Profile Image
 							</Button>
-						</div>
+						)}
 					</SlideWrapper>
 				</form>
 			</Form>
+			<div className="mt-8 flex gap-4">
+				{page !== 0 && (
+					<Button
+						variant="outline"
+						onClick={() => setPage((page) => page - 1)}
+					>
+						Back
+					</Button>
+				)}
+				<Button
+					onClick={() => {
+						if (page === 2) {
+							form.handleSubmit(onSubmit)();
+						} else {
+							setPage((page) => page + 1);
+						}
+					}}
+					disabled={!pageValid(page)}
+					variant="secondary"
+				>
+					{page === 2 ? (!image ? "Skip" : "Finish") : "Next"}
+				</Button>
+			</div>
 		</>
 	);
 };
