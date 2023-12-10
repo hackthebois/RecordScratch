@@ -38,8 +38,6 @@ export const ReviewDialog = ({
 		defaultValues: { ...resource, ...initialRating },
 	});
 
-	console.log(form.formState.errors);
-
 	const onSubmit = async (review: Review) => {
 		reviewAction(review);
 		setOpen(false);

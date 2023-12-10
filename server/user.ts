@@ -107,6 +107,9 @@ export const userRouter = router({
 			)
 			.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
 				await db.insert(profile).values({ ...newProfile, userId });
+				await clerkClient.users.updateUser(userId, {
+					publicMetadata: { onboarded: true },
+				});
 			}),
 	}),
 });

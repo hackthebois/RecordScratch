@@ -7,14 +7,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Profile } from "@/types/profile";
 import { Rating, Resource } from "@/types/rating";
-import { auth } from "@clerk/nextjs";
+import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Star, Text } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import { ReviewDialog } from "./ReviewDialog";
+import { SignInWrapper } from "./SignInWrapper";
 import { Button } from "./ui/Button";
 
 const timeAgo = (date: Date): string => {
-	console.log(date);
 	const now = new Date();
 	const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
@@ -111,7 +111,6 @@ const ReviewsList = async ({ resource }: { resource: Resource }) => {
 };
 
 const Reviews = async ({ resource }: { resource: Resource }) => {
-	const userRating = await getUserRating(resource);
 	let name = undefined;
 	if (resource.category === "ALBUM") {
 		name = (await getAlbum(resource.resourceId)).name;
@@ -119,12 +118,16 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 		name = (await getArtist(resource.resourceId)).name;
 	}
 	// TODO: Add song
-	const { userId } = auth();
+	let userRating: Rating | null = null;
+	const { userId } = await auth();
+	if (userId) {
+		userRating = await getUserRating(resource);
+	}
 
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
-				{userId && (
+				<SignedIn>
 					<ReviewDialog
 						resource={resource}
 						initialRating={userRating ?? undefined}
@@ -135,7 +138,15 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 							Review
 						</Button>
 					</ReviewDialog>
-				)}
+				</SignedIn>
+				<SignedOut>
+					<SignInWrapper>
+						<Button variant="outline" className="gap-2 self-end">
+							<Text size={18} color="#fb8500" />
+							Review
+						</Button>
+					</SignInWrapper>
+				</SignedOut>
 			</div>
 			<ReviewsList resource={resource} />
 		</div>

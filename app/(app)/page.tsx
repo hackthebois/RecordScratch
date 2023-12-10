@@ -1,5 +1,5 @@
 import AlbumList from "@/components/AlbumList";
-import { getNewReleases } from "./_trpc/cached";
+import { getNewReleases } from "../_trpc/cached";
 
 const Page = async () => {
 	const newReleases = await getNewReleases();
