@@ -5,13 +5,16 @@ const UserAvatar = ({
 	imageUrl,
 	name,
 	size = 36,
+	className,
 }: {
 	imageUrl?: string;
 	name?: string;
 	size?: number;
+	className?: string;
 }) => {
 	return (
 		<Avatar
+			className={className}
 			style={{
 				width: size,
 				height: size,

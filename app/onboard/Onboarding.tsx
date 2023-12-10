@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import {
 	Form,
@@ -16,7 +16,6 @@ import { cn } from "@/utils/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtSign, Disc3 } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -64,6 +63,7 @@ export const Onboarding = () => {
 		defaultValues: {
 			handle: "",
 			name: "",
+			image: undefined,
 		},
 	});
 	const name = form.watch("name");
@@ -109,6 +109,8 @@ export const Onboarding = () => {
 			setImageUrl(URL.createObjectURL(image));
 		}
 	}, [image]);
+
+	console.log(image);
 
 	const pageValid = (pageIndex: number) => {
 		if (pageIndex === 0) {
@@ -192,22 +194,12 @@ export const Onboarding = () => {
 							STEP 2/2
 						</p>
 						<h1 className="mt-4">Image</h1>
-						<Avatar className="mt-8 h-40 w-40">
-							<AvatarImage asChild src={imageUrl}>
-								{imageUrl && (
-									<Image
-										src={imageUrl}
-										alt="Profile photo"
-										width={160}
-										height={160}
-										className="object-cover"
-									/>
-								)}
-							</AvatarImage>
-							<AvatarFallback className="text-7xl">
-								{name && name[0] && name[0].toUpperCase()}
-							</AvatarFallback>
-						</Avatar>
+						<UserAvatar
+							className="mt-8"
+							size={160}
+							imageUrl={imageUrl}
+							name={name}
+						/>
 						<Input
 							className="hidden"
 							id="image"
@@ -225,7 +217,7 @@ export const Onboarding = () => {
 								className="mt-4"
 								onClick={(e) => {
 									e.preventDefault();
-									form.resetField("image");
+									form.setValue("image", undefined);
 									setImageUrl(undefined);
 								}}
 							>
