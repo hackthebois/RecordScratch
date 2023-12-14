@@ -16,6 +16,7 @@ import { cn } from "@/utils/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtSign, Disc3 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -56,6 +57,7 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 export const Onboarding = () => {
 	const [page, setPage] = useState(0);
 	const { user } = useUser();
+	const router = useRouter();
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 	const form = useForm<Onboard>({
 		resolver: zodResolver(OnboardSchema),
@@ -110,8 +112,6 @@ export const Onboarding = () => {
 		}
 	}, [image]);
 
-	console.log(image);
-
 	const pageValid = (pageIndex: number) => {
 		if (pageIndex === 0) {
 			return true;
@@ -129,6 +129,14 @@ export const Onboarding = () => {
 		}
 		return false;
 	};
+
+	if (form.formState.isSubmitting) {
+		return (
+			<div className="flex flex-1 flex-col items-center justify-center">
+				<Disc3 size={50} className="animate-spin" />
+			</div>
+		);
+	}
 
 	return (
 		<>
@@ -197,8 +205,9 @@ export const Onboarding = () => {
 						<UserAvatar
 							className="mt-8"
 							size={160}
-							imageUrl={imageUrl}
 							name={name}
+							imageUrl={imageUrl ?? null}
+							handle={handle}
 						/>
 						<Input
 							className="hidden"

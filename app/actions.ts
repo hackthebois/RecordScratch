@@ -3,7 +3,6 @@
 import { AppRouter } from "@/server/_app";
 import { inferRouterInputs } from "@trpc/server";
 import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 import { serverTrpc } from "./_trpc/server";
 
 export type RouterInput = inferRouterInputs<AppRouter>;
@@ -26,5 +25,4 @@ export const createProfile = async (
 	input: RouterInput["user"]["profile"]["create"]
 ) => {
 	await serverTrpc.user.profile.create(input);
-	redirect("/");
 };

@@ -77,13 +77,15 @@ export const userRouter = router({
 	me: protectedProcedure.query(async ({ ctx: { userId } }) => {
 		return await clerkClient.users.getUser(userId);
 	}),
-	recent: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
-		return await db.query.ratings.findMany({
-			limit: 10,
-			orderBy: desc(ratings.updatedAt),
-			where: eq(ratings.userId, userId),
-		});
-	}),
+	recent: protectedProcedure
+		.input(z.string())
+		.query(async ({ ctx: { db }, input: userId }) => {
+			return await db.query.ratings.findMany({
+				limit: 10,
+				orderBy: desc(ratings.updatedAt),
+				where: eq(ratings.userId, userId),
+			});
+		}),
 	profile: router({
 		me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
 			return await db.query.profile.findFirst({
@@ -91,10 +93,10 @@ export const userRouter = router({
 			});
 		}),
 		get: publicProcedure
-			.input(z.string())
-			.query(async ({ ctx: { db }, input: userId }) => {
+			.input(z.object({ handle: z.string() }))
+			.query(async ({ ctx: { db }, input: { handle } }) => {
 				return await db.query.profile.findFirst({
-					where: eq(ratings.userId, userId),
+					where: eq(profile.handle, handle),
 				});
 			}),
 		create: protectedProcedure
