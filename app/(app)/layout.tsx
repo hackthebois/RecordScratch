@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div>
+		<>
 			<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
 				<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-6">
 					<div className="flex items-center gap-3">
@@ -32,12 +32,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 					</div>
 				</nav>
 			</header>
-			<ScrollArea className="flex h-full w-screen flex-1">
-				<main className="mx-auto w-screen max-w-screen-lg p-4 sm:p-6">
+			<ScrollArea
+				orientation="vertical"
+				className="flex h-full w-screen flex-1"
+			>
+				<main className="mx-auto w-screen max-w-screen-lg overflow-hidden p-4 sm:p-6">
 					{children}
 				</main>
 			</ScrollArea>
-		</div>
+		</>
 	);
 };
 

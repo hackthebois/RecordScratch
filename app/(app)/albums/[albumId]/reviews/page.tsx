@@ -1,4 +1,4 @@
-import Reviews from "@/components/Reviews";
+import Reviews from "@/components/resource/Reviews";
 
 const Page = async ({
 	params: { albumId },

@@ -1,5 +1,5 @@
 import { getArtistDiscography } from "@/app/_trpc/cached";
-import AlbumList from "@/components/AlbumList";
+import AlbumList from "@/components/resource/album/AlbumList";
 
 const Page = async ({
 	params: { artistId },

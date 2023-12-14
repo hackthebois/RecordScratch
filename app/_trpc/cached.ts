@@ -102,3 +102,35 @@ export const getRatingListAverage = cache((resources: Resource[]) => {
 		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
 	)();
 });
+
+export const getProfile = cache((handle: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.user.profile.get({ handle }),
+		[`user:profile:get:${handle}`],
+		{ revalidate: 60 }
+	)();
+});
+
+export const getMyProfile = cache(() => {
+	return unstable_cache(
+		async () => await serverTrpc.user.profile.me(),
+		[`user:profile:get:me`],
+		{ revalidate: 60 }
+	)();
+});
+
+export const getRecent = cache((userId: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.user.recent(userId),
+		[`user:recent:get`],
+		{ revalidate: 60 }
+	)();
+});
+
+export const getSong = cache((songId: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.song.get(songId),
+		[`resource:song:get:${songId}`],
+		{ revalidate: 60 * 60 }
+	)();
+});

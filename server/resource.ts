@@ -40,6 +40,7 @@ const spotifyFetch = async (url: string) => {
 	});
 
 	if (!res.ok) {
+		console.error(await res.text());
 		throw new TRPCError({
 			code: "INTERNAL_SERVER_ERROR",
 			message: "Spotify API error",
@@ -168,6 +169,16 @@ export const resourceRouter = router({
 				})
 				.parse(data).albums.items;
 		}),
+	}),
+	song: router({
+		get: publicProcedure
+			.input(z.string())
+			.query(async ({ input: songId }) => {
+				const { data } = await spotifyFetch(`/tracks/${songId}`);
+				return SpotifyTrackSchema.extend({
+					album: SpotifyAlbumSchema,
+				}).parse(data);
+			}),
 	}),
 	artist: router({
 		get: publicProcedure
