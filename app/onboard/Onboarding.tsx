@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/Button";
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormMessage,
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
+import { Textarea } from "@/components/ui/Textarea";
 import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { cn } from "@/utils/utils";
 import { useUser } from "@clerk/nextjs";
@@ -69,10 +71,8 @@ export const Onboarding = () => {
 			image: undefined,
 		},
 	});
-	const name = form.watch("name");
-	const image = form.watch("image");
+	const { name, image, handle, bio } = form.watch();
 	const imageRef = useRef<HTMLInputElement>(null);
-	const handle = form.watch("handle");
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		let imageUrl: string | null = null;
@@ -165,7 +165,7 @@ export const Onboarding = () => {
 						</p>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={1}>
-						<Tag>STEP 1/3</Tag>
+						<Tag variant="outline">STEP 1/3</Tag>
 						<h1 className="mt-6">Pick a name</h1>
 						<FormField
 							control={form.control}
@@ -197,7 +197,7 @@ export const Onboarding = () => {
 											/>
 											<Input
 												{...field}
-												placeholder="handle"
+												placeholder="Handle"
 												className="pl-9"
 												autoComplete="off"
 											/>
@@ -209,7 +209,7 @@ export const Onboarding = () => {
 						/>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={2}>
-						<Tag>STEP 2/3</Tag>
+						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-6">Describe yourself</h1>
 						<FormField
 							control={form.control}
@@ -217,28 +217,23 @@ export const Onboarding = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<div className="relative mt-4 flex w-80 items-center">
-											<AtSign
-												className="absolute left-3 text-muted-foreground"
-												size={16}
-											/>
-											<Input
-												{...field}
-												placeholder="bio"
-												className="pl-9"
-												autoComplete="off"
-											/>
-										</div>
+										<Textarea
+											{...field}
+											placeholder="Bio"
+											className="mt-8 w-80"
+											autoComplete="off"
+										/>
 									</FormControl>
+									<FormDescription>
+										{bio ? 200 - bio.length : 200}
+									</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 					</SlideWrapper>
-					<SlideWrapper page={page} pageIndex={2}>
-						<p className="text-sm tracking-widest text-muted-foreground">
-							STEP 2/3
-						</p>
+					<SlideWrapper page={page} pageIndex={3}>
+						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
 							className="mt-8"
@@ -305,10 +300,12 @@ export const Onboarding = () => {
 					disabled={!pageValid(page)}
 					variant="secondary"
 				>
-					{[2, 3].includes(page)
-						? !image
-							? "Skip"
-							: "Finish"
+					{page === 2 && !bio
+						? "Skip"
+						: page === 3 && !image
+						? "Skip"
+						: page === 3
+						? "Finish"
 						: "Next"}
 				</Button>
 			</div>
