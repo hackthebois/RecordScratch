@@ -20,7 +20,6 @@ const Review = async ({
 		album = await getAlbum(resource.resourceId);
 	} else {
 		const song = await getSong(resource.resourceId);
-		console.log(song.name);
 		album = song.album;
 		songName = song.name;
 	}
