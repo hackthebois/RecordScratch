@@ -20,5 +20,7 @@ export type Profile = z.infer<typeof ProfileSchema>;
 export const CreateProfileSchema = ProfileSchema.pick({
 	name: true,
 	handle: true,
+	imageUrl: true,
+	bio: true,
 });
 export type CreateProfile = z.infer<typeof CreateProfileSchema>;

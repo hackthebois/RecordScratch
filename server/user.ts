@@ -1,5 +1,5 @@
 import { profile, ratings } from "@/server/db/schema";
-import { ProfileSchema } from "@/types/profile";
+import { CreateProfileSchema } from "@/types/profile";
 import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/rating";
 import { clerkClient } from "@clerk/nextjs";
 import { and, desc, eq, inArray } from "drizzle-orm";
@@ -88,25 +88,23 @@ export const userRouter = router({
 		}),
 	profile: router({
 		me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
-			return await db.query.profile.findFirst({
-				where: eq(ratings.userId, userId),
-			});
+			return (
+				(await db.query.profile.findFirst({
+					where: eq(ratings.userId, userId),
+				})) ?? null
+			);
 		}),
 		get: publicProcedure
 			.input(z.object({ handle: z.string() }))
 			.query(async ({ ctx: { db }, input: { handle } }) => {
-				return await db.query.profile.findFirst({
-					where: eq(profile.handle, handle),
-				});
+				return (
+					(await db.query.profile.findFirst({
+						where: eq(profile.handle, handle),
+					})) ?? null
+				);
 			}),
 		create: protectedProcedure
-			.input(
-				ProfileSchema.pick({
-					name: true,
-					handle: true,
-					imageUrl: true,
-				})
-			)
+			.input(CreateProfileSchema)
 			.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
 				await db.insert(profile).values({ ...newProfile, userId });
 				await clerkClient.users.updateUser(userId, {

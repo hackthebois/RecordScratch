@@ -32,10 +32,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 					</div>
 				</nav>
 			</header>
-			<ScrollArea
-				orientation="vertical"
-				className="flex h-full w-screen flex-1"
-			>
+			<ScrollArea orientation="vertical" className="flex w-screen flex-1">
 				<main className="mx-auto w-screen max-w-screen-lg overflow-hidden p-4 sm:p-6">
 					{children}
 				</main>
