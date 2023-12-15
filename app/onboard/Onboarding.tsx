@@ -87,6 +87,7 @@ export const Onboarding = () => {
 			handle,
 			imageUrl,
 		});
+		user?.reload();
 	};
 
 	useEffect(() => {
@@ -130,7 +131,13 @@ export const Onboarding = () => {
 		return false;
 	};
 
-	if (form.formState.isSubmitting) {
+	useEffect(() => {
+		if (user?.publicMetadata.onboarded) {
+			router.push("/");
+		}
+	}, [user?.publicMetadata.onboarded]);
+
+	if (form.formState.isSubmitting || form.formState.isSubmitSuccessful) {
 		return (
 			<div className="flex flex-1 flex-col items-center justify-center">
 				<Disc3 size={50} className="animate-spin" />

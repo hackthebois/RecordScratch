@@ -11,7 +11,6 @@ export const Review = ({
 		profile: Profile;
 	};
 }) => {
-	console.log(review);
 	return (
 		<div className="flex gap-4 bg-card py-4 text-card-foreground shadow-sm">
 			<UserAvatar {...review.profile} size={40} />
