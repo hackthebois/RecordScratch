@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
-import { ProfileSchema, handleRegex } from "@/types/profile";
+import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { cn } from "@/utils/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,10 +46,10 @@ const SlideWrapper = ({
 	);
 };
 
-export const OnboardSchema = ProfileSchema.pick({
-	name: true,
-	handle: true,
+export const OnboardSchema = CreateProfileSchema.omit({
+	imageUrl: true,
 }).extend({
+	bio: z.string().optional(),
 	image: z.custom<File>((v) => v instanceof File).optional(),
 });
 export type Onboard = z.infer<typeof OnboardSchema>;
@@ -65,6 +65,7 @@ export const Onboarding = () => {
 		defaultValues: {
 			handle: "",
 			name: "",
+			bio: "",
 			image: undefined,
 		},
 	});
@@ -73,7 +74,7 @@ export const Onboarding = () => {
 	const imageRef = useRef<HTMLInputElement>(null);
 	const handle = form.watch("handle");
 
-	const onSubmit = async ({ name, handle, image }: Onboard) => {
+	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		let imageUrl: string | null = null;
 		if (image) {
 			const profileImage = await user?.setProfileImage({
@@ -86,6 +87,7 @@ export const Onboarding = () => {
 			name,
 			handle,
 			imageUrl,
+			bio: bio ?? null,
 		});
 		user?.reload();
 	};
@@ -124,11 +126,13 @@ export const Onboarding = () => {
 				!form.getFieldState("handle").invalid &&
 				handle.length > 0
 			);
-		}
-		if (pageIndex === 2) {
+		} else if (pageIndex === 2) {
 			return true;
+		} else if (pageIndex === 3) {
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	};
 
 	useEffect(() => {
@@ -161,7 +165,7 @@ export const Onboarding = () => {
 						</p>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={1}>
-						<Tag>STEP 1/2</Tag>
+						<Tag>STEP 1/3</Tag>
 						<h1 className="mt-6">Pick a name</h1>
 						<FormField
 							control={form.control}
@@ -205,8 +209,35 @@ export const Onboarding = () => {
 						/>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={2}>
+						<Tag>STEP 2/3</Tag>
+						<h1 className="mt-6">Describe yourself</h1>
+						<FormField
+							control={form.control}
+							name="bio"
+							render={({ field }) => (
+								<FormItem>
+									<FormControl>
+										<div className="relative mt-4 flex w-80 items-center">
+											<AtSign
+												className="absolute left-3 text-muted-foreground"
+												size={16}
+											/>
+											<Input
+												{...field}
+												placeholder="bio"
+												className="pl-9"
+												autoComplete="off"
+											/>
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</SlideWrapper>
+					<SlideWrapper page={page} pageIndex={2}>
 						<p className="text-sm tracking-widest text-muted-foreground">
-							STEP 2/2
+							STEP 2/3
 						</p>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
@@ -265,7 +296,7 @@ export const Onboarding = () => {
 				)}
 				<Button
 					onClick={() => {
-						if (page === 2) {
+						if (page === 3) {
 							form.handleSubmit(onSubmit)();
 						} else {
 							setPage((page) => page + 1);
@@ -274,7 +305,11 @@ export const Onboarding = () => {
 					disabled={!pageValid(page)}
 					variant="secondary"
 				>
-					{page === 2 ? (!image ? "Skip" : "Finish") : "Next"}
+					{[2, 3].includes(page)
+						? !image
+							? "Skip"
+							: "Finish"
+						: "Next"}
 				</Button>
 			</div>
 		</>
