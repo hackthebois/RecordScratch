@@ -8,7 +8,9 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { DropdownMenuItem } from "../ui/DropdownMenu";
 
 export const ThemeItem = () => {
-	const { theme, setTheme } = useTheme();
+	const { theme, setTheme, systemTheme } = useTheme();
+
+	const currentTheme = theme === "system" ? systemTheme : theme;
 
 	return (
 		<DropdownMenuItem
@@ -25,7 +27,7 @@ export const ThemeItem = () => {
 				size={15}
 				className="absolute mr-1.5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
 			/>
-			{theme === "dark" ? "Dark" : "Light"}
+			{currentTheme === "dark" ? "Dark" : "Light"}
 		</DropdownMenuItem>
 	);
 };
