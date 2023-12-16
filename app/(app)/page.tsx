@@ -96,7 +96,7 @@ const Page = async () => {
 	return (
 		<div className="w-full">
 			<Tabs defaultValue="new">
-				<div className="mt-[2vh] flex justify-between">
+				<div className="mt-[2vh] flex flex-wrap justify-between">
 					<h2 className="mb-4">This Week</h2>
 					<TabsList className="mb-2">
 						<TabsTrigger value="new">New</TabsTrigger>
