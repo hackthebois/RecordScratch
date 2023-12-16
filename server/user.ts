@@ -111,5 +111,13 @@ export const userRouter = router({
 					publicMetadata: { onboarded: true },
 				});
 			}),
+		update: protectedProcedure
+			.input(CreateProfileSchema)
+			.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
+				await db
+					.update(profile)
+					.set(newProfile)
+					.where(eq(profile.userId, userId));
+			}),
 	}),
 });

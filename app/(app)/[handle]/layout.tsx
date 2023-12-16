@@ -1,8 +1,8 @@
 import { getProfile } from "@/app/_trpc/cached";
 import UserAvatar from "@/components/UserAvatar";
 import { Tabs } from "@/components/ui/Tabs";
-import { Tag } from "@/components/ui/Tag";
 import { notFound } from "next/navigation";
+import { ProfileDialog } from "./ProfileDialog";
 
 const Layout = async ({
 	params: { handle },
@@ -28,16 +28,10 @@ const Layout = async ({
 						PROFILE
 					</p>
 					<h1 className="text-center sm:text-left">{profile.name}</h1>
-					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
-						{["rock", "pop", "indie"].map((genre) => (
-							<Tag key={genre} variant="outline">
-								{genre}
-							</Tag>
-						))}
-					</div>
 					<p className="text-muted-foreground">
-						21 | Reviewing music I like.
+						{profile.bio || "No bio yet"}
 					</p>
+					<ProfileDialog profile={profile} />
 				</div>
 			</div>
 			<Tabs

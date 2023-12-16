@@ -1,4 +1,5 @@
 import { getMyProfile } from "@/app/_trpc/cached";
+import Link from "next/link";
 import UserAvatar from "./UserAvatar";
 
 const UserButton = async () => {
@@ -8,7 +9,11 @@ const UserButton = async () => {
 		return null;
 	}
 
-	return <UserAvatar {...profile} size={36} />;
+	return (
+		<Link href={`/${profile.handle}`}>
+			<UserAvatar {...profile} size={40} />
+		</Link>
+	);
 };
 
 export default UserButton;
