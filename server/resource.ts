@@ -138,6 +138,16 @@ export const resourceRouter = router({
 					});
 				}
 			),
+		feed: publicProcedure.query(async ({ ctx: { db } }) => {
+			return await db.query.ratings.findMany({
+				where: isNotNull(ratings.content),
+				limit: 10,
+				orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
+				with: {
+					profile: true,
+				},
+			});
+		}),
 	}),
 	search: publicProcedure
 		.input(z.string().min(1))

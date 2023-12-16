@@ -110,6 +110,14 @@ export const getTopRated = cache(() => {
 	)();
 });
 
+export const getFeed = cache(() => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.rating.feed(),
+		[`resource:rating:getFeed`],
+		{ revalidate: 60 }
+	)();
+});
+
 export const getRatingListAverage = cache((resources: Resource[]) => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.rating.getListAverage(resources),
