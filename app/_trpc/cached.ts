@@ -90,7 +90,7 @@ export const getNewReleases = cache(() => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.album.newReleases(),
 		[`resource:album:getNewReleases`],
-		{ revalidate: 60 * 60 }
+		{ revalidate: 60 * 10 }
 	)();
 });
 
@@ -98,7 +98,7 @@ export const getTrending = cache(() => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.album.trending(),
 		[`resource:album:getTrending`],
-		{}
+		{ revalidate: 60 * 10 }
 	)();
 });
 
@@ -106,7 +106,7 @@ export const getTopRated = cache(() => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.album.top(),
 		[`resource:album:getTopRated`],
-		{}
+		{ revalidate: 60 * 10 }
 	)();
 });
 
