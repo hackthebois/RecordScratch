@@ -1,4 +1,5 @@
 import { getMyProfile } from "@/app/_trpc/cached";
+import { auth } from "@clerk/nextjs";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
 import { Button } from "../ui/Button";
@@ -12,7 +13,13 @@ import {
 import { SignOutItem, ThemeItem } from "./Items";
 
 const UserButton = async () => {
-	const profile = await getMyProfile();
+	const { userId } = auth();
+
+	if (!userId) {
+		return null;
+	}
+
+	const profile = await getMyProfile(userId);
 
 	if (!profile) {
 		return null;
