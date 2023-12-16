@@ -11,7 +11,7 @@ const Page = async () => {
 		<div className="w-full">
 			<Tabs defaultValue="new">
 				<div className="flex justify-between">
-					<h2 className="mb-4">Albums</h2>
+					<h2 className="mb-4">This Week</h2>
 					<TabsList className="mb-2">
 						<TabsTrigger value="new">New</TabsTrigger>
 						<TabsTrigger value="trending">Trending</TabsTrigger>
