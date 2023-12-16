@@ -2,7 +2,7 @@ import { env } from "@/env.mjs";
 import { ratings } from "@/server/db/schema";
 import { ResourceSchema } from "@/types/rating";
 import { TRPCError } from "@trpc/server";
-import { and, avg, count, eq, inArray, isNotNull } from "drizzle-orm";
+import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
 import {
 	SpotifyAlbum,
 	SpotifyAlbumSchema,
@@ -168,6 +168,48 @@ export const resourceRouter = router({
 					albums: z.object({ items: SpotifyAlbumSchema.array() }),
 				})
 				.parse(data).albums.items;
+		}),
+		trending: publicProcedure.query(async ({ ctx: { db } }) => {
+			const albums = await db
+				.select({
+					total: count(ratings.rating),
+					resourceId: ratings.resourceId,
+				})
+				.from(ratings)
+				.where(eq(ratings.category, "ALBUM"))
+				.groupBy(ratings.resourceId)
+				.orderBy(({ total }) => desc(total))
+				.limit(6);
+			if (albums.length === 0) return [];
+			const { data } = await spotifyFetch(
+				"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
+			);
+			return z
+				.object({
+					albums: SpotifyAlbumSchema.array(),
+				})
+				.parse(data).albums;
+		}),
+		top: publicProcedure.query(async ({ ctx: { db } }) => {
+			const albums = await db
+				.select({
+					average: avg(ratings.rating),
+					resourceId: ratings.resourceId,
+				})
+				.from(ratings)
+				.where(eq(ratings.category, "ALBUM"))
+				.groupBy(ratings.resourceId)
+				.orderBy(({ average }) => desc(average))
+				.limit(6);
+			if (albums.length === 0) return [];
+			const { data } = await spotifyFetch(
+				"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
+			);
+			return z
+				.object({
+					albums: SpotifyAlbumSchema.array(),
+				})
+				.parse(data).albums;
 		}),
 	}),
 	song: router({
