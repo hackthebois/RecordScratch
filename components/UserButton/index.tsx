@@ -1,15 +1,15 @@
 import { getMyProfile } from "@/app/_trpc/cached";
 import Link from "next/link";
-import UserAvatar from "./UserAvatar";
-import { Button } from "./ui/Button";
+import UserAvatar from "../UserAvatar";
+import { Button } from "../ui/Button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "./ui/DropdownMenu";
-import { ThemeToggle } from "./ui/ThemeToggle";
+} from "../ui/DropdownMenu";
+import { SignOutItem, ThemeItem } from "./Items";
 
 const UserButton = async () => {
 	const profile = await getMyProfile();
@@ -45,7 +45,8 @@ const UserButton = async () => {
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<ThemeToggle />
+				<ThemeItem />
+				<SignOutItem />
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
