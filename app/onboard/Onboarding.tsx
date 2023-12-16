@@ -221,12 +221,12 @@ export const Onboarding = () => {
 										<div className="relative mt-4 flex w-full items-center">
 											<AtSign
 												className="absolute left-3 text-muted-foreground"
-												size={16}
+												size={15}
 											/>
 											<Input
 												{...field}
 												placeholder="Handle"
-												className="w-full pl-9"
+												className="w-full pl-[30px]"
 												autoComplete="off"
 											/>
 										</div>
