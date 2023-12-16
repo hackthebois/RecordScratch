@@ -31,8 +31,8 @@ const Review = async ({
 					<AlbumImage album={album} size={80} />
 				</Link>
 			</div>
-			<div className="flex flex-1 flex-col gap-3">
-				<div className="flex flex-1 justify-between">
+			<div className="flex flex-1 flex-col justify-center gap-3">
+				<div className="flex justify-between">
 					<div className="flex items-center gap-2">
 						<Link href={`/albums/${album.id}`}>
 							<p className="flex font-semibold">
@@ -49,7 +49,7 @@ const Review = async ({
 						</p>
 					</div>
 				</div>
-				<div className="flex items-center gap-1">
+				<div className="-mt-2 flex items-center gap-1">
 					{Array.from(Array(review.rating)).map((_, i) => (
 						<Star
 							key={i}
