@@ -85,11 +85,18 @@ export const ProfileDialog = ({
 		}
 	);
 	useEffect(() => {
-		if (handleExists) {
+		if (handleExists && handle !== defaultHandle) {
 			form.setError("handle", {
 				type: "validate",
 				message: "Handle already exists",
 			});
+		} else {
+			if (
+				form.formState.errors.handle?.message ===
+				"Handle already exists"
+			) {
+				form.clearErrors("handle");
+			}
 		}
 	}, [handleExists]);
 
