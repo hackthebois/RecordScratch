@@ -1,10 +1,8 @@
 import AlbumList from "@/components/resource/album/AlbumList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { unstable_noStore } from "next/cache";
 import { getNewReleases, getTopRated, getTrending } from "../_trpc/cached";
 
 const Page = async () => {
-	unstable_noStore();
 	const newReleases = await getNewReleases();
 	const trending = await getTrending();
 	const top = await getTopRated();
