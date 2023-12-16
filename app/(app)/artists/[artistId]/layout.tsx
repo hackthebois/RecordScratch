@@ -3,7 +3,7 @@ import {
 	getArtistDiscography,
 	getRatingListAverage,
 } from "@/app/_trpc/cached";
-import { Tabs } from "@/components/ui/Tabs";
+import { LinkTabs } from "@/components/ui/LinkTabs";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star } from "lucide-react";
@@ -83,7 +83,7 @@ const Layout = async ({
 					</Suspense>
 				</div>
 			</div>
-			<Tabs
+			<LinkTabs
 				tabs={[
 					{
 						label: "Top Songs",

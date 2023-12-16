@@ -94,6 +94,22 @@ export const getNewReleases = cache(() => {
 	)();
 });
 
+export const getTrending = cache(() => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.album.trending(),
+		[`resource:album:getTrending`],
+		{}
+	)();
+});
+
+export const getTopRated = cache(() => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.album.top(),
+		[`resource:album:getTopRated`],
+		{}
+	)();
+});
+
 export const getRatingListAverage = cache((resources: Resource[]) => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.rating.getListAverage(resources),

@@ -13,7 +13,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 	const listAlbums = type === "scroll" ? albums.slice(0, 6) : albums;
 
 	const listItems = listAlbums.map((album, index) => (
-		<div className="mb-4 flex min-w-[144px] flex-1 flex-col" key={index}>
+		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
 			<Link href={`/albums/${album.id}`}>
 				<AlbumImage album={album} size={144} />
 				<p className="mb-1 mt-2 truncate text-sm">{album.name}</p>

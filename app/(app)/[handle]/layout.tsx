@@ -1,6 +1,6 @@
 import { getProfile } from "@/app/_trpc/cached";
 import UserAvatar from "@/components/UserAvatar";
-import { Tabs } from "@/components/ui/Tabs";
+import { LinkTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
 import { notFound } from "next/navigation";
 import { ProfileDialog } from "./ProfileDialog";
@@ -43,7 +43,7 @@ const Layout = async ({
 					)}
 				</div>
 			</div>
-			<Tabs
+			<LinkTabs
 				tabs={[
 					{
 						label: "Recent",
