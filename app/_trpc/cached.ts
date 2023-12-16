@@ -114,10 +114,10 @@ export const getProfile = cache((handle: string) => {
 	)();
 });
 
-export const getMyProfile = cache(() => {
+export const getMyProfile = cache((userId: string) => {
 	return unstable_cache(
 		async () => await serverTrpc.user.profile.me(),
-		[`user:profile:get:me`],
+		[`user:profile:get:me:${userId}`],
 		{ tags: ["user"], revalidate: 60 }
 	)();
 });
