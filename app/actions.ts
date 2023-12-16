@@ -38,3 +38,11 @@ export const updateProfile = async (
 	revalidateTag("me");
 	redirect(`/${input.handle}`);
 };
+
+export const handleExists = async (handle: string) => {
+	return await serverTrpc.user.profile.handleExists(handle);
+};
+
+export const revalidateUser = async () => {
+	revalidateTag("user");
+};

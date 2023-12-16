@@ -1,5 +1,6 @@
 "use client";
 
+import { trpc } from "@/app/_trpc/react";
 import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import {
@@ -13,6 +14,7 @@ import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
 import { CreateProfileSchema, handleRegex } from "@/types/profile";
+import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +37,7 @@ const SlideWrapper = ({
 	return (
 		<div
 			className={cn(
-				"flex-col items-center",
+				"flex-col items-center p-4",
 				page === pageIndex
 					? "duration-1000 animate-in fade-in"
 					: "duration-1000 animate-out fade-out",
@@ -72,6 +74,31 @@ export const Onboarding = () => {
 	});
 	const { name, image, handle, bio } = form.watch();
 	const imageRef = useRef<HTMLInputElement>(null);
+
+	const debouncedHandle = useDebounce(handle, 500);
+	const { data: handleExists } = trpc.user.profile.handleExists.useQuery(
+		debouncedHandle,
+		{
+			enabled: handle.length > 0,
+			refetchOnMount: false,
+			refetchOnWindowFocus: false,
+		}
+	);
+	useEffect(() => {
+		if (handleExists) {
+			form.setError("handle", {
+				type: "validate",
+				message: "Handle already exists",
+			});
+		} else {
+			if (
+				form.formState.errors.handle?.message ===
+				"Handle already exists"
+			) {
+				form.clearErrors("handle");
+			}
+		}
+	}, [handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		let imageUrl: string | null = null;
@@ -154,12 +181,14 @@ export const Onboarding = () => {
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>
 						<Disc3 size={200} className="animate-spin" />
-						<h1 className="mt-12">Welcome to RecordScratch!</h1>
-						<p className="mt-6 text-muted-foreground">
+						<h1 className="mt-12 text-center">
+							Welcome to RecordScratch!
+						</h1>
+						<p className="mt-6 text-center text-muted-foreground">
 							Before you get started we have to set up your
 							profile.
 						</p>
-						<p className="mt-3 text-muted-foreground">
+						<p className="mt-3 text-center text-muted-foreground">
 							Press next below to get started.
 						</p>
 					</SlideWrapper>
@@ -170,12 +199,12 @@ export const Onboarding = () => {
 							control={form.control}
 							name="name"
 							render={({ field }) => (
-								<FormItem>
+								<FormItem className="w-full">
 									<FormControl>
 										<Input
 											{...field}
 											placeholder="Name"
-											className="mt-8 w-80"
+											className="mt-8 w-full"
 											autoComplete="off"
 										/>
 									</FormControl>
@@ -187,9 +216,9 @@ export const Onboarding = () => {
 							control={form.control}
 							name="handle"
 							render={({ field }) => (
-								<FormItem>
+								<FormItem className="w-full">
 									<FormControl>
-										<div className="relative mt-4 flex w-80 items-center">
+										<div className="relative mt-4 flex w-full items-center">
 											<AtSign
 												className="absolute left-3 text-muted-foreground"
 												size={16}
@@ -197,7 +226,7 @@ export const Onboarding = () => {
 											<Input
 												{...field}
 												placeholder="Handle"
-												className="pl-9"
+												className="w-full pl-9"
 												autoComplete="off"
 											/>
 										</div>

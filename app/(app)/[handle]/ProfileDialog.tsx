@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { trpc } from "@/app/_trpc/react";
 import { updateProfile } from "@/app/actions";
 import UserAvatar from "@/components/UserAvatar";
 import {
@@ -29,6 +30,7 @@ import {
 	ProfileBioSchema,
 	UpdateProfileSchema,
 } from "@/types/profile";
+import { useDebounce } from "@/utils/hooks";
 import { useUser } from "@clerk/nextjs";
 import { AtSign } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -65,13 +67,31 @@ export const ProfileDialog = ({
 		},
 	});
 
-	const { image } = form.watch();
+	const { image, handle } = form.watch();
 
 	useEffect(() => {
 		if (image && image instanceof File) {
 			setImageUrl(URL.createObjectURL(image));
 		}
 	}, [image]);
+
+	const debouncedHandle = useDebounce(handle, 500);
+	const { data: handleExists } = trpc.user.profile.handleExists.useQuery(
+		debouncedHandle,
+		{
+			enabled: handle.length > 0,
+			refetchOnMount: false,
+			refetchOnWindowFocus: false,
+		}
+	);
+	useEffect(() => {
+		if (handleExists) {
+			form.setError("handle", {
+				type: "validate",
+				message: "Handle already exists",
+			});
+		}
+	}, [handleExists]);
 
 	const onSubmit = async ({ bio, name, handle, image }: UpdateProfile) => {
 		let imageUrl: string | null = null;
@@ -97,7 +117,9 @@ export const ProfileDialog = ({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline">Edit Profile</Button>
+				<Button variant="outline" className="mt-4">
+					Edit Profile
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>

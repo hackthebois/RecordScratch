@@ -39,7 +39,7 @@ export const getCommunityReviews = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.rating.community({ resource }),
 		[`resource:rating:getList:${resource.resourceId}`],
-		{ revalidate: 60, tags: [resource.resourceId] }
+		{ tags: [resource.resourceId] }
 	)();
 });
 
@@ -55,7 +55,7 @@ export const getUserRating = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.user.rating.get(resource),
 		[`user:rating:get:${resource.resourceId}`],
-		{ revalidate: 60, tags: [resource.resourceId] }
+		{ revalidate: 60, tags: [resource.resourceId, "user"] }
 	)();
 });
 
@@ -79,7 +79,10 @@ export const getUserRatingList = cache((resources: Resource[]) => {
 				.map((r) => r.resourceId)
 				.join(",")}]`,
 		],
-		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
+		{
+			tags: [...resources.map((r) => r.resourceId), "user"],
+			revalidate: 60,
+		}
 	)();
 });
 
@@ -115,15 +118,15 @@ export const getMyProfile = cache(() => {
 	return unstable_cache(
 		async () => await serverTrpc.user.profile.me(),
 		[`user:profile:get:me`],
-		{ tags: ["me"], revalidate: 60 }
+		{ tags: ["user"], revalidate: 60 }
 	)();
 });
 
 export const getRecent = cache((userId: string) => {
 	return unstable_cache(
 		async () => await serverTrpc.user.recent(userId),
-		[`user:recent:get`],
-		{ revalidate: 60 }
+		[`user:recent:get:${userId}`],
+		{ tags: [userId] }
 	)();
 });
 
