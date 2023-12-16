@@ -61,7 +61,7 @@ const Review = async ({
 						</p>
 					</div>
 				</div>
-				<div className="flex items-center gap-1">
+				<div className="-mt-2 flex items-center gap-1">
 					{Array.from(Array(review.rating)).map((_, i) => (
 						<Star
 							key={i}
@@ -76,7 +76,7 @@ const Review = async ({
 				</div>
 				<Link
 					href={`/${review.profile.handle}`}
-					className="mt-1 flex items-center gap-2"
+					className="flex items-center gap-2"
 				>
 					<UserAvatar {...review.profile} size={30} />
 					<p className="flex">{review.profile.name}</p>

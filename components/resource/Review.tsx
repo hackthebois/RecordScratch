@@ -31,7 +31,7 @@ export const Review = ({
 						</p>
 					</div>
 				</div>
-				<div className="flex items-center gap-1">
+				<div className="-mt-2 flex items-center gap-1">
 					{Array.from(Array(review.rating)).map((_, i) => (
 						<Star
 							key={i}
