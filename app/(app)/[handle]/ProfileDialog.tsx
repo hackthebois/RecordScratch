@@ -213,12 +213,12 @@ export const ProfileDialog = ({
 										<div className="relative mt-4 flex w-80 items-center">
 											<AtSign
 												className="absolute left-3 text-muted-foreground"
-												size={16}
+												size={15}
 											/>
 											<Input
 												{...field}
 												placeholder="Handle"
-												className="pl-9"
+												className="pl-[30px]"
 												autoComplete="off"
 											/>
 										</div>
