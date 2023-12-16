@@ -77,7 +77,7 @@ export const userRouter = router({
 	me: protectedProcedure.query(async ({ ctx: { userId } }) => {
 		return await clerkClient.users.getUser(userId);
 	}),
-	recent: protectedProcedure
+	recent: publicProcedure
 		.input(z.string())
 		.query(async ({ ctx: { db }, input: userId }) => {
 			return await db.query.ratings.findMany({
