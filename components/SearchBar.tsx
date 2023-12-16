@@ -197,6 +197,7 @@ const SearchBar = () => {
 										</div>
 									</>
 								)}
+								<div className="h-4" />
 							</ScrollArea>
 						) : (
 							<div className="flex flex-1 items-center justify-center">

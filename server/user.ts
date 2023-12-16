@@ -119,5 +119,14 @@ export const userRouter = router({
 					.set(newProfile)
 					.where(eq(profile.userId, userId));
 			}),
+		handleExists: publicProcedure
+			.input(z.string())
+			.query(async ({ ctx: { db }, input: handle }) => {
+				return (
+					(await db.query.profile.findFirst({
+						where: eq(profile.handle, handle),
+					})) !== null
+				);
+			}),
 	}),
 });
