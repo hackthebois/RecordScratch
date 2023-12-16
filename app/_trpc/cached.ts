@@ -1,5 +1,5 @@
 import { serverTrpc } from "@/app/_trpc/server";
-import { Resource } from "@/types/ratings";
+import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
@@ -39,7 +39,7 @@ export const getCommunityReviews = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.resource.rating.community({ resource }),
 		[`resource:rating:getList:${resource.resourceId}`],
-		{ revalidate: 60, tags: [resource.resourceId] }
+		{ tags: [resource.resourceId] }
 	)();
 });
 
@@ -55,7 +55,7 @@ export const getUserRating = cache((resource: Resource) => {
 	return unstable_cache(
 		async () => await serverTrpc.user.rating.get(resource),
 		[`user:rating:get:${resource.resourceId}`],
-		{ revalidate: 60, tags: [resource.resourceId] }
+		{ revalidate: 60, tags: [resource.resourceId, "user"] }
 	)();
 });
 
@@ -79,7 +79,10 @@ export const getUserRatingList = cache((resources: Resource[]) => {
 				.map((r) => r.resourceId)
 				.join(",")}]`,
 		],
-		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
+		{
+			tags: [...resources.map((r) => r.resourceId), "user"],
+			revalidate: 60,
+		}
 	)();
 });
 
@@ -100,5 +103,37 @@ export const getRatingListAverage = cache((resources: Resource[]) => {
 				.join(",")}]`,
 		],
 		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
+	)();
+});
+
+export const getProfile = cache((handle: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.user.profile.get({ handle }),
+		[`user:profile:get:${handle}`],
+		{ tags: [handle], revalidate: 60 }
+	)();
+});
+
+export const getMyProfile = cache(() => {
+	return unstable_cache(
+		async () => await serverTrpc.user.profile.me(),
+		[`user:profile:get:me`],
+		{ tags: ["user"], revalidate: 60 }
+	)();
+});
+
+export const getRecent = cache((userId: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.user.recent(userId),
+		[`user:recent:get:${userId}`],
+		{ tags: [userId] }
+	)();
+});
+
+export const getSong = cache((songId: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.resource.song.get(songId),
+		[`resource:song:get:${songId}`],
+		{ revalidate: 60 * 60 }
 	)();
 });

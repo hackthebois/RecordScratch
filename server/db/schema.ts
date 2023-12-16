@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
 	mysqlEnum,
 	mysqlTable,
@@ -5,8 +6,29 @@ import {
 	text,
 	timestamp,
 	tinyint,
+	uniqueIndex,
 	varchar,
 } from "drizzle-orm/mysql-core";
+
+export const profile = mysqlTable(
+	"profile",
+	{
+		userId: varchar("user_id", { length: 256 }).notNull().primaryKey(),
+		name: varchar("name", { length: 50 }).notNull(),
+		handle: varchar("handle", { length: 20 }).notNull().unique(),
+		imageUrl: varchar("image_url", { length: 256 }),
+		bio: varchar("bio", { length: 200 }),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	},
+	(table) => ({
+		handle_index: uniqueIndex("handle_index").on(table.handle),
+	})
+);
+
+export const profileRelations = relations(profile, ({ many }) => ({
+	ratings: many(ratings),
+}));
 
 export const ratings = mysqlTable(
 	"ratings",
@@ -25,3 +47,10 @@ export const ratings = mysqlTable(
 		}),
 	})
 );
+
+export const ratingsRelations = relations(ratings, ({ one }) => ({
+	profile: one(profile, {
+		fields: [ratings.userId],
+		references: [profile.userId],
+	}),
+}));

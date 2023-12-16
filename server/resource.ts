@@ -1,8 +1,6 @@
 import { env } from "@/env.mjs";
 import { ratings } from "@/server/db/schema";
-import { ResourceSchema } from "@/types/ratings";
-import { UserDTOSchema } from "@/types/users";
-import { clerkClient } from "@clerk/nextjs";
+import { ResourceSchema } from "@/types/rating";
 import { TRPCError } from "@trpc/server";
 import { and, avg, count, eq, inArray, isNotNull } from "drizzle-orm";
 import {
@@ -42,6 +40,7 @@ const spotifyFetch = async (url: string) => {
 	});
 
 	if (!res.ok) {
+		console.error(await res.text());
 		throw new TRPCError({
 			code: "INTERNAL_SERVER_ERROR",
 			message: "Spotify API error",
@@ -123,7 +122,7 @@ export const resourceRouter = router({
 						sort = "newest",
 					},
 				}) => {
-					const commmunityRatings = await db.query.ratings.findMany({
+					return await db.query.ratings.findMany({
 						where: and(
 							eq(ratings.resourceId, resourceId),
 							eq(ratings.category, category),
@@ -133,20 +132,9 @@ export const resourceRouter = router({
 						orderBy: (ratings, { desc }) => [
 							desc(ratings.createdAt),
 						],
-						// TODO: order by date, and paginate
-					});
-					const users = await clerkClient.users.getUserList({
-						userId: commmunityRatings.map((r) => r.userId),
-					});
-
-					return commmunityRatings.map((rating) => {
-						const user = users.find(
-							(user) => user.id === rating.userId
-						);
-						return {
-							...rating,
-							user: UserDTOSchema.optional().parse(user),
-						};
+						with: {
+							profile: true,
+						},
 					});
 				}
 			),
@@ -181,6 +169,16 @@ export const resourceRouter = router({
 				})
 				.parse(data).albums.items;
 		}),
+	}),
+	song: router({
+		get: publicProcedure
+			.input(z.string())
+			.query(async ({ input: songId }) => {
+				const { data } = await spotifyFetch(`/tracks/${songId}`);
+				return SpotifyTrackSchema.extend({
+					album: SpotifyAlbumSchema,
+				}).parse(data);
+			}),
 	}),
 	artist: router({
 		get: publicProcedure

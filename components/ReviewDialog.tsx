@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { reviewAction } from "@/app/actions";
 import { RatingInput } from "@/components/RatingInput";
-import { Rating, Resource, Review, ReviewSchema } from "@/types/ratings";
+import { Rating, Resource, Review, ReviewSchema } from "@/types/rating";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
@@ -37,8 +37,6 @@ export const ReviewDialog = ({
 		resolver: zodResolver(ReviewSchema),
 		defaultValues: { ...resource, ...initialRating },
 	});
-
-	console.log(form.formState.errors);
 
 	const onSubmit = async (review: Review) => {
 		reviewAction(review);
