@@ -1,8 +1,9 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
-import { Providers } from "./Providers";
+import { ThemeProvider } from "./Providers";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
@@ -39,9 +40,10 @@ const RootLayout = ({ children }: Props) => {
 					}}
 				>
 					<TRPCReactProvider headers={headers()}>
-						<Providers>{children}</Providers>
+						<ThemeProvider>{children}</ThemeProvider>
 					</TRPCReactProvider>
 				</ClerkProvider>
+				<SpeedInsights />
 			</body>
 		</html>
 	);
