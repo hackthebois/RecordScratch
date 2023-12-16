@@ -28,9 +28,8 @@ const Layout = async ({
 						PROFILE
 					</p>
 					<h1 className="text-center sm:text-left">{profile.name}</h1>
-					<p className="text-muted-foreground">
-						{profile.bio || "No bio yet"}
-					</p>
+					<p className="text-muted-foreground">@{profile.handle}</p>
+					<p>{profile.bio || "No bio yet"}</p>
 					<ProfileDialog profile={profile} />
 				</div>
 			</div>
