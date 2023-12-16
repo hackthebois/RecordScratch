@@ -10,7 +10,11 @@ export default authMiddleware({
 		"/_axiom/web-vitals",
 	],
 	afterAuth: async ({ userId, sessionClaims }, req) => {
-		if (userId && req.nextUrl.pathname !== "/onboard") {
+		if (
+			userId &&
+			req.nextUrl.pathname !== "/onboard" &&
+			!req.nextUrl.pathname.includes("/api")
+		) {
 			if (!sessionClaims.onboarded) {
 				return NextResponse.redirect(new URL("/onboard", req.url));
 			}

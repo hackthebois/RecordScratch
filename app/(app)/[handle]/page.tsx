@@ -81,6 +81,8 @@ const Page = async ({
 		notFound();
 	}
 
+	console.log(profile.userId);
+
 	const recent = await getRecent(profile.userId);
 
 	return (

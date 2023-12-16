@@ -3,7 +3,8 @@
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { useClerk } from "@clerk/nextjs";
+import { revalidateUser } from "@/app/actions";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { DropdownMenuItem } from "../ui/DropdownMenu";
 
 export const ThemeItem = () => {
@@ -31,10 +32,13 @@ export const ThemeItem = () => {
 
 export const SignOutItem = () => {
 	const { signOut } = useClerk();
+	const { user } = useUser();
 	return (
 		<DropdownMenuItem
 			onClick={() => {
 				signOut();
+				revalidateUser();
+				user?.reload();
 			}}
 		>
 			<LogOut size={15} className="mr-1.5" />

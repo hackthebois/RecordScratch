@@ -122,11 +122,10 @@ export const userRouter = router({
 		handleExists: publicProcedure
 			.input(z.string())
 			.query(async ({ ctx: { db }, input: handle }) => {
-				return (
-					(await db.query.profile.findFirst({
-						where: eq(profile.handle, handle),
-					})) !== null
-				);
+				const exists = !!(await db.query.profile.findFirst({
+					where: eq(profile.handle, handle),
+				}));
+				return exists ? true : false;
 			}),
 	}),
 });
