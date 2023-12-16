@@ -24,7 +24,7 @@ const ReviewsList = async ({ resource }: { resource: Resource }) => {
 					<Review key={index} review={review} />
 				))
 			) : (
-				<p className="mt-10 text-center text-muted-foreground">
+				<p className="my-[10vh] text-center text-muted-foreground">
 					No reviews yet
 				</p>
 			)}
