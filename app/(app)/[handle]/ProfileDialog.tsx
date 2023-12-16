@@ -155,7 +155,8 @@ export const ProfileDialog = ({
 									if (e.target.files) {
 										form.setValue(
 											"image",
-											e.target.files[0]
+											e.target.files[0],
+											{ shouldDirty: true }
 										);
 									}
 								}}

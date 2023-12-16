@@ -35,7 +35,7 @@ export const updateProfile = async (
 	await serverTrpc.user.profile.update(input);
 	if (oldHandle) revalidateTag(oldHandle);
 	revalidateTag(input.handle);
-	revalidateTag("me");
+	revalidateTag("user");
 	redirect(`/${input.handle}`);
 };
 
