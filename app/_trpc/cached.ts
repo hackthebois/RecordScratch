@@ -107,7 +107,7 @@ export const getProfile = cache((handle: string) => {
 	return unstable_cache(
 		async () => await serverTrpc.user.profile.get({ handle }),
 		[`user:profile:get:${handle}`],
-		{ revalidate: 60 }
+		{ tags: [handle], revalidate: 60 }
 	)();
 });
 
@@ -115,7 +115,7 @@ export const getMyProfile = cache(() => {
 	return unstable_cache(
 		async () => await serverTrpc.user.profile.me(),
 		[`user:profile:get:me`],
-		{ revalidate: 60 }
+		{ tags: ["me"], revalidate: 60 }
 	)();
 });
 

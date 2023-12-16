@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/Button";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormMessage,
@@ -154,7 +153,7 @@ export const Onboarding = () => {
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>
-						<Disc3 size={200} />
+						<Disc3 size={200} className="animate-spin" />
 						<h1 className="mt-12">Welcome to RecordScratch!</h1>
 						<p className="mt-6 text-muted-foreground">
 							Before you get started we have to set up your
@@ -224,9 +223,6 @@ export const Onboarding = () => {
 											autoComplete="off"
 										/>
 									</FormControl>
-									<FormDescription>
-										{bio ? 200 - bio.length : 200}
-									</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
@@ -240,7 +236,6 @@ export const Onboarding = () => {
 							size={160}
 							name={name}
 							imageUrl={imageUrl ?? null}
-							handle={handle}
 						/>
 						<Input
 							className="hidden"

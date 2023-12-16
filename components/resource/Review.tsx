@@ -2,6 +2,7 @@ import { Profile } from "@/types/profile";
 import { Rating } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
 import { Star } from "lucide-react";
+import Link from "next/link";
 import UserAvatar from "../UserAvatar";
 
 export const Review = ({
@@ -13,7 +14,9 @@ export const Review = ({
 }) => {
 	return (
 		<div className="flex gap-4 bg-card py-4 text-card-foreground shadow-sm">
-			<UserAvatar {...review.profile} size={40} />
+			<Link href={`/${review.profile.handle}`}>
+				<UserAvatar {...review.profile} size={40} />
+			</Link>
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex flex-1 justify-between">
 					<div className="flex items-center gap-2">
