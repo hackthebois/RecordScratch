@@ -2,7 +2,7 @@ import { getAlbum } from "@/app/_trpc/cached";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { Tabs } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { Resource } from "@/types/ratings";
+import { Resource } from "@/types/rating";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -55,7 +55,7 @@ const Layout = async ({
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
 							<Link
-								href={`/artists/${artist.id}/top-songs`}
+								href={`/artists/${artist.id}`}
 								className="text-muted-foreground hover:underline"
 								key={index}
 							>
@@ -69,7 +69,7 @@ const Layout = async ({
 				tabs={[
 					{
 						label: "Songs",
-						href: `/albums/${albumId}/songs`,
+						href: `/albums/${albumId}`,
 					},
 					{
 						label: "Reviews",

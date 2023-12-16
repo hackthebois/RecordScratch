@@ -87,7 +87,7 @@ const Layout = async ({
 				tabs={[
 					{
 						label: "Top Songs",
-						href: `/artists/${artistId}/top-songs`,
+						href: `/artists/${artistId}`,
 					},
 					{
 						label: "Discography",

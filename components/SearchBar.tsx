@@ -25,7 +25,7 @@ const ArtistItem = ({
 
 	return (
 		<Link
-			href={`/artists/${artist.id}/top-songs`}
+			href={`/artists/${artist.id}`}
 			onClick={onClick}
 			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
 		>
@@ -61,7 +61,7 @@ const AlbumItem = ({
 	return (
 		<Link
 			onClick={onClick}
-			href={`/albums/${album.id}/songs`}
+			href={`/albums/${album.id}`}
 			className="hover:bg-elevation-4 flex flex-1 flex-row items-center rounded transition-colors"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">
@@ -84,7 +84,7 @@ const AlbumItem = ({
 						onClick={(e) => {
 							e.preventDefault();
 							close();
-							router.push(`/artists/${artist.id}/top-songs`);
+							router.push(`/artists/${artist.id}`);
 						}}
 						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
 					>
@@ -197,6 +197,7 @@ const SearchBar = () => {
 										</div>
 									</>
 								)}
+								<div className="h-4" />
 							</ScrollArea>
 						) : (
 							<div className="flex flex-1 items-center justify-center">

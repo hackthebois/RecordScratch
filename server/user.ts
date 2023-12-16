@@ -1,7 +1,10 @@
-import { ratings } from "@/server/db/schema";
-import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/ratings";
-import { and, eq, inArray } from "drizzle-orm";
-import { protectedProcedure, router } from "./trpc";
+import { profile, ratings } from "@/server/db/schema";
+import { CreateProfileSchema } from "@/types/profile";
+import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/rating";
+import { clerkClient } from "@clerk/nextjs";
+import { and, desc, eq, inArray } from "drizzle-orm";
+import { z } from "zod";
+import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const userRouter = router({
 	rating: router({
@@ -70,5 +73,59 @@ export const userRouter = router({
 						);
 				}
 			),
+	}),
+	me: protectedProcedure.query(async ({ ctx: { userId } }) => {
+		return await clerkClient.users.getUser(userId);
+	}),
+	recent: publicProcedure
+		.input(z.string())
+		.query(async ({ ctx: { db }, input: userId }) => {
+			return await db.query.ratings.findMany({
+				limit: 10,
+				orderBy: desc(ratings.updatedAt),
+				where: eq(ratings.userId, userId),
+			});
+		}),
+	profile: router({
+		me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
+			return (
+				(await db.query.profile.findFirst({
+					where: eq(ratings.userId, userId),
+				})) ?? null
+			);
+		}),
+		get: publicProcedure
+			.input(z.object({ handle: z.string() }))
+			.query(async ({ ctx: { db }, input: { handle } }) => {
+				return (
+					(await db.query.profile.findFirst({
+						where: eq(profile.handle, handle),
+					})) ?? null
+				);
+			}),
+		create: protectedProcedure
+			.input(CreateProfileSchema)
+			.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
+				await db.insert(profile).values({ ...newProfile, userId });
+				await clerkClient.users.updateUser(userId, {
+					publicMetadata: { onboarded: true },
+				});
+			}),
+		update: protectedProcedure
+			.input(CreateProfileSchema)
+			.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
+				await db
+					.update(profile)
+					.set(newProfile)
+					.where(eq(profile.userId, userId));
+			}),
+		handleExists: publicProcedure
+			.input(z.string())
+			.query(async ({ ctx: { db }, input: handle }) => {
+				const exists = !!(await db.query.profile.findFirst({
+					where: eq(profile.handle, handle),
+				}));
+				return exists ? true : false;
+			}),
 	}),
 });

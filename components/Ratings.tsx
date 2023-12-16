@@ -1,5 +1,5 @@
 import { getRating, getUserRating } from "@/app/_trpc/cached";
-import { Rating, Resource, ResourceRating } from "@/types/ratings";
+import { Rating, Resource, ResourceRating } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Star } from "lucide-react";
