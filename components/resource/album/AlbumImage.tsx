@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const AlbumImage = ({ album, size }: { album: SpotifyAlbum; size: number }) => {
 	return (
-		<div className="overflow-hidden rounded-md">
+		<div className="h-[144px] overflow-hidden rounded-md">
 			<Image
 				src={album.images[0].url}
 				alt={`${album.name} cover`}
