@@ -127,10 +127,11 @@ const SearchBar = () => {
 					/>
 					<div
 						className={buttonVariants({
-							size: "icon",
 							variant: "outline",
+							size: "icon",
 							className: "sm:hidden",
 						})}
+						aria-label="Search"
 					>
 						<Search size={20} />
 					</div>
