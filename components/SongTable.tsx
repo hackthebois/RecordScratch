@@ -27,6 +27,7 @@ const SongRatings = async ({
 				resourceId: song.id,
 				category: "SONG",
 			}}
+			name={song.name}
 			type="list"
 			initial={{
 				rating: ratingsList.find((r) => r.resourceId === song.id),
