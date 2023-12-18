@@ -46,7 +46,7 @@ const Layout = async ({
 			<LinkTabs
 				tabs={[
 					{
-						label: "Recent",
+						label: "Ratings",
 						href: `/${handle}`,
 					},
 				]}
