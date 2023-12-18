@@ -24,6 +24,7 @@ export async function generateMetadata({
 		description: album.artists.map(({ name }) => name).join(", "),
 		openGraph: {
 			images,
+			siteName: "RecordScratch",
 		},
 	};
 }

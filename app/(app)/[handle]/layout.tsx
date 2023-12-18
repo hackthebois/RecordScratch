@@ -22,6 +22,7 @@ export async function generateMetadata({
 		description: profile.bio,
 		openGraph: {
 			images: profile.imageUrl ? [profile.imageUrl] : undefined,
+			siteName: "RecordScratch",
 		},
 	};
 }
