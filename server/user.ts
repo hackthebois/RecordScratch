@@ -1,14 +1,9 @@
 import { profile, ratings } from "@/server/db/schema";
 import { CreateProfileSchema } from "@/types/profile";
-import {
-	RateSchema,
-	ResourceSchema,
-	ReviewSchema,
-	CategorySchema,
-} from "@/types/rating";
+import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/rating";
 import { clerkClient } from "@clerk/nextjs";
-import { and, desc, eq, inArray, count } from "drizzle-orm";
-import { number, z } from "zod";
+import { and, count, desc, eq, inArray } from "drizzle-orm";
+import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const userRouter = router({
@@ -83,12 +78,21 @@ export const userRouter = router({
 		return await clerkClient.users.getUser(userId);
 	}),
 	recent: publicProcedure
-		.input(z.string())
-		.query(async ({ ctx: { db }, input: userId }) => {
+		.input(
+			z.object({
+				userId: z.string(),
+				rating: z.number().optional(),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { userId, rating } }) => {
+			const where = rating
+				? and(eq(ratings.userId, userId), eq(ratings.rating, rating))
+				: eq(ratings.userId, userId);
+
 			return await db.query.ratings.findMany({
 				limit: 10,
 				orderBy: desc(ratings.updatedAt),
-				where: eq(ratings.userId, userId),
+				where,
 			});
 		}),
 	profile: router({
@@ -132,21 +136,16 @@ export const userRouter = router({
 				}));
 				return exists ? true : false;
 			}),
-		userDistribution: protectedProcedure
-			.input(CategorySchema)
-			.query(async ({ ctx: { db, userId }, input: CategorySchema }) => {
+		distribution: publicProcedure
+			.input(z.string())
+			.query(async ({ ctx: { db }, input: userId }) => {
 				const userRatings = await db
 					.select({
 						rating: ratings.rating,
 						rating_count: count(ratings.rating),
 					})
 					.from(ratings)
-					.where(
-						and(
-							eq(ratings.userId, userId),
-							eq(ratings.category, CategorySchema.category)
-						)
-					)
+					.where(eq(ratings.userId, userId))
 					.groupBy(ratings.rating)
 					.orderBy(ratings.rating);
 

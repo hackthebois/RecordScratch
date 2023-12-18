@@ -2,6 +2,7 @@ import { serverTrpc } from "@/app/_trpc/server";
 import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import { RouterInput } from "../actions";
 
 export const getAlbum = cache((albumId: string) => {
 	return unstable_cache(
@@ -146,11 +147,15 @@ export const getMyProfile = cache((userId: string) => {
 	)();
 });
 
-export const getRecent = cache((userId: string) => {
+export const getRecent = cache((input: RouterInput["user"]["recent"]) => {
 	return unstable_cache(
-		async () => await serverTrpc.user.recent(userId),
-		[`user:recent:get:${userId}`],
-		{ tags: [userId] }
+		async () => await serverTrpc.user.recent(input),
+		[
+			`user:recent:get:${input.userId}${
+				input.rating ? `:${input.rating}` : ""
+			}`,
+		],
+		{ tags: [input.userId] }
 	)();
 });
 
@@ -159,5 +164,13 @@ export const getSong = cache((songId: string) => {
 		async () => await serverTrpc.resource.song.get(songId),
 		[`resource:song:get:${songId}`],
 		{ revalidate: 60 * 60 }
+	)();
+});
+
+export const getDistribution = cache((userId: string) => {
+	return unstable_cache(
+		async () => await serverTrpc.user.profile.distribution(userId),
+		[`user:profile:distribution:${userId}`],
+		{ tags: [userId] }
 	)();
 });

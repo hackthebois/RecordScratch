@@ -1,78 +1,19 @@
-import { getAlbum, getProfile, getRecent, getSong } from "@/app/_trpc/cached";
-import AlbumImage from "@/components/resource/album/AlbumImage";
-import { Rating, Resource } from "@/types/rating";
-import { SpotifyAlbum } from "@/types/spotify";
-import { timeAgo } from "@/utils/date";
-import { Star } from "lucide-react";
+import { getDistribution, getProfile, getRecent } from "@/app/_trpc/cached";
+import { cn } from "@/utils/utils";
+import { unstable_noStore } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-const Review = async ({
-	review,
-	resource,
-}: {
-	review: Rating;
-	resource: Resource;
-}) => {
-	let album: SpotifyAlbum | undefined = undefined;
-	let songName: string | undefined = undefined;
-	if (resource.category === "ALBUM") {
-		album = await getAlbum(resource.resourceId);
-	} else {
-		const song = await getSong(resource.resourceId);
-		album = song.album;
-		songName = song.name;
-	}
-
-	return (
-		<div className="flex gap-4 bg-card py-4 text-card-foreground shadow-sm">
-			<div className="h-20 w-20">
-				<Link href={`/albums/${album.id}`}>
-					<AlbumImage album={album} size={80} />
-				</Link>
-			</div>
-			<div className="flex flex-1 flex-col justify-center gap-3">
-				<div className="flex justify-between">
-					<div className="flex items-center gap-2">
-						<Link href={`/albums/${album.id}`}>
-							<p className="flex font-semibold">
-								{songName
-									? `${songName} (${album.name})`
-									: album.name}
-							</p>
-						</Link>
-						<p className="text-sm font-medium text-muted-foreground">
-							•
-						</p>
-						<p className="text-sm font-medium text-muted-foreground">
-							{timeAgo(new Date(review.updatedAt))}
-						</p>
-					</div>
-				</div>
-				<div className="-mt-2 flex items-center gap-1">
-					{Array.from(Array(review.rating)).map((_, i) => (
-						<Star
-							key={i}
-							size={18}
-							color="#ffb703"
-							fill="#ffb703"
-						/>
-					))}
-					{Array.from(Array(10 - review.rating)).map((_, i) => (
-						<Star key={i} size={18} color="#ffb703" />
-					))}
-				</div>
-				<p className="whitespace-pre-line text-sm">{review.content}</p>
-			</div>
-		</div>
-	);
-};
+import { Review } from "./_components/Review";
 
 const Page = async ({
 	params: { handle },
+	searchParams: { rating },
 }: {
 	params: {
 		handle: string;
+	};
+	searchParams: {
+		rating: string;
 	};
 }) => {
 	const profile = await getProfile(handle);
@@ -81,21 +22,69 @@ const Page = async ({
 		notFound();
 	}
 
-	const recent = await getRecent(profile.userId);
+	unstable_noStore();
+
+	const recent = await getRecent({
+		userId: profile.userId,
+		rating: rating ? parseInt(rating) : undefined,
+	});
+
+	const distribution = await getDistribution(profile.userId);
+	const max = Math.max(...distribution);
 
 	return (
-		<div className="flex w-full flex-col">
-			{recent.map((recent, index) => (
-				<Review
-					key={index}
-					review={recent}
-					resource={{
-						category: recent.category,
-						resourceId: recent.resourceId,
-					}}
-				/>
-			))}
-		</div>
+		<>
+			<table className="flex flex-col rounded-md border border-border px-4 pb-2 pt-8">
+				<thead>
+					<tr className="flex h-20 w-full items-end justify-between gap-1">
+						{distribution.map((ratings, index) => (
+							<th
+								style={{
+									height: `${(ratings / max) * 100}%`,
+								}}
+								className="flex flex-1"
+								key={index}
+							>
+								<Link
+									href={{
+										pathname: `/${handle}`,
+										query: {
+											rating: index + 1,
+										},
+									}}
+									className={cn(
+										"h-full min-h-0 w-full bg-[#ffb703] hover:opacity-90",
+										rating === `${index + 1}` &&
+											"bg-orange-500"
+									)}
+								/>
+							</th>
+						))}
+					</tr>
+				</thead>
+				<tbody>
+					<tr className="flex w-full items-end justify-between gap-1 pt-3">
+						{distribution.map((ratings, index) => (
+							<th key={index} className="flex-1">
+								{index + 1}
+							</th>
+						))}
+					</tr>
+				</tbody>
+			</table>
+			<div className="flex w-full flex-col">
+				{recent.map((recent, index) => (
+					<Review
+						key={index}
+						review={recent}
+						resource={{
+							category: recent.category,
+							resourceId: recent.resourceId,
+						}}
+					/>
+				))}
+			</div>
+		</>
 	);
 };
 
