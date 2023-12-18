@@ -1,9 +1,14 @@
 import { profile, ratings } from "@/server/db/schema";
 import { CreateProfileSchema } from "@/types/profile";
-import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/rating";
+import {
+	RateSchema,
+	ResourceSchema,
+	ReviewSchema,
+	CategorySchema,
+} from "@/types/rating";
 import { clerkClient } from "@clerk/nextjs";
-import { and, desc, eq, inArray } from "drizzle-orm";
-import { z } from "zod";
+import { and, desc, eq, inArray, count } from "drizzle-orm";
+import { number, z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
 
 export const userRouter = router({
@@ -126,6 +131,34 @@ export const userRouter = router({
 					where: eq(profile.handle, handle),
 				}));
 				return exists ? true : false;
+			}),
+		userDistribution: protectedProcedure
+			.input(CategorySchema)
+			.query(async ({ ctx: { db, userId }, input: CategorySchema }) => {
+				const userRatings = await db
+					.select({
+						rating: ratings.rating,
+						rating_count: count(ratings.rating),
+					})
+					.from(ratings)
+					.where(
+						and(
+							eq(ratings.userId, userId),
+							eq(ratings.category, CategorySchema.category)
+						)
+					)
+					.groupBy(ratings.rating)
+					.orderBy(ratings.rating);
+
+				const outputList: number[] = userRatings.reduce(
+					(result, { rating, rating_count }) => {
+						result[rating - 1] = rating_count;
+						return result;
+					},
+					Array(10).fill(0)
+				);
+
+				return outputList;
 			}),
 	}),
 });
