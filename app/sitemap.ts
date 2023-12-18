@@ -1,6 +1,38 @@
 import { MetadataRoute } from "next";
+import { serverTrpc } from "./_trpc/server";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
+	const albums = await serverTrpc.resource.album.getUniqueIds();
+	const profiles = await serverTrpc.user.profile.getUniqueHandles();
+
+	const albumMap: MetadataRoute.Sitemap = albums.flatMap((albumId) => {
+		return [
+			{
+				url: `${process.env.NEXT_PUBLIC_SITE_URL}/albums/${albumId}`,
+				lastModified: new Date(),
+				changeFrequency: "weekly",
+				priority: 0.8,
+			},
+			{
+				url: `${process.env.NEXT_PUBLIC_SITE_URL}/albums/${albumId}/reviews`,
+				lastModified: new Date(),
+				changeFrequency: "daily",
+				priority: 0.5,
+			},
+		];
+	});
+
+	const profileMap: MetadataRoute.Sitemap = profiles.flatMap((handle) => {
+		return [
+			{
+				url: `${process.env.NEXT_PUBLIC_SITE_URL}/users/${handle}`,
+				lastModified: new Date(),
+				changeFrequency: "daily",
+				priority: 0.8,
+			},
+		];
+	});
+
 	return [
 		{
 			url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
@@ -8,5 +40,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			changeFrequency: "daily",
 			priority: 1,
 		},
+		...albumMap,
+		...profileMap,
 	];
-}
+};
+
+export default sitemap;
