@@ -171,7 +171,7 @@ export const resourceRouter = router({
 				const { data } = await spotifyFetch(`/albums/${albumId}`);
 				return SpotifyAlbumSchema.parse(data);
 			}),
-		getStaticParams: publicProcedure.query(async ({ ctx: { db } }) => {
+		getUniqueIds: publicProcedure.query(async ({ ctx: { db } }) => {
 			const albums = await db
 				.select({
 					resourceId: ratings.resourceId,
@@ -179,7 +179,7 @@ export const resourceRouter = router({
 				.from(ratings)
 				.where(eq(ratings.category, "ALBUM"))
 				.groupBy(ratings.resourceId);
-			return albums.map(({ resourceId }) => ({ albumId: resourceId }));
+			return albums.map(({ resourceId }) => resourceId);
 		}),
 		newReleases: publicProcedure.query(async () => {
 			const { data } = await spotifyFetch("/browse/new-releases");

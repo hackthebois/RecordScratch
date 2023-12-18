@@ -29,7 +29,8 @@ export async function generateMetadata({
 }
 
 export const generateStaticParams = async () => {
-	return await serverTrpc.resource.album.getStaticParams();
+	const ids = await serverTrpc.resource.album.getUniqueIds();
+	return ids.map((id) => ({ albumId: id }));
 };
 
 const Layout = async ({
