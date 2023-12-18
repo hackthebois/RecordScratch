@@ -34,7 +34,7 @@ const Page = async ({
 
 	return (
 		<>
-			<table className="flex flex-col rounded-md border border-border px-4 pb-2 pt-8">
+			<table className="flex max-w-lg flex-col rounded-md border border-border px-4 pb-2 pt-8">
 				<thead>
 					<tr className="flex h-20 w-full items-end justify-between gap-1">
 						{distribution.map((ratings, index) => (
