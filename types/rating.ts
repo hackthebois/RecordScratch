@@ -1,5 +1,6 @@
 import { ratings } from "@/server/db/schema";
 import { createSelectSchema } from "drizzle-zod";
+import { Rat } from "lucide-react";
 import { z } from "zod";
 
 export const ResourceRatingSchema = z.object({
@@ -33,3 +34,8 @@ export const ReviewSchema = RatingSchema.pick({
 	rating: true,
 });
 export type Review = z.infer<typeof ReviewSchema>;
+
+export const CategorySchema = RatingSchema.pick({
+	category: true,
+});
+export type CategoryType = z.infer<typeof CategorySchema>;
