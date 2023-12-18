@@ -1,11 +1,36 @@
 import { getAlbum } from "@/app/_trpc/cached";
+import { serverTrpc } from "@/app/_trpc/server";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { Tag } from "@/components/ui/Tag";
 import { Resource } from "@/types/rating";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+
+export async function generateMetadata({
+	params: { albumId },
+}: {
+	params: {
+		albumId: string;
+	};
+}): Promise<Metadata> {
+	const album = await getAlbum(albumId);
+	const images = album.images.map(({ url }) => ({ url }));
+
+	return {
+		title: album.name,
+		description: album.artists.map(({ name }) => name).join(", "),
+		openGraph: {
+			images,
+		},
+	};
+}
+
+export const generateStaticParams = async () => {
+	return await serverTrpc.resource.album.getStaticParams();
+};
 
 const Layout = async ({
 	params: { albumId },

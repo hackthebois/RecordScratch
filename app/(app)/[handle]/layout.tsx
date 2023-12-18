@@ -2,8 +2,29 @@ import { getProfile } from "@/app/_trpc/cached";
 import UserAvatar from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProfileDialog } from "./ProfileDialog";
+
+export async function generateMetadata({
+	params: { handle },
+}: {
+	params: {
+		handle: string;
+	};
+}): Promise<Metadata> {
+	const profile = await getProfile(handle);
+
+	if (!profile) return {};
+
+	return {
+		title: `${profile.name} (@${profile.handle})`,
+		description: profile.bio,
+		openGraph: {
+			images: profile.imageUrl ? [profile.imageUrl] : undefined,
+		},
+	};
+}
 
 const Layout = async ({
 	params: { handle },

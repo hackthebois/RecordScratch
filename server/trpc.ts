@@ -6,13 +6,13 @@ const t = initTRPC.context<typeof createContext>().create();
 
 export const router = t.router;
 export const publicProcedure = t.procedure.use(({ ctx, next }) => {
-	return next({ ctx: { ...ctx, userId: auth().userId } });
+	return next({ ctx: { ...ctx } });
 });
 export const middleware = t.middleware;
 export const mergeRouters = t.mergeRouters;
 
 export const protectedProcedure = publicProcedure.use(({ ctx, next }) => {
-	const { userId } = ctx;
+	const { userId } = auth();
 	if (!userId) throw new TRPCError({ code: "UNAUTHORIZED" });
 
 	return next({

@@ -1,5 +1,7 @@
+import { env } from "@/env.mjs";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Metadata } from "next";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
@@ -11,9 +13,13 @@ const montserrat = Montserrat({
 	subsets: ["latin"],
 });
 
-export const metadata = {
-	title: "RecordScratch",
+export const metadata: Metadata = {
+	title: {
+		default: "RecordScratch",
+		template: "%s | RecordScratch",
+	},
 	description: "Music rating and review app",
+	metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
 };
 
 type Props = {
