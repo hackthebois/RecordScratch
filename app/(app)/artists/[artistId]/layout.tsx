@@ -7,8 +7,27 @@ import { LinkTabs } from "@/components/ui/LinkTabs";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import { Suspense } from "react";
+
+export async function generateMetadata({
+	params: { artistId },
+}: {
+	params: {
+		artistId: string;
+	};
+}): Promise<Metadata> {
+	const artist = await getArtist(artistId);
+
+	return {
+		title: artist.name,
+		description: artist.genres?.join(", "),
+		openGraph: {
+			images: artist.images?.map(({ url }) => ({ url })),
+		},
+	};
+}
 
 const Rating = async ({ artistId }: { artistId: string }) => {
 	const albums = await getArtistDiscography(artistId);
