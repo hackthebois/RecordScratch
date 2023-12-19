@@ -30,7 +30,11 @@ export const ratings = mysqlTable(
 		userId: varchar("user_id", { length: 256 }).notNull(),
 		rating: tinyint("rating").notNull(),
 		content: text("content"),
-		category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+		category: mysqlEnum("category", [
+			"ALBUM",
+			"SONG",
+			"PLAYLIST",
+		]).notNull(),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 	},
@@ -47,3 +51,26 @@ export const ratingsRelations = relations(ratings, ({ one }) => ({
 		references: [profile.userId],
 	}),
 }));
+
+export const playlists = mysqlTable("playlists", {
+	playlistId: varchar("playlist_id", { length: 256 }).primaryKey(),
+	userId: varchar("user_id", { length: 256 }).notNull(),
+	name: varchar("name", { length: 50 }).notNull(),
+	description: text("content"),
+	category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const playlist_tracks = mysqlTable(
+	"playlist_tracks",
+	{
+		resourceId: varchar("resource_id", { length: 256 }).notNull(),
+		playlistId: varchar("playlist_id", { length: 256 }).notNull(),
+	},
+	(table) => ({
+		pk_tracks: primaryKey({
+			columns: [table.resourceId, table.playlistId],
+		}),
+	})
+);

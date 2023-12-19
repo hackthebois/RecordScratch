@@ -14,6 +14,9 @@ export const env = createEnv({
 		NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1),
 		NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1),
 		NEXT_PUBLIC_SITE_URL: z.string().min(1),
+		TINYBIRD_SRC: z.string().min(1),
+		TINYBIRD_HOST: z.string().min(1),
+		TINYBIRD_TOKEN: z.string().min(1),
 	},
 	experimental__runtimeEnv: {
 		NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:

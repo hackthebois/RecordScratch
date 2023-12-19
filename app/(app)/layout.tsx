@@ -6,10 +6,17 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Disc3 } from "lucide-react";
 import Link from "next/link";
+import { env } from "@/env.mjs";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<>
+			<script
+				defer
+				src={env.TINYBIRD_SRC}
+				data-host={env.TINYBIRD_HOST}
+				data-token={env.TINYBIRD_TOKEN}
+			></script>
 			<header className="border-elevation-4 bg-elevation-1 flex h-14 w-full items-center justify-center border-b">
 				<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-6">
 					<div className="flex items-center gap-3">
