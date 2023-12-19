@@ -18,7 +18,7 @@ const SongRatings = async ({
 	let userRatingsList: Rating[] = [];
 	const { userId } = auth();
 	if (userId) {
-		userRatingsList = await getUserRatingList(resources);
+		userRatingsList = await getUserRatingList(resources, userId);
 	}
 
 	return (

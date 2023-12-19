@@ -30,7 +30,7 @@ export const Ratings = async ({
 
 		const { userId } = auth();
 		if (userId) {
-			userRating = await getUserRating(resource);
+			userRating = await getUserRating(resource, userId);
 		}
 	}
 
