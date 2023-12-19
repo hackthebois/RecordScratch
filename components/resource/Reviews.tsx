@@ -43,7 +43,7 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 	let userRating: Rating | null = null;
 	const { userId } = await auth();
 	if (userId) {
-		userRating = await getUserRating(resource);
+		userRating = await getUserRating(resource, userId);
 	}
 
 	return (

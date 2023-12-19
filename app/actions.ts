@@ -30,12 +30,13 @@ export const createProfile = async (
 
 export const updateProfile = async (
 	input: RouterInput["user"]["profile"]["update"],
+	userId: string,
 	oldHandle?: string
 ) => {
 	await serverTrpc.user.profile.update(input);
 	if (oldHandle) revalidateTag(oldHandle);
 	revalidateTag(input.handle);
-	revalidateTag("user");
+	revalidateTag(userId);
 	redirect(`/${input.handle}`);
 };
 
@@ -43,6 +44,6 @@ export const handleExists = async (handle: string) => {
 	return await serverTrpc.user.profile.handleExists(handle);
 };
 
-export const revalidateUser = async () => {
-	revalidateTag("user");
+export const revalidateUser = async (userId: string) => {
+	revalidateTag(userId);
 };

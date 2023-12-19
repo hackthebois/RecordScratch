@@ -39,7 +39,7 @@ export const SignOutItem = () => {
 		<DropdownMenuItem
 			onClick={() => {
 				signOut();
-				revalidateUser();
+				if (user) revalidateUser(user.id);
 				user?.reload();
 			}}
 		>

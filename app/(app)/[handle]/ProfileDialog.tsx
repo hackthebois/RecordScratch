@@ -57,6 +57,10 @@ export const ProfileDialog = ({
 		defaultImageUrl ?? undefined
 	);
 
+	if (!user) {
+		return null;
+	}
+
 	const form = useForm<UpdateProfile>({
 		resolver: zodResolver(UpdateProfileForm),
 		defaultValues: {
@@ -115,6 +119,7 @@ export const ProfileDialog = ({
 				name,
 				handle,
 			},
+			user.id,
 			defaultHandle
 		);
 		setOpen(false);
