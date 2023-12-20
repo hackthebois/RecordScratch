@@ -57,10 +57,6 @@ export const ProfileDialog = ({
 		defaultImageUrl ?? undefined
 	);
 
-	if (!user) {
-		return null;
-	}
-
 	const form = useForm<UpdateProfile>({
 		resolver: zodResolver(UpdateProfileForm),
 		defaultValues: {
@@ -103,6 +99,10 @@ export const ProfileDialog = ({
 			}
 		}
 	}, [handleExists]);
+
+	if (!user) {
+		return null;
+	}
 
 	const onSubmit = async ({ bio, name, handle, image }: UpdateProfile) => {
 		let imageUrl: string | null = null;
