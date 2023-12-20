@@ -1,5 +1,6 @@
 import { env } from "@/env.mjs";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { AxiomWebVitals } from "next-axiom";
@@ -49,6 +50,7 @@ const RootLayout = ({ children }: Props) => {
 						<ThemeProvider>{children}</ThemeProvider>
 					</TRPCReactProvider>
 				</ClerkProvider>
+				<Analytics />
 				<SpeedInsights />
 			</body>
 		</html>
