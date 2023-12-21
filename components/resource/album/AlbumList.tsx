@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { SpotifyAlbum } from "@/types/spotify";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
@@ -10,7 +13,21 @@ type Props = {
 };
 
 const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
-	const listAlbums = type === "scroll" ? albums.slice(0, 6) : albums;
+	const pageSize = 6;
+	const [currentPage, setCurrentPage] = useState(0);
+
+	const totalPages = Math.ceil(albums.length / pageSize);
+
+	const handlePageChange = (newPage: number) => {
+		if (newPage >= 0 && newPage < totalPages) {
+			setCurrentPage(newPage);
+		}
+	};
+
+	const listAlbums = albums.slice(
+		currentPage * pageSize,
+		(currentPage + 1) * pageSize
+	);
 
 	const listItems = listAlbums.map((album, index) => (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
@@ -40,12 +57,36 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 		return (
 			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
 				<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
+				<div>
+					<button
+						onClick={() => handlePageChange(currentPage - 1)}
+						className="mr-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+						disabled={currentPage === 0}
+					>
+						Previous
+					</button>
+					<button
+						onClick={() => handlePageChange(currentPage + 1)}
+						className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+						disabled={currentPage === totalPages - 1}
+					>
+						Next
+					</button>
+				</div>
 			</ScrollArea>
 		);
 	} else {
 		return (
 			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
 				{listItems}
+				<div>
+					<button onClick={() => handlePageChange(currentPage - 1)}>
+						Previous
+					</button>
+					<button onClick={() => handlePageChange(currentPage + 1)}>
+						Next
+					</button>
+				</div>
 			</div>
 		);
 	}
