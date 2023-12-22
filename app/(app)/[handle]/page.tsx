@@ -34,45 +34,43 @@ const Page = async ({
 
 	return (
 		<>
-			<table className="flex max-w-lg flex-col rounded-md border px-4 pb-2 pt-8">
-				<thead>
-					<tr className="flex h-20 w-full items-end justify-between gap-1">
-						{distribution.map((ratings, index) => (
-							<th
-								style={{
-									height: `${(ratings / max) * 100}%`,
-								}}
-								className="flex flex-1"
-								key={index}
-							>
-								<Link
-									href={
-										Number(rating) === index + 1
-											? `/${profile.handle}`
-											: `/${profile.handle}?rating=${
-													index + 1
-											  }`
-									}
-									className={cn(
-										"h-full min-h-0 w-full bg-[#ffb703] hover:opacity-90",
-										rating === `${index + 1}` &&
-											"bg-orange-500"
-									)}
-								/>
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					<tr className="flex w-full items-end justify-between gap-1 pt-3">
-						{distribution.map((_, index) => (
-							<th key={index} className="flex-1">
-								{index + 1}
-							</th>
-						))}
-					</tr>
-				</tbody>
-			</table>
+			<div className="flex max-w-lg flex-col rounded-md border p-6 pt-8">
+				<div className="flex h-20 w-full items-end justify-between gap-1">
+					{distribution.map((ratings, index) => (
+						<div
+							style={{
+								height: `${(ratings / max) * 100}%`,
+							}}
+							className="flex flex-1"
+							key={index}
+						>
+							<Link
+								href={
+									Number(rating) === index + 1
+										? `/${profile.handle}`
+										: `/${profile.handle}?rating=${
+												index + 1
+										  }`
+								}
+								className={cn(
+									"h-full min-h-0 w-full rounded-t bg-[#ffb703] hover:opacity-90",
+									rating === `${index + 1}` && "bg-orange-500"
+								)}
+							/>
+						</div>
+					))}
+				</div>
+				<div className="flex w-full items-end gap-1 pt-1">
+					{distribution.map((_, index) => (
+						<p
+							key={index + 1}
+							className="flex-1 text-center text-sm text-muted-foreground"
+						>
+							{index + 1}
+						</p>
+					))}
+				</div>
+			</div>
 			<div className="flex w-full flex-col">
 				{recent.map((recent, index) => (
 					<Review

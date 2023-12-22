@@ -15,6 +15,13 @@ export const rateAction = async (
 	revalidateTag(input.resourceId);
 };
 
+export const deleteRatingAction = async (
+	input: RouterInput["user"]["rating"]["delete"]
+) => {
+	await serverTrpc.user.rating.delete(input);
+	revalidateTag(input.resourceId);
+};
+
 export const reviewAction = async (
 	input: RouterInput["user"]["rating"]["review"]
 ) => {
