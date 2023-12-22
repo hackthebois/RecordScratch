@@ -27,7 +27,7 @@ export const Review = async ({
 	}
 
 	return (
-		<div className="flex flex-col gap-4 py-4 text-card-foreground shadow-sm">
+		<div className="flex flex-col gap-4 py-4 text-card-foreground">
 			<AlbumItem album={album} song={songName} showType />
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex items-center gap-1">
