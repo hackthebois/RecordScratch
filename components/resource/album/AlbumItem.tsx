@@ -22,13 +22,13 @@ export const AlbumItem = ({
 		<Link
 			onClick={onClick}
 			href={`/albums/${album.id}`}
-			className="flex flex-1 flex-row items-center gap-4 rounded"
+			className="flex flex-row items-center gap-4 rounded"
 		>
-			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">
+			<div className="relative h-16 w-16 min-w-[64px] rounded">
 				<AlbumImage album={album} size={64} />
 			</div>
-			<div className="max-w-full">
-				<p className="w-full truncate font-medium">
+			<div className="min-w-0 flex-1">
+				<p className="truncate font-medium">
 					{song ? song : album.name}
 				</p>
 				<div className="flex gap-1">
@@ -45,16 +45,11 @@ export const AlbumItem = ({
 							{artist.name}
 						</button>
 					))}
-					{showType &&
-						(song ? (
-							<p className="truncate py-1 text-sm text-muted-foreground">
-								• Song
-							</p>
-						) : (
-							<p className="truncate py-1 text-sm text-muted-foreground">
-								• Album
-							</p>
-						))}
+					{showType && (
+						<p className="truncate py-1 text-sm text-muted-foreground">
+							{song ? "• Song" : "• Album"}
+						</p>
+					)}
 				</div>
 			</div>
 		</Link>
