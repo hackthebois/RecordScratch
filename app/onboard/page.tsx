@@ -10,7 +10,7 @@ const Page = () => {
 	}
 
 	return (
-		<div className="flex h-full w-full flex-col items-center justify-center gap-4">
+		<div className="flex h-[100svh] w-full flex-col items-center justify-center gap-4">
 			<Onboarding />
 		</div>
 	);

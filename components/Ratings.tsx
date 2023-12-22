@@ -34,8 +34,6 @@ export const Ratings = async ({
 		}
 	}
 
-	console.log(rating, userRating);
-
 	return (
 		<div className="flex items-center gap-4">
 			{!(type === "list" && !rating?.average) && (
