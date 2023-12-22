@@ -46,12 +46,13 @@ const Page = async ({
 								key={index}
 							>
 								<Link
-									href={{
-										pathname: `/${handle}`,
-										query: {
-											rating: index + 1,
-										},
-									}}
+									href={
+										Number(rating) === index + 1
+											? `/${profile.handle}`
+											: `/${profile.handle}?rating=${
+													index + 1
+											  }`
+									}
 									className={cn(
 										"h-full min-h-0 w-full bg-[#ffb703] hover:opacity-90",
 										rating === `${index + 1}` &&
@@ -64,7 +65,7 @@ const Page = async ({
 				</thead>
 				<tbody>
 					<tr className="flex w-full items-end justify-between gap-1 pt-3">
-						{distribution.map((ratings, index) => (
+						{distribution.map((_, index) => (
 							<th key={index} className="flex-1">
 								{index + 1}
 							</th>
