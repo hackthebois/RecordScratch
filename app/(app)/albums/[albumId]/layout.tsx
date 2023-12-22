@@ -77,11 +77,9 @@ const Layout = async ({
 							</Tag>
 						)}
 					</div>
-					{!isSingle && (
-						<Suspense fallback={<RatingsSkeleton />}>
-							<Ratings resource={resource} name={album.name} />
-						</Suspense>
-					)}
+					<Suspense fallback={<RatingsSkeleton />}>
+						<Ratings resource={resource} name={album.name} />
+					</Suspense>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (
 							<Link
