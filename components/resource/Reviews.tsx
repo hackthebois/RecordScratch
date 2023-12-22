@@ -20,8 +20,13 @@ const ReviewsList = async ({ resource }: { resource: Resource }) => {
 	return (
 		<>
 			{reviews.length > 0 ? (
-				reviews.map((review, index) => (
-					<Review key={index} review={review} />
+				reviews.map(({ profile, ...review }, index) => (
+					<Review
+						key={index}
+						review={review}
+						profile={profile}
+						resource={resource}
+					/>
 				))
 			) : (
 				<p className="my-[10vh] text-center text-muted-foreground">

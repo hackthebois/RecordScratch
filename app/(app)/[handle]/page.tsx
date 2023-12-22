@@ -1,9 +1,9 @@
 import { getDistribution, getProfile, getRecent } from "@/app/_trpc/cached";
+import { Review } from "@/components/resource/Review";
 import { cn } from "@/utils/utils";
 import { unstable_noStore } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Review } from "./_components/Review";
 
 const Page = async ({
 	params: { handle },
@@ -77,6 +77,7 @@ const Page = async ({
 					<Review
 						key={index}
 						review={recent}
+						profile={profile}
 						resource={{
 							category: recent.category,
 							resourceId: recent.resourceId,

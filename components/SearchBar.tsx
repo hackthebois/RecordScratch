@@ -10,9 +10,9 @@ import { useRecents } from "@/utils/recents";
 import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { trpc } from "../app/_trpc/react";
+import { AlbumItem } from "./resource/album/AlbumItem";
 
 const ArtistItem = ({
 	artist,
@@ -27,7 +27,7 @@ const ArtistItem = ({
 		<Link
 			href={`/artists/${artist.id}`}
 			onClick={onClick}
-			className="hover:bg-elevation-4 flex flex-row items-center rounded transition-colors"
+			className="flex w-full min-w-0 flex-row items-center gap-4 rounded"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
 				{artistImage ? (
@@ -38,60 +38,10 @@ const ArtistItem = ({
 						className="object-cover"
 					/>
 				) : (
-					<div className="h-full w-full bg-secondary"></div>
+					<div className="h-full w-full bg-muted"></div>
 				)}
 			</div>
-			<p className="ml-4 w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-base">
-				{artist.name}
-			</p>
-		</Link>
-	);
-};
-
-const AlbumItem = ({
-	album,
-	onClick,
-}: {
-	album: SpotifyAlbum;
-	onClick: () => void;
-}) => {
-	const router = useRouter();
-	const albumImage = album.images.find((i) => i.url);
-
-	return (
-		<Link
-			onClick={onClick}
-			href={`/albums/${album.id}`}
-			className="hover:bg-elevation-4 flex flex-1 flex-row items-center rounded transition-colors"
-		>
-			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded">
-				{albumImage ? (
-					<Image
-						alt={album.name}
-						src={albumImage.url}
-						fill
-						className="object-cover"
-					/>
-				) : (
-					<div className="bg-elevation-4 h-full w-full" />
-				)}
-			</div>
-			<div className="ml-4 w-full overflow-hidden">
-				<p className="w-full truncate text-base">{album.name}</p>
-				{album.artists.map((artist) => (
-					<button
-						key={artist.id}
-						onClick={(e) => {
-							e.preventDefault();
-							close();
-							router.push(`/artists/${artist.id}`);
-						}}
-						className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-gray-400 hover:underline "
-					>
-						{artist.name}
-					</button>
-				))}
-			</div>
+			<p className="flex flex-1 truncate font-medium">{artist.name}</p>
 		</Link>
 	);
 };
@@ -157,48 +107,37 @@ const SearchBar = () => {
 					<>
 						{data.albums.items.length > 0 ||
 						data.artists.items.length > 0 ? (
-							<ScrollArea className="px-4">
-								{data.albums.items.length > 0 && (
-									<>
-										<h4 className="my-4">Albums</h4>
-										<div className="flex flex-col gap-3">
-											{data.albums.items.map(
-												(album, index) => (
-													<AlbumItem
-														album={album}
-														onClick={() => {
-															addRecent(album);
-															setOpen(false);
-															setQuery("");
-														}}
-														key={index}
-													/>
-												)
-											)}
-										</div>
-									</>
-								)}
-								{data.artists.items.length > 0 && (
-									<>
-										<h4 className="my-4">Artists</h4>
-										<div className="flex flex-col gap-3">
-											{data.artists.items.map(
-												(artist, index) => (
-													<ArtistItem
-														onClick={() => {
-															addRecent(artist);
-															setOpen(false);
-															setQuery("");
-														}}
-														artist={artist}
-														key={index}
-													/>
-												)
-											)}
-										</div>
-									</>
-								)}
-								<div className="h-4" />
+							<ScrollArea className="flex flex-col gap-3 px-4">
+								<div className="flex flex-col gap-3 py-4">
+									{data.albums.items.length > 0 && (
+										<h4>Albums</h4>
+									)}
+									{data.albums.items.map((album, index) => (
+										<AlbumItem
+											album={album}
+											onClick={() => {
+												addRecent(album);
+												setOpen(false);
+												setQuery("");
+											}}
+											key={index}
+										/>
+									))}
+									{data.artists.items.length > 0 && (
+										<h4 className="mt-3">Artists</h4>
+									)}
+									{data.artists.items.map((artist, index) => (
+										<ArtistItem
+											onClick={() => {
+												addRecent(artist);
+												setOpen(false);
+												setQuery("");
+											}}
+											artist={artist}
+											key={index}
+										/>
+									))}
+								</div>
 							</ScrollArea>
 						) : (
 							<div className="flex flex-1 items-center justify-center">
