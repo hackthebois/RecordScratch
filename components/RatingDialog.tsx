@@ -1,5 +1,16 @@
 "use client";
 
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/AlertDialog";
 import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
@@ -12,9 +23,9 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { rateAction } from "@/app/actions";
+import { deleteRatingAction, rateAction } from "@/app/actions";
 import { Rate, RateSchema, Rating, Resource } from "@/types/rating";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
 import { Form, FormControl, FormField, FormItem } from "./ui/Form";
@@ -41,6 +52,19 @@ export const RatingDialog = ({
 		rateAction(rate);
 		setOpen(false);
 	};
+
+	const clearRating = (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => {
+		e.preventDefault();
+		if (!initialRating) return;
+		deleteRatingAction(initialRating);
+		setOpen(false);
+	};
+
+	useEffect(() => {
+		form.reset({ ...resource, ...initialRating });
+	}, [initialRating]);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -78,13 +102,59 @@ export const RatingDialog = ({
 							)}
 						/>
 						<DialogFooter>
-							<Button
-								className="flex-[4]"
-								type="submit"
-								disabled={!form.formState.isValid}
-							>
-								Rate
-							</Button>
+							<div className="flex w-full flex-col">
+								<Button
+									className="flex-[4]"
+									type="submit"
+									disabled={!form.formState.isValid}
+								>
+									Rate
+								</Button>
+								{initialRating &&
+									(initialRating.content ? (
+										<AlertDialog>
+											<AlertDialogTrigger asChild>
+												<Button
+													variant="ghost"
+													className="mt-2"
+													size="sm"
+												>
+													Remove rating
+												</Button>
+											</AlertDialogTrigger>
+											<AlertDialogContent>
+												<AlertDialogHeader>
+													<AlertDialogTitle>
+														Remove your review?
+													</AlertDialogTitle>
+													<AlertDialogDescription>
+														This action will remove
+														your current review
+													</AlertDialogDescription>
+												</AlertDialogHeader>
+												<AlertDialogFooter>
+													<AlertDialogCancel>
+														Cancel
+													</AlertDialogCancel>
+													<AlertDialogAction
+														onClick={clearRating}
+													>
+														Continue
+													</AlertDialogAction>
+												</AlertDialogFooter>
+											</AlertDialogContent>
+										</AlertDialog>
+									) : (
+										<Button
+											variant="ghost"
+											className="mt-2"
+											size="sm"
+											onClick={clearRating}
+										>
+											Remove rating
+										</Button>
+									))}
+							</div>
 						</DialogFooter>
 					</form>
 				</Form>

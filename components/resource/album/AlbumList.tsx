@@ -33,23 +33,23 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
 			<Link href={`/albums/${album.id}`}>
 				<AlbumImage album={album} size={144} />
-				<p className="mb-1 mt-2 truncate text-sm">{album.name}</p>
+				<p className="mt-1 truncate font-medium">{album.name}</p>
+				{field === "date" && (
+					<p className="py-1 text-sm text-muted-foreground">
+						{album.release_date}
+					</p>
+				)}
 			</Link>
-			{field === "artist" ? (
+			{field === "artist" &&
 				album.artists.slice(0, 1).map((artist, index) => (
 					<Link
 						href={`/artists/${artist.id}`}
-						className="text-xs text-muted-foreground hover:underline"
+						className="py-1 text-sm text-muted-foreground hover:underline"
 						key={index}
 					>
 						{artist.name}
 					</Link>
-				))
-			) : (
-				<p className="text-xs text-muted-foreground">
-					{album.release_date}
-				</p>
-			)}
+				))}
 		</div>
 	));
 

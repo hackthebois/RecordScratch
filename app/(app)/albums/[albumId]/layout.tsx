@@ -44,6 +44,7 @@ const Layout = async ({
 	children: React.ReactNode;
 }) => {
 	const album = await getAlbum(albumId);
+	const isSingle = album.album_type === "single";
 
 	const resource: Resource = {
 		category: "ALBUM",
@@ -65,12 +66,12 @@ const Layout = async ({
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
 					<p className="text-sm tracking-widest text-muted-foreground">
-						ALBUM
+						{isSingle ? "SINGLE" : "ALBUM"}
 					</p>
 					<h1 className="text-center sm:text-left">{album.name}</h1>
 					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						<Tag variant="outline">{album.release_date}</Tag>
-						{album.tracks && (
+						{album.tracks && !isSingle && (
 							<Tag variant="outline">
 								{album.tracks.items.length} Songs
 							</Tag>
