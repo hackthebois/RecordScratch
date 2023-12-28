@@ -5,6 +5,7 @@ import { SpotifyAlbum } from "@/types/spotify";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
 import AlbumImage from "./AlbumImage";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
 	albums: SpotifyAlbum[];
@@ -13,9 +14,8 @@ type Props = {
 };
 
 const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
-	const pageSize = 6;
 	const [currentPage, setCurrentPage] = useState(0);
-
+	const pageSize = 5;
 	const totalPages = Math.ceil(albums.length / pageSize);
 
 	const handlePageChange = (newPage: number) => {
@@ -24,10 +24,10 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 		}
 	};
 
-	const listAlbums = albums.slice(
-		currentPage * pageSize,
-		(currentPage + 1) * pageSize
-	);
+	const listAlbums =
+		type === "scroll"
+			? albums.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+			: albums;
 
 	const listItems = listAlbums.map((album, index) => (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
@@ -55,23 +55,45 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	if (type === "scroll") {
 		return (
-			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
-				<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
-				<div>
-					<button
-						onClick={() => handlePageChange(currentPage - 1)}
-						className="mr-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-						disabled={currentPage === 0}
-					>
-						Previous
-					</button>
-					<button
-						onClick={() => handlePageChange(currentPage + 1)}
-						className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-						disabled={currentPage === totalPages - 1}
-					>
-						Next
-					</button>
+			<ScrollArea orientation="horizontal" className="-mx-8 sm:-mx-12">
+				<div className="flex px-8 sm:px-12">
+					{currentPage ? (
+						<div className="flex-shrink-0">
+							<Button
+								onClick={() =>
+									handlePageChange(currentPage - 1)
+								}
+								className={`mr-2 h-full rounded bg-black p-4 text-white hover:bg-gray-800 ${
+									currentPage === 0
+										? "cursor-not-allowed text-gray-300"
+										: "hover:bg-gray-200"
+								}`}
+							>
+								&lt;
+							</Button>
+						</div>
+					) : (
+						""
+					)}
+					<div className="flex flex-grow gap-4">{listItems}</div>
+					{currentPage != totalPages - 1 ? (
+						<div className="flex-shrink-0">
+							<Button
+								onClick={() =>
+									handlePageChange(currentPage + 1)
+								}
+								className={`mr-2 h-full rounded bg-black p-4 text-white hover:bg-gray-800 ${
+									currentPage === totalPages - 1
+										? "cursor-not-allowed text-gray-300"
+										: "hover:bg-gray-200"
+								}`}
+							>
+								&gt;
+							</Button>
+						</div>
+					) : (
+						""
+					)}
 				</div>
 			</ScrollArea>
 		);
@@ -79,14 +101,6 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 		return (
 			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
 				{listItems}
-				<div>
-					<button onClick={() => handlePageChange(currentPage - 1)}>
-						Previous
-					</button>
-					<button onClick={() => handlePageChange(currentPage + 1)}>
-						Next
-					</button>
-				</div>
 			</div>
 		);
 	}
