@@ -1,37 +1,36 @@
+import { getAlbum, getSong } from "@/app/_trpc/cached";
 import { Profile } from "@/types/profile";
-import { Rating } from "@/types/rating";
-import { timeAgo } from "@/utils/date";
+import { Rating, Resource } from "@/types/rating";
+import { SpotifyAlbum } from "@/types/spotify";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
+import { AlbumItem } from "./album/AlbumItem";
 
-export const Review = ({
+export const Review = async ({
 	review,
+	profile,
+	resource,
 }: {
-	review: Rating & {
-		profile: Profile;
-	};
+	review: Rating;
+	profile: Profile;
+	resource: Resource;
 }) => {
+	let album: SpotifyAlbum | undefined = undefined;
+	let songName: string | undefined = undefined;
+	if (resource.category === "ALBUM") {
+		album = await getAlbum(resource.resourceId);
+	} else {
+		const song = await getSong(resource.resourceId);
+		album = song.album;
+		songName = song.name;
+	}
+
 	return (
-		<div className="flex gap-4 bg-card py-4 text-card-foreground shadow-sm">
-			<Link href={`/${review.profile.handle}`}>
-				<UserAvatar {...review.profile} size={40} />
-			</Link>
+		<div className="flex flex-col gap-4 py-4 text-card-foreground">
+			<AlbumItem album={album} song={songName} showType />
 			<div className="flex flex-1 flex-col gap-3">
-				<div className="flex flex-1 justify-between">
-					<div className="flex items-center gap-2">
-						<p className="flex font-semibold">
-							{review.profile.name}
-						</p>
-						<p className="text-sm font-medium text-muted-foreground">
-							•
-						</p>
-						<p className="text-sm font-medium text-muted-foreground">
-							{timeAgo(new Date(review.updatedAt))}
-						</p>
-					</div>
-				</div>
-				<div className="-mt-2 flex items-center gap-1">
+				<div className="flex items-center gap-1">
 					{Array.from(Array(review.rating)).map((_, i) => (
 						<Star
 							key={i}
@@ -44,6 +43,13 @@ export const Review = ({
 						<Star key={i} size={18} color="#ffb703" />
 					))}
 				</div>
+				<Link
+					href={`/${profile.handle}`}
+					className="flex items-center gap-2"
+				>
+					<UserAvatar {...profile} size={30} />
+					<p className="flex">{profile.name}</p>
+				</Link>
 				<p className="whitespace-pre-line text-sm">{review.content}</p>
 			</div>
 		</div>

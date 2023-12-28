@@ -44,7 +44,7 @@ const Layout = async ({
 	}
 
 	return (
-		<div className="flex flex-col gap-6 overflow-hidden">
+		<div className="flex flex-col gap-6">
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar {...profile} size={160} />
 				<div className="flex flex-col items-center sm:items-start">

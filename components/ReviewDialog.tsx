@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewAction } from "@/app/actions";
 import { RatingInput } from "@/components/RatingInput";
 import { Rating, Resource, Review, ReviewSchema } from "@/types/rating";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { Textarea } from "./ui/Textarea";
@@ -42,6 +42,10 @@ export const ReviewDialog = ({
 		reviewAction(review);
 		setOpen(false);
 	};
+
+	useEffect(() => {
+		form.reset({ ...resource, ...initialRating });
+	}, [initialRating]);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -100,13 +104,33 @@ export const ReviewDialog = ({
 							)}
 						/>
 						<DialogFooter>
-							<Button
-								className="flex-[4]"
-								type="submit"
-								disabled={!form.formState.isValid}
-							>
-								Review
-							</Button>
+							<div className="flex w-full flex-col">
+								<Button
+									className="flex-[4]"
+									type="submit"
+									disabled={!form.formState.isValid}
+								>
+									Review
+								</Button>
+								{initialRating?.content && (
+									<Button
+										variant="ghost"
+										className="mt-2"
+										size="sm"
+										onClick={(e) => {
+											e.preventDefault();
+											onSubmit({
+												...resource,
+												...initialRating,
+												content: null,
+											});
+											setOpen(false);
+										}}
+									>
+										Remove review
+									</Button>
+								)}
+							</div>
 						</DialogFooter>
 					</form>
 				</Form>

@@ -34,9 +34,7 @@ const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
 			<AxiomWebVitals />
-			<body
-				className={`${montserrat.className} flex h-[100svh] flex-col`}
-			>
+			<body className={`${montserrat.className} flex flex-col`}>
 				<ClerkProvider
 					appearance={{
 						variables: {
