@@ -20,7 +20,6 @@ type Props = {
 };
 
 const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
-	//const listAlbums = type === "scroll" ? albums.slice(0, 6) : albums;
 	const listAlbums = albums;
 
 	const listItems = listAlbums.map((album, index) => (
@@ -66,8 +65,8 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 						</CarouselItem>
 					))}
 				</CarouselContent>
-				<CarouselPrevious />
-				<CarouselNext />
+				<CarouselPrevious className="absolute top-20" />
+				<CarouselNext className="absolute top-20" />
 			</Carousel>
 			// </ScrollArea>
 		);

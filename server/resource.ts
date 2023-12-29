@@ -168,7 +168,7 @@ export const resourceRouter = router({
 				.where(eq(ratings.category, "ALBUM"))
 				.groupBy(ratings.resourceId)
 				.orderBy(({ total }) => desc(total))
-				.limit(6);
+				.limit(20);
 			if (albums.length === 0) return [];
 			const { data } = await spotifyFetch(
 				"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
@@ -189,7 +189,7 @@ export const resourceRouter = router({
 				.where(eq(ratings.category, "ALBUM"))
 				.groupBy(ratings.resourceId)
 				.orderBy(({ average }) => desc(average))
-				.limit(6);
+				.limit(20);
 			if (albums.length === 0) return [];
 			const { data } = await spotifyFetch(
 				"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
