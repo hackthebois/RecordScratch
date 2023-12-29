@@ -20,11 +20,8 @@ type Props = {
 };
 
 const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
-
-	const listAlbums =
-		type === "scroll"
-			? albums.slice(0, 6)
-			: albums;
+	//const listAlbums = type === "scroll" ? albums.slice(0, 6) : albums;
+	const listAlbums = albums;
 
 	const listItems = listAlbums.map((album, index) => (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
@@ -52,27 +49,27 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	if (type === "scroll") {
 		return (
-			<ScrollArea orientation="horizontal" className="">
-				<Carousel
-					opts={{
-						align: "start",
-					}}
-					className="mx-auto w-4/5"
-				>
-					<CarouselContent>
-						{Array.from(listItems).map((listitem, index) => (
-							<CarouselItem
-								key={index}
-								className="md:basis-1/3 lg:basis-1/5"
-							>
-								{listitem}
-							</CarouselItem>
-						))}
-					</CarouselContent>
-					<CarouselPrevious />
-					<CarouselNext />
-				</Carousel>
-			</ScrollArea>
+			// <ScrollArea orientation="horizontal" className="">
+			<Carousel
+				opts={{
+					align: "start",
+				}}
+				className="w-full"
+			>
+				<CarouselContent className="flex">
+					{Array.from(listItems).map((listitem, index) => (
+						<CarouselItem
+							key={index}
+							className="md:basis-1/2 lg:basis-1/6"
+						>
+							{listitem}
+						</CarouselItem>
+					))}
+				</CarouselContent>
+				<CarouselPrevious />
+				<CarouselNext />
+			</Carousel>
+			// </ScrollArea>
 		);
 	} else {
 		return (
