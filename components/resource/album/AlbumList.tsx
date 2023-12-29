@@ -5,7 +5,13 @@ import { SpotifyAlbum } from "@/types/spotify";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
 import AlbumImage from "./AlbumImage";
-import { Button } from "@/components/ui/Button";
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel";
 
 type Props = {
 	albums: SpotifyAlbum[];
@@ -14,19 +20,10 @@ type Props = {
 };
 
 const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
-	const [currentPage, setCurrentPage] = useState(0);
-	const pageSize = 5;
-	const totalPages = Math.ceil(albums.length / pageSize);
-
-	const handlePageChange = (newPage: number) => {
-		if (newPage >= 0 && newPage < totalPages) {
-			setCurrentPage(newPage);
-		}
-	};
 
 	const listAlbums =
 		type === "scroll"
-			? albums.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+			? albums.slice(0, 6)
 			: albums;
 
 	const listItems = listAlbums.map((album, index) => (
@@ -55,46 +52,26 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	if (type === "scroll") {
 		return (
-			<ScrollArea orientation="horizontal" className="-mx-8 sm:-mx-12">
-				<div className="flex px-8 sm:px-12">
-					{currentPage ? (
-						<div className="flex-shrink-0">
-							<Button
-								onClick={() =>
-									handlePageChange(currentPage - 1)
-								}
-								className={`mr-2 h-full rounded bg-black p-4 text-white hover:bg-gray-800 ${
-									currentPage === 0
-										? "cursor-not-allowed text-gray-300"
-										: "hover:bg-gray-200"
-								}`}
+			<ScrollArea orientation="horizontal" className="">
+				<Carousel
+					opts={{
+						align: "start",
+					}}
+					className="mx-auto w-4/5"
+				>
+					<CarouselContent>
+						{Array.from(listItems).map((listitem, index) => (
+							<CarouselItem
+								key={index}
+								className="md:basis-1/3 lg:basis-1/5"
 							>
-								&lt;
-							</Button>
-						</div>
-					) : (
-						""
-					)}
-					<div className="flex flex-grow gap-4">{listItems}</div>
-					{currentPage != totalPages - 1 ? (
-						<div className="flex-shrink-0">
-							<Button
-								onClick={() =>
-									handlePageChange(currentPage + 1)
-								}
-								className={`mr-2 h-full rounded bg-black p-4 text-white hover:bg-gray-800 ${
-									currentPage === totalPages - 1
-										? "cursor-not-allowed text-gray-300"
-										: "hover:bg-gray-200"
-								}`}
-							>
-								&gt;
-							</Button>
-						</div>
-					) : (
-						""
-					)}
-				</div>
+								{listitem}
+							</CarouselItem>
+						))}
+					</CarouselContent>
+					<CarouselPrevious />
+					<CarouselNext />
+				</Carousel>
 			</ScrollArea>
 		);
 	} else {
