@@ -1,15 +1,20 @@
 import { profile, ratings } from "@/server/db/schema";
 import { CreateProfileSchema } from "@/types/profile";
-import { RateSchema, ResourceSchema, ReviewSchema } from "@/types/rating";
+import {
+	RateFormSchema,
+	ResourceSchema,
+	ReviewFormSchema,
+} from "@/types/rating";
 import { clerkClient } from "@clerk/nextjs";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "./trpc";
+import { appendReviewResource } from "./utils";
 
 export const userRouter = router({
 	rating: router({
 		rate: protectedProcedure
-			.input(RateSchema)
+			.input(RateFormSchema)
 			.mutation(async ({ ctx: { db, userId }, input: userRating }) => {
 				await db
 					.insert(ratings)
@@ -19,7 +24,7 @@ export const userRouter = router({
 					});
 			}),
 		review: protectedProcedure
-			.input(ReviewSchema)
+			.input(ReviewFormSchema)
 			.mutation(async ({ ctx: { db, userId }, input: userRating }) => {
 				await db
 					.insert(ratings)
@@ -89,11 +94,15 @@ export const userRouter = router({
 				? and(eq(ratings.userId, userId), eq(ratings.rating, rating))
 				: eq(ratings.userId, userId);
 
-			return await db.query.ratings.findMany({
+			const ratingList = await db.query.ratings.findMany({
 				limit: 10,
 				orderBy: desc(ratings.updatedAt),
 				where,
+				with: {
+					profile: true,
+				},
 			});
+			return await appendReviewResource(ratingList);
 		}),
 	profile: router({
 		me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {

@@ -115,6 +115,8 @@ const SearchBar = () => {
 									{data.albums.items.map((album, index) => (
 										<AlbumItem
 											album={album}
+											name={album.name}
+											category="ALBUM"
 											onClick={() => {
 												addRecent(album);
 												setOpen(false);
@@ -161,6 +163,8 @@ const SearchBar = () => {
 								) : (
 									<AlbumItem
 										album={recent as SpotifyAlbum}
+										name={recent.name}
+										category="ALBUM"
 										onClick={() => setOpen(false)}
 										key={index}
 									/>

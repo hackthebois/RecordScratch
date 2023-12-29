@@ -1,3 +1,5 @@
+"use server";
+
 import { serverTrpc } from "@/app/_trpc/server";
 import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
@@ -113,13 +115,15 @@ export const getTopRated = cache(() => {
 	)();
 });
 
-export const getFeed = cache(() => {
-	return unstable_cache(
-		() => serverTrpc.resource.rating.feed(),
-		[`resource:rating:getFeed`],
-		{ revalidate: 60 }
-	)();
-});
+export const getFeed = cache(
+	(input: RouterInput["resource"]["rating"]["feed"]) => {
+		return unstable_cache(
+			() => serverTrpc.resource.rating.feed(input),
+			[`resource:rating:getFeed:page:${input.page}`],
+			{}
+		)();
+	}
+);
 
 export const getRatingListAverage = cache((resources: Resource[]) => {
 	return unstable_cache(

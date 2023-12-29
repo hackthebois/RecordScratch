@@ -72,16 +72,8 @@ const Page = async ({
 				</div>
 			</div>
 			<div className="flex w-full flex-col">
-				{recent.map((recent, index) => (
-					<Review
-						key={index}
-						review={recent}
-						profile={profile}
-						resource={{
-							category: recent.category,
-							resourceId: recent.resourceId,
-						}}
-					/>
+				{recent.map((review, index) => (
+					<Review key={index} {...review} />
 				))}
 			</div>
 		</>

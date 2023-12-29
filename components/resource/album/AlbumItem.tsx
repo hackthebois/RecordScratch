@@ -1,5 +1,6 @@
 "use client";
 
+import { Resource } from "@/types/rating";
 import { SpotifyAlbum } from "@/types/spotify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,12 +8,14 @@ import AlbumImage from "./AlbumImage";
 
 export const AlbumItem = ({
 	album,
-	song,
+	name,
+	category,
 	showType,
 	onClick,
 }: {
 	album: SpotifyAlbum;
-	song?: string;
+	name: string;
+	category: Resource["category"];
 	showType?: boolean;
 	onClick?: () => void;
 }) => {
@@ -28,9 +31,7 @@ export const AlbumItem = ({
 				<AlbumImage album={album} size={64} />
 			</div>
 			<div className="min-w-0 flex-1">
-				<p className="truncate font-medium">
-					{song ? song : album.name}
-				</p>
+				<p className="truncate font-medium">{name}</p>
 				<div className="flex gap-1">
 					{album.artists.map((artist) => (
 						<button
@@ -47,7 +48,7 @@ export const AlbumItem = ({
 					))}
 					{showType && (
 						<p className="truncate py-1 text-sm text-muted-foreground">
-							{song ? "• Song" : "• Album"}
+							{category === "SONG" ? "• Song" : "• Album"}
 						</p>
 					)}
 				</div>

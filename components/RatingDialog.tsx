@@ -24,7 +24,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { deleteRatingAction, rateAction } from "@/app/actions";
-import { Rate, RateSchema, Rating, Resource } from "@/types/rating";
+import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
@@ -43,12 +43,12 @@ export const RatingDialog = ({
 }) => {
 	const [open, setOpen] = useState(false);
 
-	const form = useForm<Rate>({
-		resolver: zodResolver(RateSchema),
+	const form = useForm<RateForm>({
+		resolver: zodResolver(RateFormSchema),
 		defaultValues: { ...resource, ...initialRating },
 	});
 
-	const onSubmit = async (rate: Rate) => {
+	const onSubmit = async (rate: RateForm) => {
 		rateAction(rate);
 		setOpen(false);
 	};
