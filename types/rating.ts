@@ -1,7 +1,8 @@
 import { ratings } from "@/server/db/schema";
 import { createSelectSchema } from "drizzle-zod";
-import { Rat } from "lucide-react";
 import { z } from "zod";
+import { Profile } from "./profile";
+import { SpotifyAlbum } from "./spotify";
 
 export const ResourceRatingSchema = z.object({
 	average: z.string().nullable(),
@@ -20,22 +21,29 @@ export const ResourceSchema = RatingSchema.pick({
 });
 export type Resource = z.infer<typeof ResourceSchema>;
 
-export const RateSchema = RatingSchema.pick({
+export const RateFormSchema = RatingSchema.pick({
 	resourceId: true,
 	category: true,
 	rating: true,
 });
-export type Rate = z.infer<typeof RateSchema>;
+export type RateForm = z.infer<typeof RateFormSchema>;
 
-export const ReviewSchema = RatingSchema.pick({
+export const ReviewFormSchema = RatingSchema.pick({
 	resourceId: true,
 	category: true,
 	content: true,
 	rating: true,
 });
-export type Review = z.infer<typeof ReviewSchema>;
+export type ReviewForm = z.infer<typeof ReviewFormSchema>;
 
 export const CategorySchema = RatingSchema.pick({
 	category: true,
 });
 export type CategoryType = z.infer<typeof CategorySchema>;
+
+export type Review = {
+	rating: Rating;
+	profile: Profile;
+	album: SpotifyAlbum;
+	name: string;
+};

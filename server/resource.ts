@@ -1,7 +1,5 @@
-import { env } from "@/env.mjs";
 import { ratings } from "@/server/db/schema";
 import { ResourceSchema } from "@/types/rating";
-import { TRPCError } from "@trpc/server";
 import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
 import {
 	SpotifyAlbum,
@@ -11,45 +9,7 @@ import {
 } from "types/spotify";
 import { z } from "zod";
 import { publicProcedure, router } from "./trpc";
-
-export const getSpotifyToken = async () => {
-	const res = await fetch("https://accounts.spotify.com/api/token", {
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Authorization:
-				"Basic " +
-				Buffer.from(
-					env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET
-				).toString("base64"),
-		},
-		cache: "no-store",
-		body: "grant_type=client_credentials",
-		method: "POST",
-	});
-	const data = await res.json();
-	return z.object({ access_token: z.string() }).parse(data).access_token;
-};
-
-const spotifyFetch = async (url: string) => {
-	const spotifyToken = await getSpotifyToken();
-
-	const res = await fetch(`https://api.spotify.com/v1${url}`, {
-		headers: {
-			Authorization: `Bearer ${spotifyToken}`,
-		},
-	});
-
-	if (!res.ok) {
-		console.error(await res.text());
-		throw new TRPCError({
-			code: "INTERNAL_SERVER_ERROR",
-			message: "Spotify API error",
-		});
-	}
-
-	const data: unknown = await res.json();
-	return { data, res };
-};
+import { appendReviewResource, spotifyFetch } from "./utils";
 
 export const resourceRouter = router({
 	rating: router({
@@ -122,7 +82,7 @@ export const resourceRouter = router({
 						sort = "newest",
 					},
 				}) => {
-					return await db.query.ratings.findMany({
+					const ratingList = await db.query.ratings.findMany({
 						where: and(
 							eq(ratings.resourceId, resourceId),
 							eq(ratings.category, category),
@@ -136,18 +96,27 @@ export const resourceRouter = router({
 							profile: true,
 						},
 					});
+					return await appendReviewResource(ratingList);
 				}
 			),
-		feed: publicProcedure.query(async ({ ctx: { db } }) => {
-			return await db.query.ratings.findMany({
-				where: isNotNull(ratings.content),
-				limit: 10,
-				orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
-				with: {
-					profile: true,
-				},
-			});
-		}),
+		feed: publicProcedure
+			.input(
+				z.object({
+					page: z.number().optional(),
+					limit: z.number().optional(),
+				})
+			)
+			.query(async ({ ctx: { db }, input: { page = 1, limit = 10 } }) => {
+				const ratingList = await db.query.ratings.findMany({
+					limit,
+					offset: (page - 1) * limit,
+					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
+					with: {
+						profile: true,
+					},
+				});
+				return await appendReviewResource(ratingList);
+			}),
 	}),
 	search: publicProcedure
 		.input(z.string().min(1))

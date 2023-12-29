@@ -10,7 +10,6 @@ export default authMiddleware({
 		"/_axiom/web-vitals",
 	],
 	afterAuth: async ({ userId, sessionClaims }, req) => {
-		console.log(req.nextUrl.pathname, userId, sessionClaims);
 		if (
 			userId &&
 			req.nextUrl.pathname !== "/onboard" &&

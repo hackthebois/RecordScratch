@@ -1,18 +1,21 @@
-import { Review } from "@/components/resource/Review";
 import AlbumList from "@/components/resource/album/AlbumList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { unstable_noStore } from "next/cache";
 import {
 	getFeed,
 	getNewReleases,
 	getTopRated,
 	getTrending,
 } from "../_trpc/cached";
+import Feed from "./Feed";
 
 const Page = async () => {
 	const newReleases = await getNewReleases();
 	const trending = await getTrending();
 	const top = await getTopRated();
-	const feed = await getFeed();
+
+	unstable_noStore();
+	const feed = await getFeed({});
 
 	return (
 		<div className="w-full">
@@ -35,17 +38,7 @@ const Page = async () => {
 					<AlbumList albums={top} />
 				</TabsContent>
 				<h2 className="mb-2 mt-[2vh]">Feed</h2>
-				{feed.map(({ profile, ...review }, index) => (
-					<Review
-						key={index}
-						review={review}
-						profile={profile}
-						resource={{
-							category: review.category,
-							resourceId: review.resourceId,
-						}}
-					/>
-				))}
+				<Feed initialReviews={feed} />
 			</Tabs>
 		</div>
 	);

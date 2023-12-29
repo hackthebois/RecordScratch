@@ -1,8 +1,11 @@
 import { auth } from "@clerk/nextjs";
 import { TRPCError, initTRPC } from "@trpc/server";
+import superjson from "superjson";
 import { createContext } from "./context";
 
-const t = initTRPC.context<typeof createContext>().create();
+const t = initTRPC.context<typeof createContext>().create({
+	transformer: superjson,
+});
 
 export const router = t.router;
 export const publicProcedure = t.procedure.use(({ ctx, next }) => {

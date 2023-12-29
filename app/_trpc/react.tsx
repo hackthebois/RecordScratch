@@ -7,6 +7,7 @@ import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experime
 import { unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
+import superjson from "superjson";
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -17,6 +18,7 @@ export function TRPCReactProvider(props: {
 	const [queryClient] = useState(() => new QueryClient());
 	const [trpcClient] = useState(() =>
 		trpc.createClient({
+			transformer: superjson,
 			links: [
 				unstable_httpBatchStreamLink({
 					url: `${env.NEXT_PUBLIC_SITE_URL}/api/trpc`,
