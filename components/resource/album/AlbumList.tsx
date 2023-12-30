@@ -53,9 +53,9 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 				opts={{
 					align: "start",
 				}}
-				className="w-full"
+				className="flex w-full"
 			>
-				<CarouselContent className="flex">
+				<CarouselContent className="flex flex-row items-center">
 					{Array.from(listItems).map((listitem, index) => (
 						<CarouselItem
 							key={index}
@@ -65,8 +65,8 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 						</CarouselItem>
 					))}
 				</CarouselContent>
-				<CarouselPrevious className="absolute top-20" />
-				<CarouselNext className="absolute top-20" />
+				<CarouselPrevious className="mt-[-30px] grid place-items-center" />
+				<CarouselNext className="mt-[-30px] grid place-items-center" />
 			</Carousel>
 			// </ScrollArea>
 		);
