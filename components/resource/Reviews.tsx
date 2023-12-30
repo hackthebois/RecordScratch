@@ -1,43 +1,20 @@
 import {
 	getAlbum,
-	getArtist,
 	getCommunityReviews,
 	getUserRating,
 } from "@/app/_trpc/cached";
 import { Rating, Resource } from "@/types/rating";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Text } from "lucide-react";
-import { unstable_noStore } from "next/cache";
 import { ReviewDialog } from "../ReviewDialog";
 import { SignInWrapper } from "../SignInWrapper";
 import { Button } from "../ui/Button";
-import { Review } from "./Review";
-
-const ReviewsList = async ({ resource }: { resource: Resource }) => {
-	unstable_noStore();
-	const reviews = await getCommunityReviews(resource);
-
-	return (
-		<>
-			{reviews.length > 0 ? (
-				reviews.map((review, index) => (
-					<Review key={index} {...review} />
-				))
-			) : (
-				<p className="my-[10vh] text-center text-muted-foreground">
-					No reviews yet
-				</p>
-			)}
-		</>
-	);
-};
+import { InfiniteReviews } from "./InfiniteReviews";
 
 const Reviews = async ({ resource }: { resource: Resource }) => {
 	let name = undefined;
 	if (resource.category === "ALBUM") {
 		name = (await getAlbum(resource.resourceId)).name;
-	} else if (resource.category === "ARTIST") {
-		name = (await getArtist(resource.resourceId)).name;
 	}
 	// TODO: Add song
 	let userRating: Rating | null = null;
@@ -45,6 +22,14 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 	if (userId) {
 		userRating = await getUserRating(resource, userId);
 	}
+
+	const getReviews = async ({ page }: { page: number }) => {
+		"use server";
+		return await getCommunityReviews({
+			resource,
+			page,
+		});
+	};
 
 	return (
 		<div className="flex w-full flex-col gap-4">
@@ -70,7 +55,10 @@ const Reviews = async ({ resource }: { resource: Resource }) => {
 					</SignInWrapper>
 				</SignedOut>
 			</div>
-			<ReviewsList resource={resource} />
+			<InfiniteReviews
+				initialReviews={await getReviews({ page: 1 })}
+				getReviews={getReviews}
+			/>
 		</div>
 	);
 };

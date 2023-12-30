@@ -38,13 +38,15 @@ export const getArtistDiscography = cache((artistId: string) => {
 	)();
 });
 
-export const getCommunityReviews = cache((resource: Resource) => {
-	return unstable_cache(
-		() => serverTrpc.resource.rating.community({ resource }),
-		[`resource:rating:getList:${resource.resourceId}`],
-		{ tags: [resource.resourceId] }
-	)();
-});
+export const getCommunityReviews = cache(
+	(input: RouterInput["resource"]["rating"]["community"]) => {
+		return unstable_cache(
+			() => serverTrpc.resource.rating.community(input),
+			[`resource:rating:community:${input.resource.resourceId}`],
+			{ tags: [input.resource.resourceId] }
+		)();
+	}
+);
 
 export const getRating = cache((resource: Resource) => {
 	return unstable_cache(

@@ -71,7 +71,8 @@ export const resourceRouter = router({
 			.input(
 				z.object({
 					resource: ResourceSchema,
-					sort: z.enum(["newest"]).optional(),
+					page: z.number().optional(),
+					limit: z.number().optional(),
 				})
 			)
 			.query(
@@ -79,7 +80,8 @@ export const resourceRouter = router({
 					ctx: { db },
 					input: {
 						resource: { resourceId, category },
-						sort = "newest",
+						page = 1,
+						limit = 10,
 					},
 				}) => {
 					const ratingList = await db.query.ratings.findMany({
@@ -88,7 +90,8 @@ export const resourceRouter = router({
 							eq(ratings.category, category),
 							isNotNull(ratings.content)
 						),
-						limit: 10,
+						limit,
+						offset: (page - 1) * limit,
 						orderBy: (ratings, { desc }) => [
 							desc(ratings.createdAt),
 						],

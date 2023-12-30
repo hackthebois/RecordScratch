@@ -1,13 +1,13 @@
 import AlbumList from "@/components/resource/album/AlbumList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tabs } from "@/components/ui/Tabs";
 import { unstable_noStore } from "next/cache";
+import { InfiniteReviews } from "../../components/resource/InfiniteReviews";
 import {
 	getFeed,
 	getNewReleases,
 	getTopRated,
 	getTrending,
 } from "../_trpc/cached";
-import Feed from "./Feed";
 
 const Page = async () => {
 	const newReleases = await getNewReleases();
@@ -50,7 +50,7 @@ const Page = async () => {
 					<AlbumList albums={top} />
 				</div>
 				<h2 className="mb-2 mt-[2vh]">Feed</h2>
-				<Feed initialReviews={feed} />
+				<InfiniteReviews initialReviews={feed} getReviews={getFeed} />
 			</Tabs>
 		</div>
 	);

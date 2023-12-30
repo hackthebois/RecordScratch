@@ -87,23 +87,34 @@ export const userRouter = router({
 			z.object({
 				userId: z.string(),
 				rating: z.number().optional(),
+				page: z.number().optional(),
+				limit: z.number().optional(),
 			})
 		)
-		.query(async ({ ctx: { db }, input: { userId, rating } }) => {
-			const where = rating
-				? and(eq(ratings.userId, userId), eq(ratings.rating, rating))
-				: eq(ratings.userId, userId);
+		.query(
+			async ({
+				ctx: { db },
+				input: { userId, rating, page = 1, limit = 10 },
+			}) => {
+				const where = rating
+					? and(
+							eq(ratings.userId, userId),
+							eq(ratings.rating, rating)
+					  )
+					: eq(ratings.userId, userId);
 
-			const ratingList = await db.query.ratings.findMany({
-				limit: 10,
-				orderBy: desc(ratings.updatedAt),
-				where,
-				with: {
-					profile: true,
-				},
-			});
-			return await appendReviewResource(ratingList);
-		}),
+				const ratingList = await db.query.ratings.findMany({
+					limit,
+					offset: (page - 1) * limit,
+					orderBy: desc(ratings.updatedAt),
+					where,
+					with: {
+						profile: true,
+					},
+				});
+				return await appendReviewResource(ratingList);
+			}
+		),
 	profile: router({
 		me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
 			return (
