@@ -19,23 +19,6 @@ const Page = async () => {
 
 	return (
 		<div className="w-full">
-			{/* <div className="mt-[2vh] flex flex-wrap justify-between">
-					<h2 className="mb-4">This Week</h2>
-					<TabsList className="mb-2">
-						<TabsTrigger value="new">New</TabsTrigger>
-						<TabsTrigger value="trending">Trending</TabsTrigger>
-						<TabsTrigger value="top">Top Rated</TabsTrigger>
-					</TabsList>
-				</div>
-				<TabsContent value="new">
-					<AlbumList albums={newReleases} />
-				</TabsContent>
-				<TabsContent value="trending">
-					<AlbumList albums={trending} />
-				</TabsContent>
-				<TabsContent value="top">
-					<AlbumList albums={top} />
-				</TabsContent> */}
 			<div className="mt-[2vh] flex flex-wrap justify-between">
 				<h2 className="mb-2 mt-[2vh]">New Releases</h2>
 				<AlbumList albums={newReleases} />
