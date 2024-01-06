@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { SpotifyAlbum } from "@/types/spotify";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
@@ -12,6 +11,7 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/Card";
 
 type Props = {
 	albums: SpotifyAlbum[];
@@ -48,27 +48,33 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	if (type === "scroll") {
 		return (
-			// <ScrollArea orientation="horizontal" className="">
-			<Carousel
-				opts={{
-					align: "start",
-				}}
-				className="flex w-full"
-			>
-				<CarouselContent className="flex flex-row items-center">
-					{Array.from(listItems).map((listitem, index) => (
-						<CarouselItem
-							key={index}
-							className="md:basis-1/2 lg:basis-1/6"
-						>
-							{listitem}
-						</CarouselItem>
-					))}
-				</CarouselContent>
-				<CarouselPrevious className="mt-[-30px] grid place-items-center" />
-				<CarouselNext className="mt-[-30px] grid place-items-center" />
-			</Carousel>
-			// </ScrollArea>
+			<div>
+				{/* Carousel for large screens */}
+				<Carousel
+					opts={{
+						align: "start",
+					}}
+					className="hidden w-full max-w-screen-lg lg:flex"
+				>
+					<CarouselContent className="">
+						{Array.from(listItems).map((listitem, index) => (
+							<CarouselItem key={index} className="lg:basis-1/6">
+								<div className="p-1">{listitem}</div>
+							</CarouselItem>
+						))}
+					</CarouselContent>
+					<CarouselPrevious className="mt-[-30px] grid place-items-center" />
+					<CarouselNext className="mt-[-30px] grid place-items-center" />
+				</Carousel>
+
+				{/* ScrollArea for medium and smaller screens */}
+				<ScrollArea
+					orientation="horizontal"
+					className="-mx-4 flex max-w-screen-lg sm:-mx-8 lg:hidden"
+				>
+					<div className="flex gap-4 px-4 sm:px-8 ">{listItems}</div>
+				</ScrollArea>
+			</div>
 		);
 	} else {
 		return (

@@ -19,8 +19,7 @@ const Page = async () => {
 
 	return (
 		<div className="w-full">
-			<Tabs defaultValue="new">
-				{/* <div className="mt-[2vh] flex flex-wrap justify-between">
+			{/* <div className="mt-[2vh] flex flex-wrap justify-between">
 					<h2 className="mb-4">This Week</h2>
 					<TabsList className="mb-2">
 						<TabsTrigger value="new">New</TabsTrigger>
@@ -37,21 +36,20 @@ const Page = async () => {
 				<TabsContent value="top">
 					<AlbumList albums={top} />
 				</TabsContent> */}
-				<div className="mt-[2vh] flex flex-wrap justify-between">
-					<h2 className="mb-2 mt-[2vh]">New Releases</h2>
-					<AlbumList albums={newReleases} />
-				</div>
-				<div className="mt-[2vh] flex flex-wrap justify-between">
-					<h2 className="mb-2 mt-[2vh]">Trending</h2>
-					<AlbumList albums={trending} />
-				</div>
-				<div className="mt-[2vh] flex flex-wrap justify-between">
-					<h2 className="mb-2 mt-[2vh]">Top</h2>
-					<AlbumList albums={top} />
-				</div>
-				<h2 className="mb-2 mt-[2vh]">Feed</h2>
-				<InfiniteReviews initialReviews={feed} getReviews={getFeed} />
-			</Tabs>
+			<div className="mt-[2vh] flex flex-wrap justify-between">
+				<h2 className="mb-2 mt-[2vh]">New Releases</h2>
+				<AlbumList albums={newReleases} />
+			</div>
+			<div className="mt-[2vh] flex flex-wrap justify-between">
+				<h2 className="mb-2 mt-[2vh]">Trending</h2>
+				<AlbumList albums={trending} />
+			</div>
+			<div className="mt-[2vh] flex flex-wrap justify-between">
+				<h2 className="mb-2 mt-[2vh]">Top</h2>
+				<AlbumList albums={top} />
+			</div>
+			<h2 className="mb-2 mt-[2vh]">Feed</h2>
+			<InfiniteReviews initialReviews={feed} getReviews={getFeed} />
 		</div>
 	);
 };
