@@ -96,6 +96,7 @@ export const userRouter = router({
 				ctx: { db },
 				input: { userId, rating, page = 1, limit = 10 },
 			}) => {
+				console.log("backend", rating);
 				const where = rating
 					? and(
 							eq(ratings.userId, userId),

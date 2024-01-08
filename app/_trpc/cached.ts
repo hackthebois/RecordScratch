@@ -163,7 +163,7 @@ export const getRecent = cache((input: RouterInput["user"]["recent"]) => {
 				input.rating ? `:${input.rating}` : ""
 			}`,
 		],
-		{ tags: [input.userId] }
+		{ tags: [input.userId, "recent"] }
 	)();
 });
 

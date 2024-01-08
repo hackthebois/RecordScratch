@@ -26,12 +26,15 @@ const Page = async ({
 
 	const getReviews = async ({ page }: { page: number }) => {
 		"use server";
+		console.log(rating);
 		return await getRecent({
 			userId: profile.userId,
 			rating: rating ? parseInt(rating) : undefined,
 			page,
 		});
 	};
+
+	const initialReviews = await getReviews({ page: 1 });
 
 	return (
 		<>
@@ -73,7 +76,8 @@ const Page = async ({
 				</div>
 			</div>
 			<InfiniteReviews
-				initialReviews={await getReviews({ page: 1 })}
+				key={rating}
+				initialReviews={initialReviews}
 				getReviews={getReviews}
 			/>
 		</>
