@@ -20,15 +20,15 @@ const Page = async () => {
 	return (
 		<div className="w-full">
 			<div className="mt-[2vh] flex flex-wrap justify-between">
-				<h2 className="mb-2 mt-[2vh]">New Releases</h2>
+				<h2>New Releases</h2>
 				<AlbumList albums={newReleases} />
 			</div>
 			<div className="mt-[2vh] flex flex-wrap justify-between">
-				<h2 className="mb-2 mt-[2vh]">Trending</h2>
+				<h2>Trending</h2>
 				<AlbumList albums={trending} />
 			</div>
 			<div className="mt-[2vh] flex flex-wrap justify-between">
-				<h2 className="mb-2 mt-[2vh]">Top</h2>
+				<h2>Top</h2>
 				<AlbumList albums={top} />
 			</div>
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
