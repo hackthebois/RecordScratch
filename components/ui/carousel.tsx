@@ -1,13 +1,13 @@
-import * as React from "react";
 import useEmblaCarousel, {
 	type EmblaCarouselType as CarouselApi,
 	type EmblaOptionsType as CarouselOptions,
 	type EmblaPluginType as CarouselPlugin,
 } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import * as React from "react";
 
+import { Button } from "@/components/ui/Button";
 import { cn } from "utils/utils";
-import { Button } from "components/ui/Button";
 
 type CarouselProps = {
 	opts?: CarouselOptions;
@@ -249,10 +249,10 @@ const CarouselNext = React.forwardRef<
 CarouselNext.displayName = "CarouselNext";
 
 export {
-	type CarouselApi,
 	Carousel,
 	CarouselContent,
 	CarouselItem,
-	CarouselPrevious,
 	CarouselNext,
+	CarouselPrevious,
+	type CarouselApi,
 };
