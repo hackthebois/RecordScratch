@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
+import banner from "../public/banner.svg";
 import { ThemeProvider } from "./Providers";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
@@ -19,8 +20,17 @@ export const metadata: Metadata = {
 		default: "RecordScratch",
 		template: "%s | RecordScratch",
 	},
-	description: "Music rating and review app",
+	description:
+		"Ultimate music-rating and social hub. Find new music, rate your recent listens, and connect with fellow music enthusiasts.",
 	metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+	openGraph: {
+		images: [
+			{
+				url: banner.src,
+			},
+		],
+		siteName: "RecordScratch",
+	},
 };
 
 type Props = {
