@@ -1,5 +1,4 @@
 import AlbumList from "@/components/resource/album/AlbumList";
-import { Tabs } from "@/components/ui/Tabs";
 import { unstable_noStore } from "next/cache";
 import { InfiniteReviews } from "../../components/resource/InfiniteReviews";
 import {
@@ -28,7 +27,7 @@ const Page = async () => {
 				<AlbumList albums={trending} />
 			</div>
 			<div className="mt-[2vh] flex flex-wrap justify-between">
-				<h2>Top</h2>
+				<h2>Top Rated</h2>
 				<AlbumList albums={top} />
 			</div>
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
