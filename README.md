@@ -1,46 +1,29 @@
-# RecordScratch - Your Music Social Network
+![RecordScratch Banner](./public/banner.svg)
 
-<!-- ![RecordScratch Logo](insert-logo-url-here) -->
+# RecordScratch - https://recordscratch.app
 
-RecordScratch is an innovative music-focused social network that transcends conventional music rating platforms. It offers a comprehensive solution for rating, discovering, and connecting with friends over your cherished songs, albums, and artists. Think of it as your personal IMDB for music, seamlessly merging the social dynamics of platforms like Letterbox.
+> **Warning**
+> This is a work-in-progress and not the finished product.
 
-## Table of Contents
+RecordScratch is a community-driven music rating app that allows users to rate, share and explore music of all genres. We are still early on and there is a long way to go. Some features on the roadmap are adding following/followers, likes, daily album spotlights, recommendations, and so much more!
 
--   [Key Features](#key-features)
--   [Live Demo](#live-demo)
--   [User Guide](#user-guide)
--   [Contributions](#contributions)
--   [License](#license)
+## Join our discord!
+
+Talk to fellow music lovers, discuss features, report bugs, and talk directly to us.
+
+Join here https://discord.gg/rMbN3d4z
 
 ## Key Features
 
--   **Sophisticated Music Ratings:** Express your musical tastes through insightful ratings and detailed reviews of albums, tracks, and artists.
--   **Discover Hidden Gems:** Dive into a vast music catalog, uncovering hidden gems and timeless classics with ease.
--   **Your Unique Music Profile:** Curate a distinctive music profile to showcase your musical identity to fellow enthusiasts.
--   **Stay Connected:** Follow friends and gain insight into their music preferences and reviews, fostering a vibrant community.
--   **Playlist Curation:** Craft and share meticulously curated playlists with your network, fostering shared music discovery.
-
-## Live Demo
-
-Immerse yourself in the world of RecordScratch by exploring our live demo [here](https://recordscratch.app).
-
-## User Guide
-
-To get started with RecordScratch:
-
--   Create a user account or log in if you're already a member.
--   Embark on your musical journey by exploring and rating your favorite songs and albums.
--   Build your music profile and follow friends to explore their musical tastes and reviews.
--   Elevate your music discovery by crafting and sharing personalized playlists within your network.
+-   Create ratings and reviews
+-   Search and explore new music
+-   Read reviews
+-   Customize your profile
 
 ## Contributions
 
-We invite contributors to help us enhance the RecordScratch experience. Please consult our [Contribution Guidelines](CONTRIBUTING.md) for detailed instructions on how to contribute.
+We invite contributors to help us in any way they can to improve the RecordScratch experience. Please consult our [Contribution Guidelines](CONTRIBUTING.md) for instructions.
 
 ## License
 
-RecordScratch is an open-source project and is governed by the MIT License. For a comprehensive view of licensing details, kindly refer to the [LICENSE](LICENSE) file.
-
----
-
-For inquiries, feedback, or suggestions, please don't hesitate to contact us. Join us in cultivating a dynamic music community with RecordScratch!
+RecordScratch is an open-source project and is governed by the MIT License. For a comprehensive view of licensing details, kindly refer to the [LICENSE](LICENSE.md) file.
