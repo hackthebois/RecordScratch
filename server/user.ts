@@ -52,11 +52,14 @@ export const userRouter = router({
 			),
 		getList: protectedProcedure
 			.input(ResourceSchema.array())
-			.query(async ({ ctx: { db }, input: resources }) => {
+			.query(async ({ ctx: { db, userId }, input: resources }) => {
 				return await db.query.ratings.findMany({
-					where: inArray(
-						ratings.resourceId,
-						resources.map((r) => r.resourceId)
+					where: and(
+						inArray(
+							ratings.resourceId,
+							resources.map((r) => r.resourceId)
+						),
+						eq(ratings.userId, userId)
 					),
 				});
 			}),
