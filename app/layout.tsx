@@ -24,11 +24,7 @@ export const metadata: Metadata = {
 		"Ultimate music-rating and social hub. Find new music, rate your recent listens, and connect with fellow music enthusiasts.",
 	metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
 	openGraph: {
-		images: [
-			{
-				url: banner.src,
-			},
-		],
+		images: [banner.src],
 		siteName: "RecordScratch",
 	},
 };
