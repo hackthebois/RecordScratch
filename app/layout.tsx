@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
-import banner from "../public/banner.svg";
+import banner from "../public/og-image.png";
 import { ThemeProvider } from "./Providers";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
