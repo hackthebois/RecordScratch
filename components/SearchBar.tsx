@@ -28,6 +28,7 @@ const ArtistItem = ({
 			href={`/artists/${artist.id}`}
 			onClick={onClick}
 			className="flex w-full min-w-0 flex-row items-center gap-4 rounded"
+			prefetch={false}
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
 				{artistImage ? (

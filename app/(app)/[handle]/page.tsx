@@ -60,6 +60,7 @@ const Page = async ({
 									"h-full min-h-0 w-full rounded-t bg-[#ffb703] hover:opacity-90",
 									rating === `${index + 1}` && "bg-orange-500"
 								)}
+								prefetch={false}
 							/>
 						</div>
 					))}

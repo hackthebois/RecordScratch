@@ -86,6 +86,7 @@ const Layout = async ({
 								href={`/artists/${artist.id}`}
 								className="text-muted-foreground hover:underline"
 								key={index}
+								prefetch={false}
 							>
 								{artist.name}
 							</Link>

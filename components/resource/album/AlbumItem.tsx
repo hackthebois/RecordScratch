@@ -26,6 +26,7 @@ export const AlbumItem = ({
 			onClick={onClick}
 			href={`/albums/${album.id}`}
 			className="flex flex-row items-center gap-4 rounded"
+			prefetch={false}
 		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">
 				<AlbumImage album={album} size={64} />

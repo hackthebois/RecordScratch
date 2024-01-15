@@ -109,7 +109,12 @@ export const spotifyFetch = async (url: string) => {
 		console.error(await res.text());
 		throw new TRPCError({
 			code: "INTERNAL_SERVER_ERROR",
-			message: "Spotify API error",
+			message:
+				"Spotify API error: " +
+				res.statusText +
+				" (" +
+				res.status +
+				")",
 		});
 	}
 
