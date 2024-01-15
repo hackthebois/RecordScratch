@@ -53,7 +53,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 					opts={{
 						align: "start",
 					}}
-					className="1030:flex hidden w-full"
+					className="hidden lg:flex"
 				>
 					<CarouselContent className="">
 						{Array.from(listItems).map((listitem, index) => (
