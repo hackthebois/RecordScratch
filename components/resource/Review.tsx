@@ -32,6 +32,7 @@ export const Review = ({ rating, profile, album, name }: ReviewType) => {
 				<Link
 					href={`/${profile.handle}`}
 					className="flex items-center gap-2"
+					prefetch={false}
 				>
 					<UserAvatar {...profile} size={30} />
 					<p className="flex">{profile.name}</p>

@@ -1,9 +1,5 @@
 "use client";
 
-import { SpotifyAlbum } from "@/types/spotify";
-import Link from "next/link";
-import { ScrollArea } from "../../ui/ScrollArea";
-import AlbumImage from "./AlbumImage";
 import {
 	Carousel,
 	CarouselContent,
@@ -11,6 +7,10 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
+import { SpotifyAlbum } from "@/types/spotify";
+import Link from "next/link";
+import { ScrollArea } from "../../ui/ScrollArea";
+import AlbumImage from "./AlbumImage";
 
 type Props = {
 	albums: SpotifyAlbum[];
@@ -23,7 +23,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 
 	const listItems = listAlbums.map((album, index) => (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
-			<Link href={`/albums/${album.id}`}>
+			<Link href={`/albums/${album.id}`} prefetch={false}>
 				<AlbumImage album={album} size={144} />
 				<p className="mt-1 truncate font-medium">{album.name}</p>
 				{field === "date" && (
@@ -38,6 +38,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 						href={`/artists/${artist.id}`}
 						className="py-1 text-sm text-muted-foreground hover:underline"
 						key={index}
+						prefetch={false}
 					>
 						{artist.name}
 					</Link>
