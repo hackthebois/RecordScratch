@@ -81,7 +81,7 @@ export const resourceRouter = router({
 					input: {
 						resource: { resourceId, category },
 						page = 1,
-						limit = 10,
+						limit = 50,
 					},
 				}) => {
 					const ratingList = await db.query.ratings.findMany({
@@ -109,7 +109,7 @@ export const resourceRouter = router({
 					limit: z.number().optional(),
 				})
 			)
-			.query(async ({ ctx: { db }, input: { page = 1, limit = 10 } }) => {
+			.query(async ({ ctx: { db }, input: { page = 1, limit = 50 } }) => {
 				const ratingList = await db.query.ratings.findMany({
 					limit,
 					offset: (page - 1) * limit,

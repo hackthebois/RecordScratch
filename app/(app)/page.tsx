@@ -16,6 +16,8 @@ const Page = async () => {
 	unstable_noStore();
 	const feed = await getFeed({});
 
+	console.log(feed.length);
+
 	return (
 		<div className="w-full">
 			<div className="mt-[2vh] flex flex-col">
