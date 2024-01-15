@@ -10,7 +10,7 @@ export const getAlbum = cache((albumId: string) => {
 	return unstable_cache(
 		() => serverTrpc.resource.album.get(albumId),
 		[`resource:album:get:${albumId}`],
-		{ revalidate: 60 * 60 }
+		{ revalidate: 60 * 60 * 24 }
 	)();
 });
 
@@ -18,7 +18,7 @@ export const getArtist = cache((artistId: string) => {
 	return unstable_cache(
 		() => serverTrpc.resource.artist.get(artistId),
 		[`resource:artist:get:${artistId}`],
-		{ revalidate: 60 * 60 }
+		{ revalidate: 60 * 60 * 24 }
 	)();
 });
 
@@ -26,7 +26,7 @@ export const getArtistTopTracks = cache((artistId: string) => {
 	return unstable_cache(
 		() => serverTrpc.resource.artist.topTracks(artistId),
 		[`resource:artist:getTopTracks:${artistId}`],
-		{ revalidate: 60 * 60 }
+		{ revalidate: 60 * 60 * 24 }
 	)();
 });
 
@@ -34,7 +34,7 @@ export const getArtistDiscography = cache((artistId: string) => {
 	return unstable_cache(
 		() => serverTrpc.resource.artist.albums(artistId),
 		[`resource:artist:getDiscography:${artistId}`],
-		{ revalidate: 60 * 60 }
+		{ revalidate: 60 * 60 * 24 }
 	)();
 });
 
@@ -97,7 +97,7 @@ export const getNewReleases = cache(() => {
 	return unstable_cache(
 		() => serverTrpc.resource.album.newReleases(),
 		[`resource:album:getNewReleases`],
-		{ revalidate: 60 * 10 }
+		{ revalidate: 60 * 60 }
 	)();
 });
 
@@ -105,7 +105,7 @@ export const getTrending = cache(() => {
 	return unstable_cache(
 		() => serverTrpc.resource.album.trending(),
 		[`resource:album:getTrending`],
-		{ revalidate: 60 * 10 }
+		{ revalidate: 60 * 60 }
 	)();
 });
 
@@ -113,7 +113,7 @@ export const getTopRated = cache(() => {
 	return unstable_cache(
 		() => serverTrpc.resource.album.top(),
 		[`resource:album:getTopRated`],
-		{ revalidate: 60 * 10 }
+		{ revalidate: 60 * 60 }
 	)();
 });
 
@@ -173,7 +173,7 @@ export const getSong = cache((songId: string) => {
 	return unstable_cache(
 		() => serverTrpc.resource.song.get(songId),
 		[`resource:song:get:${songId}`],
-		{ revalidate: 60 * 60 }
+		{ revalidate: 60 * 60 * 24 }
 	)();
 });
 
