@@ -122,7 +122,9 @@ export const getFeed = cache(
 		return unstable_cache(
 			() => serverTrpc.resource.rating.feed(input),
 			[`resource:rating:getFeed:page:${input.page}`],
-			{}
+			{
+				revalidate: 60,
+			}
 		)();
 	}
 );

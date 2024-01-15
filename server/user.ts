@@ -97,7 +97,7 @@ export const userRouter = router({
 		.query(
 			async ({
 				ctx: { db },
-				input: { userId, rating, page = 1, limit = 10 },
+				input: { userId, rating, page = 1, limit = 50 },
 			}) => {
 				console.log("backend", rating);
 				const where = rating
