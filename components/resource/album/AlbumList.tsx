@@ -53,7 +53,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 					opts={{
 						align: "start",
 					}}
-					className="hidden w-full max-w-screen-lg lg:flex"
+					className="1030:flex hidden w-full"
 				>
 					<CarouselContent className="">
 						{Array.from(listItems).map((listitem, index) => (
@@ -69,9 +69,9 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 				{/* ScrollArea for medium and smaller screens */}
 				<ScrollArea
 					orientation="horizontal"
-					className="-mx-4 flex max-w-screen-lg sm:-mx-8 lg:hidden"
+					className="-mx-4 sm:-mx-8 lg:hidden"
 				>
-					<div className="flex gap-4 px-4 sm:px-8 ">{listItems}</div>
+					<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
 				</ScrollArea>
 			</div>
 		);
