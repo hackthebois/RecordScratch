@@ -112,7 +112,7 @@ export const spotifyFetch = async (url: string) => {
 	await logServerEvent("spotify request", {
 		distinctId: "public",
 		properties: {
-			url,
+			endpoint: url,
 		},
 	});
 
