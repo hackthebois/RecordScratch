@@ -141,6 +141,7 @@ export const resourceRouter = router({
 			.input(z.string())
 			.query(async ({ input: albumId }) => {
 				const { data } = await spotifyFetch(`/albums/${albumId}`);
+
 				return SpotifyAlbumSchema.parse(data);
 			}),
 		getUniqueIds: publicProcedure.query(async ({ ctx: { db } }) => {
@@ -155,6 +156,7 @@ export const resourceRouter = router({
 		}),
 		newReleases: publicProcedure.query(async () => {
 			const { data } = await spotifyFetch("/browse/new-releases");
+
 			return z
 				.object({
 					albums: z.object({ items: SpotifyAlbumSchema.array() }),
