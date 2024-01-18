@@ -8,6 +8,7 @@ import {
 	SpotifyTrackSchema,
 } from "types/spotify";
 import { z } from "zod";
+import PostHogClient from "./posthog";
 
 export const getSpotifyToken = async () => {
 	const res = await fetch("https://accounts.spotify.com/api/token", {
@@ -19,11 +20,14 @@ export const getSpotifyToken = async () => {
 					env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET
 				).toString("base64"),
 		},
-		cache: "no-store",
+		next: {
+			revalidate: 60 * 59,
+		},
 		body: "grant_type=client_credentials",
 		method: "POST",
 	});
 	const data = await res.json();
+	console.log(data);
 	return z.object({ access_token: z.string() }).parse(data).access_token;
 };
 
@@ -96,7 +100,16 @@ export const appendReviewResource = async (
 		});
 };
 
-export const spotifyFetch = async (url: string) => {
+export const spotifyFetch = async (url: string, userId?: string) => {
+	const posthog = PostHogClient();
+	posthog.capture({
+		distinctId: userId ?? "anonymous",
+		event: "spotify request",
+		properties: {
+			url,
+		},
+	});
+	await posthog.shutdownAsync();
 	const spotifyToken = await getSpotifyToken();
 
 	const res = await fetch(`https://api.spotify.com/v1${url}`, {
