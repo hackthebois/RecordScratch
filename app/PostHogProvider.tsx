@@ -28,7 +28,7 @@ const IdentifyUser = () => {
 		) {
 			posthog.identify(user.id, {
 				userId: user.id,
-				email: user.primaryEmailAddress?.emailAddress,
+				email: user.primaryEmailAddress.emailAddress,
 				handle: profile.handle,
 				name: profile.name,
 			});
