@@ -9,9 +9,7 @@ const t = initTRPC.context<typeof createContext>().create({
 
 export const router = t.router;
 export const publicProcedure = t.procedure.use(({ ctx, next }) => {
-	const { userId } = auth();
-
-	return next({ ctx: { ...ctx, userId } });
+	return next({ ctx: { ...ctx } });
 });
 export const middleware = t.middleware;
 export const mergeRouters = t.mergeRouters;
