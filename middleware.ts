@@ -8,6 +8,7 @@ export default authMiddleware({
 		"/artists/:artistId/:tab",
 		"/api(.*)",
 		"/_axiom/web-vitals",
+		"/ingest(.*)",
 	],
 	afterAuth: async ({ userId, sessionClaims }, req) => {
 		if (

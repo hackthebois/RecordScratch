@@ -8,7 +8,7 @@ import {
 	SpotifyTrackSchema,
 } from "types/spotify";
 import { z } from "zod";
-import PostHogClient from "./posthog";
+import { logServerEvent } from "./posthog";
 
 export const getSpotifyToken = async () => {
 	const res = await fetch("https://accounts.spotify.com/api/token", {
@@ -100,21 +100,19 @@ export const appendReviewResource = async (
 		});
 };
 
-export const spotifyFetch = async (url: string, userId?: string) => {
-	const posthog = PostHogClient();
-	posthog.capture({
-		distinctId: userId ?? "anonymous",
-		event: "spotify request",
-		properties: {
-			url,
-		},
-	});
-	await posthog.shutdownAsync();
+export const spotifyFetch = async (url: string) => {
 	const spotifyToken = await getSpotifyToken();
 
 	const res = await fetch(`https://api.spotify.com/v1${url}`, {
 		headers: {
 			Authorization: `Bearer ${spotifyToken}`,
+		},
+	});
+
+	await logServerEvent("spotify request", {
+		distinctId: "public",
+		properties: {
+			url,
 		},
 	});
 

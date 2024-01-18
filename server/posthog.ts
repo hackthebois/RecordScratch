@@ -1,11 +1,26 @@
 import { env } from "@/env.mjs";
-import { PostHog } from "posthog-node";
 
-export default function PostHogClient() {
-	const posthogClient = new PostHog(env.NEXT_PUBLIC_POSTHOG_KEY, {
-		host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-		flushAt: 1,
-		flushInterval: 0,
+type ServerEvents = {
+	"spotify request": {
+		url: string;
+	};
+};
+
+export const logServerEvent = async <TEventKey extends keyof ServerEvents>(
+	event: TEventKey,
+	payload: {
+		distinctId: string;
+		properties: ServerEvents[TEventKey];
+	}
+) => {
+	await fetch(`${env.NEXT_PUBLIC_POSTHOG_HOST}/capture`, {
+		method: "POST",
+		body: JSON.stringify({
+			api_key: env.NEXT_PUBLIC_POSTHOG_KEY,
+			distinct_id: payload.distinctId,
+			event,
+			properties: payload.properties,
+		}),
+		cache: "no-store",
 	});
-	return posthogClient;
-}
+};
