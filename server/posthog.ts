@@ -2,7 +2,7 @@ import { env } from "@/env.mjs";
 
 type ServerEvents = {
 	"spotify request": {
-		url: string;
+		endpoint: string;
 	};
 };
 
