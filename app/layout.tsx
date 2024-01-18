@@ -7,7 +7,8 @@ import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import banner from "../public/og-image.png";
-import { ThemeProvider } from "./Providers";
+import { PostHogProvider } from "./PostHogProvider";
+import { ThemeProvider } from "./ThemeProvider";
 import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
@@ -51,7 +52,9 @@ const RootLayout = ({ children }: Props) => {
 					}}
 				>
 					<TRPCReactProvider headers={headers()}>
-						<ThemeProvider>{children}</ThemeProvider>
+						<ThemeProvider>
+							<PostHogProvider>{children}</PostHogProvider>
+						</ThemeProvider>
 					</TRPCReactProvider>
 				</ClerkProvider>
 				<Analytics />
