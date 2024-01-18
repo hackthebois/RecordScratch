@@ -20,10 +20,10 @@ module.exports = withBundleAnalyzer(
 				},
 			],
 		},
-		logging: {
-			fetches: {
-				fullUrl: true,
-			},
-		},
+		// logging: {
+		// 	fetches: {
+		// 		fullUrl: true,
+		// 	},
+		// },
 	})
 );
