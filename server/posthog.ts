@@ -19,7 +19,13 @@ export const logServerEvent = async <TEventKey extends keyof ServerEvents>(
 			api_key: env.NEXT_PUBLIC_POSTHOG_KEY,
 			distinct_id: payload.distinctId,
 			event,
-			properties: payload.properties,
+			properties: {
+				...payload.properties,
+				env:
+					env.NEXT_PUBLIC_SITE_URL === "http://localhost:3000"
+						? "dev"
+						: "prod",
+			},
 		}),
 		cache: "no-store",
 	});
