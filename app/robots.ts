@@ -1,10 +1,11 @@
 import { MetadataRoute } from "next";
 
-const robots = async (): Promise<MetadataRoute.Robots> => {
+const robots = (): MetadataRoute.Robots => {
 	return {
 		rules: {
 			userAgent: "*",
-			disallow: "/",
+			allow: "/",
+			disallow: ["/albums", "/artists"],
 		},
 		sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
 	};
