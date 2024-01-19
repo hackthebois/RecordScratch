@@ -1,6 +1,6 @@
-import { resourceRouter } from "./resource";
+import { resourceRouter } from "./routers/resource";
+import { userRouter } from "./routers/user";
 import { router } from "./trpc";
-import { userRouter } from "./user";
 
 export const appRouter = router({
 	resource: resourceRouter,

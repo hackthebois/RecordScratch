@@ -11,7 +11,7 @@ import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { trpc } from "../app/_trpc/react";
+import { trpc } from "../trpc/react";
 import { AlbumItem } from "./resource/album/AlbumItem";
 
 const ArtistItem = ({

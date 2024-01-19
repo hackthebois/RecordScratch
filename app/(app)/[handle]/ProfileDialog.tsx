@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { trpc } from "@/app/_trpc/react";
 import { updateProfile } from "@/app/actions";
 import UserAvatar from "@/components/UserAvatar";
 import {
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { trpc } from "@/trpc/react";
 import {
 	Profile,
 	ProfileBioSchema,

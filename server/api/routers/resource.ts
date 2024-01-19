@@ -8,8 +8,8 @@ import {
 	SpotifyTrackSchema,
 } from "types/spotify";
 import { z } from "zod";
-import { publicProcedure, router } from "./trpc";
-import { appendReviewResource, spotifyFetch } from "./utils";
+import { publicProcedure, router } from "../trpc";
+import { appendReviewResource, spotifyFetch } from "../utils";
 
 export const resourceRouter = router({
 	rating: router({
@@ -77,7 +77,7 @@ export const resourceRouter = router({
 			)
 			.query(
 				async ({
-					ctx: { db },
+					ctx: { db, userId },
 					input: {
 						resource: { resourceId, category },
 						page = 1,
@@ -99,7 +99,7 @@ export const resourceRouter = router({
 							profile: true,
 						},
 					});
-					return await appendReviewResource(ratingList);
+					return await appendReviewResource(ratingList, userId);
 				}
 			),
 		feed: publicProcedure
@@ -109,24 +109,32 @@ export const resourceRouter = router({
 					limit: z.number().optional(),
 				})
 			)
-			.query(async ({ ctx: { db }, input: { page = 1, limit = 50 } }) => {
-				const ratingList = await db.query.ratings.findMany({
-					limit,
-					offset: (page - 1) * limit,
-					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
-					with: {
-						profile: true,
-					},
-				});
-				return await appendReviewResource(ratingList);
-			}),
+			.query(
+				async ({
+					ctx: { db, userId },
+					input: { page = 1, limit = 50 },
+				}) => {
+					const ratingList = await db.query.ratings.findMany({
+						limit,
+						offset: (page - 1) * limit,
+						orderBy: (ratings, { desc }) => [
+							desc(ratings.createdAt),
+						],
+						with: {
+							profile: true,
+						},
+					});
+					return await appendReviewResource(ratingList, userId);
+				}
+			),
 	}),
 	search: publicProcedure
 		.input(z.string().min(1))
-		.query(async ({ input: q }) => {
-			const { data } = await spotifyFetch(
-				`/search?q=${q}&type=album,artist&limit=4`
-			);
+		.query(async ({ input: q, ctx: { userId } }) => {
+			const { data } = await spotifyFetch({
+				url: `/search?q=${q}&type=album,artist&limit=4`,
+				userId,
+			});
 			return z
 				.object({
 					albums: z.object({ items: SpotifyAlbumSchema.array() }),
@@ -139,8 +147,11 @@ export const resourceRouter = router({
 	album: router({
 		get: publicProcedure
 			.input(z.string())
-			.query(async ({ input: albumId }) => {
-				const { data } = await spotifyFetch(`/albums/${albumId}`);
+			.query(async ({ input: albumId, ctx: { userId } }) => {
+				const { data } = await spotifyFetch({
+					url: `/albums/${albumId}`,
+					userId,
+				});
 
 				return SpotifyAlbumSchema.parse(data);
 			}),
@@ -154,8 +165,11 @@ export const resourceRouter = router({
 				.groupBy(ratings.resourceId);
 			return albums.map(({ resourceId }) => resourceId);
 		}),
-		newReleases: publicProcedure.query(async () => {
-			const { data } = await spotifyFetch("/browse/new-releases");
+		newReleases: publicProcedure.query(async ({ ctx: { userId } }) => {
+			const { data } = await spotifyFetch({
+				url: "/browse/new-releases",
+				userId,
+			});
 
 			return z
 				.object({
@@ -163,7 +177,7 @@ export const resourceRouter = router({
 				})
 				.parse(data).albums.items;
 		}),
-		trending: publicProcedure.query(async ({ ctx: { db } }) => {
+		trending: publicProcedure.query(async ({ ctx: { db, userId } }) => {
 			const albums = await db
 				.select({
 					total: count(ratings.rating),
@@ -175,16 +189,18 @@ export const resourceRouter = router({
 				.orderBy(({ total }) => desc(total))
 				.limit(20);
 			if (albums.length === 0) return [];
-			const { data } = await spotifyFetch(
-				"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
-			);
+			const { data } = await spotifyFetch({
+				url:
+					"/albums/?ids=" + albums.map((a) => a.resourceId).join(","),
+				userId,
+			});
 			return z
 				.object({
 					albums: SpotifyAlbumSchema.array(),
 				})
 				.parse(data).albums;
 		}),
-		top: publicProcedure.query(async ({ ctx: { db } }) => {
+		top: publicProcedure.query(async ({ ctx: { db, userId } }) => {
 			const albums = await db
 				.select({
 					average: avg(ratings.rating),
@@ -196,9 +212,11 @@ export const resourceRouter = router({
 				.orderBy(({ average }) => desc(average))
 				.limit(20);
 			if (albums.length === 0) return [];
-			const { data } = await spotifyFetch(
-				"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
-			);
+			const { data } = await spotifyFetch({
+				url:
+					"/albums/?ids=" + albums.map((a) => a.resourceId).join(","),
+				userId,
+			});
 			return z
 				.object({
 					albums: SpotifyAlbumSchema.array(),
@@ -209,8 +227,11 @@ export const resourceRouter = router({
 	song: router({
 		get: publicProcedure
 			.input(z.string())
-			.query(async ({ input: songId }) => {
-				const { data } = await spotifyFetch(`/tracks/${songId}`);
+			.query(async ({ input: songId, ctx: { userId } }) => {
+				const { data } = await spotifyFetch({
+					url: `/tracks/${songId}`,
+					userId,
+				});
 				return SpotifyTrackSchema.extend({
 					album: SpotifyAlbumSchema,
 				}).parse(data);
@@ -219,18 +240,22 @@ export const resourceRouter = router({
 	artist: router({
 		get: publicProcedure
 			.input(z.string())
-			.query(async ({ input: artistId }) => {
-				const { data } = await spotifyFetch(`/artists/${artistId}`);
+			.query(async ({ input: artistId, ctx: { userId } }) => {
+				const { data } = await spotifyFetch({
+					url: `/artists/${artistId}`,
+					userId,
+				});
 				return SpotifyArtistSchema.parse(data);
 			}),
 		albums: publicProcedure
 			.input(z.string())
-			.query(async ({ input: artistId }) => {
+			.query(async ({ input: artistId, ctx: { userId } }) => {
 				const albums: SpotifyAlbum[] = [];
 				const getAllAlbums = async (offset = 0) => {
-					const { data } = await spotifyFetch(
-						`/artists/${artistId}/albums?include_groups=album,single&offset=${offset}&limit=50`
-					);
+					const { data } = await spotifyFetch({
+						url: `/artists/${artistId}/albums?include_groups=album,single&offset=${offset}&limit=50`,
+						userId,
+					});
 					const { items } = z
 						.object({
 							items: SpotifyAlbumSchema.array(),
@@ -246,10 +271,11 @@ export const resourceRouter = router({
 			}),
 		topTracks: publicProcedure
 			.input(z.string())
-			.query(async ({ input: artistId }) => {
-				const { data } = await spotifyFetch(
-					`/artists/${artistId}/top-tracks?market=US`
-				);
+			.query(async ({ input: artistId, ctx: { userId } }) => {
+				const { data } = await spotifyFetch({
+					url: `/artists/${artistId}/top-tracks?market=US`,
+					userId,
+				});
 				return z
 					.object({
 						tracks: SpotifyTrackSchema.array(),

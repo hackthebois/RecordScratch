@@ -1,9 +1,9 @@
 import { MetadataRoute } from "next";
-import { serverTrpc } from "./_trpc/server";
+import { staticTrpc } from "../trpc/server";
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
-	const albums = await serverTrpc.resource.album.getUniqueIds();
-	const profiles = await serverTrpc.user.profile.getUniqueHandles();
+	const albums = await staticTrpc.resource.album.getUniqueIds();
+	const profiles = await staticTrpc.user.profile.getUniqueHandles();
 
 	const albumMap: MetadataRoute.Sitemap = albums.flatMap((albumId) => {
 		return [

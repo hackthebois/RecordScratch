@@ -1,5 +1,5 @@
-import { getDistribution, getProfile, getRecent } from "@/app/_trpc/cached";
 import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
+import { getDistribution, getProfile, getRecent } from "@/trpc/cached";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -26,7 +26,6 @@ const Page = async ({
 
 	const getReviews = async ({ page }: { page: number }) => {
 		"use server";
-		console.log(rating);
 		return await getRecent({
 			userId: profile.userId,
 			rating: rating ? parseInt(rating) : undefined,

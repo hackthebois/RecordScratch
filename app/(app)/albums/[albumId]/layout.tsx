@@ -1,8 +1,8 @@
-import { getAlbum } from "@/app/_trpc/cached";
-import { serverTrpc } from "@/app/_trpc/server";
 import { Ratings, RatingsSkeleton } from "@/components/Ratings";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { Tag } from "@/components/ui/Tag";
+import { getAlbum, spotifyRevalidate } from "@/trpc/cached";
+import { staticTrpc } from "@/trpc/server";
 import { Resource } from "@/types/rating";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -30,9 +30,11 @@ export async function generateMetadata({
 }
 
 export const generateStaticParams = async () => {
-	const ids = await serverTrpc.resource.album.getUniqueIds();
+	const ids = await staticTrpc.resource.album.getUniqueIds();
 	return ids.map((id) => ({ albumId: id }));
 };
+
+export const revalidate = spotifyRevalidate;
 
 const Layout = async ({
 	params: { albumId },

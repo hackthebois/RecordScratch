@@ -1,11 +1,11 @@
+import { LinkTabs } from "@/components/ui/LinkTabs";
+import { Tag } from "@/components/ui/Tag";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
 	getArtist,
 	getArtistDiscography,
 	getRatingListAverage,
-} from "@/app/_trpc/cached";
-import { LinkTabs } from "@/components/ui/LinkTabs";
-import { Tag } from "@/components/ui/Tag";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/trpc/cached";
 import { Star } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
