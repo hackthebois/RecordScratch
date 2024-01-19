@@ -13,12 +13,6 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 				changeFrequency: "weekly",
 				priority: 0.8,
 			},
-			{
-				url: `${process.env.NEXT_PUBLIC_SITE_URL}/albums/${albumId}/reviews`,
-				lastModified: new Date(),
-				changeFrequency: "daily",
-				priority: 0.5,
-			},
 		];
 	});
 
