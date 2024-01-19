@@ -1,6 +1,6 @@
-import { getProfile } from "@/app/_trpc/cached";
 import UserAvatar from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
+import { getProfile } from "@/trpc/cached";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";

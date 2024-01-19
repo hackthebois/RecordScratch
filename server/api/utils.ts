@@ -8,7 +8,7 @@ import {
 	SpotifyTrackSchema,
 } from "types/spotify";
 import { z } from "zod";
-import { logServerEvent } from "./posthog";
+import { logServerEvent } from "../posthog";
 
 export const getSpotifyToken = async () => {
 	const res = await fetch("https://accounts.spotify.com/api/token", {
@@ -27,12 +27,12 @@ export const getSpotifyToken = async () => {
 		method: "POST",
 	});
 	const data = await res.json();
-	console.log(data);
 	return z.object({ access_token: z.string() }).parse(data).access_token;
 };
 
 export const appendReviewResource = async (
-	ratingList: (Rating & { profile: Profile })[]
+	ratingList: (Rating & { profile: Profile })[],
+	userId: string | null
 ): Promise<Review[]> => {
 	if (ratingList.length === 0) return [];
 
@@ -45,9 +45,10 @@ export const appendReviewResource = async (
 	const songs = ratingList.filter((r) => r.category === "SONG");
 
 	if (albums.length !== 0) {
-		const { data: albumData } = await spotifyFetch(
-			"/albums/?ids=" + albums.map((a) => a.resourceId).join(",")
-		);
+		const { data: albumData } = await spotifyFetch({
+			url: "/albums/?ids=" + albums.map((a) => a.resourceId).join(","),
+			userId,
+		});
 		const parsedAlbums = z
 			.object({
 				albums: SpotifyAlbumSchema.array(),
@@ -63,9 +64,10 @@ export const appendReviewResource = async (
 		);
 	}
 	if (songs.length !== 0) {
-		const { data: songData } = await spotifyFetch(
-			"/tracks/?ids=" + songs.map((a) => a.resourceId).join(",")
-		);
+		const { data: songData } = await spotifyFetch({
+			url: "/tracks/?ids=" + songs.map((a) => a.resourceId).join(","),
+			userId,
+		});
 		const parsedSongs = z
 			.object({
 				tracks: SpotifyTrackSchema.extend({
@@ -100,7 +102,13 @@ export const appendReviewResource = async (
 		});
 };
 
-export const spotifyFetch = async (url: string) => {
+export const spotifyFetch = async ({
+	url,
+	userId,
+}: {
+	url: string;
+	userId: string | null;
+}) => {
 	const spotifyToken = await getSpotifyToken();
 
 	const res = await fetch(`https://api.spotify.com/v1${url}`, {
@@ -110,7 +118,7 @@ export const spotifyFetch = async (url: string) => {
 	});
 
 	await logServerEvent("spotify request", {
-		distinctId: "public",
+		distinctId: userId ?? "public",
 		properties: {
 			endpoint: url,
 		},

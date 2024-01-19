@@ -8,8 +8,8 @@ import {
 import { clerkClient } from "@clerk/nextjs";
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import { protectedProcedure, publicProcedure, router } from "./trpc";
-import { appendReviewResource } from "./utils";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { appendReviewResource } from "../utils";
 
 export const userRouter = router({
 	rating: router({
@@ -99,7 +99,6 @@ export const userRouter = router({
 				ctx: { db },
 				input: { userId, rating, page = 1, limit = 50 },
 			}) => {
-				console.log("backend", rating);
 				const where = rating
 					? and(
 							eq(ratings.userId, userId),
@@ -116,7 +115,7 @@ export const userRouter = router({
 						profile: true,
 					},
 				});
-				return await appendReviewResource(ratingList);
+				return await appendReviewResource(ratingList, userId);
 			}
 		),
 	profile: router({

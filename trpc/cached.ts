@@ -1,47 +1,67 @@
-"use server";
+import "server-only";
 
-import { serverTrpc } from "@/app/_trpc/server";
+import { serverTrpc, staticTrpc } from "@/trpc/server";
 import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
-import { RouterInput } from "../actions";
+import { RouterInput } from "../app/actions";
+
+// SPOTIFY
+export const spotifyRevalidate = 60 * 60 * 24; // 24 hours
 
 export const getAlbum = cache((albumId: string) => {
 	return unstable_cache(
-		() => serverTrpc.resource.album.get(albumId),
+		() => staticTrpc.resource.album.get(albumId),
 		[`resource:album:get:${albumId}`],
-		{ revalidate: 60 * 60 * 24 }
+		{ revalidate: spotifyRevalidate }
 	)();
 });
 
 export const getArtist = cache((artistId: string) => {
 	return unstable_cache(
-		() => serverTrpc.resource.artist.get(artistId),
+		() => staticTrpc.resource.artist.get(artistId),
 		[`resource:artist:get:${artistId}`],
-		{ revalidate: 60 * 60 * 24 }
+		{ revalidate: spotifyRevalidate }
 	)();
 });
 
 export const getArtistTopTracks = cache((artistId: string) => {
 	return unstable_cache(
-		() => serverTrpc.resource.artist.topTracks(artistId),
+		() => staticTrpc.resource.artist.topTracks(artistId),
 		[`resource:artist:getTopTracks:${artistId}`],
-		{ revalidate: 60 * 60 * 24 }
+		{ revalidate: spotifyRevalidate }
+	)();
+});
+
+export const getNewReleases = cache(() => {
+	return unstable_cache(
+		() => staticTrpc.resource.album.newReleases(),
+		[`resource:album:getNewReleases`],
+		{ revalidate: spotifyRevalidate }
+	)();
+});
+
+export const getSong = cache((songId: string) => {
+	return unstable_cache(
+		() => staticTrpc.resource.song.get(songId),
+		[`resource:song:get:${songId}`],
+		{ revalidate: spotifyRevalidate }
 	)();
 });
 
 export const getArtistDiscography = cache((artistId: string) => {
 	return unstable_cache(
-		() => serverTrpc.resource.artist.albums(artistId),
+		() => staticTrpc.resource.artist.albums(artistId),
 		[`resource:artist:getDiscography:${artistId}`],
-		{ revalidate: 60 * 60 * 24 }
+		{ revalidate: spotifyRevalidate }
 	)();
 });
 
+// RECORDSCRATCH
 export const getCommunityReviews = cache(
 	(input: RouterInput["resource"]["rating"]["community"]) => {
 		return unstable_cache(
-			() => serverTrpc.resource.rating.community(input),
+			() => serverTrpc.resource.rating.community.query(input),
 			[`resource:rating:community:${input.resource.resourceId}`],
 			{ tags: [input.resource.resourceId] }
 		)();
@@ -50,7 +70,7 @@ export const getCommunityReviews = cache(
 
 export const getRating = cache((resource: Resource) => {
 	return unstable_cache(
-		() => serverTrpc.resource.rating.get(resource),
+		() => serverTrpc.resource.rating.get.query(resource),
 		[`resource:rating:get:${resource.resourceId}`],
 		{ revalidate: 60, tags: [resource.resourceId] }
 	)();
@@ -58,7 +78,7 @@ export const getRating = cache((resource: Resource) => {
 
 export const getUserRating = cache((resource: Resource, userId: string) => {
 	return unstable_cache(
-		() => serverTrpc.user.rating.get(resource),
+		() => serverTrpc.user.rating.get.query(resource),
 		[`user:${userId}:rating:get:${resource.resourceId}`],
 		{ revalidate: 60, tags: [resource.resourceId, userId] }
 	)();
@@ -66,7 +86,7 @@ export const getUserRating = cache((resource: Resource, userId: string) => {
 
 export const getRatingsList = cache((resources: Resource[]) => {
 	return unstable_cache(
-		() => serverTrpc.resource.rating.getList(resources),
+		() => serverTrpc.resource.rating.getList.query(resources),
 		[
 			`resource:rating:getList:[${resources
 				.map((r) => r.resourceId)
@@ -79,7 +99,7 @@ export const getRatingsList = cache((resources: Resource[]) => {
 export const getUserRatingList = cache(
 	(resources: Resource[], userId: string) => {
 		return unstable_cache(
-			() => serverTrpc.user.rating.getList(resources),
+			() => serverTrpc.user.rating.getList.query(resources),
 			[
 				`user:${userId}:rating:getList:[${resources
 					.map((r) => r.resourceId)
@@ -93,17 +113,9 @@ export const getUserRatingList = cache(
 	}
 );
 
-export const getNewReleases = cache(() => {
-	return unstable_cache(
-		() => serverTrpc.resource.album.newReleases(),
-		[`resource:album:getNewReleases`],
-		{ revalidate: 60 * 60 }
-	)();
-});
-
 export const getTrending = cache(() => {
 	return unstable_cache(
-		() => serverTrpc.resource.album.trending(),
+		() => serverTrpc.resource.album.trending.query(),
 		[`resource:album:getTrending`],
 		{ revalidate: 60 * 60 }
 	)();
@@ -111,7 +123,7 @@ export const getTrending = cache(() => {
 
 export const getTopRated = cache(() => {
 	return unstable_cache(
-		() => serverTrpc.resource.album.top(),
+		() => serverTrpc.resource.album.top.query(),
 		[`resource:album:getTopRated`],
 		{ revalidate: 60 * 60 }
 	)();
@@ -120,7 +132,7 @@ export const getTopRated = cache(() => {
 export const getFeed = cache(
 	(input: RouterInput["resource"]["rating"]["feed"]) => {
 		return unstable_cache(
-			() => serverTrpc.resource.rating.feed(input),
+			() => serverTrpc.resource.rating.feed.query(input),
 			[`resource:rating:getFeed:page:${input.page}`],
 			{
 				revalidate: 60,
@@ -131,7 +143,7 @@ export const getFeed = cache(
 
 export const getRatingListAverage = cache((resources: Resource[]) => {
 	return unstable_cache(
-		() => serverTrpc.resource.rating.getListAverage(resources),
+		() => serverTrpc.resource.rating.getListAverage.query(resources),
 		[
 			`resource:rating:getListAverage:[${resources
 				.map((r) => r.resourceId)
@@ -143,7 +155,7 @@ export const getRatingListAverage = cache((resources: Resource[]) => {
 
 export const getProfile = cache((handle: string) => {
 	return unstable_cache(
-		() => serverTrpc.user.profile.get({ handle }),
+		() => serverTrpc.user.profile.get.query({ handle }),
 		[`user:profile:get:${handle}`],
 		{ tags: [handle], revalidate: 60 }
 	)();
@@ -151,7 +163,7 @@ export const getProfile = cache((handle: string) => {
 
 export const getMyProfile = cache((userId: string) => {
 	return unstable_cache(
-		() => serverTrpc.user.profile.me(),
+		() => serverTrpc.user.profile.me.query(),
 		[`user:${userId}:profile:get:me`],
 		{ tags: [userId], revalidate: 60 }
 	)();
@@ -159,7 +171,7 @@ export const getMyProfile = cache((userId: string) => {
 
 export const getRecent = cache((input: RouterInput["user"]["recent"]) => {
 	return unstable_cache(
-		() => serverTrpc.user.recent(input),
+		() => serverTrpc.user.recent.query(input),
 		[
 			`user:recent:get:${input.userId}${
 				input.rating ? `:${input.rating}` : ""
@@ -169,17 +181,9 @@ export const getRecent = cache((input: RouterInput["user"]["recent"]) => {
 	)();
 });
 
-export const getSong = cache((songId: string) => {
-	return unstable_cache(
-		() => serverTrpc.resource.song.get(songId),
-		[`resource:song:get:${songId}`],
-		{ revalidate: 60 * 60 * 24 }
-	)();
-});
-
 export const getDistribution = cache((userId: string) => {
 	return unstable_cache(
-		() => serverTrpc.user.profile.distribution(userId),
+		() => serverTrpc.user.profile.distribution.query(userId),
 		[`user:profile:distribution:${userId}`],
 		{ tags: [userId] }
 	)();

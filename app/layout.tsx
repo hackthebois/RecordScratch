@@ -5,11 +5,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
-import { headers } from "next/headers";
 import banner from "../public/og-image.png";
+import { TRPCReactProvider } from "../trpc/react";
 import { PostHogProvider } from "./PostHogProvider";
 import { ThemeProvider } from "./ThemeProvider";
-import { TRPCReactProvider } from "./_trpc/react";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -34,9 +33,6 @@ type Props = {
 	children: React.ReactNode;
 };
 
-export const runtime = "edge";
-export const preferredRegion = "cle1";
-
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
@@ -51,7 +47,7 @@ const RootLayout = ({ children }: Props) => {
 						},
 					}}
 				>
-					<TRPCReactProvider headers={headers()}>
+					<TRPCReactProvider>
 						<ThemeProvider>
 							<PostHogProvider>{children}</PostHogProvider>
 						</ThemeProvider>
