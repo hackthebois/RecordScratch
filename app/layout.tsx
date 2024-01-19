@@ -3,7 +3,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
-import { AxiomWebVitals } from "next-axiom";
 import { Montserrat } from "next/font/google";
 import banner from "../public/og-image.png";
 import { TRPCReactProvider } from "../trpc/react";
@@ -36,7 +35,6 @@ type Props = {
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
-			<AxiomWebVitals />
 			<body className={`${montserrat.className} flex flex-col`}>
 				<ClerkProvider
 					appearance={{
