@@ -45,7 +45,6 @@
     "lucide-react": "^0.274.0",
     "mysql2": "^3.6.1",
     "next": "14.0.4",
-    "next-axiom": "^1.0.0",
     "next-themes": "^0.2.1",
     "posthog-js": "^1.100.0",
     "react": "^18.2.0",
