@@ -11,7 +11,7 @@ import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { trpc } from "../trpc/react";
+import { api } from "../app/trpc/react";
 import { AlbumItem } from "./resource/album/AlbumItem";
 
 const ArtistItem = ({
@@ -54,7 +54,7 @@ const SearchBar = () => {
 
 	const q = useDebounce(query, 500);
 
-	const { data, isFetching } = trpc.resource.search.useQuery(q, {
+	const { data, isFetching } = api.resource.search.useQuery(q, {
 		enabled: query.length > 0,
 		refetchOnWindowFocus: false,
 	});

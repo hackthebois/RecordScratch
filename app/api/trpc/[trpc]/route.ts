@@ -1,12 +1,15 @@
 import { env } from "@/env.mjs";
-import { appRouter } from "@/server/api/_app";
+import { appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
+import { getAuth } from "@clerk/nextjs/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { NextRequest } from "next/server";
 
 const createContext = async (req: NextRequest) => {
+	const { userId } = getAuth(req);
 	return createTRPCContext({
 		headers: req.headers,
+		userId,
 	});
 };
 

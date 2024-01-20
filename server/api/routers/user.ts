@@ -126,15 +126,6 @@ export const userRouter = router({
 				})) ?? null
 			);
 		}),
-		getUniqueHandles: publicProcedure.query(async ({ ctx: { db } }) => {
-			const handles = await db
-				.select({
-					handle: profile.handle,
-				})
-				.from(profile)
-				.groupBy(profile.handle);
-			return handles.map(({ handle }) => handle);
-		}),
 		get: publicProcedure
 			.input(z.object({ handle: z.string() }))
 			.query(async ({ ctx: { db }, input: { handle } }) => {

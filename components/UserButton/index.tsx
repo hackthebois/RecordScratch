@@ -1,4 +1,4 @@
-import { getMyProfile } from "@/trpc/cached";
+import { getMyProfile } from "@/app/trpc/cached";
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
