@@ -1,11 +1,11 @@
 "use client";
 
+import { DropdownMenuItem } from "@/components/ui/DropdownMenu";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { revalidateUser } from "@/app/actions";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { DropdownMenuItem } from "../../ui/DropdownMenu";
 
 export const ThemeItem = () => {
 	const { theme, setTheme, systemTheme } = useTheme();

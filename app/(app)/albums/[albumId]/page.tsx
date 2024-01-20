@@ -1,5 +1,5 @@
-import SongTable from "@/app/_components/SongTable";
 import { getAlbum } from "@/app/_trpc/cached";
+import SongTable from "@/components/SongTable";
 
 const Page = async ({
 	params: { albumId },

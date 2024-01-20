@@ -3,7 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import posthog from "posthog-js";
 import { useEffect } from "react";
 
-const IdentifyUser = () => {
+export const UserIdentify = () => {
 	const { user } = useUser();
 	const { data: profile } = api.user.profile.me.useQuery(undefined, {
 		refetchOnMount: false,
@@ -29,5 +29,3 @@ const IdentifyUser = () => {
 
 	return null;
 };
-
-export default IdentifyUser;

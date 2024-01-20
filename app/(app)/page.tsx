@@ -1,5 +1,5 @@
-import AlbumList from "@/app/_components/resource/album/AlbumList";
-import { InfiniteReviews } from "../_components/resource/InfiniteReviews";
+import AlbumList from "@/components/resource/album/AlbumList";
+import { InfiniteReviews } from "../../components/resource/InfiniteReviews";
 import {
 	getFeed,
 	getNewReleases,

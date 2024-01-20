@@ -1,7 +1,7 @@
-import { Ratings, RatingsSkeleton } from "@/app/_components/Ratings";
-import { LinkTabs } from "@/app/_components/ui/LinkTabs";
-import { Tag } from "@/app/_components/ui/Tag";
 import { getAlbum } from "@/app/_trpc/cached";
+import { Ratings, RatingsSkeleton } from "@/components/Ratings";
+import { LinkTabs } from "@/components/ui/LinkTabs";
+import { Tag } from "@/components/ui/Tag";
 import { Resource } from "@/types/rating";
 import { Metadata } from "next";
 import Image from "next/image";
