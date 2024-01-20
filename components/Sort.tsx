@@ -6,7 +6,7 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/app/_components/ui/select";
+} from "@/components/ui/select";
 import { usePathname, useRouter } from "next/navigation";
 
 const Sort = ({

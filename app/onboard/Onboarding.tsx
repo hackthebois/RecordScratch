@@ -1,18 +1,18 @@
 "use client";
 
-import UserAvatar from "@/app/_components/UserAvatar";
-import { Button } from "@/app/_components/ui/Button";
+import { api } from "@/app/_trpc/react";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/Button";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormMessage,
-} from "@/app/_components/ui/Form";
-import { Input } from "@/app/_components/ui/Input";
-import { Tag } from "@/app/_components/ui/Tag";
-import { Textarea } from "@/app/_components/ui/Textarea";
-import { api } from "@/app/_trpc/react";
+} from "@/components/ui/Form";
+import { Input } from "@/components/ui/Input";
+import { Tag } from "@/components/ui/Tag";
+import { Textarea } from "@/components/ui/Textarea";
 import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";

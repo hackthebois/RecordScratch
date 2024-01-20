@@ -1,13 +1,9 @@
 "use client";
 
-import { buttonVariants } from "@/app/_components/ui/Button";
-import {
-	Dialog,
-	DialogContent,
-	DialogTrigger,
-} from "@/app/_components/ui/Dialog";
-import { Input } from "@/app/_components/ui/Input";
-import { ScrollArea } from "@/app/_components/ui/ScrollArea";
+import { buttonVariants } from "@/components/ui/Button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
@@ -15,7 +11,7 @@ import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { api } from "../_trpc/react";
+import { api } from "../app/_trpc/react";
 import { AlbumItem } from "./resource/album/AlbumItem";
 
 const ArtistItem = ({

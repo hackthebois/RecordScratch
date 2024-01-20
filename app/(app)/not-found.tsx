@@ -1,4 +1,4 @@
-import { buttonVariants } from "@/app/_components/ui/Button";
+import { buttonVariants } from "@/components/ui/Button";
 import Link from "next/link";
 
 const NotFound = () => {

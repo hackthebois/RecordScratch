@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/app/_components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { useClerk } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Review } from "@/app/_components/resource/Review";
+import { Review } from "@/components/resource/Review";
 import { Review as ReviewType } from "@/types/rating";
 import { Disc3 } from "lucide-react";
 import { useEffect, useState } from "react";

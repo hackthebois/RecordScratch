@@ -3,7 +3,7 @@
 import { Review as ReviewType } from "@/types/rating";
 import { Star } from "lucide-react";
 import Link from "next/link";
-import UserAvatar from "../UserAvatar";
+import { UserAvatar } from "../UserAvatar";
 import { AlbumItem } from "./album/AlbumItem";
 
 export const Review = ({ rating, profile, album, name }: ReviewType) => {

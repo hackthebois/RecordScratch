@@ -2,7 +2,7 @@ import { Profile } from "@/types/profile";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 
-const UserAvatar = ({
+export const UserAvatar = ({
 	imageUrl,
 	name,
 	size = 36,
@@ -42,5 +42,3 @@ const UserAvatar = ({
 		</Avatar>
 	);
 };
-
-export default UserAvatar;
