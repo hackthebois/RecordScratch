@@ -1,15 +1,10 @@
 import { ratings } from "@/server/db/schema";
 import { ResourceSchema } from "@/types/rating";
+import { SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
-import {
-	SpotifyAlbum,
-	SpotifyAlbumSchema,
-	SpotifyArtistSchema,
-	SpotifyTrackSchema,
-} from "types/spotify";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { appendReviewResource, spotifyFetch } from "../utils";
+import { appendReviewResource } from "../utils";
 
 export const resourceRouter = router({
 	rating: router({
@@ -77,11 +72,11 @@ export const resourceRouter = router({
 			)
 			.query(
 				async ({
-					ctx: { db, userId },
+					ctx: { db, spotify },
 					input: {
 						resource: { resourceId, category },
 						page = 1,
-						limit = 50,
+						limit = 25,
 					},
 				}) => {
 					const ratingList = await db.query.ratings.findMany({
@@ -99,7 +94,7 @@ export const resourceRouter = router({
 							profile: true,
 						},
 					});
-					return await appendReviewResource(ratingList, userId);
+					return await appendReviewResource(ratingList, spotify);
 				}
 			),
 		feed: publicProcedure
@@ -111,8 +106,8 @@ export const resourceRouter = router({
 			)
 			.query(
 				async ({
-					ctx: { db, userId },
-					input: { page = 1, limit = 50 },
+					ctx: { db, spotify },
+					input: { page = 1, limit = 25 },
 				}) => {
 					const ratingList = await db.query.ratings.findMany({
 						limit,
@@ -124,50 +119,25 @@ export const resourceRouter = router({
 							profile: true,
 						},
 					});
-					return await appendReviewResource(ratingList, userId);
+					return await appendReviewResource(ratingList, spotify);
 				}
 			),
 	}),
 	search: publicProcedure
 		.input(z.string().min(1))
-		.query(async ({ input: q, ctx: { userId } }) => {
-			const { data } = await spotifyFetch({
-				url: `/search?q=${q}&type=album,artist&limit=4`,
-				userId,
-			});
-			return z
-				.object({
-					albums: z.object({ items: SpotifyAlbumSchema.array() }),
-					artists: z.object({
-						items: SpotifyArtistSchema.array(),
-					}),
-				})
-				.parse(data);
+		.query(async ({ input: q, ctx: { spotify } }) => {
+			return await spotify.search(q, ["album", "artist"], undefined, 4);
 		}),
 	album: router({
 		get: publicProcedure
 			.input(z.string())
-			.query(async ({ input: albumId, ctx: { userId } }) => {
-				const { data } = await spotifyFetch({
-					url: `/albums/${albumId}`,
-					userId,
-				});
-
-				return SpotifyAlbumSchema.parse(data);
+			.query(async ({ input: albumId, ctx: { spotify } }) => {
+				return await spotify.albums.get(albumId);
 			}),
-		newReleases: publicProcedure.query(async ({ ctx: { userId } }) => {
-			const { data } = await spotifyFetch({
-				url: "/browse/new-releases",
-				userId,
-			});
-
-			return z
-				.object({
-					albums: z.object({ items: SpotifyAlbumSchema.array() }),
-				})
-				.parse(data).albums.items;
+		newReleases: publicProcedure.query(async ({ ctx: { spotify } }) => {
+			return await spotify.browse.getNewReleases();
 		}),
-		trending: publicProcedure.query(async ({ ctx: { db, userId } }) => {
+		trending: publicProcedure.query(async ({ ctx: { db, spotify } }) => {
 			const albums = await db
 				.select({
 					total: count(ratings.rating),
@@ -179,18 +149,9 @@ export const resourceRouter = router({
 				.orderBy(({ total }) => desc(total))
 				.limit(20);
 			if (albums.length === 0) return [];
-			const { data } = await spotifyFetch({
-				url:
-					"/albums/?ids=" + albums.map((a) => a.resourceId).join(","),
-				userId,
-			});
-			return z
-				.object({
-					albums: SpotifyAlbumSchema.array(),
-				})
-				.parse(data).albums;
+			return await spotify.albums.get(albums.map((a) => a.resourceId));
 		}),
-		top: publicProcedure.query(async ({ ctx: { db, userId } }) => {
+		top: publicProcedure.query(async ({ ctx: { db, spotify } }) => {
 			const albums = await db
 				.select({
 					average: avg(ratings.rating),
@@ -202,57 +163,38 @@ export const resourceRouter = router({
 				.orderBy(({ average }) => desc(average))
 				.limit(20);
 			if (albums.length === 0) return [];
-			const { data } = await spotifyFetch({
-				url:
-					"/albums/?ids=" + albums.map((a) => a.resourceId).join(","),
-				userId,
-			});
-			return z
-				.object({
-					albums: SpotifyAlbumSchema.array(),
-				})
-				.parse(data).albums;
+			return await spotify.albums.get(albums.map((a) => a.resourceId));
 		}),
 	}),
 	song: router({
 		get: publicProcedure
 			.input(z.string())
-			.query(async ({ input: songId, ctx: { userId } }) => {
-				const { data } = await spotifyFetch({
-					url: `/tracks/${songId}`,
-					userId,
-				});
-				return SpotifyTrackSchema.extend({
-					album: SpotifyAlbumSchema,
-				}).parse(data);
+			.query(async ({ input: songId, ctx: { spotify } }) => {
+				return await spotify.tracks.get(songId);
 			}),
 	}),
 	artist: router({
 		get: publicProcedure
 			.input(z.string())
-			.query(async ({ input: artistId, ctx: { userId } }) => {
-				const { data } = await spotifyFetch({
-					url: `/artists/${artistId}`,
-					userId,
-				});
-				return SpotifyArtistSchema.parse(data);
+			.query(async ({ input: artistId, ctx: { spotify } }) => {
+				return await spotify.artists.get(artistId);
 			}),
 		albums: publicProcedure
 			.input(z.string())
-			.query(async ({ input: artistId, ctx: { userId } }) => {
-				const albums: SpotifyAlbum[] = [];
+			.query(async ({ input: artistId, ctx: { userId, spotify } }) => {
+				const albums: SimplifiedAlbum[] = [];
 				const getAllAlbums = async (offset = 0) => {
-					const { data } = await spotifyFetch({
-						url: `/artists/${artistId}/albums?include_groups=album,single&offset=${offset}&limit=50`,
-						userId,
-					});
-					const { items } = z
-						.object({
-							items: SpotifyAlbumSchema.array(),
-						})
-						.parse(data);
-					albums.push(...items);
-					if (items.length !== 0) {
+					const newAlbums = await spotify.artists.albums(
+						artistId,
+						"album,single",
+						undefined,
+						50,
+						offset
+					);
+					albums.push(...newAlbums.items);
+					// TODO: handle this without the extra request for 0 (check next)
+					console.log(newAlbums.next);
+					if (newAlbums.items.length !== 0) {
 						await getAllAlbums(offset + 50);
 					}
 				};
@@ -261,16 +203,8 @@ export const resourceRouter = router({
 			}),
 		topTracks: publicProcedure
 			.input(z.string())
-			.query(async ({ input: artistId, ctx: { userId } }) => {
-				const { data } = await spotifyFetch({
-					url: `/artists/${artistId}/top-tracks?market=US`,
-					userId,
-				});
-				return z
-					.object({
-						tracks: SpotifyTrackSchema.array(),
-					})
-					.parse(data).tracks;
+			.query(async ({ input: artistId, ctx: { spotify } }) => {
+				return await spotify.artists.topTracks(artistId, "US");
 			}),
 	}),
 });

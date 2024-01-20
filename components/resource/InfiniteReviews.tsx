@@ -6,23 +6,30 @@ import { Disc3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
+export type GetInfiniteReviews = {
+	page: number;
+	limit: number;
+};
+
 export const InfiniteReviews = ({
 	initialReviews,
 	getReviews,
+	pageLimit,
 }: {
 	initialReviews: ReviewType[];
-	getReviews: ({ page }: { page: number }) => Promise<ReviewType[]>;
+	getReviews: (i: GetInfiniteReviews) => Promise<ReviewType[]>;
+	pageLimit: number;
 }) => {
 	const [reviews, setReviews] = useState<ReviewType[]>(initialReviews);
-	const [hasMore, setHasMore] = useState(true);
-	const [page, setPage] = useState(1);
+	const [hasMore, setHasMore] = useState(pageLimit === initialReviews.length);
+	const [page, setPage] = useState(2);
 	const { ref, inView } = useInView();
 
 	const fetchNextPage = async () => {
-		const newReviews = await getReviews({ page });
+		const newReviews = await getReviews({ page, limit: pageLimit });
 		setPage(page + 1);
 		setReviews([...reviews, ...newReviews]);
-		if (newReviews.length === 0) {
+		if (newReviews.length < pageLimit) {
 			setHasMore(false);
 		}
 	};
@@ -32,6 +39,8 @@ export const InfiniteReviews = ({
 			fetchNextPage();
 		}
 	}, [inView]);
+
+	console.log(hasMore, page);
 
 	return (
 		<>

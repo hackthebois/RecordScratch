@@ -1,51 +1,15 @@
-import { env } from "@/env.mjs";
 import { Profile } from "@/types/profile";
 import { Rating, Resource, Review } from "@/types/rating";
-import { TRPCError } from "@trpc/server";
-import {
-	SpotifyAlbum,
-	SpotifyAlbumSchema,
-	SpotifyTrackSchema,
-} from "types/spotify";
-import { z } from "zod";
-import { logServerEvent } from "../posthog";
-import { redis } from "./redis";
-
-export const getSpotifyToken = async () => {
-	const token = await redis.get(`spotify-token:${env.SPOTIFY_CLIENT}`);
-	if (token) return token;
-
-	const res = await fetch("https://accounts.spotify.com/api/token", {
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Authorization:
-				"Basic " +
-				Buffer.from(
-					env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET
-				).toString("base64"),
-		},
-		body: "grant_type=client_credentials",
-		method: "POST",
-	});
-	const data = await res.json();
-	const newToken = z
-		.object({ access_token: z.string() })
-		.parse(data).access_token;
-
-	await redis.set(`spotify-token:${env.SPOTIFY_CLIENT}`, newToken);
-	await redis.expire(`spotify-token:${env.SPOTIFY_CLIENT}`, 60 * 59);
-
-	return newToken;
-};
+import { Album, SimplifiedAlbum, SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 export const appendReviewResource = async (
 	ratingList: (Rating & { profile: Profile })[],
-	userId: string | null
+	spotify: SpotifyApi
 ): Promise<Review[]> => {
 	if (ratingList.length === 0) return [];
 
 	let resourceExtras: (Resource & {
-		album: SpotifyAlbum;
+		album: Album | SimplifiedAlbum;
 		name: string;
 	})[] = [];
 
@@ -53,17 +17,11 @@ export const appendReviewResource = async (
 	const songs = ratingList.filter((r) => r.category === "SONG");
 
 	if (albums.length !== 0) {
-		const { data: albumData } = await spotifyFetch({
-			url: "/albums/?ids=" + albums.map((a) => a.resourceId).join(","),
-			userId,
-		});
-		const parsedAlbums = z
-			.object({
-				albums: SpotifyAlbumSchema.array(),
-			})
-			.parse(albumData).albums;
+		const albumData = await spotify.albums.get(
+			albums.map((a) => a.resourceId)
+		);
 		resourceExtras.push(
-			...parsedAlbums.map((album) => ({
+			...albumData.map((album) => ({
 				resourceId: album.id,
 				category: "ALBUM" as Resource["category"],
 				album,
@@ -72,19 +30,11 @@ export const appendReviewResource = async (
 		);
 	}
 	if (songs.length !== 0) {
-		const { data: songData } = await spotifyFetch({
-			url: "/tracks/?ids=" + songs.map((a) => a.resourceId).join(","),
-			userId,
-		});
-		const parsedSongs = z
-			.object({
-				tracks: SpotifyTrackSchema.extend({
-					album: SpotifyAlbumSchema,
-				}).array(),
-			})
-			.parse(songData).tracks;
+		const songData = await spotify.tracks.get(
+			songs.map((a) => a.resourceId)
+		);
 		resourceExtras.push(
-			...parsedSongs.map((a) => ({
+			...songData.map((a) => ({
 				resourceId: a.id,
 				category: "SONG" as Resource["category"],
 				album: a.album,
@@ -108,43 +58,4 @@ export const appendReviewResource = async (
 				name: resource!.name,
 			};
 		});
-};
-
-export const spotifyFetch = async ({
-	url,
-	userId,
-}: {
-	url: string;
-	userId: string | null;
-}) => {
-	const spotifyToken = await getSpotifyToken();
-
-	const res = await fetch(`https://api.spotify.com/v1${url}`, {
-		headers: {
-			Authorization: `Bearer ${spotifyToken}`,
-		},
-	});
-
-	await logServerEvent("spotify request", {
-		distinctId: userId ?? "public",
-		properties: {
-			endpoint: url,
-		},
-	});
-
-	if (!res.ok) {
-		console.error(await res.text());
-		throw new TRPCError({
-			code: "INTERNAL_SERVER_ERROR",
-			message:
-				"Spotify API error: " +
-				res.statusText +
-				" (" +
-				res.status +
-				")",
-		});
-	}
-
-	const data: unknown = await res.json();
-	return { data, res };
 };

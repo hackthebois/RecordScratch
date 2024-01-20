@@ -1,5 +1,8 @@
 import { getDistribution, getProfile, getRecent } from "@/app/_trpc/cached";
-import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
+import {
+	GetInfiniteReviews,
+	InfiniteReviews,
+} from "@/components/resource/InfiniteReviews";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -24,16 +27,14 @@ const Page = async ({
 	const distribution = await getDistribution(profile.userId);
 	const max = Math.max(...distribution);
 
-	const getReviews = async ({ page }: { page: number }) => {
+	const getReviews = async (input: GetInfiniteReviews) => {
 		"use server";
 		return await getRecent({
 			userId: profile.userId,
 			rating: rating ? parseInt(rating) : undefined,
-			page,
+			...input,
 		});
 	};
-
-	const initialReviews = await getReviews({ page: 1 });
 
 	return (
 		<>
@@ -77,8 +78,9 @@ const Page = async ({
 			</div>
 			<InfiniteReviews
 				key={rating}
-				initialReviews={initialReviews}
+				initialReviews={await getReviews({ page: 1, limit: 10 })}
 				getReviews={getReviews}
+				pageLimit={10}
 			/>
 		</>
 	);

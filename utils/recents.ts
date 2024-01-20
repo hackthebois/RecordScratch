@@ -1,8 +1,8 @@
-import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
+import { Artist, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type Recent = SpotifyArtist | SpotifyAlbum;
+export type Recent = SimplifiedAlbum | Artist;
 
 type RecentStore = {
 	recents: Recent[];

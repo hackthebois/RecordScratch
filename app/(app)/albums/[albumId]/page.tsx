@@ -10,7 +10,7 @@ const Page = async ({
 }) => {
 	const album = await getAlbum(albumId);
 
-	return <SongTable songs={album.tracks?.items ?? []} />;
+	return <SongTable songs={album.tracks.items} />;
 };
 
 export default Page;

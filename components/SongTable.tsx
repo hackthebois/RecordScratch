@@ -1,8 +1,8 @@
 import { getRatingsList, getUserRatingList } from "@/app/_trpc/cached";
 import { Rating, Resource } from "@/types/rating";
-import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
+import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
 import { Suspense } from "react";
 import { Ratings, RatingsSkeleton } from "./Ratings";
 
@@ -10,7 +10,7 @@ const SongRatings = async ({
 	song,
 	resources,
 }: {
-	song: SpotifyTrack;
+	song: SimplifiedTrack | Track;
 	resources: Resource[];
 }) => {
 	const ratingsList = await getRatingsList(resources);
@@ -39,7 +39,7 @@ const SongRatings = async ({
 	);
 };
 
-const SongTable = async ({ songs }: { songs: SpotifyTrack[] }) => {
+const SongTable = async ({ songs }: { songs: SimplifiedTrack[] | Track[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: song.id,
 		category: "SONG",

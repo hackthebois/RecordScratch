@@ -7,13 +7,13 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
-import { SpotifyAlbum } from "@/types/spotify";
+import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
 import AlbumImage from "./AlbumImage";
 
 type Props = {
-	albums: SpotifyAlbum[];
+	albums: SimplifiedAlbum[] | Album[];
 	type?: "wrap" | "scroll";
 	field?: "date" | "artist";
 };
