@@ -9,8 +9,12 @@ import {
 } from "types/spotify";
 import { z } from "zod";
 import { logServerEvent } from "../posthog";
+import { redis } from "./redis";
 
 export const getSpotifyToken = async () => {
+	const token = await redis.get(`spotify-token:${env.SPOTIFY_CLIENT}`);
+	if (token) return token;
+
 	const res = await fetch("https://accounts.spotify.com/api/token", {
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded",
@@ -20,14 +24,18 @@ export const getSpotifyToken = async () => {
 					env.SPOTIFY_CLIENT + ":" + env.SPOTIFY_SECRET
 				).toString("base64"),
 		},
-		next: {
-			revalidate: 60 * 59,
-		},
 		body: "grant_type=client_credentials",
 		method: "POST",
 	});
 	const data = await res.json();
-	return z.object({ access_token: z.string() }).parse(data).access_token;
+	const newToken = z
+		.object({ access_token: z.string() })
+		.parse(data).access_token;
+
+	await redis.set(`spotify-token:${env.SPOTIFY_CLIENT}`, newToken);
+	await redis.expire(`spotify-token:${env.SPOTIFY_CLIENT}`, 60 * 59);
+
+	return newToken;
 };
 
 export const appendReviewResource = async (
