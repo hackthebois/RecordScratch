@@ -6,7 +6,11 @@ export const env = createEnv({
 		SPOTIFY_CLIENT: z.string().min(1),
 		SPOTIFY_SECRET: z.string().min(1),
 		DATABASE_URL: z.string().min(1),
-		NODE_ENV: z.string().min(1),
+		UPSTASH_REDIS_REST_URL: z.string().min(1),
+		UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
+		NODE_ENV: z
+			.enum(["development", "test", "production"])
+			.default("development"),
 	},
 	client: {
 		NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
@@ -14,7 +18,6 @@ export const env = createEnv({
 		NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().min(1),
 		NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().min(1),
 		NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().min(1),
-		NEXT_PUBLIC_SITE_URL: z.string().min(1),
 		NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1),
 		NEXT_PUBLIC_POSTHOG_HOST: z.string().min(1),
 	},
@@ -29,7 +32,6 @@ export const env = createEnv({
 			process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
 		NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
 			process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
-		NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
 		NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
 		NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
 	},

@@ -1,6 +1,7 @@
 "use client";
 
 import { env } from "@/env.mjs";
+import { getUrl } from "@/utils/url";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
 import posthog from "posthog-js";
@@ -9,7 +10,7 @@ import { TRPCReactProvider } from "./_trpc/react";
 
 if (typeof window !== "undefined") {
 	posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
-		api_host: env.NEXT_PUBLIC_SITE_URL + "/ingest",
+		api_host: getUrl() + "/ingest",
 		capture_pageview: false, // Disable automatic pageview capture, as we capture manually
 	});
 }

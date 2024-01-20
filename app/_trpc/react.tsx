@@ -5,8 +5,8 @@ import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 
-import { env } from "@/env.mjs";
 import { AppRouter } from "@/server/api/root";
+import { getUrl } from "@/utils/url";
 import SuperJSON from "superjson";
 
 export const api = createTRPCReact<AppRouter>();
@@ -24,7 +24,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 						(op.direction === "down" && op.result instanceof Error),
 				}),
 				unstable_httpBatchStreamLink({
-					url: `${env.NEXT_PUBLIC_SITE_URL}/api/trpc`,
+					url: `${getUrl()}/api/trpc`,
 				}),
 			],
 		})

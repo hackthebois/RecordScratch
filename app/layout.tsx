@@ -1,5 +1,5 @@
 import { PostHogIdentify } from "@/components/posthog/PostHogIdentify";
-import { env } from "@/env.mjs";
+import { getUrl } from "@/utils/url";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 	},
 	description:
 		"Ultimate music-rating and social hub. Find new music, rate your recent listens, and connect with fellow music enthusiasts.",
-	metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+	metadataBase: new URL(getUrl()),
 	openGraph: {
 		images: [banner.src],
 		siteName: "RecordScratch",

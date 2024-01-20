@@ -1,3 +1,4 @@
+import { getUrl } from "@/utils/url";
 import { MetadataRoute } from "next";
 
 const robots = (): MetadataRoute.Robots => {
@@ -7,7 +8,7 @@ const robots = (): MetadataRoute.Robots => {
 			allow: "/",
 			disallow: ["/albums", "/artists"],
 		},
-		sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
+		sitemap: `${getUrl()}/sitemap.xml`,
 	};
 };
 

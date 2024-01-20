@@ -1,5 +1,6 @@
 import { db } from "@/server/db/db";
 import { profile } from "@/server/db/schema";
+import { getUrl } from "@/utils/url";
 import { MetadataRoute } from "next";
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
@@ -12,7 +13,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
 	return [
 		{
-			url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
+			url: `${getUrl()}/`,
 			lastModified: new Date(),
 			changeFrequency: "daily",
 			priority: 1,
@@ -20,7 +21,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 		...handles.map(
 			({ handle }) =>
 				({
-					url: `${process.env.NEXT_PUBLIC_SITE_URL}/users/${handle}`,
+					url: `${getUrl()}/users/${handle}`,
 					lastModified: new Date(),
 					changeFrequency: "daily",
 					priority: 0.8,
