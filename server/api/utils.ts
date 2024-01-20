@@ -2,8 +2,6 @@ import { env } from "@/env.mjs";
 import { Profile } from "@/types/profile";
 import { Rating, Resource, Review } from "@/types/rating";
 import { TRPCError } from "@trpc/server";
-import * as jose from "jose";
-import { cookies } from "next/headers";
 import {
 	SpotifyAlbum,
 	SpotifyAlbumSchema,
@@ -141,33 +139,4 @@ export const spotifyFetch = async ({
 
 	const data: unknown = await res.json();
 	return { data, res };
-};
-
-const JWKS = jose.createLocalJWKSet({
-	keys: [
-		{
-			use: "sig",
-			kty: "RSA",
-			kid: "ins_2ZugwMdtbgoiwurhxIh6TF0oAWZ",
-			alg: "RS256",
-			n: "6P1Nh6C8_51Bvpyomq6i8tQvfp1uk8WzKhyFOFU0ffDpXzzNE5pnkyTPjtw5f5I1b1c8X-DYAmVhdWdYja1E_tlm_jbEGUGm4_u3htZgwqFTskR4CRCCa12p4o8QR40bhRawtoNW392rU1E9rKYkSzHG3el9sLKTJcKmgQ6xC9IPMz9-DkblgIDrJ0hYo_2uqyGgfKCKq0pAih6Oka4Ap9CiIVZJve4VKRaRHDqVLVOSmjn3g8D3EfGlT_EWtRvWIOyElX3hLfSb3l9TPg-fcfD77klk6lNyDhYu3LB-aX5FYo-VbuHWbNV13NiPU6tBhMGo5lIvadFxlaqeYlPMDw",
-			e: "AQAB",
-		},
-	],
-});
-
-export const getServerAuth = async () => {
-	const session = cookies().get("__session")?.value;
-
-	if (!session) return null;
-
-	try {
-		const { payload } = await jose.jwtVerify(session, JWKS);
-		return payload.sub ?? null;
-	} catch (e) {
-		if (e instanceof jose.errors.JWKSNoMatchingKey) {
-			console.error("ERROR:", e.code);
-		}
-		return null;
-	}
 };

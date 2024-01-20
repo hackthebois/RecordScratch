@@ -42,7 +42,6 @@
     "drizzle-orm": "^0.29.1",
     "drizzle-zod": "0.5.1",
     "embla-carousel-react": "^8.0.0-rc17",
-    "jose": "^5.2.0",
     "lucide-react": "^0.274.0",
     "mysql2": "^3.6.1",
     "next": "14.0.4",
