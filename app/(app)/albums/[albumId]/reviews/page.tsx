@@ -1,8 +1,12 @@
+import {
+	getAlbum,
+	getCommunityReviews,
+	getUserRating,
+} from "@/app/trpc/cached";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInWrapper } from "@/components/SignInWrapper";
 import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
 import { Button } from "@/components/ui/Button";
-import { getAlbum, getCommunityReviews, getUserRating } from "@/trpc/cached";
 import { Rating, Resource } from "@/types/rating";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Text } from "lucide-react";

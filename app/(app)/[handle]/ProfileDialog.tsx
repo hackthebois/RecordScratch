@@ -13,6 +13,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { updateProfile } from "@/app/actions";
+import { api } from "@/app/trpc/react";
 import UserAvatar from "@/components/UserAvatar";
 import {
 	Form,
@@ -24,7 +25,6 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { trpc } from "@/trpc/react";
 import {
 	Profile,
 	ProfileBioSchema,
@@ -76,7 +76,7 @@ export const ProfileDialog = ({
 	}, [image]);
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = trpc.user.profile.handleExists.useQuery(
+	const { data: handleExists } = api.user.profile.handleExists.useQuery(
 		debouncedHandle,
 		{
 			enabled: handle.length > 0,

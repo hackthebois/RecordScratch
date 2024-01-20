@@ -5,10 +5,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import banner from "../public/og-image.png";
-import { TRPCReactProvider } from "../trpc/react";
 import { PostHogProvider } from "./PostHogProvider";
 import { ThemeProvider } from "./ThemeProvider";
 import "./globals.css";
+import { TRPCReactProvider } from "./trpc/react";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],

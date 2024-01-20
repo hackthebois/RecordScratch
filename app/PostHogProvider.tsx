@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import posthog from "posthog-js";
 import { PostHogProvider as Provider } from "posthog-js/react";
 import { useEffect } from "react";
-import { trpc } from "../trpc/react";
+import { api } from "./trpc/react";
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== "undefined") {
@@ -17,7 +17,11 @@ if (typeof window !== "undefined") {
 
 const IdentifyUser = () => {
 	const { user } = useUser();
-	const { data: profile } = trpc.user.profile.me.useQuery();
+	const { data: profile } = api.user.profile.me.useQuery(undefined, {
+		refetchOnMount: false,
+		refetchOnWindowFocus: false,
+		refetchOnReconnect: false,
+	});
 
 	useEffect(() => {
 		if (user?.id && profile) {

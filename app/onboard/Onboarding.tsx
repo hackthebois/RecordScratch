@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/app/trpc/react";
 import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import {
@@ -12,7 +13,6 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
-import { trpc } from "@/trpc/react";
 import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";
@@ -76,7 +76,7 @@ export const Onboarding = () => {
 	const imageRef = useRef<HTMLInputElement>(null);
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = trpc.user.profile.handleExists.useQuery(
+	const { data: handleExists } = api.user.profile.handleExists.useQuery(
 		debouncedHandle,
 		{
 			enabled: handle.length > 0,

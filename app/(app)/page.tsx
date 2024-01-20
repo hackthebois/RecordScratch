@@ -5,7 +5,7 @@ import {
 	getNewReleases,
 	getTopRated,
 	getTrending,
-} from "../../trpc/cached";
+} from "../trpc/cached";
 
 const Page = async () => {
 	const newReleases = await getNewReleases();
