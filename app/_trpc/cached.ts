@@ -1,7 +1,7 @@
 "use server";
 import "server-only";
 
-import { api, publicApi } from "@/app/trpc/server";
+import { api, publicApi } from "@/app/_trpc/server";
 import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";

@@ -10,8 +10,8 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from "@/components/ui/AlertDialog";
-import { Button } from "@/components/ui/Button";
+} from "@/app/_components/ui/AlertDialog";
+import { Button } from "@/app/_components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -20,7 +20,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/Dialog";
+} from "@/app/_components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { deleteRatingAction, rateAction } from "@/app/actions";

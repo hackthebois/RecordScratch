@@ -1,5 +1,5 @@
-import { getDistribution, getProfile, getRecent } from "@/app/trpc/cached";
-import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
+import { InfiniteReviews } from "@/app/_components/resource/InfiniteReviews";
+import { getDistribution, getProfile, getRecent } from "@/app/_trpc/cached";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
