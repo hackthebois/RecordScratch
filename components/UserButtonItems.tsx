@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 
 import { revalidateUser } from "@/app/actions";
 import { useClerk, useUser } from "@clerk/nextjs";
+import { usePostHog } from "posthog-js/react";
 
 export const ThemeItem = () => {
 	const { theme, setTheme, systemTheme } = useTheme();
@@ -35,12 +36,15 @@ export const ThemeItem = () => {
 export const SignOutItem = () => {
 	const { signOut } = useClerk();
 	const { user } = useUser();
+	const posthog = usePostHog();
+
 	return (
 		<DropdownMenuItem
 			onClick={() => {
 				signOut();
 				if (user) revalidateUser(user.id);
 				user?.reload();
+				posthog.reset();
 			}}
 		>
 			<LogOut size={15} className="mr-1.5" />

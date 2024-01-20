@@ -6,6 +6,7 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { NextRequest } from "next/server";
 
 const createContext = async (req: NextRequest) => {
+	// @ts-expect-error
 	const { userId } = getAuth(req);
 	return createTRPCContext({
 		headers: req.headers,
