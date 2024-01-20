@@ -1,6 +1,7 @@
 import { db } from "@/server/db/db";
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
+import { spotify } from "./spotify";
 
 export const createTRPCContext = async (opts: {
 	headers: Headers;
@@ -8,6 +9,7 @@ export const createTRPCContext = async (opts: {
 }) => {
 	return {
 		db,
+		spotify,
 		...opts,
 	};
 };

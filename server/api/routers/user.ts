@@ -96,8 +96,8 @@ export const userRouter = router({
 		)
 		.query(
 			async ({
-				ctx: { db },
-				input: { userId, rating, page = 1, limit = 50 },
+				ctx: { db, spotify },
+				input: { userId, rating, page = 1, limit = 25 },
 			}) => {
 				const where = rating
 					? and(
@@ -115,7 +115,7 @@ export const userRouter = router({
 						profile: true,
 					},
 				});
-				return await appendReviewResource(ratingList, userId);
+				return await appendReviewResource(ratingList, spotify);
 			}
 		),
 	profile: router({

@@ -1,8 +1,8 @@
 import { ratings } from "@/server/db/schema";
+import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Profile } from "./profile";
-import { SpotifyAlbum } from "./spotify";
 
 export const ResourceRatingSchema = z.object({
 	average: z.string().nullable(),
@@ -44,6 +44,6 @@ export type CategoryType = z.infer<typeof CategorySchema>;
 export type Review = {
 	rating: Rating;
 	profile: Profile;
-	album: SpotifyAlbum;
+	album: Album | SimplifiedAlbum;
 	name: string;
 };

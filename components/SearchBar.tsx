@@ -4,9 +4,9 @@ import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { SpotifyAlbum, SpotifyArtist } from "@/types/spotify";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
+import { Artist } from "@spotify/web-api-ts-sdk";
 import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +18,7 @@ const ArtistItem = ({
 	artist,
 	onClick,
 }: {
-	artist: SpotifyArtist;
+	artist: Artist;
 	onClick: () => void;
 }) => {
 	const artistImage = artist.images?.find((i) => i.url);
@@ -163,7 +163,7 @@ const SearchBar = () => {
 									/>
 								) : (
 									<AlbumItem
-										album={recent as SpotifyAlbum}
+										album={recent}
 										name={recent.name}
 										category="ALBUM"
 										onClick={() => setOpen(false)}

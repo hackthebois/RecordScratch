@@ -1,5 +1,8 @@
 import AlbumList from "@/components/resource/album/AlbumList";
-import { InfiniteReviews } from "../../components/resource/InfiniteReviews";
+import {
+	GetInfiniteReviews,
+	InfiniteReviews,
+} from "../../components/resource/InfiniteReviews";
 import {
 	getFeed,
 	getNewReleases,
@@ -12,19 +15,16 @@ const Page = async () => {
 	const trending = await getTrending();
 	const top = await getTopRated();
 
-	const getReviews = async ({ page }: { page: number }) => {
+	const getReviews = async (input: GetInfiniteReviews) => {
 		"use server";
-		return await getFeed({
-			page,
-		});
+		return await getFeed(input);
 	};
-	const feed = await getReviews({ page: 1 });
 
 	return (
 		<div className="w-full">
 			<div className="mt-[2vh] flex flex-col">
 				<h2 className="mb-4">New Releases</h2>
-				<AlbumList albums={newReleases} />
+				<AlbumList albums={newReleases.albums.items} />
 			</div>
 			<div className="mt-[2vh] flex flex-col">
 				<h2 className="mb-4">Trending</h2>
@@ -35,7 +35,11 @@ const Page = async () => {
 				<AlbumList albums={top} />
 			</div>
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
-			<InfiniteReviews initialReviews={feed} getReviews={getReviews} />
+			<InfiniteReviews
+				initialReviews={await getReviews({ page: 1, limit: 25 })}
+				getReviews={getReviews}
+				pageLimit={25}
+			/>
 		</div>
 	);
 };

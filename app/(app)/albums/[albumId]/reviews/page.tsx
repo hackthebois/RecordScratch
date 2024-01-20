@@ -5,7 +5,10 @@ import {
 } from "@/app/_trpc/cached";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInWrapper } from "@/components/SignInWrapper";
-import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
+import {
+	GetInfiniteReviews,
+	InfiniteReviews,
+} from "@/components/resource/InfiniteReviews";
 import { Button } from "@/components/ui/Button";
 import { Rating, Resource } from "@/types/rating";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
@@ -30,11 +33,12 @@ const Page = async ({
 		userRating = await getUserRating(resource, userId);
 	}
 
-	const getReviews = async ({ page }: { page: number }) => {
+	const getReviews = async (input: GetInfiniteReviews) => {
 		"use server";
+		console.log(input);
 		return await getCommunityReviews({
+			...input,
 			resource,
-			page,
 		});
 	};
 
@@ -63,8 +67,9 @@ const Page = async ({
 				</SignedOut>
 			</div>
 			<InfiniteReviews
-				initialReviews={await getReviews({ page: 1 })}
+				initialReviews={await getReviews({ page: 1, limit: 10 })}
 				getReviews={getReviews}
+				pageLimit={10}
 			/>
 		</div>
 	);
