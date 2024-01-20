@@ -1,4 +1,4 @@
-import { getRatingsList, getUserRatingList } from "@/app/trpc/cached";
+import { getRatingsList, getUserRatingList } from "@/app/_trpc/cached";
 import { Rating, Resource } from "@/types/rating";
 import { SpotifyTrack } from "@/types/spotify";
 import { cn } from "@/utils/utils";

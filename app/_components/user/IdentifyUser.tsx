@@ -1,19 +1,7 @@
-"use client";
-
-import { env } from "@/env.mjs";
+import { api } from "@/app/_trpc/react";
 import { useUser } from "@clerk/nextjs";
 import posthog from "posthog-js";
-import { PostHogProvider as Provider } from "posthog-js/react";
 import { useEffect } from "react";
-import { api } from "./trpc/react";
-
-// Check that PostHog is client-side (used to handle Next.js SSR)
-if (typeof window !== "undefined") {
-	posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
-		api_host: env.NEXT_PUBLIC_SITE_URL + "/ingest",
-		capture_pageview: false, // Disable automatic pageview capture, as we capture manually
-	});
-}
 
 const IdentifyUser = () => {
 	const { user } = useUser();
@@ -42,15 +30,4 @@ const IdentifyUser = () => {
 	return null;
 };
 
-export const PostHogProvider = ({
-	children,
-}: {
-	children: React.ReactNode;
-}) => {
-	return (
-		<Provider client={posthog}>
-			{children}
-			<IdentifyUser />
-		</Provider>
-	);
-};
+export default IdentifyUser;

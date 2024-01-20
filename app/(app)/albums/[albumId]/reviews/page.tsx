@@ -1,12 +1,12 @@
+import { ReviewDialog } from "@/app/_components/ReviewDialog";
+import { SignInWrapper } from "@/app/_components/SignInWrapper";
+import { InfiniteReviews } from "@/app/_components/resource/InfiniteReviews";
+import { Button } from "@/app/_components/ui/Button";
 import {
 	getAlbum,
 	getCommunityReviews,
 	getUserRating,
-} from "@/app/trpc/cached";
-import { ReviewDialog } from "@/components/ReviewDialog";
-import { SignInWrapper } from "@/components/SignInWrapper";
-import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
-import { Button } from "@/components/ui/Button";
+} from "@/app/_trpc/cached";
 import { Rating, Resource } from "@/types/rating";
 import { SignedIn, SignedOut, auth } from "@clerk/nextjs";
 import { Text } from "lucide-react";

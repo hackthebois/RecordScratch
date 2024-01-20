@@ -1,15 +1,15 @@
-import { getMyProfile } from "@/app/trpc/cached";
+import { getMyProfile } from "@/app/_trpc/cached";
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
-import UserAvatar from "../UserAvatar";
-import { Button } from "../ui/Button";
+import UserAvatar from "../../UserAvatar";
+import { Button } from "../../ui/Button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "../ui/DropdownMenu";
+} from "../../ui/DropdownMenu";
 import { SignOutItem, ThemeItem } from "./Items";
 
 const UserButton = async () => {

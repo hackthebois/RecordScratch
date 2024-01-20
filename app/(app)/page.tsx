@@ -1,11 +1,11 @@
-import AlbumList from "@/components/resource/album/AlbumList";
-import { InfiniteReviews } from "../../components/resource/InfiniteReviews";
+import AlbumList from "@/app/_components/resource/album/AlbumList";
+import { InfiniteReviews } from "../_components/resource/InfiniteReviews";
 import {
 	getFeed,
 	getNewReleases,
 	getTopRated,
 	getTrending,
-} from "../trpc/cached";
+} from "../_trpc/cached";
 
 const Page = async () => {
 	const newReleases = await getNewReleases();

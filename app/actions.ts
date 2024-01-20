@@ -4,7 +4,7 @@ import { AppRouter } from "@/server/api/root";
 import { inferRouterInputs } from "@trpc/server";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { api } from "./trpc/server";
+import { api } from "./_trpc/server";
 
 export type RouterInput = inferRouterInputs<AppRouter>;
 

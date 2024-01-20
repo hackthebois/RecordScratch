@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/app/_components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -9,11 +9,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/Dialog";
+} from "@/app/_components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { RatingInput } from "@/app/_components/RatingInput";
 import { reviewAction } from "@/app/actions";
-import { RatingInput } from "@/components/RatingInput";
 import { Rating, Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

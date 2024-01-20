@@ -2,6 +2,8 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { Onboarding } from "./Onboarding";
 
+export const dynamic = "force-dynamic";
+
 const Page = () => {
 	const { sessionClaims } = auth();
 

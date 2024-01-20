@@ -1,7 +1,7 @@
-import SearchBar from "@/components/SearchBar";
-import SignInButton from "@/components/SignInButton";
-import UserButton from "@/components/UserButton";
-import { Button } from "@/components/ui/Button";
+import SearchBar from "@/app/_components/SearchBar";
+import SignInButton from "@/app/_components/SignInButton";
+import { Button } from "@/app/_components/ui/Button";
+import UserButton from "@/app/_components/user/UserButton";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Disc3 } from "lucide-react";
 import Link from "next/link";

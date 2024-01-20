@@ -1,5 +1,5 @@
-import { getArtistTopTracks } from "@/app/trpc/cached";
-import SongTable from "@/components/SongTable";
+import SongTable from "@/app/_components/SongTable";
+import { getArtistTopTracks } from "@/app/_trpc/cached";
 
 const Page = async ({
 	params: { artistId },

@@ -6,7 +6,7 @@ import {
 	CarouselItem,
 	CarouselNext,
 	CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/app/_components/ui/carousel";
 import { SpotifyAlbum } from "@/types/spotify";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";

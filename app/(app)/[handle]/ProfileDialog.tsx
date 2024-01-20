@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/app/_components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -9,12 +9,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/Dialog";
+} from "@/app/_components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { updateProfile } from "@/app/actions";
-import { api } from "@/app/trpc/react";
-import UserAvatar from "@/components/UserAvatar";
+import UserAvatar from "@/app/_components/UserAvatar";
 import {
 	Form,
 	FormControl,
@@ -22,9 +20,11 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "@/components/ui/Form";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
+} from "@/app/_components/ui/Form";
+import { Input } from "@/app/_components/ui/Input";
+import { Textarea } from "@/app/_components/ui/Textarea";
+import { api } from "@/app/_trpc/react";
+import { updateProfile } from "@/app/actions";
 import {
 	Profile,
 	ProfileBioSchema,

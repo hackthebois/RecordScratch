@@ -1,14 +1,11 @@
 import { env } from "@/env.mjs";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import banner from "../public/og-image.png";
-import { PostHogProvider } from "./PostHogProvider";
-import { ThemeProvider } from "./ThemeProvider";
+import Providers from "./Providers";
 import "./globals.css";
-import { TRPCReactProvider } from "./trpc/react";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -36,21 +33,7 @@ const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
 			<body className={`${montserrat.className} flex flex-col`}>
-				<ClerkProvider
-					appearance={{
-						variables: {
-							colorPrimary: "hsl(0 0% 9%)",
-							colorDanger: "hsl(0 84.2% 60.2%)",
-							borderRadius: "0.5rem",
-						},
-					}}
-				>
-					<TRPCReactProvider>
-						<ThemeProvider>
-							<PostHogProvider>{children}</PostHogProvider>
-						</ThemeProvider>
-					</TRPCReactProvider>
-				</ClerkProvider>
+				<Providers>{children}</Providers>
 				<Analytics />
 				<SpeedInsights />
 			</body>
