@@ -3,10 +3,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Montserrat } from "next/font/google";
-import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
-import { PostHogIdentify } from "./_posthog/PostHogIdentify";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -45,9 +43,9 @@ const RootLayout = ({ children }: Props) => {
 				<Providers>
 					{children}
 					<PostHogPageView />
-					<Suspense>
+					{/* <Suspense>
 						<PostHogIdentify />
-					</Suspense>
+					</Suspense> */}
 				</Providers>
 				<SpeedInsights />
 			</body>
