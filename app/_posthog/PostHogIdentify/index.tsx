@@ -1,4 +1,4 @@
-import { getMyProfile } from "@/app/_trpc/cached";
+import { getMyProfile } from "@/app/_api/cached";
 import { currentUser } from "@clerk/nextjs";
 import { unstable_noStore } from "next/cache";
 import { ClientIdentify } from "./ClientIdentify";

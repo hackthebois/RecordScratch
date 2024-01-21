@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs";
 import { unstable_noStore } from "next/cache";
 import { redirect } from "next/navigation";
-import { createProfile } from "../actions";
+import { createProfile } from "../_api/actions";
 import { Onboarding } from "./Onboarding";
 
 const Page = () => {

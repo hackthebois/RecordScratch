@@ -1,4 +1,4 @@
-import { getUserRating } from "@/app/_trpc/cached";
+import { getUserRating } from "@/app/_api/cached";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInWrapper } from "@/components/SignInWrapper";
 import { Button } from "@/components/ui/Button";
@@ -6,7 +6,7 @@ import { Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Text } from "lucide-react";
 import { unstable_noStore } from "next/cache";
-import { reviewAction } from "../actions";
+import { reviewAction } from "../_api/actions";
 
 export const ReviewButton = async ({
 	resource,
@@ -29,7 +29,7 @@ export const ReviewButton = async ({
 		);
 	}
 
-	const userRating = await getUserRating(resource);
+	const userRating = await getUserRating(resource, userId);
 
 	return (
 		<ReviewDialog

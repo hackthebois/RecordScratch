@@ -1,4 +1,4 @@
-import { profile } from "@/server/db/schema";
+import { profile } from "@/db/schema";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 

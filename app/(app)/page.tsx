@@ -2,8 +2,12 @@ import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
 import AlbumList from "@/components/resource/album/AlbumList";
 import { unstable_noStore } from "next/cache";
 import { Suspense } from "react";
-import { getFeed } from "../_trpc/cached";
-import { publicApi } from "../_trpc/server";
+import {
+	getFeed,
+	getNewReleases,
+	getTopRated,
+	getTrending,
+} from "../_api/cached";
 
 const Feed = async () => {
 	unstable_noStore();
@@ -22,9 +26,9 @@ const Feed = async () => {
 };
 
 const Page = async () => {
-	const newReleases = await publicApi.resource.album.newReleases.query();
-	const trending = await publicApi.resource.album.trending.query();
-	const top = await publicApi.resource.album.top.query();
+	const newReleases = await getNewReleases();
+	const trending = await getTrending();
+	const top = await getTopRated();
 
 	return (
 		<div className="w-full">

@@ -1,5 +1,5 @@
+import { getAlbum, getCommunityReviews } from "@/app/_api/cached";
 import { ReviewButton } from "@/app/_auth/ReviewButton";
-import { getAlbum, getCommunityReviews } from "@/app/_trpc/cached";
 import {
 	GetInfiniteReviews,
 	InfiniteReviews,
@@ -22,7 +22,6 @@ const Page = async ({
 
 	const getReviews = async (input: GetInfiniteReviews) => {
 		"use server";
-		console.log(input);
 		return await getCommunityReviews({
 			...input,
 			resource,

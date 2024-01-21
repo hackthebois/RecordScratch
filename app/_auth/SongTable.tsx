@@ -1,5 +1,5 @@
+import { getRatingsList, getUserRatingList } from "@/app/_api/cached";
 import { RateButton } from "@/app/_auth/RateButton";
-import { getRatingsList, getUserRatingList } from "@/app/_trpc/cached";
 import { RateForm, Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
@@ -8,7 +8,7 @@ import { revalidatePath, unstable_noStore } from "next/cache";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
-import { api } from "../_trpc/server";
+import { deleteRatingAction, rateAction } from "../_api/actions";
 
 const SongRatings = async ({
 	song,
@@ -25,15 +25,15 @@ const SongRatings = async ({
 	let userRatingsList: Rating[] = [];
 	const { userId } = auth();
 	if (userId) {
-		userRatingsList = await getUserRatingList(resources);
+		userRatingsList = await getUserRatingList(resources, userId);
 	}
 
 	const onRate = async (input: RateForm) => {
 		"use server";
 		if (input.rating === 0) {
-			await api.user.rating.delete.mutate(input);
+			await deleteRatingAction(input);
 		} else {
-			await api.user.rating.rate.mutate(input);
+			await rateAction(input);
 		}
 		revalidatePath(
 			resource.category === "ALBUM"
@@ -71,7 +71,6 @@ const SongTable = async ({
 	songs: SimplifiedTrack[] | Track[];
 	resource: Resource;
 }) => {
-	console.log("RESOURCE", resource);
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: song.id,
 		category: "SONG",
