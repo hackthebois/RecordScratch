@@ -6,6 +6,7 @@ module.exports = withBundleAnalyzer({
 	reactStrictMode: true,
 	experimental: {
 		scrollRestoration: true,
+		ppr: true,
 	},
 	images: {
 		unoptimized: true,

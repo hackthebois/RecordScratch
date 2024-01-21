@@ -5,7 +5,7 @@ import { api, publicApi } from "@/app/_trpc/server";
 import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
-import { RouterInput } from "../actions";
+import { RouterInput } from "./types";
 
 // PUBLIC
 const spotifyRevalidate = 60 * 60 * 24; // 24 hours

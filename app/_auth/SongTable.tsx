@@ -1,10 +1,12 @@
+import { RateButton } from "@/app/_auth/RateButton";
 import { getRatingsList, getUserRatingList } from "@/app/_trpc/cached";
 import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
 import { Suspense } from "react";
-import { Ratings, RatingsSkeleton } from "./Ratings";
+import { RatingInfo } from "../../components/ui/RatingInfo";
+import { Skeleton } from "../../components/ui/skeleton";
 
 const SongRatings = async ({
 	song,
@@ -22,20 +24,21 @@ const SongRatings = async ({
 	}
 
 	return (
-		<Ratings
-			resource={{
-				resourceId: song.id,
-				category: "SONG",
-			}}
-			name={song.name}
-			type="list"
-			initial={{
-				rating: ratingsList.find((r) => r.resourceId === song.id),
-				userRating: userRatingsList.find(
+		<>
+			<RatingInfo
+				rating={ratingsList.find((r) => r.resourceId === song.id)!}
+			/>
+			<RateButton
+				resource={{
+					resourceId: song.id,
+					category: "SONG",
+				}}
+				name={song.name}
+				initialUserRating={userRatingsList.find(
 					(r) => r.resourceId === song.id
-				),
-			}}
-		/>
+				)}
+			/>
+		</>
 	);
 };
 
@@ -69,7 +72,7 @@ const SongTable = async ({ songs }: { songs: SimplifiedTrack[] | Track[] }) => {
 									.join(", ")}
 							</p>
 						</div>
-						<Suspense fallback={<RatingsSkeleton type="list" />}>
+						<Suspense fallback={<Skeleton className="h-8 w-24" />}>
 							<SongRatings song={song} resources={resources} />
 						</Suspense>
 					</div>

@@ -1,5 +1,6 @@
+import SongTable from "@/app/_auth/SongTable";
 import { getAlbum } from "@/app/_trpc/cached";
-import SongTable from "@/components/SongTable";
+import { Suspense } from "react";
 
 const Page = async ({
 	params: { albumId },
@@ -10,7 +11,11 @@ const Page = async ({
 }) => {
 	const album = await getAlbum(albumId);
 
-	return <SongTable songs={album.tracks.items} />;
+	return (
+		<Suspense>
+			<SongTable songs={album.tracks.items} />
+		</Suspense>
+	);
 };
 
 export default Page;
