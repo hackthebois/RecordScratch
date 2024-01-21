@@ -5,8 +5,6 @@ import { Suspense } from "react";
 import { getFeed } from "../_trpc/cached";
 import { publicApi } from "../_trpc/server";
 
-export const revalidate = 60 * 60 * 24; // 24 hours
-
 const Feed = async () => {
 	unstable_noStore();
 	const initialFeed = await getFeed({

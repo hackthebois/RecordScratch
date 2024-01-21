@@ -3,8 +3,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Montserrat } from "next/font/google";
+import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
+import { PostHogIdentify } from "./_posthog/PostHogIdentify";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -36,17 +38,22 @@ const PostHogPageView = dynamic(
 	}
 );
 
+export const runtime = "edge";
+export const preferredRegion = "cle1";
+
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
 			<body className={`${montserrat.className} flex flex-col`}>
-				<Providers>
-					{children}
-					<PostHogPageView />
-					{/* <Suspense>
-						<PostHogIdentify />
-					</Suspense> */}
-				</Providers>
+				<Suspense>
+					<Providers>
+						{children}
+						<PostHogPageView />
+						<Suspense>
+							<PostHogIdentify />
+						</Suspense>
+					</Providers>
+				</Suspense>
 				<SpeedInsights />
 			</body>
 		</html>
