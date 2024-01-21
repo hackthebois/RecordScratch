@@ -1,7 +1,9 @@
-import { getAlbum } from "@/app/_trpc/cached";
-import { Ratings, RatingsSkeleton } from "@/components/Ratings";
+import { RateButton } from "@/app/_auth/RateButton";
+import { getAlbum, getRating } from "@/app/_trpc/cached";
 import { LinkTabs } from "@/components/ui/LinkTabs";
+import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/rating";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -28,6 +30,17 @@ export async function generateMetadata({
 	};
 }
 
+const AlbumRatings = async ({ resource }: { resource: Resource }) => {
+	const rating = await getRating(resource);
+
+	return (
+		<div className="flex items-center gap-4">
+			<RatingInfo rating={rating} />
+			<RateButton resource={resource} />
+		</div>
+	);
+};
+
 const Layout = async ({
 	params: { albumId },
 	children,
@@ -39,11 +52,6 @@ const Layout = async ({
 }) => {
 	const album = await getAlbum(albumId);
 	const isSingle = album.album_type === "single";
-
-	const resource: Resource = {
-		category: "ALBUM",
-		resourceId: albumId,
-	};
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -71,8 +79,13 @@ const Layout = async ({
 							</Tag>
 						)}
 					</div>
-					<Suspense fallback={<RatingsSkeleton />}>
-						<Ratings resource={resource} name={album.name} />
+					<Suspense fallback={<Skeleton className="h-10 w-40" />}>
+						<AlbumRatings
+							resource={{
+								resourceId: albumId,
+								category: "ALBUM",
+							}}
+						/>
 					</Suspense>
 					<div className="flex gap-3">
 						{album.artists.map((artist, index) => (

@@ -23,7 +23,7 @@ export const resourceRouter = router({
 							eq(ratings.category, category)
 						)
 					);
-				return rating.length ? { ...rating[0], resourceId } : null;
+				return { ...rating[0], resourceId };
 			}),
 		getList: publicProcedure
 			.input(ResourceSchema.array())
@@ -53,14 +53,12 @@ export const resourceRouter = router({
 					})
 					.from(ratings)
 					.where(
-						and(
-							inArray(
-								ratings.resourceId,
-								resources.map((a) => a.resourceId)
-							)
+						inArray(
+							ratings.resourceId,
+							resources.map((a) => a.resourceId)
 						)
 					);
-				return rating.length ? { ...rating[0] } : null;
+				return rating[0];
 			}),
 		community: publicProcedure
 			.input(

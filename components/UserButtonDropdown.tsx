@@ -10,10 +10,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/Dialog";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LogOut, Moon, Sun, UserCog } from "lucide-react";
+import { useTheme } from "next-themes";
 
 import { api } from "@/app/_trpc/react";
-import { updateProfile } from "@/app/actions";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
 	Form,
@@ -25,17 +33,70 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { RouterInputs } from "@/server/api";
 import {
 	Profile,
 	ProfileBioSchema,
 	UpdateProfileSchema,
 } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
-import { useUser } from "@clerk/nextjs";
 import { AtSign } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { useClerk, useUser } from "@clerk/nextjs";
+import Link from "next/link";
+import { usePostHog } from "posthog-js/react";
+
+export const ThemeItem = () => {
+	const { theme, setTheme, systemTheme } = useTheme();
+
+	const currentTheme = theme === "system" ? systemTheme : theme;
+
+	return (
+		<DropdownMenuItem
+			onClick={(e) => {
+				e.preventDefault();
+				setTheme(theme === "light" ? "dark" : "light");
+			}}
+		>
+			<Sun
+				size={15}
+				className="mr-1.5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+			/>
+			<Moon
+				size={15}
+				className="absolute mr-1.5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+			/>
+			{currentTheme === "dark" ? "Dark" : "Light"}
+		</DropdownMenuItem>
+	);
+};
+
+export const SignOutItem = ({
+	revalidateUser,
+}: {
+	revalidateUser: (id: string) => void;
+}) => {
+	const { signOut } = useClerk();
+	const { user } = useUser();
+	const posthog = usePostHog();
+
+	return (
+		<DropdownMenuItem
+			onClick={() => {
+				signOut();
+				if (user) revalidateUser(user.id);
+				user?.reload();
+				posthog.reset();
+			}}
+		>
+			<LogOut size={15} className="mr-1.5" />
+			Sign out
+		</DropdownMenuItem>
+	);
+};
 
 const UpdateProfileForm = UpdateProfileSchema.omit({
 	imageUrl: true,
@@ -45,11 +106,25 @@ const UpdateProfileForm = UpdateProfileSchema.omit({
 });
 type UpdateProfile = z.infer<typeof UpdateProfileForm>;
 
-export const ProfileDialog = ({
-	profile: { bio, name, imageUrl: defaultImageUrl, handle: defaultHandle },
+export const UserButtonDropdown = ({
+	profile,
+	updateProfile,
+	revalidateUser,
 }: {
 	profile: Profile;
+	updateProfile: (
+		input: RouterInputs["user"]["profile"]["update"],
+		userId: string,
+		oldHandle?: string
+	) => void;
+	revalidateUser: (id: string) => void;
 }) => {
+	const {
+		bio,
+		name,
+		imageUrl: defaultImageUrl,
+		handle: defaultHandle,
+	} = profile;
 	const [open, setOpen] = useState(false);
 	const { user } = useUser();
 	const imageRef = useRef<HTMLInputElement>(null);
@@ -128,11 +203,42 @@ export const ProfileDialog = ({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button variant="outline" className="mt-4">
-					Edit Profile
-				</Button>
-			</DialogTrigger>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						className="relative h-[36px] w-[36px] rounded-full"
+					>
+						<UserAvatar {...profile} size={36} />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent
+					side="bottom"
+					sideOffset={18}
+					className="absolute -right-5 w-40"
+				>
+					<DropdownMenuItem asChild>
+						<Link
+							href={`/${profile.handle}`}
+							className="flex flex-col gap-1"
+						>
+							<span className="w-full">{profile.name}</span>
+							<span className="w-full text-xs text-muted-foreground">
+								Go to profile
+							</span>
+						</Link>
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem asChild>
+						<DialogTrigger className="flex w-full flex-row">
+							<UserCog size={15} className="mr-1.5" />
+							Edit Profile
+						</DialogTrigger>
+					</DropdownMenuItem>
+					<ThemeItem />
+					<SignOutItem revalidateUser={revalidateUser} />
+				</DropdownMenuContent>
+			</DropdownMenu>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle className="text-2xl">Edit Profile</DialogTitle>

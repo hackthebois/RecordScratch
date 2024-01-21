@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { reviewAction } from "@/app/actions";
 import { RatingInput } from "@/components/RatingInput";
 import { Rating, Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
 import { useEffect, useState } from "react";
@@ -25,11 +24,13 @@ export const ReviewDialog = ({
 	initialRating,
 	children,
 	name,
+	reviewAction,
 }: {
 	resource: Resource;
 	name?: string;
 	initialRating?: Rating;
 	children: React.ReactNode;
+	reviewAction: (rating: ReviewForm) => void;
 }) => {
 	const [open, setOpen] = useState(false);
 

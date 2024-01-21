@@ -1,24 +1,30 @@
+import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
 import AlbumList from "@/components/resource/album/AlbumList";
-import {
-	GetInfiniteReviews,
-	InfiniteReviews,
-} from "../../components/resource/InfiniteReviews";
-import {
-	getFeed,
-	getNewReleases,
-	getTopRated,
-	getTrending,
-} from "../_trpc/cached";
+import { unstable_noStore } from "next/cache";
+import { Suspense } from "react";
+import { getFeed } from "../_trpc/cached";
+import { publicApi } from "../_trpc/server";
+
+const Feed = async () => {
+	unstable_noStore();
+	const initialFeed = await getFeed({
+		page: 1,
+		limit: 25,
+	});
+
+	return (
+		<InfiniteReviews
+			initialReviews={initialFeed}
+			getReviews={getFeed}
+			pageLimit={25}
+		/>
+	);
+};
 
 const Page = async () => {
-	const newReleases = await getNewReleases();
-	const trending = await getTrending();
-	const top = await getTopRated();
-
-	const getReviews = async (input: GetInfiniteReviews) => {
-		"use server";
-		return await getFeed(input);
-	};
+	const newReleases = await publicApi.resource.album.newReleases.query();
+	const trending = await publicApi.resource.album.trending.query();
+	const top = await publicApi.resource.album.top.query();
 
 	return (
 		<div className="w-full">
@@ -35,11 +41,9 @@ const Page = async () => {
 				<AlbumList albums={top} />
 			</div>
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
-			<InfiniteReviews
-				initialReviews={await getReviews({ page: 1, limit: 25 })}
-				getReviews={getReviews}
-				pageLimit={25}
-			/>
+			<Suspense fallback={null}>
+				<Feed />
+			</Suspense>
 		</div>
 	);
 };

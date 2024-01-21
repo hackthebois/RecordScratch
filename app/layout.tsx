@@ -1,4 +1,3 @@
-import { PostHogIdentify } from "@/components/posthog/PostHogIdentify";
 import { getUrl } from "@/utils/url";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
@@ -7,6 +6,7 @@ import { Montserrat } from "next/font/google";
 import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
+import { PostHogIdentify } from "./_posthog/PostHogIdentify";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -32,11 +32,14 @@ type Props = {
 };
 
 const PostHogPageView = dynamic(
-	() => import("@/components/posthog/PostHogPageView"),
+	() => import("@/app/_posthog/PostHogPageView"),
 	{
 		ssr: false,
 	}
 );
+
+export const runtime = "edge";
+export const preferredRegion = "cle1";
 
 const RootLayout = ({ children }: Props) => {
 	return (
@@ -46,7 +49,9 @@ const RootLayout = ({ children }: Props) => {
 					<Providers>
 						{children}
 						<PostHogPageView />
-						<PostHogIdentify />
+						<Suspense>
+							<PostHogIdentify />
+						</Suspense>
 					</Providers>
 				</Suspense>
 				<SpeedInsights />
