@@ -1,10 +1,6 @@
-import { PostHogIdentify } from "@/components/posthog/PostHogIdentify";
 import { getUrl } from "@/utils/url";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Montserrat } from "next/font/google";
-import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
 import "./globals.css";
@@ -31,25 +27,25 @@ type Props = {
 	children: React.ReactNode;
 };
 
-const PostHogPageView = dynamic(
-	() => import("@/components/posthog/PostHogPageView"),
-	{
-		ssr: false,
-	}
-);
+// const PostHogPageView = dynamic(
+// 	() => import("@/app/_posthog/PostHogPageView"),
+// 	{
+// 		ssr: false,
+// 	}
+// );
 
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
 			<body className={`${montserrat.className} flex flex-col`}>
-				<Suspense>
-					<Providers>
-						{children}
+				<Providers>
+					{children}
+					{/* <Suspense>
 						<PostHogPageView />
 						<PostHogIdentify />
-					</Providers>
-				</Suspense>
-				<SpeedInsights />
+					</Suspense> */}
+				</Providers>
+				{/* <SpeedInsights /> */}
 			</body>
 		</html>
 	);

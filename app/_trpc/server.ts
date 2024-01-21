@@ -2,12 +2,13 @@ import "server-only";
 
 import { AppRouter, appRouter } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
-import { auth } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 import { TRPCClientError, createTRPCProxyClient } from "@trpc/client";
 import { callProcedure } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { type TRPCErrorResponse } from "@trpc/server/rpc";
 import { headers } from "next/headers";
+import { NextRequest } from "next/server";
 import { cache } from "react";
 import SuperJSON from "superjson";
 
@@ -17,14 +18,17 @@ const createContext = cache(() => {
 
 	return createTRPCContext({
 		headers: heads,
-		userId: auth().userId,
+		userId: null,
 	});
 });
 
 const createPublicContext = cache(() => {
 	return createTRPCContext({
 		headers: new Headers({ cookie: "", "x-trpc-source": "rsc" }),
-		userId: null,
+		userId: getAuth(
+			// @ts-expect-error
+			new NextRequest("https://notused.com", { headers: headers() })
+		).userId,
 	});
 });
 

@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createProfile } from "../actions";
+import { RouterInput } from "../_trpc/types";
 
 const SlideWrapper = ({
 	page,
@@ -57,7 +57,13 @@ export const OnboardSchema = CreateProfileSchema.omit({
 });
 export type Onboard = z.infer<typeof OnboardSchema>;
 
-export const Onboarding = () => {
+export const Onboarding = ({
+	createProfile,
+}: {
+	createProfile: (
+		profile: RouterInput["user"]["profile"]["create"]
+	) => Promise<void>;
+}) => {
 	const [page, setPage] = useState(0);
 	const { user } = useUser();
 	const router = useRouter();

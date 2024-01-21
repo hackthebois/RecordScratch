@@ -13,7 +13,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { api } from "@/app/_trpc/react";
-import { updateProfile } from "@/app/actions";
+import { RouterInput } from "@/app/_trpc/types";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
 	Form,
@@ -47,8 +47,14 @@ type UpdateProfile = z.infer<typeof UpdateProfileForm>;
 
 export const ProfileDialog = ({
 	profile: { bio, name, imageUrl: defaultImageUrl, handle: defaultHandle },
+	updateProfile,
 }: {
 	profile: Profile;
+	updateProfile: (
+		input: RouterInput["user"]["profile"]["update"],
+		userId: string,
+		oldHandle?: string
+	) => void;
 }) => {
 	const [open, setOpen] = useState(false);
 	const { user } = useUser();

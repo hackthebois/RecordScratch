@@ -4,7 +4,6 @@ import { DropdownMenuItem } from "@/components/ui/DropdownMenu";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { revalidateUser } from "@/app/actions";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { usePostHog } from "posthog-js/react";
 
@@ -33,7 +32,11 @@ export const ThemeItem = () => {
 	);
 };
 
-export const SignOutItem = () => {
+export const SignOutItem = ({
+	revalidateUser,
+}: {
+	revalidateUser: (id: string) => void;
+}) => {
 	const { signOut } = useClerk();
 	const { user } = useUser();
 	const posthog = usePostHog();

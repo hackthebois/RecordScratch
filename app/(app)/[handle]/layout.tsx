@@ -1,10 +1,10 @@
+import { EditProfileButton } from "@/app/_auth/EditProfileButton";
 import { getProfile } from "@/app/_trpc/cached";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
-import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProfileDialog } from "./ProfileDialog";
+import { Suspense } from "react";
 
 export async function generateMetadata({
 	params: { handle },
@@ -37,7 +37,6 @@ const Layout = async ({
 	children: React.ReactNode;
 }) => {
 	const profile = await getProfile(handle);
-	const { userId } = auth();
 
 	if (!profile) {
 		notFound();
@@ -60,9 +59,9 @@ const Layout = async ({
 					<p className="text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
-					{profile.userId === userId && (
-						<ProfileDialog profile={profile} />
-					)}
+					<Suspense fallback={null}>
+						<EditProfileButton handle={handle} />
+					</Suspense>
 				</div>
 			</div>
 			<LinkTabs

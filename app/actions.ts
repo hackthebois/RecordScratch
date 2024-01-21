@@ -1,12 +1,11 @@
 "use server";
 
-import { AppRouter } from "@/server/api/root";
-import { inferRouterInputs } from "@trpc/server";
+import "server-only";
+
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { api } from "./_trpc/server";
-
-export type RouterInput = inferRouterInputs<AppRouter>;
+import { RouterInput } from "./_trpc/types";
 
 export const rateAction = async (
 	input: RouterInput["user"]["rating"]["rate"]
