@@ -2,7 +2,6 @@ import SignInButton from "@/components/SignInButton";
 import { UserButtonDropdown } from "@/components/UserButtonDropdown";
 import { auth } from "@clerk/nextjs";
 import { unstable_noStore } from "next/cache";
-import AuthProvider from "../AuthProvider";
 import { getMyProfile } from "../_trpc/cached";
 import { revalidateUser, updateProfile } from "../actions";
 
@@ -11,11 +10,7 @@ export const UserButton = async () => {
 	const { userId } = auth();
 
 	if (!userId) {
-		return (
-			<AuthProvider>
-				<SignInButton />
-			</AuthProvider>
-		);
+		return <SignInButton />;
 	}
 
 	const profile = await getMyProfile();
@@ -25,13 +20,11 @@ export const UserButton = async () => {
 	}
 
 	return (
-		<AuthProvider>
-			<UserButtonDropdown
-				profile={profile}
-				updateProfile={updateProfile}
-				revalidateUser={revalidateUser}
-			/>
-		</AuthProvider>
+		<UserButtonDropdown
+			profile={profile}
+			updateProfile={updateProfile}
+			revalidateUser={revalidateUser}
+		/>
 	);
 };
 

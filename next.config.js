@@ -4,9 +4,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 module.exports = withBundleAnalyzer({
 	reactStrictMode: true,
-	experimental: {
-		ppr: true,
-	},
 	images: {
 		unoptimized: true,
 		remotePatterns: [
