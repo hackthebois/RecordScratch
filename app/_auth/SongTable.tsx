@@ -1,20 +1,23 @@
 import { RateButton } from "@/app/_auth/RateButton";
 import { getRatingsList, getUserRatingList } from "@/app/_trpc/cached";
-import { Rating, Resource } from "@/types/rating";
+import { RateForm, Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
-import { unstable_noStore } from "next/cache";
+import { revalidatePath, unstable_noStore } from "next/cache";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
+import { api } from "../_trpc/server";
 
 const SongRatings = async ({
 	song,
 	resources,
+	resource,
 }: {
 	song: SimplifiedTrack | Track;
 	resources: Resource[];
+	resource: Resource;
 }) => {
 	unstable_noStore();
 	const ratingsList = await getRatingsList(resources);
@@ -24,6 +27,20 @@ const SongRatings = async ({
 	if (userId) {
 		userRatingsList = await getUserRatingList(resources);
 	}
+
+	const onRate = async (input: RateForm) => {
+		"use server";
+		if (input.rating === 0) {
+			await api.user.rating.delete.mutate(input);
+		} else {
+			await api.user.rating.rate.mutate(input);
+		}
+		revalidatePath(
+			resource.category === "ALBUM"
+				? `/albums/${resource.resourceId}`
+				: `/artists/${resource.resourceId}`
+		);
+	};
 
 	return (
 		<>
@@ -36,16 +53,25 @@ const SongRatings = async ({
 					resourceId: song.id,
 					category: "SONG",
 				}}
+				onRate={onRate}
 				name={song.name}
-				initialUserRating={userRatingsList.find(
-					(r) => r.resourceId === song.id
-				)}
+				userRating={
+					userRatingsList.find((r) => r.resourceId === song.id) ??
+					null
+				}
 			/>
 		</>
 	);
 };
 
-const SongTable = async ({ songs }: { songs: SimplifiedTrack[] | Track[] }) => {
+const SongTable = async ({
+	songs,
+	resource,
+}: {
+	songs: SimplifiedTrack[] | Track[];
+	resource: Resource;
+}) => {
+	console.log("RESOURCE", resource);
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: song.id,
 		category: "SONG",
@@ -76,7 +102,11 @@ const SongTable = async ({ songs }: { songs: SimplifiedTrack[] | Track[] }) => {
 							</p>
 						</div>
 						<Suspense fallback={<Skeleton className="h-8 w-24" />}>
-							<SongRatings song={song} resources={resources} />
+							<SongRatings
+								song={song}
+								resources={resources}
+								resource={resource}
+							/>
 						</Suspense>
 					</div>
 				);

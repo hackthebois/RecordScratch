@@ -3,29 +3,22 @@
 import "server-only";
 
 import { RouterInputs } from "@/server/api";
+import { Resource } from "@/types/rating";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { api } from "./_trpc/server";
+import { api, publicApi } from "./_trpc/server";
 
-export const rateAction = async (
-	input: RouterInputs["user"]["rating"]["rate"]
-) => {
-	await api.user.rating.rate.mutate(input);
-	revalidateTag(input.resourceId);
-};
-
-export const deleteRatingAction = async (
-	input: RouterInputs["user"]["rating"]["delete"]
-) => {
-	await api.user.rating.delete.mutate(input);
-	revalidateTag(input.resourceId);
+const invalidateResource = async (resource: Resource) => {
+	await publicApi.resource.rating.get.revalidate(resource);
+	await publicApi.resource.rating.getListAverage.revalidate([resource]);
 };
 
 export const reviewAction = async (
 	input: RouterInputs["user"]["rating"]["review"]
 ) => {
 	await api.user.rating.review.mutate(input);
-	revalidateTag(input.resourceId);
+	await api.user.rating.get.revalidate(input);
+	await publicApi.resource.rating.get.revalidate(input);
 };
 
 export const createProfile = async (
@@ -40,9 +33,8 @@ export const updateProfile = async (
 	oldHandle?: string
 ) => {
 	await api.user.profile.update.mutate(input);
-	if (oldHandle) revalidateTag(oldHandle);
-	revalidateTag(input.handle);
-	revalidateTag(userId);
+	if (oldHandle) await api.user.profile.get.revalidate({ handle: oldHandle });
+	await api.user.profile.get.revalidate({ handle: input.handle });
 	redirect(`/${input.handle}`);
 };
 

@@ -10,7 +10,15 @@ const Page = async ({
 }) => {
 	const topTracks = await getArtistTopTracks(artistId);
 
-	return <SongTable songs={topTracks.tracks} />;
+	return (
+		<SongTable
+			songs={topTracks.tracks}
+			resource={{
+				category: "ARTIST",
+				resourceId: artistId,
+			}}
+		/>
+	);
 };
 
 export default Page;

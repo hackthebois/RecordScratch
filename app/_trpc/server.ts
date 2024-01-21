@@ -3,7 +3,6 @@ import "server-only";
 import { appRouter } from "@/server/api";
 import { createTRPCContext } from "@/server/api/trpc";
 import { getAuth } from "@clerk/nextjs/server";
-import { loggerLink } from "@trpc/client";
 import { experimental_nextCacheLink } from "@trpc/next/app-dir/links/nextCache";
 import { experimental_createTRPCNextAppDirServer } from "@trpc/next/app-dir/server";
 import { headers } from "next/headers";
@@ -39,11 +38,11 @@ export const api = experimental_createTRPCNextAppDirServer<typeof appRouter>({
 		return {
 			transformer: SuperJSON,
 			links: [
-				loggerLink({
-					enabled: (op) => true,
-				}),
+				// loggerLink({
+				// 	enabled: (op) => true,
+				// }),
 				experimental_nextCacheLink({
-					revalidate: 5,
+					revalidate: false,
 					router: appRouter,
 					createContext,
 				}),
@@ -59,9 +58,9 @@ export const publicApi = experimental_createTRPCNextAppDirServer<
 		return {
 			transformer: SuperJSON,
 			links: [
-				loggerLink({
-					enabled: (op) => true,
-				}),
+				// loggerLink({
+				// 	enabled: (op) => true,
+				// }),
 				experimental_nextCacheLink({
 					// requests are cached for 5 seconds
 					revalidate: 60 * 60,
