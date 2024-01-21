@@ -29,6 +29,7 @@ const SongRatings = async ({
 		<>
 			<RatingInfo
 				rating={ratingsList.find((r) => r.resourceId === song.id)!}
+				size="sm"
 			/>
 			<RateButton
 				resource={{

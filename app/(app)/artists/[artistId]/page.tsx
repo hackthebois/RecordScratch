@@ -1,6 +1,5 @@
 import SongTable from "@/app/_auth/SongTable";
 import { getArtistTopTracks } from "@/app/_trpc/cached";
-import { Suspense } from "react";
 
 const Page = async ({
 	params: { artistId },
@@ -11,11 +10,7 @@ const Page = async ({
 }) => {
 	const topTracks = await getArtistTopTracks(artistId);
 
-	return (
-		<Suspense>
-			<SongTable songs={topTracks.tracks} />
-		</Suspense>
-	);
+	return <SongTable songs={topTracks.tracks} />;
 };
 
 export default Page;
