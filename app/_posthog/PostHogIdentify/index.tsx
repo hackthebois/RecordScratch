@@ -11,7 +11,7 @@ export const PostHogIdentify = async () => {
 		return null;
 	}
 
-	const profile = await getMyProfile(user.id);
+	const profile = await getMyProfile();
 
 	if (!profile) {
 		return null;

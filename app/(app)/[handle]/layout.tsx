@@ -1,10 +1,8 @@
-import { EditProfileButton } from "@/app/_auth/EditProfileButton";
 import { getProfile } from "@/app/_trpc/cached";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 export async function generateMetadata({
 	params: { handle },
@@ -59,9 +57,6 @@ const Layout = async ({
 					<p className="text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
-					<Suspense fallback={null}>
-						<EditProfileButton handle={handle} />
-					</Suspense>
 				</div>
 			</div>
 			<LinkTabs

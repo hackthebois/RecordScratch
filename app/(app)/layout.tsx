@@ -30,7 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 				</nav>
 			</header>
 			<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">
-				{children}
+				<Suspense>{children}</Suspense>
 			</main>
 		</>
 	);
