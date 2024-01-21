@@ -4,9 +4,9 @@ import {
 	getRatingListAverage,
 } from "@/app/_trpc/cached";
 import { LinkTabs } from "@/components/ui/LinkTabs";
+import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import { Suspense } from "react";
@@ -32,6 +32,7 @@ export async function generateMetadata({
 
 const Rating = async ({ artistId }: { artistId: string }) => {
 	const albums = await getArtistDiscography(artistId);
+	console.log("ALBUMS", albums.length);
 	const rating = await getRatingListAverage(
 		albums.map((album) => ({
 			category: "ALBUM",
@@ -39,27 +40,9 @@ const Rating = async ({ artistId }: { artistId: string }) => {
 		}))
 	);
 
-	return (
-		<div className="flex items-center gap-2">
-			<Star
-				color="#ffb703"
-				fill={rating?.average ? "#ffb703" : "none"}
-				size={30}
-			/>
-			<div>
-				{rating?.average && (
-					<p className="text-lg font-semibold">
-						{Number(rating.average).toFixed(1)}
-					</p>
-				)}
-				<p className="flex items-center gap-1 text-sm text-muted-foreground">
-					{rating?.total && Number(rating.total) !== 0
-						? rating.total
-						: "No ratings yet"}
-				</p>
-			</div>
-		</div>
-	);
+	console.log(rating);
+
+	return <RatingInfo rating={rating} />;
 };
 
 const Layout = async ({

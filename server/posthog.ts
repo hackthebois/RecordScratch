@@ -24,6 +24,5 @@ export const logServerEvent = async <TEventKey extends keyof ServerEvents>(
 				environment: env.NODE_ENV,
 			},
 		}),
-		cache: "no-store",
 	});
 };

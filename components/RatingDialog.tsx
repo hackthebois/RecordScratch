@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { deleteRatingAction, rateAction } from "@/app/actions";
 import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -35,11 +34,15 @@ export const RatingDialog = ({
 	initialRating,
 	children,
 	name,
+	rateAction,
+	deleteRatingAction,
 }: {
 	resource: Resource;
 	name?: string;
 	initialRating?: Rating;
 	children: React.ReactNode;
+	rateAction: (rating: RateForm) => void;
+	deleteRatingAction: (rating: Rating) => void;
 }) => {
 	const [open, setOpen] = useState(false);
 
