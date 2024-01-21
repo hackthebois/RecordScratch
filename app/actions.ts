@@ -10,28 +10,28 @@ import { api } from "./_trpc/server";
 export const rateAction = async (
 	input: RouterInputs["user"]["rating"]["rate"]
 ) => {
-	await api.user.rating.rate(input);
+	await api.user.rating.rate.mutate(input);
 	revalidateTag(input.resourceId);
 };
 
 export const deleteRatingAction = async (
 	input: RouterInputs["user"]["rating"]["delete"]
 ) => {
-	await api.user.rating.delete(input);
+	await api.user.rating.delete.mutate(input);
 	revalidateTag(input.resourceId);
 };
 
 export const reviewAction = async (
 	input: RouterInputs["user"]["rating"]["review"]
 ) => {
-	await api.user.rating.review(input);
+	await api.user.rating.review.mutate(input);
 	revalidateTag(input.resourceId);
 };
 
 export const createProfile = async (
 	input: RouterInputs["user"]["profile"]["create"]
 ) => {
-	await api.user.profile.create(input);
+	await api.user.profile.create.mutate(input);
 };
 
 export const updateProfile = async (
@@ -39,7 +39,7 @@ export const updateProfile = async (
 	userId: string,
 	oldHandle?: string
 ) => {
-	await api.user.profile.update(input);
+	await api.user.profile.update.mutate(input);
 	if (oldHandle) revalidateTag(oldHandle);
 	revalidateTag(input.handle);
 	revalidateTag(userId);
@@ -47,7 +47,7 @@ export const updateProfile = async (
 };
 
 export const handleExists = async (handle: string) => {
-	return await api.user.profile.handleExists(handle);
+	return await api.user.profile.handleExists.query(handle);
 };
 
 export const revalidateUser = async (userId: string) => {
