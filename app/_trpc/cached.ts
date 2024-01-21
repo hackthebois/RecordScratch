@@ -2,191 +2,90 @@
 import "server-only";
 
 import { api, publicApi } from "@/app/_trpc/server";
+import { GetInfiniteReviews } from "@/components/resource/InfiniteReviews";
 import { RouterInputs } from "@/server/api";
 import { Resource } from "@/types/rating";
-import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
 // PUBLIC
 const spotifyRevalidate = 60 * 60 * 24; // 24 hours
 
 export const getAlbum = cache((albumId: string) => {
-	return unstable_cache(
-		() => publicApi.resource.album.get.query(albumId),
-		[`resource:album:get:${albumId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+	return publicApi.resource.album.get.query(albumId);
 });
 
 export const getArtist = cache((artistId: string) => {
-	return unstable_cache(
-		() => publicApi.resource.artist.get.query(artistId),
-		[`resource:artist:get:${artistId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+	return publicApi.resource.artist.get.query(artistId);
 });
 
 export const getArtistTopTracks = cache((artistId: string) => {
-	return unstable_cache(
-		() => publicApi.resource.artist.topTracks.query(artistId),
-		[`resource:artist:getTopTracks:${artistId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+	return publicApi.resource.artist.topTracks.query(artistId);
 });
 
 export const getNewReleases = cache(() => {
-	return unstable_cache(
-		() => publicApi.resource.album.newReleases.query(),
-		[`resource:album:getNewReleases`],
-		{ revalidate: spotifyRevalidate }
-	)();
+	return publicApi.resource.album.newReleases.query();
 });
 
 export const getSong = cache((songId: string) => {
-	return unstable_cache(
-		() => publicApi.resource.song.get.query(songId),
-		[`resource:song:get:${songId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+	return publicApi.resource.song.get.query(songId);
 });
 
 export const getArtistDiscography = cache((artistId: string) => {
-	return unstable_cache(
-		() => publicApi.resource.artist.albums.query(artistId),
-		[`resource:artist:getDiscography:${artistId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+	return publicApi.resource.artist.albums.query(artistId);
 });
 
 export const getTrending = cache(() => {
-	return unstable_cache(
-		() => publicApi.resource.album.trending.query(),
-		[`resource:album:getTrending`],
-		{ revalidate: 60 * 60 }
-	)();
+	return publicApi.resource.album.trending.query();
 });
 
 export const getTopRated = cache(() => {
-	return unstable_cache(
-		() => publicApi.resource.album.top.query(),
-		[`resource:album:getTopRated`],
-		{ revalidate: 60 * 60 }
-	)();
+	return publicApi.resource.album.top.query();
 });
 
-export const getFeed = cache(
-	(input: RouterInputs["resource"]["rating"]["feed"]) => {
-		return unstable_cache(
-			() => publicApi.resource.rating.feed.query(input),
-			[`resource:rating:getFeed:page:${input.page}`],
-			{
-				revalidate: 60,
-			}
-		)();
-	}
-);
+export const getFeed = (input: GetInfiniteReviews) => {
+	return publicApi.resource.rating.feed.query(input);
+};
 
 export const getCommunityReviews = cache(
 	(input: RouterInputs["resource"]["rating"]["community"]) => {
-		return unstable_cache(
-			() => publicApi.resource.rating.community.query(input),
-			[`resource:rating:community:${input.resource.resourceId}`],
-			{ tags: [input.resource.resourceId] }
-		)();
+		return publicApi.resource.rating.community.query(input);
 	}
 );
 
 export const getRatingListAverage = cache((resources: Resource[]) => {
-	return unstable_cache(
-		() => publicApi.resource.rating.getListAverage.query(resources),
-		[
-			`resource:rating:getListAverage:[${resources
-				.map((r) => r.resourceId)
-				.join(",")}]`,
-		],
-		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
-	)();
+	return publicApi.resource.rating.getListAverage.query(resources);
 });
 
 export const getProfile = cache((handle: string) => {
-	return unstable_cache(
-		() => publicApi.user.profile.get.query({ handle }),
-		[`user:profile:get:${handle}`],
-		{ tags: [handle], revalidate: 60 }
-	)();
+	return publicApi.user.profile.get.query({ handle });
 });
 
-export const getMyProfile = cache((userId: string) => {
-	return unstable_cache(
-		() => api.user.profile.me.query(),
-		[`user:${userId}:profile:get:me`],
-		{ tags: [userId], revalidate: 60 }
-	)();
+export const getMyProfile = cache(() => {
+	return api.user.profile.me.query();
 });
 
 export const getRecent = cache((input: RouterInputs["user"]["recent"]) => {
-	return unstable_cache(
-		() => publicApi.user.recent.query(input),
-		[
-			`user:recent:get:${input.userId}${
-				input.rating ? `:${input.rating}` : ""
-			}`,
-		],
-		{ tags: [input.userId, "recent"] }
-	)();
+	return publicApi.user.recent.query(input);
 });
 
 export const getDistribution = cache((userId: string) => {
-	return unstable_cache(
-		() => publicApi.user.profile.distribution.query(userId),
-		[`user:profile:distribution:${userId}`],
-		{ tags: [userId] }
-	)();
+	return publicApi.user.profile.distribution.query(userId);
 });
 
 export const getRating = cache((resource: Resource) => {
-	return unstable_cache(
-		() => publicApi.resource.rating.get.query(resource),
-		[`resource:rating:get:${resource.resourceId}`],
-		{ revalidate: 60, tags: [resource.resourceId] }
-	)();
+	return publicApi.resource.rating.get.query(resource);
 });
 
 export const getRatingsList = cache((resources: Resource[]) => {
-	return unstable_cache(
-		() => publicApi.resource.rating.getList.query(resources),
-		[
-			`resource:rating:getList:[${resources
-				.map((r) => r.resourceId)
-				.join(",")}]`,
-		],
-		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
-	)();
+	return publicApi.resource.rating.getList.query(resources);
 });
 
 // APP
 
-export const getUserRating = cache((resource: Resource, userId: string) => {
-	return unstable_cache(
-		() => api.user.rating.get.query(resource),
-		[`user:${userId}:rating:get:${resource.resourceId}`],
-		{ revalidate: 60, tags: [resource.resourceId, userId] }
-	)();
+export const getUserRating = cache((resource: Resource) => {
+	return api.user.rating.get.query(resource);
 });
 
-export const getUserRatingList = cache(
-	(resources: Resource[], userId: string) => {
-		return unstable_cache(
-			() => api.user.rating.getList.query(resources),
-			[
-				`user:${userId}:rating:getList:[${resources
-					.map((r) => r.resourceId)
-					.join(",")}]`,
-			],
-			{
-				tags: [...resources.map((r) => r.resourceId), userId],
-				revalidate: 60,
-			}
-		)();
-	}
-);
+export const getUserRatingList = cache((resources: Resource[]) => {
+	return api.user.rating.getList.query(resources);
+});

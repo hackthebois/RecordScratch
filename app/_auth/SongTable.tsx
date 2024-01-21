@@ -4,6 +4,7 @@ import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
+import { unstable_noStore } from "next/cache";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
@@ -15,12 +16,13 @@ const SongRatings = async ({
 	song: SimplifiedTrack | Track;
 	resources: Resource[];
 }) => {
+	unstable_noStore();
 	const ratingsList = await getRatingsList(resources);
 
 	let userRatingsList: Rating[] = [];
 	const { userId } = auth();
 	if (userId) {
-		userRatingsList = await getUserRatingList(resources, userId);
+		userRatingsList = await getUserRatingList(resources);
 	}
 
 	return (
