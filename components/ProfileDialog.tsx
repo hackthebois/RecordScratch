@@ -13,7 +13,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { api } from "@/app/_trpc/react";
-import { RouterInput } from "@/app/_trpc/types";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
 	Form,
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { RouterInputs } from "@/server/api";
 import {
 	Profile,
 	ProfileBioSchema,
@@ -51,7 +51,7 @@ export const ProfileDialog = ({
 }: {
 	profile: Profile;
 	updateProfile: (
-		input: RouterInput["user"]["profile"]["update"],
+		input: RouterInputs["user"]["profile"]["update"],
 		userId: string,
 		oldHandle?: string
 	) => void;

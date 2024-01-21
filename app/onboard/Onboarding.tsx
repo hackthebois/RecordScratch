@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
+import { RouterInputs } from "@/server/api";
 import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";
@@ -23,7 +24,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { RouterInput } from "../_trpc/types";
 
 const SlideWrapper = ({
 	page,
@@ -61,7 +61,7 @@ export const Onboarding = ({
 	createProfile,
 }: {
 	createProfile: (
-		profile: RouterInput["user"]["profile"]["create"]
+		profile: RouterInputs["user"]["profile"]["create"]
 	) => Promise<void>;
 }) => {
 	const [page, setPage] = useState(0);

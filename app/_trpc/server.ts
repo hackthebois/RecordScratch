@@ -1,13 +1,11 @@
 import "server-only";
 
-import { appRouter } from "@/server/api/root";
-import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
+import { createCaller } from "@/server/api";
+import { createTRPCContext } from "@/server/api/trpc";
 import { getAuth } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { cache } from "react";
-
-const createCaller = createCallerFactory(appRouter);
 
 // https://www.answeroverflow.com/m/1196368778414530590
 // https://github.com/t3-oss/create-t3-turbo/blob/main/apps/nextjs/src/trpc/server.ts

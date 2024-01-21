@@ -2,10 +2,10 @@
 import "server-only";
 
 import { api, publicApi } from "@/app/_trpc/server";
+import { RouterInputs } from "@/server/api";
 import { Resource } from "@/types/rating";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
-import { RouterInput } from "./types";
 
 // PUBLIC
 const spotifyRevalidate = 60 * 60 * 24; // 24 hours
@@ -75,7 +75,7 @@ export const getTopRated = cache(() => {
 });
 
 export const getFeed = cache(
-	(input: RouterInput["resource"]["rating"]["feed"]) => {
+	(input: RouterInputs["resource"]["rating"]["feed"]) => {
 		return unstable_cache(
 			() => publicApi.resource.rating.feed(input),
 			[`resource:rating:getFeed:page:${input.page}`],
@@ -87,7 +87,7 @@ export const getFeed = cache(
 );
 
 export const getCommunityReviews = cache(
-	(input: RouterInput["resource"]["rating"]["community"]) => {
+	(input: RouterInputs["resource"]["rating"]["community"]) => {
 		return unstable_cache(
 			() => publicApi.resource.rating.community(input),
 			[`resource:rating:community:${input.resource.resourceId}`],
@@ -124,7 +124,7 @@ export const getMyProfile = cache((userId: string) => {
 	)();
 });
 
-export const getRecent = cache((input: RouterInput["user"]["recent"]) => {
+export const getRecent = cache((input: RouterInputs["user"]["recent"]) => {
 	return unstable_cache(
 		() => publicApi.user.recent(input),
 		[
