@@ -2,40 +2,40 @@
 
 import "server-only";
 
+import { RouterInputs } from "@/server/api";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { api } from "./_trpc/server";
-import { RouterInput } from "./_trpc/types";
 
 export const rateAction = async (
-	input: RouterInput["user"]["rating"]["rate"]
+	input: RouterInputs["user"]["rating"]["rate"]
 ) => {
 	await api.user.rating.rate(input);
 	revalidateTag(input.resourceId);
 };
 
 export const deleteRatingAction = async (
-	input: RouterInput["user"]["rating"]["delete"]
+	input: RouterInputs["user"]["rating"]["delete"]
 ) => {
 	await api.user.rating.delete(input);
 	revalidateTag(input.resourceId);
 };
 
 export const reviewAction = async (
-	input: RouterInput["user"]["rating"]["review"]
+	input: RouterInputs["user"]["rating"]["review"]
 ) => {
 	await api.user.rating.review(input);
 	revalidateTag(input.resourceId);
 };
 
 export const createProfile = async (
-	input: RouterInput["user"]["profile"]["create"]
+	input: RouterInputs["user"]["profile"]["create"]
 ) => {
 	await api.user.profile.create(input);
 };
 
 export const updateProfile = async (
-	input: RouterInput["user"]["profile"]["update"],
+	input: RouterInputs["user"]["profile"]["update"],
 	userId: string,
 	oldHandle?: string
 ) => {
