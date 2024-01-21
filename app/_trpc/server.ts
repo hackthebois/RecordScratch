@@ -1,16 +1,16 @@
 import "server-only";
 
-import { AppRouter, appRouter } from "@/server/api/root";
-import { createTRPCContext } from "@/server/api/trpc";
+import { appRouter } from "@/server/api/root";
+import { createCallerFactory, createTRPCContext } from "@/server/api/trpc";
 import { getAuth } from "@clerk/nextjs/server";
-import { TRPCClientError, createTRPCProxyClient } from "@trpc/client";
-import { callProcedure } from "@trpc/server";
-import { observable } from "@trpc/server/observable";
-import { type TRPCErrorResponse } from "@trpc/server/rpc";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { cache } from "react";
-import SuperJSON from "superjson";
+
+const createCaller = createCallerFactory(appRouter);
+
+// https://www.answeroverflow.com/m/1196368778414530590
+// https://github.com/t3-oss/create-t3-turbo/blob/main/apps/nextjs/src/trpc/server.ts
 
 const createContext = cache(() => {
 	const heads = new Headers(headers());
@@ -18,13 +18,6 @@ const createContext = cache(() => {
 
 	return createTRPCContext({
 		headers: heads,
-		userId: null,
-	});
-});
-
-const createPublicContext = cache(() => {
-	return createTRPCContext({
-		headers: new Headers({ cookie: "", "x-trpc-source": "rsc" }),
 		userId: getAuth(
 			// @ts-expect-error
 			new NextRequest("https://notused.com", { headers: headers() })
@@ -32,56 +25,13 @@ const createPublicContext = cache(() => {
 	});
 });
 
-export const api = createTRPCProxyClient<AppRouter>({
-	transformer: SuperJSON,
-	links: [
-		() =>
-			({ op }) =>
-				observable((observer) => {
-					createContext()
-						.then((ctx) => {
-							return callProcedure({
-								procedures: appRouter._def.procedures,
-								path: op.path,
-								rawInput: op.input,
-								ctx,
-								type: op.type,
-							});
-						})
-						.then((data) => {
-							observer.next({ result: { data } });
-							observer.complete();
-						})
-						.catch((cause: TRPCErrorResponse) => {
-							observer.error(TRPCClientError.from(cause));
-						});
-				}),
-	],
+const createPublicContext = cache(() => {
+	return createTRPCContext({
+		headers: new Headers({ cookie: "", "x-trpc-source": "rsc" }),
+		userId: null,
+	});
 });
 
-export const publicApi = createTRPCProxyClient<AppRouter>({
-	transformer: SuperJSON,
-	links: [
-		() =>
-			({ op }) =>
-				observable((observer) => {
-					createPublicContext()
-						.then((ctx) => {
-							return callProcedure({
-								procedures: appRouter._def.procedures,
-								path: op.path,
-								rawInput: op.input,
-								ctx,
-								type: op.type,
-							});
-						})
-						.then((data) => {
-							observer.next({ result: { data } });
-							observer.complete();
-						})
-						.catch((cause: TRPCErrorResponse) => {
-							observer.error(TRPCClientError.from(cause));
-						});
-				}),
-	],
-});
+export const api = createCaller(createContext);
+
+export const publicApi = createCaller(createPublicContext);
