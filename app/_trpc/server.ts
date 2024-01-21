@@ -43,7 +43,7 @@ export const api = experimental_createTRPCNextAppDirServer<typeof appRouter>({
 					enabled: (op) => true,
 				}),
 				experimental_nextCacheLink({
-					revalidate: 60 * 60,
+					revalidate: 5,
 					router: appRouter,
 					createContext,
 				}),
