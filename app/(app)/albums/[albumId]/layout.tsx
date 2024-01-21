@@ -1,10 +1,11 @@
 import { RateButton } from "@/app/_auth/RateButton";
-import { getAlbum, getRating } from "@/app/_trpc/cached";
+import { getAlbum, getRating, getUserRating } from "@/app/_trpc/cached";
+import { api, publicApi } from "@/app/_trpc/server";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Resource } from "@/types/rating";
+import { RateForm, Resource } from "@/types/rating";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,11 +33,28 @@ export async function generateMetadata({
 
 const AlbumRatings = async ({ resource }: { resource: Resource }) => {
 	const rating = await getRating(resource);
+	const userRating = await getUserRating(resource);
+
+	const onRate = async ({ rating, ...resource }: RateForm) => {
+		"use server";
+		console.log(rating, resource);
+		if (rating === 0) {
+			await api.user.rating.delete.mutate(resource);
+		} else {
+			await api.user.rating.rate.mutate({ rating, ...resource });
+		}
+		await api.user.rating.get.revalidate(resource);
+		await publicApi.resource.rating.get.revalidate(resource);
+	};
 
 	return (
 		<div className="flex items-center gap-4">
 			<RatingInfo rating={rating} />
-			<RateButton resource={resource} />
+			<RateButton
+				onRate={onRate}
+				resource={resource}
+				userRating={userRating}
+			/>
 		</div>
 	);
 };

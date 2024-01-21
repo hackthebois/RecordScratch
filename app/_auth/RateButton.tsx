@@ -1,24 +1,23 @@
-import { getUserRating } from "@/app/_trpc/cached";
 import { SignInWrapper } from "@/components/SignInWrapper";
-import { Rating, Resource } from "@/types/rating";
+import { RateForm, Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Star } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import { RatingDialog } from "../../components/RatingDialog";
 import { Button } from "../../components/ui/Button";
-import { deleteRatingAction, rateAction } from "../actions";
 
 export const RateButton = async ({
 	resource,
 	name,
-	initialUserRating = null,
+	userRating = null,
+	onRate,
 }: {
 	resource: Resource;
 	name?: string;
-	initialUserRating?: Rating | null;
+	userRating: Rating | null;
+	onRate: (rating: RateForm) => void;
 }) => {
 	unstable_noStore();
-	let userRating: Rating | null = initialUserRating;
 
 	const { userId } = auth();
 
@@ -38,17 +37,12 @@ export const RateButton = async ({
 		);
 	}
 
-	if (!userRating && userId) {
-		userRating = await getUserRating(resource);
-	}
-
 	return (
 		<RatingDialog
 			resource={resource}
 			initialRating={userRating ?? undefined}
 			name={name}
-			rateAction={rateAction}
-			deleteRatingAction={deleteRatingAction}
+			onRate={onRate}
 		>
 			<Button variant="outline" size="sm">
 				<Star

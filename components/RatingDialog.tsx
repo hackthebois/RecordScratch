@@ -34,15 +34,13 @@ export const RatingDialog = ({
 	initialRating,
 	children,
 	name,
-	rateAction,
-	deleteRatingAction,
+	onRate,
 }: {
 	resource: Resource;
 	name?: string;
 	initialRating?: Rating;
 	children: React.ReactNode;
-	rateAction: (rating: RateForm) => void;
-	deleteRatingAction: (rating: Rating) => void;
+	onRate: (rate: RateForm) => void;
 }) => {
 	const [open, setOpen] = useState(false);
 
@@ -52,7 +50,7 @@ export const RatingDialog = ({
 	});
 
 	const onSubmit = async (rate: RateForm) => {
-		rateAction(rate);
+		if (onRate) onRate(rate);
 		setOpen(false);
 	};
 
@@ -61,7 +59,10 @@ export const RatingDialog = ({
 	) => {
 		e.preventDefault();
 		if (!initialRating) return;
-		deleteRatingAction(initialRating);
+		onRate({
+			...resource,
+			rating: 0,
+		});
 		setOpen(false);
 	};
 
