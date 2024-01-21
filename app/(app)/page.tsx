@@ -1,7 +1,7 @@
 const Page = async () => {
-	// const newReleases = await publicApi.resource.album.newReleases.query();
-	// const trending = await publicApi.resource.album.trending.query();
-	// const top = await publicApi.resource.album.top.query();
+	// const newReleases = await publicApi.resource.album.newReleases();
+	// const trending = await publicApi.resource.album.trending();
+	// const top = await publicApi.resource.album.top();
 
 	return (
 		<div className="w-full">
