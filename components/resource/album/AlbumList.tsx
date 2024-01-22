@@ -59,7 +59,7 @@ const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
 					<CarouselContent className="">
 						{Array.from(listItems).map((listitem, index) => (
 							<CarouselItem key={index} className="lg:basis-1/6">
-								<div className="p-2">{listitem}</div>
+								<div>{listitem}</div>
 							</CarouselItem>
 						))}
 					</CarouselContent>
