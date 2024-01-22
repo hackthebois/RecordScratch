@@ -1,4 +1,4 @@
-import { ratings } from "@/server/db/schema";
+import { ratings } from "@/db/schema";
 import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";

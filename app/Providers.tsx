@@ -3,10 +3,12 @@
 import { env } from "@/env.mjs";
 import { getUrl } from "@/utils/url";
 import { ClerkProvider } from "@clerk/nextjs";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
-import { TRPCReactProvider } from "./_trpc/react";
+
+const queryClient = new QueryClient();
 
 if (typeof window !== "undefined") {
 	posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -26,7 +28,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 				},
 			}}
 		>
-			<TRPCReactProvider>
+			<QueryClientProvider client={queryClient}>
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="system"
@@ -36,7 +38,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 						{children}
 					</PostHogProvider>
 				</ThemeProvider>
-			</TRPCReactProvider>
+			</QueryClientProvider>
 		</ClerkProvider>
 	);
 };

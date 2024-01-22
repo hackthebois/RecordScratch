@@ -1,5 +1,5 @@
+import { getAlbum } from "@/app/_api";
 import SongTable from "@/app/_auth/SongTable";
-import { getAlbum } from "@/app/_trpc/cached";
 
 const Page = async ({
 	params: { albumId },

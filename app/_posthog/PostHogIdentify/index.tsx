@@ -1,4 +1,4 @@
-import { getMyProfile } from "@/app/_trpc/cached";
+import { getMyProfile } from "@/app/_api";
 import { currentUser } from "@clerk/nextjs";
 import { unstable_noStore } from "next/cache";
 import { ClientIdentify } from "./ClientIdentify";
@@ -11,7 +11,7 @@ export const PostHogIdentify = async () => {
 		return null;
 	}
 
-	const profile = await getMyProfile();
+	const profile = await getMyProfile(user.id);
 
 	if (!profile) {
 		return null;

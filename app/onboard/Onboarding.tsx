@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "@/app/_trpc/react";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import {
@@ -13,17 +12,22 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
-import { RouterInputs } from "@/server/api";
-import { CreateProfileSchema, handleRegex } from "@/types/profile";
+import {
+	CreateProfile,
+	CreateProfileSchema,
+	handleRegex,
+} from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { AtSign, Disc3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { handleExistsAction } from "../_api/actions";
 
 const SlideWrapper = ({
 	page,
@@ -60,9 +64,7 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 export const Onboarding = ({
 	createProfile,
 }: {
-	createProfile: (
-		profile: RouterInputs["user"]["profile"]["create"]
-	) => Promise<void>;
+	createProfile: (profile: CreateProfile) => Promise<void>;
 }) => {
 	const [page, setPage] = useState(0);
 	const { user } = useUser();
@@ -82,14 +84,11 @@ export const Onboarding = ({
 	const imageRef = useRef<HTMLInputElement>(null);
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = api.user.profile.handleExists.useQuery(
-		debouncedHandle,
-		{
-			enabled: handle.length > 0,
-			refetchOnMount: false,
-			refetchOnWindowFocus: false,
-		}
-	);
+	const { data: handleExists } = useQuery({
+		queryKey: [debouncedHandle],
+		queryFn: () => handleExistsAction(debouncedHandle),
+		enabled: handle.length > 0,
+	});
 	useEffect(() => {
 		if (handleExists) {
 			form.setError("handle", {

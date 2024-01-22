@@ -1,5 +1,6 @@
 "use client";
 
+import { searchAction } from "@/app/_api/actions";
 import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
@@ -7,11 +8,11 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
 import { Artist } from "@spotify/web-api-ts-sdk";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { api } from "../app/_trpc/react";
 import { AlbumItem } from "./resource/album/AlbumItem";
 
 const ArtistItem = ({
@@ -52,11 +53,12 @@ const SearchBar = () => {
 	const { recents, addRecent } = useRecents();
 	const [query, setQuery] = useState("");
 
-	const q = useDebounce(query, 500);
+	const debouncedQuery = useDebounce(query, 500);
 
-	const { data, isFetching } = api.resource.search.useQuery(q, {
+	const { data, isFetching } = useQuery({
+		queryKey: ["search", debouncedQuery],
+		queryFn: () => searchAction(debouncedQuery),
 		enabled: query.length > 0,
-		refetchOnWindowFocus: false,
 	});
 
 	return (

@@ -1,5 +1,5 @@
-import { db } from "@/server/db/db";
-import { profile } from "@/server/db/schema";
+import { db } from "@/db/db";
+import { profile } from "@/db/schema";
 import { getUrl } from "@/utils/url";
 import { MetadataRoute } from "next";
 
