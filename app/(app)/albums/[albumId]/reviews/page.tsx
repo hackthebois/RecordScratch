@@ -1,4 +1,4 @@
-import { getAlbum, getCommunityReviews } from "@/app/_api/cached";
+import { getAlbum, getCommunityReviews } from "@/app/_api";
 import { ReviewButton } from "@/app/_auth/ReviewButton";
 import {
 	GetInfiniteReviews,

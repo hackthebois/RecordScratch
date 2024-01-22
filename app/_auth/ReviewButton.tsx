@@ -1,4 +1,4 @@
-import { getUserRating } from "@/app/_api/cached";
+import { getUserRating } from "@/app/_api";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInWrapper } from "@/components/SignInWrapper";
 import { Button } from "@/components/ui/Button";

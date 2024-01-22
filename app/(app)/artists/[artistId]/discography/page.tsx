@@ -1,4 +1,4 @@
-import { getArtistDiscography } from "@/app/_api/cached";
+import { getArtistDiscography } from "@/app/_api";
 import AlbumList from "@/components/resource/album/AlbumList";
 
 const Page = async ({

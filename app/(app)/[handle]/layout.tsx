@@ -1,4 +1,4 @@
-import { getProfile } from "@/app/_api/cached";
+import { getProfile } from "@/app/_api";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { Metadata } from "next";
