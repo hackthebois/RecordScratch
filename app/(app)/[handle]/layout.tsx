@@ -1,8 +1,12 @@
 import { getProfile } from "@/app/_api";
+import { updateProfile } from "@/app/_api/actions";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
+import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { EditProfile } from "./_components/EditProfile";
+import { SignOutButton } from "./_components/SignOutButton";
 
 export async function generateMetadata({
 	params: { handle },
@@ -36,9 +40,18 @@ const Layout = async ({
 }) => {
 	const profile = await getProfile(handle);
 
-	if (!profile) {
-		notFound();
-	}
+	if (!profile) notFound();
+
+	const isUser = profile.userId === auth().userId;
+
+	const appendTabs = isUser
+		? [
+				{
+					label: "Settings",
+					href: `/${handle}/settings`,
+				},
+		  ]
+		: [];
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -57,6 +70,15 @@ const Layout = async ({
 					<p className="text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
+					{isUser && (
+						<div className="flex gap-2 pt-4">
+							<EditProfile
+								profile={profile}
+								updateProfile={updateProfile}
+							/>
+							<SignOutButton />
+						</div>
+					)}
 				</div>
 			</div>
 			<LinkTabs
@@ -65,6 +87,7 @@ const Layout = async ({
 						label: "Ratings",
 						href: `/${handle}`,
 					},
+					...appendTabs,
 				]}
 			/>
 			{children}
