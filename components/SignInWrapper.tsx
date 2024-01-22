@@ -8,7 +8,9 @@ import React from "react";
 
 export const SignInWrapper = ({ children }: { children: React.ReactNode }) => {
 	const { openSignIn } = useClerk();
-	const clerkTheme = useTheme().theme === "dark" ? dark : undefined;
+	const { theme, systemTheme } = useTheme();
+	const currentTheme = theme === "system" ? systemTheme : theme;
+	const clerkTheme = currentTheme === "dark" ? dark : undefined;
 	const pathname = usePathname();
 
 	return (

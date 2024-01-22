@@ -100,10 +100,9 @@ export const handleExistsAction = action(z.string(), async (handle) => {
 });
 
 export const searchAction = action(z.string(), async (query) => {
-	throw new Error("Not implemented");
 	return await spotify.search(query, ["album", "artist"], undefined, 4);
 });
 
-export const revalidateUser = action(z.string(), async (userId) => {
-	revalidateTag(userId);
+export const revalidateTagAction = action(z.string(), async (tag) => {
+	revalidateTag(tag);
 });
