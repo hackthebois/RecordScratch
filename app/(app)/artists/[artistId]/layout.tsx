@@ -2,7 +2,7 @@ import {
 	getArtist,
 	getArtistDiscography,
 	getRatingListAverage,
-} from "@/app/_trpc/cached";
+} from "@/app/_api";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
@@ -32,15 +32,12 @@ export async function generateMetadata({
 
 const Rating = async ({ artistId }: { artistId: string }) => {
 	const albums = await getArtistDiscography(artistId);
-	console.log("ALBUMS", albums.length);
 	const rating = await getRatingListAverage(
 		albums.map((album) => ({
 			category: "ALBUM",
 			resourceId: album.id,
 		}))
 	);
-
-	console.log(rating);
 
 	return <RatingInfo rating={rating} />;
 };

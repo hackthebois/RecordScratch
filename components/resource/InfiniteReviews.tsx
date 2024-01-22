@@ -40,8 +40,6 @@ export const InfiniteReviews = ({
 		}
 	}, [inView]);
 
-	console.log(hasMore, page);
-
 	return (
 		<>
 			<div>

@@ -21,7 +21,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LogOut, Moon, Sun, UserCog } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { api } from "@/app/_trpc/react";
 import { UserAvatar } from "@/components/UserAvatar";
 import {
 	Form,
@@ -33,10 +32,10 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { RouterInputs } from "@/server/api";
 import {
 	Profile,
 	ProfileBioSchema,
+	UpdateProfile,
 	UpdateProfileSchema,
 } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
@@ -45,7 +44,9 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { handleExistsAction } from "@/app/_api/actions";
 import { useClerk, useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePostHog } from "posthog-js/react";
 
@@ -98,13 +99,13 @@ export const SignOutItem = ({
 	);
 };
 
-const UpdateProfileForm = UpdateProfileSchema.omit({
+const UpdateProfileFormSchema = UpdateProfileSchema.omit({
 	imageUrl: true,
 }).extend({
 	bio: ProfileBioSchema.optional(),
 	image: z.custom<File>((v) => v instanceof File).optional(),
 });
-type UpdateProfile = z.infer<typeof UpdateProfileForm>;
+export type UpdateProfileForm = z.infer<typeof UpdateProfileFormSchema>;
 
 export const UserButtonDropdown = ({
 	profile,
@@ -112,11 +113,7 @@ export const UserButtonDropdown = ({
 	revalidateUser,
 }: {
 	profile: Profile;
-	updateProfile: (
-		input: RouterInputs["user"]["profile"]["update"],
-		userId: string,
-		oldHandle?: string
-	) => void;
+	updateProfile: (input: UpdateProfile, oldHandle?: string) => void;
 	revalidateUser: (id: string) => void;
 }) => {
 	const {
@@ -132,8 +129,8 @@ export const UserButtonDropdown = ({
 		defaultImageUrl ?? undefined
 	);
 
-	const form = useForm<UpdateProfile>({
-		resolver: zodResolver(UpdateProfileForm),
+	const form = useForm<UpdateProfileForm>({
+		resolver: zodResolver(UpdateProfileFormSchema),
 		defaultValues: {
 			bio: bio ?? undefined,
 			image: undefined,
@@ -151,14 +148,15 @@ export const UserButtonDropdown = ({
 	}, [image]);
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = api.user.profile.handleExists.useQuery(
-		debouncedHandle,
-		{
-			enabled: handle.length > 0,
-			refetchOnMount: false,
-			refetchOnWindowFocus: false,
-		}
-	);
+	const { data: handleExists } = useQuery({
+		queryKey: [debouncedHandle],
+		queryFn: async () => {
+			if (debouncedHandle === defaultHandle) return false;
+			return handleExistsAction(debouncedHandle);
+		},
+		enabled: handle.length > 0,
+	});
+
 	useEffect(() => {
 		if (handleExists && handle !== defaultHandle) {
 			form.setError("handle", {
@@ -179,7 +177,12 @@ export const UserButtonDropdown = ({
 		return null;
 	}
 
-	const onSubmit = async ({ bio, name, handle, image }: UpdateProfile) => {
+	const onSubmit = async ({
+		bio,
+		name,
+		handle,
+		image,
+	}: UpdateProfileForm) => {
 		let imageUrl: string | null = null;
 		if (image) {
 			const profileImage = await user?.setProfileImage({
@@ -194,7 +197,6 @@ export const UserButtonDropdown = ({
 				name,
 				handle,
 			},
-			user.id,
 			defaultHandle
 		);
 		setOpen(false);
