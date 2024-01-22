@@ -55,9 +55,13 @@ const SearchBar = () => {
 
 	const debouncedQuery = useDebounce(query, 500);
 
-	const { data, isFetching } = useQuery({
+	const { data, isFetching, isError } = useQuery({
 		queryKey: ["search", debouncedQuery],
-		queryFn: () => searchAction(debouncedQuery),
+		queryFn: async () => {
+			const { data, serverError } = await searchAction(debouncedQuery);
+			if (serverError) throw new Error(serverError);
+			return data;
+		},
 		enabled: query.length > 0,
 	});
 
@@ -102,7 +106,13 @@ const SearchBar = () => {
 						onChange={(e) => setQuery(e.target.value)}
 					/>
 				</div>
-				{isFetching ? (
+				{isError ? (
+					<div className="flex flex-1 items-center justify-center">
+						<p className="text-muted-foreground">
+							An error occurred
+						</p>
+					</div>
+				) : isFetching ? (
 					<div className="flex flex-1 items-center justify-center">
 						<Loader2 className="animate-spin" size={35} />
 					</div>
