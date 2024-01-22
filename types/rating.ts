@@ -11,6 +11,7 @@ export const ResourceRatingSchema = z.object({
 export type ResourceRating = z.infer<typeof ResourceRatingSchema>;
 
 export const RatingSchema = createSelectSchema(ratings, {
+	rating: z.number().min(1).max(10),
 	content: z.string().min(1).max(10000),
 });
 export type Rating = z.infer<typeof RatingSchema>;
@@ -25,6 +26,8 @@ export const RateFormSchema = RatingSchema.pick({
 	resourceId: true,
 	category: true,
 	rating: true,
+}).extend({
+	rating: RatingSchema.shape.rating.nullable(),
 });
 export type RateForm = z.infer<typeof RateFormSchema>;
 

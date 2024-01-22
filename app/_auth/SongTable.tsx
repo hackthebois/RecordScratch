@@ -1,14 +1,13 @@
 import { getRatingsList, getUserRatingList } from "@/app/_api";
 import { RateButton } from "@/app/_auth/RateButton";
-import { RateForm, Rating, Resource } from "@/types/rating";
+import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
-import { revalidatePath, unstable_noStore } from "next/cache";
+import { unstable_noStore } from "next/cache";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
-import { deleteRatingAction, rateAction } from "../_api/actions";
 
 const SongRatings = async ({
 	song,
@@ -28,20 +27,6 @@ const SongRatings = async ({
 		userRatingsList = await getUserRatingList(resources, userId);
 	}
 
-	const onRate = async (input: RateForm) => {
-		"use server";
-		if (input.rating === 0) {
-			await deleteRatingAction(input);
-		} else {
-			await rateAction(input);
-		}
-		revalidatePath(
-			resource.category === "ALBUM"
-				? `/albums/${resource.resourceId}`
-				: `/artists/${resource.resourceId}`
-		);
-	};
-
 	return (
 		<>
 			<RatingInfo
@@ -53,7 +38,6 @@ const SongRatings = async ({
 					resourceId: song.id,
 					category: "SONG",
 				}}
-				onRate={onRate}
 				name={song.name}
 				userRating={
 					userRatingsList.find((r) => r.resourceId === song.id) ??

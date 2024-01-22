@@ -1,14 +1,12 @@
 import { getAlbum, getRating, getUserRating } from "@/app/_api";
-import { deleteRatingAction, rateAction } from "@/app/_api/actions";
 import { RateButton } from "@/app/_auth/RateButton";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RateForm, Rating, Resource } from "@/types/rating";
+import { Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
-import { revalidateTag } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -42,24 +40,10 @@ const AlbumRatings = async ({ resource }: { resource: Resource }) => {
 		userRating = await getUserRating(resource, userId);
 	}
 
-	const onRate = async ({ rating, ...resource }: RateForm) => {
-		"use server";
-		if (rating === 0) {
-			await deleteRatingAction(resource);
-		} else {
-			await rateAction({ rating, ...resource });
-		}
-		revalidateTag(resource.resourceId);
-	};
-
 	return (
 		<div className="flex items-center gap-4">
 			<RatingInfo rating={rating} />
-			<RateButton
-				onRate={onRate}
-				resource={resource}
-				userRating={userRating}
-			/>
+			<RateButton resource={resource} userRating={userRating} />
 		</div>
 	);
 };
