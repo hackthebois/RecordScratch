@@ -70,6 +70,10 @@
 	* {
 		@apply border-border;
 	}
+	html {
+		overflow-y: auto;
+		scrollbar-gutter: stable;
+	}
 	body {
 		@apply bg-background text-foreground;
 	}
