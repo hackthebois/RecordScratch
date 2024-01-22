@@ -5,14 +5,22 @@ import "server-only";
 import { spotify } from "@/app/_api/spotify";
 import { db } from "@/db/db";
 import { profile, ratings } from "@/db/schema";
-import { CreateProfile, UpdateProfile } from "@/types/profile";
-import { RateForm, Resource, ReviewForm } from "@/types/rating";
+import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
+import {
+	RateFormSchema,
+	ResourceSchema,
+	ReviewFormSchema,
+} from "@/types/rating";
 import { auth, clerkClient } from "@clerk/nextjs";
 import { and, eq } from "drizzle-orm";
+import { createSafeActionClient } from "next-safe-action";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
-export const reviewAction = async (input: ReviewForm) => {
+export const action = createSafeActionClient();
+
+export const reviewAction = action(ReviewFormSchema, async (input) => {
 	const { userId } = auth();
 
 	if (!userId) throw new Error("Not logged in");
@@ -25,9 +33,9 @@ export const reviewAction = async (input: ReviewForm) => {
 		});
 
 	revalidateTag(input.resourceId);
-};
+});
 
-export const rateAction = async (input: RateForm) => {
+export const rateAction = action(RateFormSchema, async (input) => {
 	const { userId } = auth();
 
 	if (!userId) throw new Error("Not logged in");
@@ -38,28 +46,28 @@ export const rateAction = async (input: RateForm) => {
 		.onDuplicateKeyUpdate({
 			set: { ...input, userId },
 		});
-};
+});
 
-export const deleteRatingAction = async ({
-	resourceId,
-	category,
-}: Resource) => {
-	const { userId } = auth();
+export const deleteRatingAction = action(
+	ResourceSchema,
+	async ({ resourceId, category }) => {
+		const { userId } = auth();
 
-	if (!userId) throw new Error("Not logged in");
+		if (!userId) throw new Error("Not logged in");
 
-	await db
-		.delete(ratings)
-		.where(
-			and(
-				eq(ratings.userId, userId),
-				eq(ratings.resourceId, resourceId),
-				eq(ratings.category, category)
-			)
-		);
-};
+		await db
+			.delete(ratings)
+			.where(
+				and(
+					eq(ratings.userId, userId),
+					eq(ratings.resourceId, resourceId),
+					eq(ratings.category, category)
+				)
+			);
+	}
+);
 
-export const createProfile = async (input: CreateProfile) => {
+export const createProfile = action(CreateProfileSchema, async (input) => {
 	const { userId } = auth();
 
 	if (!userId) throw new Error("Not logged in");
@@ -68,33 +76,41 @@ export const createProfile = async (input: CreateProfile) => {
 	await clerkClient.users.updateUser(userId, {
 		publicMetadata: { onboarded: true },
 	});
-};
+});
 
-export const updateProfile = async (
-	input: UpdateProfile,
-	oldHandle?: string
-) => {
-	const { userId } = auth();
+export const updateProfile = action(
+	z.object({
+		...UpdateProfileSchema.shape,
+		oldHandle: z.string().optional(),
+	}),
+	async ({ oldHandle, ...newProfile }) => {
+		const { userId } = auth();
 
-	if (!userId) throw new Error("Not logged in");
+		if (!userId) throw new Error("Not logged in");
 
-	await db.update(profile).set(input).where(eq(profile.userId, userId));
-	if (oldHandle) revalidateTag(oldHandle);
-	revalidateTag(userId);
-	redirect(`/${input.handle}`);
-};
+		await db
+			.update(profile)
+			.set(newProfile)
+			.where(eq(profile.userId, userId));
+		if (oldHandle) revalidateTag(oldHandle);
+		revalidateTag(userId);
+		revalidateTag(newProfile.handle);
+		redirect(`/${newProfile.handle}`);
+	}
+);
 
-export const handleExistsAction = async (handle: string) => {
+export const handleExistsAction = action(z.string(), async (handle) => {
 	const exists = !!(await db.query.profile.findFirst({
 		where: eq(profile.handle, handle),
 	}));
 	return exists ? true : false;
-};
+});
 
-export const searchAction = async (query: string) => {
+export const searchAction = action(z.string(), async (query) => {
+	throw new Error("Not implemented");
 	return await spotify.search(query, ["album", "artist"], undefined, 4);
-};
+});
 
-export const revalidateUser = async (userId: string) => {
+export const revalidateUser = action(z.string(), async (userId) => {
 	revalidateTag(userId);
-};
+});

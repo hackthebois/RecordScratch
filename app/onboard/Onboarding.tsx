@@ -86,7 +86,13 @@ export const Onboarding = ({
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = useQuery({
 		queryKey: [debouncedHandle],
-		queryFn: () => handleExistsAction(debouncedHandle),
+		queryFn: async () => {
+			const { data, serverError } = await handleExistsAction(
+				debouncedHandle
+			);
+			if (serverError) throw new Error(serverError);
+			return data;
+		},
 		enabled: handle.length > 0,
 	});
 	useEffect(() => {

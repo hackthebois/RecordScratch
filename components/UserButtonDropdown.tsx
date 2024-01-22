@@ -113,7 +113,7 @@ export const UserButtonDropdown = ({
 	revalidateUser,
 }: {
 	profile: Profile;
-	updateProfile: (input: UpdateProfile, oldHandle?: string) => void;
+	updateProfile: (input: UpdateProfile) => void;
 	revalidateUser: (id: string) => void;
 }) => {
 	const {
@@ -151,10 +151,14 @@ export const UserButtonDropdown = ({
 	const { data: handleExists } = useQuery({
 		queryKey: [debouncedHandle],
 		queryFn: async () => {
-			if (debouncedHandle === defaultHandle) return false;
-			return handleExistsAction(debouncedHandle);
+			const { data, serverError } = await handleExistsAction(
+				debouncedHandle
+			);
+			if (serverError) throw new Error(serverError);
+			return data;
 		},
-		enabled: handle.length > 0,
+		enabled:
+			debouncedHandle.length > 0 && debouncedHandle !== defaultHandle,
 	});
 
 	useEffect(() => {
@@ -190,15 +194,13 @@ export const UserButtonDropdown = ({
 			});
 			imageUrl = profileImage?.publicUrl ?? null;
 		}
-		updateProfile(
-			{
-				bio: bio ?? null,
-				imageUrl: imageUrl ?? defaultImageUrl,
-				name,
-				handle,
-			},
-			defaultHandle
-		);
+		updateProfile({
+			bio: bio ?? null,
+			imageUrl: imageUrl ?? defaultImageUrl,
+			name,
+			handle,
+			oldHandle: defaultHandle,
+		});
 		setOpen(false);
 		user?.reload();
 	};
