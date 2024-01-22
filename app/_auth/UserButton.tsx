@@ -1,6 +1,6 @@
-import SignInButton from "@/components/SignInButton";
+import { SignInWrapper } from "@/components/SignInWrapper";
 import { UserAvatar } from "@/components/UserAvatar";
-import { buttonVariants } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { auth } from "@clerk/nextjs";
 import { unstable_noStore } from "next/cache";
 import Link from "next/link";
@@ -11,7 +11,11 @@ export const UserButton = async () => {
 	const { userId } = auth();
 
 	if (!userId) {
-		return <SignInButton />;
+		return (
+			<SignInWrapper>
+				<Button>Sign In</Button>
+			</SignInWrapper>
+		);
 	}
 
 	const profile = await getMyProfile(userId);

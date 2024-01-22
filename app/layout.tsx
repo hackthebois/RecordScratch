@@ -6,7 +6,6 @@ import { Montserrat } from "next/font/google";
 import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
-import { PostHogIdentify } from "./_posthog/PostHogIdentify";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -38,8 +37,12 @@ const PostHogPageView = dynamic(
 	}
 );
 
-export const runtime = "edge";
-export const preferredRegion = "cle1";
+const PostHogIdentify = dynamic(
+	() => import("@/app/_posthog/PostHogIdentify"),
+	{
+		ssr: false,
+	}
+);
 
 const RootLayout = ({ children }: Props) => {
 	return (
@@ -49,9 +52,7 @@ const RootLayout = ({ children }: Props) => {
 					<Providers>
 						{children}
 						<PostHogPageView />
-						<Suspense>
-							<PostHogIdentify />
-						</Suspense>
+						<PostHogIdentify />
 					</Providers>
 				</Suspense>
 				<SpeedInsights />
