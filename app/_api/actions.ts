@@ -78,10 +78,9 @@ export const updateProfile = async (
 
 	if (!userId) throw new Error("Not logged in");
 
-	if (oldHandle) revalidateTag(oldHandle);
-
 	await db.update(profile).set(input).where(eq(profile.userId, userId));
-
+	if (oldHandle) revalidateTag(oldHandle);
+	revalidateTag(userId);
 	redirect(`/${input.handle}`);
 };
 
