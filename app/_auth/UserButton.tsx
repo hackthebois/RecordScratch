@@ -2,8 +2,8 @@ import SignInButton from "@/components/SignInButton";
 import { UserButtonDropdown } from "@/components/UserButtonDropdown";
 import { auth } from "@clerk/nextjs";
 import { unstable_noStore } from "next/cache";
+import { getMyProfile } from "../_api";
 import { revalidateUser, updateProfile } from "../_api/actions";
-import { getMyProfile } from "../_api/cached";
 
 export const UserButton = async () => {
 	unstable_noStore();

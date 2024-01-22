@@ -1,4 +1,4 @@
-import { getRatingsList, getUserRatingList } from "@/app/_api/cached";
+import { getRatingsList, getUserRatingList } from "@/app/_api";
 import { RateButton } from "@/app/_auth/RateButton";
 import { RateForm, Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";

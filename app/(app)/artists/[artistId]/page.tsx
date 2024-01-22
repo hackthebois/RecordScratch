@@ -1,4 +1,4 @@
-import { getArtistTopTracks } from "@/app/_api/cached";
+import { getArtistTopTracks } from "@/app/_api";
 import SongTable from "@/app/_auth/SongTable";
 
 const Page = async ({

@@ -1,5 +1,5 @@
+import { getAlbum, getRating, getUserRating } from "@/app/_api";
 import { deleteRatingAction, rateAction } from "@/app/_api/actions";
-import { getAlbum, getRating, getUserRating } from "@/app/_api/cached";
 import { RateButton } from "@/app/_auth/RateButton";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";

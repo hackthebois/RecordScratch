@@ -1,4 +1,4 @@
-import { getDistribution, getProfile, getRecent } from "@/app/_api/cached";
+import { getDistribution, getProfile, getRecent } from "@/app/_api";
 import {
 	GetInfiniteReviews,
 	InfiniteReviews,

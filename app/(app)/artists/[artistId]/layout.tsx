@@ -2,7 +2,7 @@ import {
 	getArtist,
 	getArtistDiscography,
 	getRatingListAverage,
-} from "@/app/_api/cached";
+} from "@/app/_api";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";

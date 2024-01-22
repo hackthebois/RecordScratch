@@ -2,12 +2,7 @@ import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
 import AlbumList from "@/components/resource/album/AlbumList";
 import { unstable_noStore } from "next/cache";
 import { Suspense } from "react";
-import {
-	getFeed,
-	getNewReleases,
-	getTopRated,
-	getTrending,
-} from "../_api/cached";
+import { getFeed, getNewReleases, getTopRated, getTrending } from "../_api";
 
 const Feed = async () => {
 	unstable_noStore();
