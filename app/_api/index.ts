@@ -16,9 +16,7 @@ const spotifyRevalidate = 60 * 60 * 24; // 24 hours
 
 export const getAlbum = cache((albumId: string) => {
 	return unstable_cache(
-		() => {
-			return spotify.albums.get(albumId);
-		},
+		() => spotify.albums.get(albumId),
 		[`resource:album:get:${albumId}`],
 		{ revalidate: spotifyRevalidate }
 	)();

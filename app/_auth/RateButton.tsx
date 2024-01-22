@@ -1,21 +1,20 @@
 import { SignInWrapper } from "@/components/SignInWrapper";
-import { RateForm, Rating, Resource } from "@/types/rating";
+import { Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Star } from "lucide-react";
 import { unstable_noStore } from "next/cache";
 import { RatingDialog } from "../../components/RatingDialog";
 import { Button } from "../../components/ui/Button";
+import { rateAction } from "../_api/actions";
 
 export const RateButton = async ({
 	resource,
 	name,
 	userRating = null,
-	onRate,
 }: {
 	resource: Resource;
 	name?: string;
 	userRating: Rating | null;
-	onRate: (rating: RateForm) => void;
 }) => {
 	unstable_noStore();
 
@@ -42,7 +41,7 @@ export const RateButton = async ({
 			resource={resource}
 			initialRating={userRating ?? undefined}
 			name={name}
-			onRate={onRate}
+			onRate={rateAction}
 		>
 			<Button variant="outline" size="sm">
 				<Star
