@@ -1,3 +1,4 @@
+import AuthProvider from "@/app/AuthProvider";
 import { getProfile } from "@/app/_api";
 import { updateProfile } from "@/app/_api/actions";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -5,6 +6,7 @@ import { LinkTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { EditProfile } from "./_components/EditProfile";
 import { SignOutButton } from "./_components/SignOutButton";
 
@@ -71,13 +73,17 @@ const Layout = async ({
 						{profile.bio || "No bio yet"}
 					</p>
 					{isUser && (
-						<div className="flex gap-2 pt-4">
-							<EditProfile
-								profile={profile}
-								updateProfile={updateProfile}
-							/>
-							<SignOutButton />
-						</div>
+						<Suspense>
+							<AuthProvider>
+								<div className="flex gap-2 pt-4">
+									<EditProfile
+										profile={profile}
+										updateProfile={updateProfile}
+									/>
+									<SignOutButton />
+								</div>
+							</AuthProvider>
+						</Suspense>
 					)}
 				</div>
 			</div>

@@ -1,6 +1,8 @@
 import { getUrl } from "@/utils/url";
+import { auth, currentUser } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
+import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Montserrat } from "next/font/google";
 import { Suspense } from "react";
@@ -44,17 +46,37 @@ const PostHogIdentify = dynamic(
 	}
 );
 
+const PostHog = async () => {
+	unstable_noStore();
+	const { userId } = auth();
+
+	if (!userId) return null;
+
+	const user = await currentUser();
+
+	return (
+		<PostHogIdentify
+			userId={userId}
+			email={
+				user?.emailAddresses.length
+					? user?.emailAddresses[0].emailAddress
+					: undefined
+			}
+		/>
+	);
+};
+
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
 			<body className={`${montserrat.className} flex flex-col`}>
-				<Suspense>
-					<Providers>
-						{children}
-						<PostHogPageView />
-						<PostHogIdentify />
-					</Providers>
-				</Suspense>
+				<Providers>
+					{children}
+					<PostHogPageView />
+					<Suspense>
+						<PostHog />
+					</Suspense>
+				</Providers>
 				<SpeedInsights />
 			</body>
 		</html>
