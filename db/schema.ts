@@ -41,6 +41,19 @@ export const ratings = mysqlTable(
 	})
 );
 
+export const followers = mysqlTable(
+	"followers",
+	{
+		userId: varchar("user_id", { length: 256 }).notNull(),
+		followingId: varchar("following_id", { length: 256 }).notNull(),
+	},
+	(table) => ({
+		pk_ratings: primaryKey({
+			columns: [table.userId, table.followingId],
+		}),
+	})
+);
+
 export const ratingsRelations = relations(ratings, ({ one }) => ({
 	profile: one(profile, {
 		fields: [ratings.userId],

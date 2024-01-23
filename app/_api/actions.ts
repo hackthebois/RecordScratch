@@ -4,7 +4,7 @@ import "server-only";
 
 import { spotify } from "@/app/_api/spotify";
 import { db } from "@/db/db";
-import { profile, ratings } from "@/db/schema";
+import { followers, profile, ratings } from "@/db/schema";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
 import {
 	RateFormSchema,
@@ -12,13 +12,21 @@ import {
 	ReviewFormSchema,
 } from "@/types/rating";
 import { auth, clerkClient } from "@clerk/nextjs";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { createSafeActionClient } from "next-safe-action";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 export const action = createSafeActionClient();
+
+export const privateAction = createSafeActionClient({
+	async middleware() {
+		const { userId } = auth();
+		if (!userId) throw new Error("Not logged in");
+		return userId;
+	},
+});
 
 export const reviewAction = action(ReviewFormSchema, async (input) => {
 	const { userId } = auth();
@@ -98,6 +106,65 @@ export const updateProfile = action(
 		redirect(`/${newProfile.handle}`);
 	}
 );
+
+export const followUser = privateAction(
+	z.string(),
+	async (followingId, userId) => {
+		if (!userId) throw new Error("Not logged in");
+
+		if (userId === followingId)
+			throw new Error("User Cannot Follow Themselves");
+
+		const followExists =
+			(
+				await db
+					.select()
+					.from(followers)
+					.where(
+						and(
+							eq(followers.userId, userId),
+							eq(followers.followingId, followingId)
+						)
+					)
+			).length > 0;
+
+		if (followExists) throw new Error("User Already Follows");
+		else await db.insert(followers).values({ userId, followingId });
+	}
+);
+
+export const followingCount = action(z.string(), async (userId) => {
+	const userExists = !!(await db.query.profile.findFirst({
+		where: eq(profile.userId, userId),
+	}));
+
+	if (!userExists) throw new Error("User Doesn't Exist");
+
+	const count = await db
+		.select({
+			count: sql<number>`count(*)`.mapWith(Number),
+		})
+		.from(followers)
+		.where(eq(followers.userId, userId));
+	return count.length ? count[0].count : 0;
+});
+
+export const followersCount = action(z.string(), async (userId) => {
+	const userExists = !!(await db.query.profile.findFirst({
+		where: eq(profile.userId, userId),
+	}));
+
+	if (!userExists) throw new Error("User Doesn't Exist");
+
+	const count = await db
+		.select({
+			count: sql<number>`count(*)`.mapWith(Number),
+		})
+		.from(followers)
+		.where(eq(followers.followingId, userId));
+
+	return count.length ? count[0].count : 0;
+});
 
 export const handleExistsAction = action(z.string(), async (handle) => {
 	const exists = !!(await db.query.profile.findFirst({
