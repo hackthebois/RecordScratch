@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Montserrat } from "next/font/google";
-import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
 import "./globals.css";
@@ -73,9 +72,9 @@ const RootLayout = ({ children }: Props) => {
 				<Providers>
 					{children}
 					<PostHogPageView />
-					<Suspense>
+					{/* <Suspense>
 						<PostHog />
-					</Suspense>
+					</Suspense> */}
 				</Providers>
 				<SpeedInsights />
 			</body>
