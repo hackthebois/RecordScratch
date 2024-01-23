@@ -405,7 +405,7 @@ export const getDistribution = cache((userId: string) => {
 });
 
 export const followCount = cache(
-	async (userId: string, following: boolean = true) => {
+	async (userId: string, getFollowers: boolean = true) => {
 		const userExists = !!(await db.query.profile.findFirst({
 			where: eq(profile.userId, userId),
 		}));
@@ -413,7 +413,7 @@ export const followCount = cache(
 		if (!userExists) throw new Error("User Doesn't Exist");
 
 		var count;
-		if (following)
+		if (getFollowers)
 			count = await db
 				.select({
 					count: sql<number>`count(*)`.mapWith(Number),
