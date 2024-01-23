@@ -133,39 +133,6 @@ export const followUser = privateAction(
 	}
 );
 
-export const followingCount = action(z.string(), async (userId) => {
-	const userExists = !!(await db.query.profile.findFirst({
-		where: eq(profile.userId, userId),
-	}));
-
-	if (!userExists) throw new Error("User Doesn't Exist");
-
-	const count = await db
-		.select({
-			count: sql<number>`count(*)`.mapWith(Number),
-		})
-		.from(followers)
-		.where(eq(followers.userId, userId));
-	return count.length ? count[0].count : 0;
-});
-
-export const followersCount = action(z.string(), async (userId) => {
-	const userExists = !!(await db.query.profile.findFirst({
-		where: eq(profile.userId, userId),
-	}));
-
-	if (!userExists) throw new Error("User Doesn't Exist");
-
-	const count = await db
-		.select({
-			count: sql<number>`count(*)`.mapWith(Number),
-		})
-		.from(followers)
-		.where(eq(followers.followingId, userId));
-
-	return count.length ? count[0].count : 0;
-});
-
 export const handleExistsAction = action(z.string(), async (handle) => {
 	const exists = !!(await db.query.profile.findFirst({
 		where: eq(profile.handle, handle),
