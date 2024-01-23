@@ -2,6 +2,7 @@ import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/Button";
 import { Disc3 } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import UserButton from "../_auth/UserButton";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -21,7 +22,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 						</Link>
 						<SearchBar />
 					</div>
-					<UserButton />
+					<Suspense>
+						<UserButton />
+					</Suspense>
 				</nav>
 			</header>
 			<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">
