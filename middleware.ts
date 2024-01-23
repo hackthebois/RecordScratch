@@ -8,6 +8,8 @@ export default authMiddleware({
 		"/artists/:artistId/:tab",
 		"/api(.*)",
 		"/ingest(.*)",
+		"/sign-in",
+		"/sign-up",
 	],
 	afterAuth: async ({ userId, sessionClaims }, req) => {
 		if (
