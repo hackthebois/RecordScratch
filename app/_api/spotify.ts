@@ -3,5 +3,9 @@ import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 
 export const spotify = SpotifyApi.withClientCredentials(
 	env.SPOTIFY_CLIENT,
-	env.SPOTIFY_SECRET
+	env.SPOTIFY_SECRET,
+	[],
+	{
+		fetch: (url, init) => fetch(url, { ...init, cache: "force-cache" }),
+	}
 );
