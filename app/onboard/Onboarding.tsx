@@ -64,7 +64,7 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 export const Onboarding = ({
 	createProfile,
 }: {
-	createProfile: (profile: CreateProfile) => Promise<void>;
+	createProfile: (profile: CreateProfile) => void;
 }) => {
 	const [page, setPage] = useState(0);
 	const { user } = useUser();
