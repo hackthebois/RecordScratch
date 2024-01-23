@@ -17,7 +17,6 @@ export const RateButton = async ({
 	userRating: Rating | null;
 }) => {
 	unstable_noStore();
-
 	const { userId } = auth();
 
 	if (!userId) {

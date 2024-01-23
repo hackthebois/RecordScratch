@@ -12,11 +12,9 @@ import { Skeleton } from "../../components/ui/skeleton";
 const SongRatings = async ({
 	song,
 	resources,
-	resource,
 }: {
 	song: SimplifiedTrack | Track;
 	resources: Resource[];
-	resource: Resource;
 }) => {
 	unstable_noStore();
 	const ratingsList = await getRatingsList(resources);
@@ -48,13 +46,7 @@ const SongRatings = async ({
 	);
 };
 
-const SongTable = async ({
-	songs,
-	resource,
-}: {
-	songs: SimplifiedTrack[] | Track[];
-	resource: Resource;
-}) => {
+const SongTable = async ({ songs }: { songs: SimplifiedTrack[] | Track[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: song.id,
 		category: "SONG",
@@ -85,11 +77,7 @@ const SongTable = async ({
 							</p>
 						</div>
 						<Suspense fallback={<Skeleton className="h-8 w-24" />}>
-							<SongRatings
-								song={song}
-								resources={resources}
-								resource={resource}
-							/>
+							<SongRatings song={song} resources={resources} />
 						</Suspense>
 					</div>
 				);

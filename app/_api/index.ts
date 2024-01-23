@@ -14,13 +14,7 @@ import { cache } from "react";
 // SPOTIFY
 const spotifyRevalidate = 60 * 60 * 24; // 24 hours
 
-export const getAlbum = cache((albumId: string) => {
-	return unstable_cache(
-		() => spotify.albums.get(albumId),
-		[`resource:album:get:${albumId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
-});
+export const getAlbum = cache((albumId: string) => spotify.albums.get(albumId));
 
 export const getArtist = cache((artistId: string) => {
 	return unstable_cache(

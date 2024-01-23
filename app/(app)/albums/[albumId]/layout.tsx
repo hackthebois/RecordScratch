@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
+import { unstable_noStore } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -32,6 +33,7 @@ export async function generateMetadata({
 }
 
 const AlbumRatings = async ({ resource }: { resource: Resource }) => {
+	unstable_noStore();
 	const rating = await getRating(resource);
 
 	let userRating: Rating | null = null;
