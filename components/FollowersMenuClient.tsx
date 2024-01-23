@@ -2,7 +2,6 @@
 
 import { Button } from "./ui/Button";
 import { followUser } from "@/app/_api/actions";
-import { auth } from "@clerk/nextjs";
 
 type PropsClient = {
 	profileId: string;
