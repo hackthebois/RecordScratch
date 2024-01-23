@@ -407,41 +407,59 @@ export const getDistribution = cache((userId: string) => {
 
 export const getFollowCount = cache(
 	async (userId: string, getFollowers: boolean = true) => {
-		const userExists = !!(await db.query.profile.findFirst({
-			where: eq(profile.userId, userId),
-		}));
+		return unstable_cache(
+			async () => {
+				const userExists = !!(await db.query.profile.findFirst({
+					where: eq(profile.userId, userId),
+				}));
 
-		if (!userExists) throw new Error("User Doesn't Exist");
+				if (!userExists) throw new Error("User Doesn't Exist");
 
-		var count;
-		if (getFollowers)
-			count = await db
-				.select({
-					count: sql<number>`count(*)`.mapWith(Number),
-				})
-				.from(followers)
-				.where(eq(followers.followingId, userId));
-		else
-			count = await db
-				.select({
-					count: sql<number>`count(*)`.mapWith(Number),
-				})
-				.from(followers)
-				.where(eq(followers.userId, userId));
+				var count;
+				if (getFollowers)
+					count = await db
+						.select({
+							count: sql<number>`count(*)`.mapWith(Number),
+						})
+						.from(followers)
+						.where(eq(followers.followingId, userId));
+				else
+					count = await db
+						.select({
+							count: sql<number>`count(*)`.mapWith(Number),
+						})
+						.from(followers)
+						.where(eq(followers.userId, userId));
 
-		return count.length ? count[0].count : 0;
+				return count.length ? count[0].count : 0;
+			},
+			[
+				`user:profile:getFollowCount:${userId}:${
+					getFollowers ? "followers" : "following"
+				}`,
+			],
+			{
+				tags: ["getFollowCount:" + userId],
+			}
+		)();
 	}
 );
 
 export const isUserFollowing = cache(async (followingId: string) => {
-	const { userId } = auth();
+	return unstable_cache(
+		async () => {
+			const { userId } = auth();
 
-	if (userId === followingId || !userId) return false;
+			if (userId === followingId || !userId) return false;
 
-	return !!(await db.query.followers.findFirst({
-		where: and(
-			eq(followers.userId, userId),
-			eq(followers.followingId, followingId)
-		),
-	}));
+			return !!(await db.query.followers.findFirst({
+				where: and(
+					eq(followers.userId, userId),
+					eq(followers.followingId, followingId)
+				),
+			}));
+		},
+		[`user:profile:isUserFollowing:${followingId}:`],
+		{ tags: ["isUserFollowing:" + followingId] }
+	)();
 });

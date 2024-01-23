@@ -133,6 +133,40 @@ export const followUser = privateAction(
 	}
 );
 
+export const unFollowUser = privateAction(
+	z.string(),
+	async (followingId, userId) => {
+		if (!userId) throw new Error("Not logged in");
+
+		if (userId === followingId)
+			throw new Error("User Cannot unFollow Themselves");
+
+		const followExists =
+			(
+				await db
+					.select()
+					.from(followers)
+					.where(
+						and(
+							eq(followers.userId, userId),
+							eq(followers.followingId, followingId)
+						)
+					)
+			).length > 0;
+
+		if (!followExists) throw new Error("User Doesn't Follow");
+		else
+			await db
+				.delete(followers)
+				.where(
+					and(
+						eq(followers.userId, userId),
+						eq(followers.followingId, followingId)
+					)
+				);
+	}
+);
+
 export const handleExistsAction = action(z.string(), async (handle) => {
 	const exists = !!(await db.query.profile.findFirst({
 		where: eq(profile.handle, handle),
