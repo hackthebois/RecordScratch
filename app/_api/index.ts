@@ -19,6 +19,7 @@ import {
 } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import { auth } from "@clerk/nextjs";
 
 // SPOTIFY
 const spotifyRevalidate = 60 * 60 * 24; // 24 hours
@@ -404,7 +405,7 @@ export const getDistribution = cache((userId: string) => {
 	)();
 });
 
-export const followCount = cache(
+export const getFollowCount = cache(
 	async (userId: string, getFollowers: boolean = true) => {
 		const userExists = !!(await db.query.profile.findFirst({
 			where: eq(profile.userId, userId),
@@ -419,15 +420,28 @@ export const followCount = cache(
 					count: sql<number>`count(*)`.mapWith(Number),
 				})
 				.from(followers)
-				.where(eq(followers.userId, userId));
+				.where(eq(followers.followingId, userId));
 		else
 			count = await db
 				.select({
 					count: sql<number>`count(*)`.mapWith(Number),
 				})
 				.from(followers)
-				.where(eq(followers.followingId, userId));
+				.where(eq(followers.userId, userId));
 
 		return count.length ? count[0].count : 0;
 	}
 );
+
+export const isUserFollowing = cache(async (followingId: string) => {
+	const { userId } = auth();
+
+	if (userId === followingId || !userId) return false;
+
+	return !!(await db.query.followers.findFirst({
+		where: and(
+			eq(followers.userId, userId),
+			eq(followers.followingId, followingId)
+		),
+	}));
+});

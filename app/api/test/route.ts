@@ -1,9 +1,9 @@
-import { followingCount } from "@/app/_api/actions";
+import { followCount, isUserFollowing } from "@/app/_api";
 import { NextResponse } from "next/server";
 
 // Handles GET requests to /api
 export async function GET() {
-	const res = await followingCount("1");
+	const res = await isUserFollowing("user_2TMF8gtp24d2Jgn4ua9ETLF0u65");
 
 	return NextResponse.json({ res });
 }
