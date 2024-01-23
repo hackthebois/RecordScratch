@@ -4,10 +4,19 @@ import "server-only";
 import { spotify } from "@/app/_api/spotify";
 import { appendReviewResource } from "@/app/_api/utils";
 import { db } from "@/db/db";
-import { profile, ratings } from "@/db/schema";
+import { followers, profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
 import { SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
-import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
+import {
+	and,
+	avg,
+	count,
+	desc,
+	eq,
+	inArray,
+	isNotNull,
+	sql,
+} from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
@@ -394,3 +403,31 @@ export const getDistribution = cache((userId: string) => {
 		{ tags: [userId] }
 	)();
 });
+
+export const followCount = cache(
+	async (userId: string, following: boolean = true) => {
+		const userExists = !!(await db.query.profile.findFirst({
+			where: eq(profile.userId, userId),
+		}));
+
+		if (!userExists) throw new Error("User Doesn't Exist");
+
+		var count;
+		if (following)
+			count = await db
+				.select({
+					count: sql<number>`count(*)`.mapWith(Number),
+				})
+				.from(followers)
+				.where(eq(followers.userId, userId));
+		else
+			count = await db
+				.select({
+					count: sql<number>`count(*)`.mapWith(Number),
+				})
+				.from(followers)
+				.where(eq(followers.followingId, userId));
+
+		return count.length ? count[0].count : 0;
+	}
+);
