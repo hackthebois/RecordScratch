@@ -1,14 +1,17 @@
 "use client";
 
+import { revalidateTag } from "next/cache";
 import { Button } from "./ui/Button";
-import { followUser } from "@/app/_api/actions";
+import { followUser, unFollowUser } from "@/app/_api/actions";
 
-type PropsClient = {
+type Props = {
 	profileId: string;
 	followerCount: number;
 	followingCount: number;
 	isFollowing: boolean;
 	showButton: boolean;
+	followUser: Function;
+	unFollowUser: Function;
 };
 
 const FollowerMenuClient = ({
@@ -17,11 +20,9 @@ const FollowerMenuClient = ({
 	followingCount,
 	isFollowing,
 	showButton,
-}: PropsClient) => {
-	const followUsers = async () => {
-		await followUser(profileId);
-	};
-
+	followUser,
+	unFollowUser,
+}: Props) => {
 	return (
 		<div className="flex flex-row gap-6">
 			<div className="flex flex-col items-center">
@@ -34,9 +35,14 @@ const FollowerMenuClient = ({
 			</div>
 
 			{isFollowing ? (
-				<Button disabled={true}>Following</Button>
+				<Button
+					className="rounded-md bg-gray-300 opacity-50"
+					onClick={() => unFollowUser(profileId)}
+				>
+					unfollow
+				</Button>
 			) : !showButton ? (
-				<Button onClick={followUsers}>Follow</Button>
+				<Button onClick={() => followUser(profileId)}>Follow</Button>
 			) : null}
 		</div>
 	);
