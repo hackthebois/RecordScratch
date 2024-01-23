@@ -1,10 +1,12 @@
 import { getProfile } from "@/app/_api";
 import { Label } from "@/components/ui/Label";
 import { auth } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
-import { ThemeToggle } from "./_components/ThemeToggle";
 
-type Props = {};
+const ThemeToggle = dynamic(() => import("./_components/ThemeToggle"), {
+	ssr: false,
+});
 
 const Page = async ({
 	params: { handle },
