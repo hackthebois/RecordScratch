@@ -1,13 +1,17 @@
 import { getRatingsList, getUserRatingList } from "@/app/_api";
-import { RateButton } from "@/app/_auth/RateButton";
 import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
 import { unstable_noStore } from "next/cache";
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
+
+const RateButton = dynamic(() => import("@/app/_auth/RateButton"), {
+	ssr: false,
+});
 
 const SongRatings = async ({
 	song,

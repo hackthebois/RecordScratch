@@ -1,11 +1,15 @@
 import { getAlbum, getCommunityReviews } from "@/app/_api";
-import { ReviewButton } from "@/app/_auth/ReviewButton";
 import {
 	GetInfiniteReviews,
 	InfiniteReviews,
 } from "@/components/resource/InfiniteReviews";
 import { Resource } from "@/types/rating";
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
+
+const ReviewButton = dynamic(() => import("@/app/_auth/ReviewButton"), {
+	ssr: false,
+});
 
 const Page = async ({
 	params: { albumId },

@@ -45,3 +45,5 @@ export const ReviewButton = async ({
 		</ReviewDialog>
 	);
 };
+
+export default ReviewButton;

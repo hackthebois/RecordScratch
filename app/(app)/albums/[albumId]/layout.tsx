@@ -1,5 +1,4 @@
 import { getAlbum, getRating, getUserRating } from "@/app/_api";
-import { RateButton } from "@/app/_auth/RateButton";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
@@ -8,9 +7,14 @@ import { Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { unstable_noStore } from "next/cache";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+
+const RateButton = dynamic(() => import("@/app/_auth/RateButton"), {
+	ssr: false,
+});
 
 export async function generateMetadata({
 	params: { albumId },

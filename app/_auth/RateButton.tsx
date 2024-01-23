@@ -54,3 +54,5 @@ export const RateButton = async ({
 		</RatingDialog>
 	);
 };
+
+export default RateButton;
