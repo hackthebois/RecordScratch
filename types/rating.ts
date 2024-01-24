@@ -1,5 +1,5 @@
+import { Album } from "@/app/_api/spotify";
 import { ratings } from "@/db/schema";
-import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Profile } from "./profile";
@@ -47,6 +47,6 @@ export type CategoryType = z.infer<typeof CategorySchema>;
 export type Review = {
 	rating: Rating;
 	profile: Profile;
-	album: Album | SimplifiedAlbum;
+	album: Album;
 	name: string;
 };

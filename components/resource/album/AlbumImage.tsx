@@ -1,13 +1,7 @@
-import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
+import { Album } from "@/app/_api/spotify";
 import Image from "next/image";
 
-const AlbumImage = ({
-	album,
-	size,
-}: {
-	album: SimplifiedAlbum | Album;
-	size: number;
-}) => {
+const AlbumImage = ({ album, size }: { album: Album; size: number }) => {
 	return (
 		<div className="overflow-hidden rounded-md">
 			<Image

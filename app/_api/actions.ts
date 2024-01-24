@@ -100,7 +100,10 @@ export const handleExistsAction = action(z.string(), async (handle) => {
 });
 
 export const searchAction = action(z.string(), async (query) => {
-	return await spotify.search(query, ["album", "artist"], undefined, 4);
+	return await spotify({
+		route: "/search",
+		input: { q: query, limit: 4, type: "album,artist" },
+	});
 });
 
 export const revalidateTagAction = action(z.string(), async (tag) => {
