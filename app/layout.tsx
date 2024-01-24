@@ -66,6 +66,8 @@ const PostHog = async () => {
 	);
 };
 
+export const runtime = "edge";
+
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">

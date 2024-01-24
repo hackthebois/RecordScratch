@@ -69,9 +69,7 @@ export const getSpotifyToken = async () => {
 		},
 		body: "grant_type=client_credentials",
 		method: "POST",
-		next: {
-			revalidate: 60 * 59,
-		},
+		cache: "no-store",
 	});
 	const data = await res.json();
 	return z.object({ access_token: z.string() }).parse(data).access_token;
@@ -186,6 +184,9 @@ export const spotify = async <TRoute extends keyof Spotify>({
 	const res = await fetch(url, {
 		headers: {
 			Authorization: `Bearer ${spotifyToken}`,
+		},
+		next: {
+			revalidate: 60 * 60 * 24,
 		},
 	});
 	const data: unknown = await res.json();
