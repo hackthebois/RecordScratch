@@ -2,12 +2,12 @@ import { SignInWrapper } from "@/components/SignInWrapper";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { auth } from "@clerk/nextjs";
-import { unstable_noStore } from "next/cache";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { getMyProfile } from "../_api";
 
 export const UserButton = async () => {
-	unstable_noStore();
+	cookies();
 	const { userId } = auth();
 
 	if (!userId) {

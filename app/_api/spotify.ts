@@ -6,6 +6,6 @@ export const spotify = SpotifyApi.withClientCredentials(
 	env.SPOTIFY_SECRET,
 	[],
 	{
-		fetch: (url, init) => fetch(url, { ...init, cache: "force-cache" }),
+		fetch: (url, init) => fetch(url, { ...init }),
 	}
 );
