@@ -67,6 +67,7 @@ const PostHog = async () => {
 };
 
 export const runtime = "edge";
+export const preferredRegion = ["cle1"];
 
 const RootLayout = ({ children }: Props) => {
 	return (
