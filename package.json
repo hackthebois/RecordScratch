@@ -38,7 +38,7 @@
     "embla-carousel-react": "8.0.0-rc17",
     "lucide-react": "^0.274.0",
     "mysql2": "^3.8.0",
-    "next": "latest",
+    "next": "canary",
     "next-safe-action": "^6.0.1",
     "next-themes": "^0.2.1",
     "posthog-js": "^1.101.0",
