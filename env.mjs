@@ -8,9 +8,6 @@ export const env = createEnv({
 		DATABASE_URL: z.string().min(1),
 		UPSTASH_REDIS_REST_URL: z.string().min(1),
 		UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
-		NODE_ENV: z
-			.enum(["development", "test", "production"])
-			.default("development"),
 	},
 	client: {
 		NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
