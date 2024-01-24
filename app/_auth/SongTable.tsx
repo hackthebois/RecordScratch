@@ -2,7 +2,6 @@ import { getRatingsList, getUserRatingList } from "@/app/_api";
 import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
-import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
@@ -20,7 +19,6 @@ const SongRatings = async ({
 	song: Track;
 	resources: Resource[];
 }) => {
-	unstable_noStore();
 	const ratingsList = await getRatingsList(resources);
 
 	let userRatingsList: Rating[] = [];
