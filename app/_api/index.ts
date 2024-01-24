@@ -445,21 +445,21 @@ export const getFollowCount = cache(
 	}
 );
 
-export const isUserFollowing = cache(async (followingId: string) => {
-	return unstable_cache(
-		async () => {
-			const { userId } = auth();
+export const isUserFollowing = cache(
+	async (followingId: string, userId: string) => {
+		return unstable_cache(
+			async () => {
+				if (userId === followingId || userId === "0") return false;
 
-			if (userId === followingId || !userId) return false;
-
-			return !!(await db.query.followers.findFirst({
-				where: and(
-					eq(followers.userId, userId),
-					eq(followers.followingId, followingId)
-				),
-			}));
-		},
-		[`user:profile:isUserFollowing:${followingId}:`],
-		{ tags: ["isUserFollowing:" + followingId] }
-	)();
-});
+				return !!(await db.query.followers.findFirst({
+					where: and(
+						eq(followers.userId, userId),
+						eq(followers.followingId, followingId)
+					),
+				}));
+			},
+			[`user:profile:isUserFollowing:${followingId}`],
+			{ tags: ["isUserFollowing:" + followingId] }
+		)();
+	}
+);

@@ -9,11 +9,12 @@ type Props = {
 };
 
 const FollowerMenuServer = async ({ profileId }: Props) => {
+	const { userId } = auth();
+
 	const followerCount = await getFollowCount(profileId);
 	const followingCount = await getFollowCount(profileId, false);
-	const isFollowing = await isUserFollowing(profileId);
+	const isFollowing = await isUserFollowing(profileId, userId || "0");
 
-	const { userId } = auth();
 	const showButton = userId === null || userId === profileId;
 
 	const followUsers = async (userId: string) => {
