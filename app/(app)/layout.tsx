@@ -1,13 +1,9 @@
 import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/Button";
 import { Disc3 } from "lucide-react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Suspense } from "react";
-
-const UserButton = dynamic(() => import("../_auth/UserButton"), {
-	ssr: false,
-});
+import UserButton from "../_auth/UserButton";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (

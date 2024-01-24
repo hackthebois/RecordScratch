@@ -11,68 +11,84 @@ import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
-// SPOTIFY
-const spotifyRevalidate = 60 * 60 * 24; // 24 hours
-
+// STATIC
 export const getAlbum = cache((albumId: string) => spotify.albums.get(albumId));
 
-export const getArtist = cache((artistId: string) => {
-	return unstable_cache(
-		() => spotify.artists.get(artistId),
-		[`resource:artist:get:${artistId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+export const getArtist = cache((artistId: string) =>
+	spotify.artists.get(artistId)
+);
+
+export const getArtistTopTracks = cache((artistId: string) =>
+	spotify.artists.topTracks(artistId, "US")
+);
+
+export const getNewReleases = cache(() => spotify.browse.getNewReleases());
+
+export const getSong = cache((songId: string) => spotify.tracks.get(songId));
+
+export const getArtistDiscography = cache(async (artistId: string) => {
+	const albums: SimplifiedAlbum[] = [];
+	const getAllAlbums = async (offset = 0) => {
+		const newAlbums = await spotify.artists.albums(
+			artistId,
+			"album,single",
+			undefined,
+			50,
+			offset
+		);
+		albums.push(...newAlbums.items);
+		// TODO: handle this without the extra request for 0 (check next)
+		if (newAlbums.items.length !== 0) {
+			await getAllAlbums(offset + 50);
+		}
+	};
+	await getAllAlbums();
+	return albums;
 });
 
-export const getArtistTopTracks = cache((artistId: string) => {
-	return unstable_cache(
-		() => spotify.artists.topTracks(artistId, "US"),
-		[`resource:artist:getTopTracks:${artistId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
+export const getTrending = cache(async () => {
+	const albums = await db
+		.select({
+			total: count(ratings.rating),
+			resourceId: ratings.resourceId,
+		})
+		.from(ratings)
+		.where(eq(ratings.category, "ALBUM"))
+		.groupBy(ratings.resourceId)
+		.orderBy(({ total }) => desc(total))
+		.limit(20);
+	if (albums.length === 0) return [];
+	return await spotify.albums.get(albums.map((a) => a.resourceId));
 });
 
-export const getNewReleases = cache(() => {
-	return unstable_cache(
-		() => spotify.browse.getNewReleases(),
-		[`resource:album:getNewReleases`],
-		{ revalidate: spotifyRevalidate }
-	)();
+export const getTopRated = cache(async () => {
+	const albums = await db
+		.select({
+			average: avg(ratings.rating),
+			resourceId: ratings.resourceId,
+		})
+		.from(ratings)
+		.where(eq(ratings.category, "ALBUM"))
+		.groupBy(ratings.resourceId)
+		.orderBy(({ average }) => desc(average))
+		.limit(20);
+	if (albums.length === 0) return [];
+	return await spotify.albums.get(albums.map((a) => a.resourceId));
 });
 
-export const getSong = cache((songId: string) => {
-	return unstable_cache(
-		() => spotify.tracks.get(songId),
-		[`resource:song:get:${songId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
-});
-
-export const getArtistDiscography = cache((artistId: string) => {
-	return unstable_cache(
-		async () => {
-			const albums: SimplifiedAlbum[] = [];
-			const getAllAlbums = async (offset = 0) => {
-				const newAlbums = await spotify.artists.albums(
-					artistId,
-					"album,single",
-					undefined,
-					50,
-					offset
-				);
-				albums.push(...newAlbums.items);
-				// TODO: handle this without the extra request for 0 (check next)
-				if (newAlbums.items.length !== 0) {
-					await getAllAlbums(offset + 50);
-				}
-			};
-			await getAllAlbums();
-			return albums;
-		},
-		[`resource:artist:getDiscography:${artistId}`],
-		{ revalidate: spotifyRevalidate }
-	)();
-});
+export const getFeed = cache(
+	async ({ page, limit }: { page: number; limit: number }) => {
+		const ratingList = await db.query.ratings.findMany({
+			limit,
+			offset: (page - 1) * limit,
+			orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
+			with: {
+				profile: true,
+			},
+		});
+		return await appendReviewResource(ratingList, spotify);
+	}
+);
 
 // RECORDSCRATCH
 export const getCommunityReviews = cache(
@@ -197,70 +213,6 @@ export const getUserRatingList = cache(
 			],
 			{
 				tags: [...resources.map((r) => r.resourceId), userId],
-				revalidate: 60,
-			}
-		)();
-	}
-);
-
-export const getTrending = cache(() => {
-	return unstable_cache(
-		async () => {
-			const albums = await db
-				.select({
-					total: count(ratings.rating),
-					resourceId: ratings.resourceId,
-				})
-				.from(ratings)
-				.where(eq(ratings.category, "ALBUM"))
-				.groupBy(ratings.resourceId)
-				.orderBy(({ total }) => desc(total))
-				.limit(20);
-			if (albums.length === 0) return [];
-			return await spotify.albums.get(albums.map((a) => a.resourceId));
-		},
-		[`resource:album:getTrending`],
-		{ revalidate: 60 * 60 }
-	)();
-});
-
-export const getTopRated = cache(() => {
-	return unstable_cache(
-		async () => {
-			const albums = await db
-				.select({
-					average: avg(ratings.rating),
-					resourceId: ratings.resourceId,
-				})
-				.from(ratings)
-				.where(eq(ratings.category, "ALBUM"))
-				.groupBy(ratings.resourceId)
-				.orderBy(({ average }) => desc(average))
-				.limit(20);
-			if (albums.length === 0) return [];
-			return await spotify.albums.get(albums.map((a) => a.resourceId));
-		},
-		[`resource:album:getTopRated`],
-		{ revalidate: 60 * 60 }
-	)();
-});
-
-export const getFeed = cache(
-	({ page, limit }: { page: number; limit: number }) => {
-		return unstable_cache(
-			async () => {
-				const ratingList = await db.query.ratings.findMany({
-					limit,
-					offset: (page - 1) * limit,
-					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
-					with: {
-						profile: true,
-					},
-				});
-				return await appendReviewResource(ratingList, spotify);
-			},
-			[`resource:rating:getFeed:page:${page}`],
-			{
 				revalidate: 60,
 			}
 		)();
