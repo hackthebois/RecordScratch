@@ -61,7 +61,7 @@ export const RatingDialog = ({
 		if (!initialRating) return;
 		onRate({
 			...resource,
-			rating: 0,
+			rating: null,
 		});
 		setOpen(false);
 	};

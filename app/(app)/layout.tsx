@@ -22,11 +22,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 						</Link>
 						<SearchBar />
 					</div>
-					<div className="flex items-center justify-center gap-3">
-						<Suspense fallback={null}>
-							<UserButton />
-						</Suspense>
-					</div>
+					<Suspense>
+						<UserButton />
+					</Suspense>
 				</nav>
 			</header>
 			<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">

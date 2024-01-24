@@ -6,11 +6,7 @@ import { spotify } from "@/app/_api/spotify";
 import { db } from "@/db/db";
 import { followers, profile, ratings } from "@/db/schema";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
-import {
-	RateFormSchema,
-	ResourceSchema,
-	ReviewFormSchema,
-} from "@/types/rating";
+import { RateFormSchema, ReviewFormSchema } from "@/types/rating";
 import { auth, clerkClient } from "@clerk/nextjs";
 import { and, eq, sql } from "drizzle-orm";
 import { createSafeActionClient } from "next-safe-action";
@@ -43,35 +39,32 @@ export const reviewAction = action(ReviewFormSchema, async (input) => {
 	revalidateTag(input.resourceId);
 });
 
-export const rateAction = action(RateFormSchema, async (input) => {
-	const { userId } = auth();
-
-	if (!userId) throw new Error("Not logged in");
-
-	await db
-		.insert(ratings)
-		.values({ ...input, userId })
-		.onDuplicateKeyUpdate({
-			set: { ...input, userId },
-		});
-});
-
-export const deleteRatingAction = action(
-	ResourceSchema,
-	async ({ resourceId, category }) => {
+export const rateAction = action(
+	RateFormSchema,
+	async ({ rating, resourceId, category }) => {
 		const { userId } = auth();
 
 		if (!userId) throw new Error("Not logged in");
 
-		await db
-			.delete(ratings)
-			.where(
-				and(
-					eq(ratings.userId, userId),
-					eq(ratings.resourceId, resourceId),
-					eq(ratings.category, category)
-				)
-			);
+		if (rating === null) {
+			await db
+				.delete(ratings)
+				.where(
+					and(
+						eq(ratings.userId, userId),
+						eq(ratings.resourceId, resourceId),
+						eq(ratings.category, category)
+					)
+				);
+		} else {
+			await db
+				.insert(ratings)
+				.values({ rating, resourceId, category, userId })
+				.onDuplicateKeyUpdate({
+					set: { rating, resourceId, category, userId },
+				});
+		}
+		revalidateTag(resourceId);
 	}
 );
 
@@ -175,10 +168,12 @@ export const handleExistsAction = action(z.string(), async (handle) => {
 });
 
 export const searchAction = action(z.string(), async (query) => {
-	throw new Error("Not implemented");
-	return await spotify.search(query, ["album", "artist"], undefined, 4);
+	return await spotify({
+		route: "/search",
+		input: { q: query, limit: 4, type: "album,artist" },
+	});
 });
 
-export const revalidateUser = action(z.string(), async (userId) => {
-	revalidateTag(userId);
+export const revalidateTagAction = action(z.string(), async (tag) => {
+	revalidateTag(tag);
 });

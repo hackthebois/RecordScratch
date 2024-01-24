@@ -1,5 +1,6 @@
 "use client";
 
+import { Album } from "@/app/_api/spotify";
 import {
 	Carousel,
 	CarouselContent,
@@ -7,13 +8,12 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
 import AlbumImage from "./AlbumImage";
 
 type Props = {
-	albums: SimplifiedAlbum[] | Album[];
+	albums: Album[];
 	type?: "wrap" | "scroll";
 	field?: "date" | "artist";
 };

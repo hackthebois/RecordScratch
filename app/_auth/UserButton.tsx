@@ -1,16 +1,21 @@
-import SignInButton from "@/components/SignInButton";
-import { UserButtonDropdown } from "@/components/UserButtonDropdown";
+import { SignInWrapper } from "@/components/SignInWrapper";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { auth } from "@clerk/nextjs";
-import { unstable_noStore } from "next/cache";
+import { cookies } from "next/headers";
+import Link from "next/link";
 import { getMyProfile } from "../_api";
-import { revalidateUser, updateProfile } from "../_api/actions";
 
 export const UserButton = async () => {
-	unstable_noStore();
+	cookies();
 	const { userId } = auth();
 
 	if (!userId) {
-		return <SignInButton />;
+		return (
+			<SignInWrapper>
+				<Button>Sign In</Button>
+			</SignInWrapper>
+		);
 	}
 
 	const profile = await getMyProfile(userId);
@@ -20,11 +25,15 @@ export const UserButton = async () => {
 	}
 
 	return (
-		<UserButtonDropdown
-			profile={profile}
-			updateProfile={updateProfile}
-			revalidateUser={revalidateUser}
-		/>
+		<Link
+			href={`/${profile.handle}`}
+			className={buttonVariants({
+				variant: "link",
+				className: "relative h-[36px] w-[36px] rounded-full",
+			})}
+		>
+			<UserAvatar {...profile} size={36} />
+		</Link>
 	);
 };
 
