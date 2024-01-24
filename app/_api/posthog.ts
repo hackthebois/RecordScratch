@@ -21,7 +21,6 @@ export const logServerEvent = async <TEventKey extends keyof ServerEvents>(
 			event,
 			properties: {
 				...payload.properties,
-				environment: env.NODE_ENV,
 			},
 		}),
 	});
