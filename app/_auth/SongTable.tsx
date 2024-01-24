@@ -2,12 +2,12 @@ import { getRatingsList, getUserRatingList } from "@/app/_api";
 import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
-import { SimplifiedTrack, Track } from "@spotify/web-api-ts-sdk";
 import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
+import { Track } from "../_api/spotify";
 
 const RateButton = dynamic(() => import("@/app/_auth/RateButton"), {
 	ssr: false,
@@ -17,7 +17,7 @@ const SongRatings = async ({
 	song,
 	resources,
 }: {
-	song: SimplifiedTrack | Track;
+	song: Track;
 	resources: Resource[];
 }) => {
 	unstable_noStore();
@@ -50,7 +50,7 @@ const SongRatings = async ({
 	);
 };
 
-const SongTable = async ({ songs }: { songs: SimplifiedTrack[] | Track[] }) => {
+const SongTable = async ({ songs }: { songs: Track[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: song.id,
 		category: "SONG",

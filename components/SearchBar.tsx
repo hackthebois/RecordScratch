@@ -1,13 +1,13 @@
 "use client";
 
 import { searchAction } from "@/app/_api/actions";
+import { Album, Artist } from "@/app/_api/spotify";
 import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
-import { Artist } from "@spotify/web-api-ts-sdk";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
@@ -175,7 +175,7 @@ const SearchBar = () => {
 									/>
 								) : (
 									<AlbumItem
-										album={recent}
+										album={recent as Album}
 										name={recent.name}
 										category="ALBUM"
 										onClick={() => setOpen(false)}

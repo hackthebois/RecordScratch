@@ -1,41 +1,63 @@
 "use server";
 import "server-only";
 
-import { spotify } from "@/app/_api/spotify";
 import { appendReviewResource } from "@/app/_api/utils";
 import { db } from "@/db/db";
 import { profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
-import { SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import { Album, spotify } from "./spotify";
 
 // STATIC
-export const getAlbum = cache((albumId: string) => spotify.albums.get(albumId));
+export const getAlbum = cache((albumId: string) =>
+	spotify({
+		route: "/albums/{id}",
+		input: { id: albumId },
+	})
+);
 
 export const getArtist = cache((artistId: string) =>
-	spotify.artists.get(artistId)
+	spotify({
+		route: "/artists/{id}",
+		input: { id: artistId },
+	})
 );
 
 export const getArtistTopTracks = cache((artistId: string) =>
-	spotify.artists.topTracks(artistId, "US")
+	spotify({
+		route: "/artists/{id}/top-tracks",
+		input: { id: artistId, market: "US" },
+	})
 );
 
-export const getNewReleases = cache(() => spotify.browse.getNewReleases());
+export const getNewReleases = cache(() =>
+	spotify({
+		route: "/browse/new-releases",
+		input: undefined,
+	})
+);
 
-export const getSong = cache((songId: string) => spotify.tracks.get(songId));
+export const getSong = cache((songId: string) =>
+	spotify({
+		route: "/tracks/{id}",
+		input: { id: songId },
+	})
+);
 
 export const getArtistDiscography = cache(async (artistId: string) => {
-	const albums: SimplifiedAlbum[] = [];
+	const albums: Album[] = [];
 	const getAllAlbums = async (offset = 0) => {
-		const newAlbums = await spotify.artists.albums(
-			artistId,
-			"album,single",
-			undefined,
-			50,
-			offset
-		);
+		const newAlbums = await spotify({
+			route: "/artists/{id}/albums",
+			input: {
+				id: artistId,
+				include_groups: "album,single",
+				offset,
+				limit: 50,
+			},
+		});
 		albums.push(...newAlbums.items);
 		// TODO: handle this without the extra request for 0 (check next)
 		if (newAlbums.items.length !== 0) {
@@ -57,8 +79,14 @@ export const getTrending = cache(async () => {
 		.groupBy(ratings.resourceId)
 		.orderBy(({ total }) => desc(total))
 		.limit(20);
-	if (albums.length === 0) return [];
-	return await spotify.albums.get(albums.map((a) => a.resourceId));
+	if (albums.length === 0)
+		return {
+			albums: [],
+		};
+	return await spotify({
+		route: "/albums",
+		input: { ids: albums.map((a) => a.resourceId) },
+	});
 });
 
 export const getTopRated = cache(async () => {
@@ -72,8 +100,14 @@ export const getTopRated = cache(async () => {
 		.groupBy(ratings.resourceId)
 		.orderBy(({ average }) => desc(average))
 		.limit(20);
-	if (albums.length === 0) return [];
-	return await spotify.albums.get(albums.map((a) => a.resourceId));
+	if (albums.length === 0)
+		return {
+			albums: [],
+		};
+	return await spotify({
+		route: "/albums",
+		input: { ids: albums.map((a) => a.resourceId) },
+	});
 });
 
 export const getFeed = cache(
@@ -86,7 +120,7 @@ export const getFeed = cache(
 				profile: true,
 			},
 		});
-		return await appendReviewResource(ratingList, spotify);
+		return await appendReviewResource(ratingList);
 	}
 );
 
@@ -116,7 +150,7 @@ export const getCommunityReviews = cache(
 						profile: true,
 					},
 				});
-				return await appendReviewResource(ratingList, spotify);
+				return await appendReviewResource(ratingList);
 			},
 			[`resource:rating:community:${resourceId}`],
 			{ tags: [resourceId] }
@@ -303,7 +337,7 @@ export const getRecent = cache(
 						profile: true,
 					},
 				});
-				return await appendReviewResource(ratingList, spotify);
+				return await appendReviewResource(ratingList);
 			},
 			[`user:recent:get:${userId}${rating ? `:${rating}` : ""}`],
 			{ tags: [userId, "recent"] }

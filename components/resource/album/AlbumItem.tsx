@@ -1,7 +1,7 @@
 "use client";
 
+import { Album } from "@/app/_api/spotify";
 import { Resource } from "@/types/rating";
-import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AlbumImage from "./AlbumImage";
@@ -13,7 +13,7 @@ export const AlbumItem = ({
 	showType,
 	onClick,
 }: {
-	album: SimplifiedAlbum | Album;
+	album: Album;
 	name: string;
 	category: Resource["category"];
 	showType?: boolean;
