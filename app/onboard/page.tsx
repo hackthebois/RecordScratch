@@ -1,13 +1,13 @@
 import { auth } from "@clerk/nextjs";
-import { unstable_noStore } from "next/cache";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import AuthProvider from "../AuthProvider";
 import { createProfile } from "../_api/actions";
 import { Onboarding } from "./Onboarding";
 
+export const dynamic = "force-dynamic";
+
 const Page = () => {
-	unstable_noStore();
 	const { sessionClaims } = auth();
 
 	if (sessionClaims?.onboarded) {

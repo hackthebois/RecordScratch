@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/Button";
 import { Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Text } from "lucide-react";
-import { unstable_noStore } from "next/cache";
 import { reviewAction } from "../_api/actions";
 
 export const ReviewButton = async ({
@@ -15,7 +14,6 @@ export const ReviewButton = async ({
 	resource: Resource;
 	name: string;
 }) => {
-	unstable_noStore();
 	const { userId } = auth();
 
 	if (!userId) {

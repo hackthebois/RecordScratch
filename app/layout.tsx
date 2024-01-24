@@ -2,9 +2,10 @@ import { getUrl } from "@/utils/url";
 import { auth, currentUser } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
-import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Montserrat } from "next/font/google";
+import { cookies } from "next/headers";
+import { Suspense } from "react";
 import banner from "../public/og-image.png";
 import Providers from "./Providers";
 import "./globals.css";
@@ -46,7 +47,7 @@ const PostHogIdentify = dynamic(
 );
 
 const PostHog = async () => {
-	unstable_noStore();
+	cookies();
 	const { userId } = auth();
 
 	if (!userId) return null;
@@ -72,9 +73,9 @@ const RootLayout = ({ children }: Props) => {
 				<Providers>
 					{children}
 					<PostHogPageView />
-					{/* <Suspense>
+					<Suspense>
 						<PostHog />
-					</Suspense> */}
+					</Suspense>
 				</Providers>
 				<SpeedInsights />
 			</body>

@@ -183,8 +183,6 @@ export const spotify = async <TRoute extends keyof Spotify>({
 	const url = new URL(`https://api.spotify.com/v1${modifiedRoute}`);
 	url.search = params.toString();
 
-	console.log(url.toString());
-
 	const res = await fetch(url, {
 		headers: {
 			Authorization: `Bearer ${spotifyToken}`,

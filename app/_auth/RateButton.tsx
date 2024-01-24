@@ -2,7 +2,6 @@ import { SignInWrapper } from "@/components/SignInWrapper";
 import { Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { Star } from "lucide-react";
-import { unstable_noStore } from "next/cache";
 import { RatingDialog } from "../../components/RatingDialog";
 import { Button } from "../../components/ui/Button";
 import { rateAction } from "../_api/actions";
@@ -16,7 +15,6 @@ export const RateButton = async ({
 	name?: string;
 	userRating: Rating | null;
 }) => {
-	unstable_noStore();
 	const { userId } = auth();
 
 	if (!userId) {
