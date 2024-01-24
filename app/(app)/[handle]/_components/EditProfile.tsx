@@ -142,7 +142,7 @@ export const EditProfile = ({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="secondary">Edit Profile</Button>
+				<Button>Edit Profile</Button>
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>

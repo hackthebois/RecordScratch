@@ -1,15 +1,10 @@
-import AuthProvider from "@/app/AuthProvider";
 import { getProfile } from "@/app/_api";
-import { updateProfile } from "@/app/_api/actions";
 import FollowerMenuServer from "@/components/FollowersMenuServer";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { EditProfile } from "./_components/EditProfile";
-import { SignOutButton } from "./_components/SignOutButton";
 
 export async function generateMetadata({
 	params: { handle },
@@ -67,28 +62,15 @@ const Layout = async ({
 					<h1 className="pb-2 text-center sm:text-left">
 						{profile.name}
 					</h1>
-					<p className="pb-4 text-center text-muted-foreground">
+					<p className="pb-3 text-center text-muted-foreground">
 						@{profile.handle}
 					</p>
-					<p className="text-center text-sm sm:text-left sm:text-base">
+					<FollowerMenuServer profileId={profile.userId} />
+					<p className="pt-3 text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
-					{isUser && (
-						<Suspense>
-							<AuthProvider>
-								<div className="flex gap-2 pt-4">
-									<EditProfile
-										profile={profile}
-										updateProfile={updateProfile}
-									/>
-									<SignOutButton />
-								</div>
-							</AuthProvider>
-						</Suspense>
-					)}
 				</div>
 			</div>
-			<FollowerMenuServer profileId={profile.userId} />
 			<LinkTabs
 				tabs={[
 					{

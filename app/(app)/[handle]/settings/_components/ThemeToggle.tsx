@@ -16,7 +16,7 @@ const ThemeToggle = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline">
+				<Button>
 					{theme && theme?.charAt(0).toUpperCase() + theme?.slice(1)}
 				</Button>
 			</DropdownMenuTrigger>
