@@ -3,17 +3,22 @@
 import { usePostHog } from "posthog-js/react";
 import { useEffect } from "react";
 
-export const ClientIdentify = (posthogIdentity: {
+const PostHogIdentify = ({
+	userId,
+	email,
+}: {
 	userId: string;
 	email?: string;
-	handle: string;
-	name: string;
 }) => {
 	const posthog = usePostHog();
 
 	useEffect(() => {
-		posthog.identify(posthogIdentity.userId, posthogIdentity);
+		posthog.identify(userId, {
+			email,
+		});
 	}, []);
 
 	return null;
 };
+
+export default PostHogIdentify;

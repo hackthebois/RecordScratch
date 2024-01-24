@@ -1,11 +1,12 @@
 import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
 import AlbumList from "@/components/resource/album/AlbumList";
-import { unstable_noStore } from "next/cache";
 import { Suspense } from "react";
-import { getFeed, getNewReleases, getTopRated, getTrending } from "../_api";
+import { getFeed, getTopRated, getTrending } from "../_api";
+import { spotify } from "../_api/spotify";
+
+export const revalidate = 60 * 60 * 24; // 24 hours
 
 const Feed = async () => {
-	unstable_noStore();
 	const initialFeed = await getFeed({
 		page: 1,
 		limit: 25,
@@ -21,7 +22,10 @@ const Feed = async () => {
 };
 
 const Page = async () => {
-	const newReleases = await getNewReleases();
+	const newReleases = await spotify({
+		route: "/browse/new-releases",
+		input: undefined,
+	});
 	const trending = await getTrending();
 	const top = await getTopRated();
 
@@ -33,14 +37,14 @@ const Page = async () => {
 			</div>
 			<div className="mt-[2vh] flex flex-col">
 				<h2 className="mb-4">Trending</h2>
-				<AlbumList albums={trending} />
+				<AlbumList albums={trending.albums} />
 			</div>
 			<div className="mt-[2vh] flex flex-col">
 				<h2 className="mb-4">Top Rated</h2>
-				<AlbumList albums={top} />
+				<AlbumList albums={top.albums} />
 			</div>
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
-			<Suspense fallback={null}>
+			<Suspense>
 				<Feed />
 			</Suspense>
 		</div>

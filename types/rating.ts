@@ -1,5 +1,5 @@
+import { Album } from "@/app/_api/spotify";
 import { ratings } from "@/db/schema";
-import { Album, SimplifiedAlbum } from "@spotify/web-api-ts-sdk";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Profile } from "./profile";
@@ -11,6 +11,7 @@ export const ResourceRatingSchema = z.object({
 export type ResourceRating = z.infer<typeof ResourceRatingSchema>;
 
 export const RatingSchema = createSelectSchema(ratings, {
+	rating: z.number().min(1).max(10),
 	content: z.string().min(1).max(10000),
 });
 export type Rating = z.infer<typeof RatingSchema>;
@@ -25,6 +26,8 @@ export const RateFormSchema = RatingSchema.pick({
 	resourceId: true,
 	category: true,
 	rating: true,
+}).extend({
+	rating: RatingSchema.shape.rating.nullable(),
 });
 export type RateForm = z.infer<typeof RateFormSchema>;
 
@@ -44,6 +47,6 @@ export type CategoryType = z.infer<typeof CategorySchema>;
 export type Review = {
 	rating: Rating;
 	profile: Profile;
-	album: Album | SimplifiedAlbum;
+	album: Album;
 	name: string;
 };

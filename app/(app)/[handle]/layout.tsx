@@ -38,9 +38,18 @@ const Layout = async ({
 }) => {
 	const profile = await getProfile(handle);
 
-	if (!profile) {
-		notFound();
-	}
+	if (!profile) notFound();
+
+	const isUser = profile.userId === auth().userId;
+
+	const appendTabs = isUser
+		? [
+				{
+					label: "Settings",
+					href: `/${handle}/settings`,
+				},
+		  ]
+		: [];
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -53,21 +62,22 @@ const Layout = async ({
 					<h1 className="pb-2 text-center sm:text-left">
 						{profile.name}
 					</h1>
-					<p className="pb-4 text-center text-muted-foreground">
+					<p className="pb-3 text-center text-muted-foreground">
 						@{profile.handle}
 					</p>
-					<p className="text-center text-sm sm:text-left sm:text-base">
+					<FollowerMenuServer profileId={profile.userId} />
+					<p className="pt-3 text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
 				</div>
 			</div>
-			<FollowerMenuServer profileId={profile.userId} />
 			<LinkTabs
 				tabs={[
 					{
 						label: "Ratings",
 						href: `/${handle}`,
 					},
+					...appendTabs,
 				]}
 			/>
 			{children}
