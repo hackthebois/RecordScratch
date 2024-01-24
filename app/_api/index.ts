@@ -3,9 +3,19 @@ import "server-only";
 
 import { appendReviewResource } from "@/app/_api/utils";
 import { db } from "@/db/db";
-import { profile, ratings } from "@/db/schema";
+import { followers, profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
-import { and, avg, count, desc, eq, inArray, isNotNull } from "drizzle-orm";
+
+import {
+	and,
+	avg,
+	count,
+	desc,
+	eq,
+	inArray,
+	isNotNull,
+	sql,
+} from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { Album, spotify } from "./spotify";
@@ -372,3 +382,62 @@ export const getDistribution = cache((userId: string) => {
 		{ tags: [userId] }
 	)();
 });
+
+export const getFollowCount = cache(
+	async (userId: string, getFollowers: boolean = true) => {
+		return unstable_cache(
+			async () => {
+				const userExists = !!(await db.query.profile.findFirst({
+					where: eq(profile.userId, userId),
+				}));
+
+				if (!userExists) throw new Error("User Doesn't Exist");
+
+				var count;
+				if (getFollowers)
+					count = await db
+						.select({
+							count: sql<number>`count(*)`.mapWith(Number),
+						})
+						.from(followers)
+						.where(eq(followers.followingId, userId));
+				else
+					count = await db
+						.select({
+							count: sql<number>`count(*)`.mapWith(Number),
+						})
+						.from(followers)
+						.where(eq(followers.userId, userId));
+
+				return count.length ? count[0].count : 0;
+			},
+			[
+				`user:profile:getFollowCount:${userId}:${
+					getFollowers ? "followers" : "following"
+				}`,
+			],
+			{
+				tags: ["getFollowCount:" + userId],
+			}
+		)();
+	}
+);
+
+export const isUserFollowing = cache(
+	async (followingId: string, userId: string) => {
+		return unstable_cache(
+			async () => {
+				if (userId === followingId || userId === "0") return false;
+
+				return !!(await db.query.followers.findFirst({
+					where: and(
+						eq(followers.userId, userId),
+						eq(followers.followingId, followingId)
+					),
+				}));
+			},
+			[`user:profile:isUserFollowing:${followingId}`],
+			{ tags: ["isUserFollowing:" + followingId] }
+		)();
+	}
+);

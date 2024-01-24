@@ -1,6 +1,7 @@
 import AuthProvider from "@/app/AuthProvider";
 import { getProfile } from "@/app/_api";
 import { updateProfile } from "@/app/_api/actions";
+import FollowerMenuServer from "@/components/FollowersMenuServer";
 import { UserAvatar } from "@/components/UserAvatar";
 import { LinkTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
@@ -87,6 +88,7 @@ const Layout = async ({
 					)}
 				</div>
 			</div>
+			<FollowerMenuServer profileId={profile.userId} />
 			<LinkTabs
 				tabs={[
 					{
