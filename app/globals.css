@@ -71,11 +71,14 @@
 		@apply border-border;
 	}
 	html {
-		overflow-y: auto;
 		scrollbar-gutter: stable;
 	}
 	body {
 		@apply bg-background text-foreground;
+		margin: 0;
+	}
+	body[style] {
+		margin-right: 0px !important;
 	}
 	h1 {
 		@apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
