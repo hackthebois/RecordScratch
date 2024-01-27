@@ -8,7 +8,7 @@ import { followers, profile, ratings } from "@/db/schema";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
 import { RateFormSchema, ReviewFormSchema } from "@/types/rating";
 import { auth, clerkClient } from "@clerk/nextjs";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, like, or } from "drizzle-orm";
 import { createSafeActionClient } from "next-safe-action";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
@@ -167,10 +167,19 @@ export const handleExistsAction = action(z.string(), async (handle) => {
 	return exists ? true : false;
 });
 
-export const searchAction = action(z.string(), async (query) => {
+export const searchMusicAction = action(z.string(), async (query) => {
 	return await spotify({
 		route: "/search",
 		input: { q: query, limit: 4, type: "album,artist" },
+	});
+});
+
+export const searchProfilesAction = action(z.string(), async (query) => {
+	return await db.query.profile.findMany({
+		where: or(
+			like(profile.handle, `%${query}%`),
+			like(profile.name, `%${query}%`)
+		),
 	});
 });
 
