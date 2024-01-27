@@ -1,8 +1,24 @@
 import { Album, Artist } from "@/app/_api/spotify";
+import { Profile } from "@/types/profile";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type Recent = Album | Artist;
+export type Recent =
+	| {
+			id: string;
+			type: "ALBUM";
+			data: Album;
+	  }
+	| {
+			id: string;
+			type: "ARTIST";
+			data: Artist;
+	  }
+	| {
+			id: string;
+			type: "PROFILE";
+			data: Profile;
+	  };
 
 type RecentStore = {
 	recents: Recent[];

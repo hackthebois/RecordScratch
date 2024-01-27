@@ -23,7 +23,7 @@ const FollowerMenuClient = ({
 	unFollowUser,
 }: Props) => {
 	return (
-		<div className="flex flex-row justify-center gap-6 py-2 sm:justify-start">
+		<div className="flex flex-row items-center justify-center gap-6 py-2 sm:justify-start">
 			<div className="flex flex-col items-center gap-1">
 				<p>Followers</p>
 				<Tag>{followerCount}</Tag>
@@ -34,10 +34,10 @@ const FollowerMenuClient = ({
 			</div>
 			{isFollowing ? (
 				<Button
-					className="rounded-md bg-gray-300 opacity-50"
+					variant="secondary"
 					onClick={() => unFollowUser(profileId)}
 				>
-					unfollow
+					Unfollow
 				</Button>
 			) : !showButton ? (
 				<Button onClick={() => followUser(profileId)}>Follow</Button>

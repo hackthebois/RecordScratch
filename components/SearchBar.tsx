@@ -1,11 +1,12 @@
 "use client";
 
-import { searchAction } from "@/app/_api/actions";
-import { Album, Artist } from "@/app/_api/spotify";
+import { searchMusicAction, searchProfilesAction } from "@/app/_api/actions";
+import { Artist } from "@/app/_api/spotify";
 import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { Profile } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +14,9 @@ import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { UserAvatar } from "./UserAvatar";
 import { AlbumItem } from "./resource/album/AlbumItem";
+import { Tabs, TabsList, TabsTrigger } from "./ui/Tabs";
 
 const ArtistItem = ({
 	artist,
@@ -48,22 +51,263 @@ const ArtistItem = ({
 	);
 };
 
-const SearchBar = () => {
-	const [open, setOpen] = useState(false);
+const SearchState = ({
+	isError,
+	isLoading,
+	noResults,
+	children,
+	onNavigate,
+	hide,
+}: {
+	isLoading: boolean;
+	isError: boolean;
+	noResults: boolean;
+	onNavigate: () => void;
+	children: React.ReactNode;
+	hide?: {
+		artists?: boolean;
+		albums?: boolean;
+		profiles?: boolean;
+	};
+}) => {
 	const { recents, addRecent } = useRecents();
-	const [query, setQuery] = useState("");
 
-	const debouncedQuery = useDebounce(query, 500);
+	if (isError) {
+		return (
+			<div className="flex flex-1 items-center justify-center">
+				<p className="text-muted-foreground">An error occurred</p>
+			</div>
+		);
+	}
 
-	const { data, isFetching, isError } = useQuery({
-		queryKey: ["search", debouncedQuery],
+	if (isLoading) {
+		return (
+			<div className="flex flex-1 items-center justify-center">
+				<Loader2 className="animate-spin" size={35} />
+			</div>
+		);
+	}
+
+	if (noResults) {
+		return (
+			<div className="flex flex-1 items-center justify-center">
+				<p className="text-muted-foreground">No results found</p>
+			</div>
+		);
+	}
+
+	return (
+		<ScrollArea className="flex flex-col gap-3">
+			<div className="flex flex-col gap-3 py-4">
+				{children ? (
+					children
+				) : (
+					<>
+						{recents.map((recent, index) =>
+							recent.type === "ARTIST" && !hide?.artists ? (
+								<ArtistItem
+									onClick={() => {
+										addRecent({
+											id: recent.data.id,
+											type: "ARTIST",
+											data: recent.data,
+										});
+										onNavigate();
+									}}
+									artist={recent.data}
+									key={index}
+								/>
+							) : recent.type === "ALBUM" && !hide?.albums ? (
+								<AlbumItem
+									album={recent.data}
+									name={recent.data.name}
+									category="ALBUM"
+									onClick={() => {
+										addRecent({
+											id: recent.data.id,
+											type: "ALBUM",
+											data: recent.data,
+										});
+										onNavigate();
+									}}
+									key={index}
+								/>
+							) : recent.type === "PROFILE" && !hide?.profiles ? (
+								<ProfileItem
+									profile={recent.data}
+									onClick={() => {
+										addRecent({
+											id: recent.data.userId,
+											type: "PROFILE",
+											data: recent.data,
+										});
+										onNavigate();
+									}}
+									key={index}
+								/>
+							) : null
+						)}
+					</>
+				)}
+			</div>
+		</ScrollArea>
+	);
+};
+
+const ProfileItem = ({
+	profile,
+	onClick,
+}: {
+	profile: Profile;
+	onClick: () => void;
+}) => {
+	return (
+		<Link
+			href={`/${profile.handle}`}
+			onClick={onClick}
+			className="flex flex-row items-center gap-4 rounded"
+		>
+			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
+				<UserAvatar {...profile} size={64} />
+			</div>
+			<div className="min-w-0 flex-1">
+				<p className="truncate font-medium">{profile.name}</p>
+				<p className="truncate py-1 text-sm text-muted-foreground">
+					{profile.handle}
+				</p>
+			</div>
+		</Link>
+	);
+};
+
+const ProfileSearch = ({
+	query,
+	onNavigate,
+}: {
+	query: string;
+	onNavigate: () => void;
+}) => {
+	const { addRecent } = useRecents();
+
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ["search", "search-profiles", query],
 		queryFn: async () => {
-			const { data, serverError } = await searchAction(debouncedQuery);
+			const { data, serverError } = await searchProfilesAction(query);
 			if (serverError) throw new Error(serverError);
 			return data;
 		},
+		gcTime: 0,
+		refetchOnMount: false,
 		enabled: query.length > 0,
 	});
+
+	return (
+		<SearchState
+			isError={isError}
+			isLoading={isLoading}
+			onNavigate={onNavigate}
+			noResults={data?.length === 0}
+			hide={{ artists: true, albums: true }}
+		>
+			{data && (
+				<>
+					{data.map((profile, index) => (
+						<ProfileItem
+							profile={profile}
+							key={index}
+							onClick={() => {
+								addRecent({
+									id: profile.userId,
+									type: "PROFILE",
+									data: profile,
+								});
+								onNavigate();
+							}}
+						/>
+					))}
+				</>
+			)}
+		</SearchState>
+	);
+};
+
+const MusicSearch = ({
+	query,
+	onNavigate,
+}: {
+	query: string;
+	onNavigate: () => void;
+}) => {
+	const { addRecent } = useRecents();
+
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ["search", "search-music", query],
+		queryFn: async () => {
+			const { data, serverError } = await searchMusicAction(query);
+			if (serverError) throw new Error(serverError);
+			return data;
+		},
+		refetchOnMount: false,
+		enabled: query.length > 0,
+	});
+
+	return (
+		<SearchState
+			isError={isError}
+			isLoading={isLoading}
+			onNavigate={onNavigate}
+			noResults={
+				data?.albums.items.length === 0 &&
+				data?.artists.items.length === 0
+			}
+			hide={{ profiles: true }}
+		>
+			{data && (
+				<>
+					<h4>Albums</h4>
+					{data.albums.items.map((album, index) => (
+						<AlbumItem
+							album={album}
+							name={album.name}
+							category="ALBUM"
+							onClick={() => {
+								addRecent({
+									id: album.id,
+									type: "ALBUM",
+									data: album,
+								});
+								onNavigate();
+							}}
+							key={index}
+						/>
+					))}
+					<h4 className="mt-3">Artists</h4>
+					{data.artists.items.map((artist, index) => (
+						<ArtistItem
+							onClick={() => {
+								addRecent({
+									id: artist.id,
+									type: "ARTIST",
+									data: artist,
+								});
+								onNavigate();
+							}}
+							artist={artist}
+							key={index}
+						/>
+					))}
+				</>
+			)}
+		</SearchState>
+	);
+};
+
+const SearchBar = () => {
+	const [tab, setTab] = useState<string>("music");
+	const [open, setOpen] = useState(false);
+	const [query, setQuery] = useState("");
+
+	const debouncedQuery = useDebounce(query, 500);
 
 	return (
 		<Dialog
@@ -106,92 +350,37 @@ const SearchBar = () => {
 						onChange={(e) => setQuery(e.target.value)}
 					/>
 				</div>
-				{isError ? (
-					<div className="flex flex-1 items-center justify-center">
-						<p className="text-muted-foreground">
-							An error occurred
-						</p>
-					</div>
-				) : isFetching ? (
-					<div className="flex flex-1 items-center justify-center">
-						<Loader2 className="animate-spin" size={35} />
-					</div>
-				) : data ? (
-					<>
-						{data.albums.items.length > 0 ||
-						data.artists.items.length > 0 ? (
-							<ScrollArea className="flex flex-col gap-3 px-4">
-								<div className="flex flex-col gap-3 py-4">
-									{data.albums.items.length > 0 && (
-										<h4>Albums</h4>
-									)}
-									{data.albums.items.map((album, index) => (
-										<AlbumItem
-											album={album}
-											name={album.name}
-											category="ALBUM"
-											onClick={() => {
-												addRecent(album);
-												setOpen(false);
-												setQuery("");
-											}}
-											key={index}
-										/>
-									))}
-									{data.artists.items.length > 0 && (
-										<h4 className="mt-3">Artists</h4>
-									)}
-									{data.artists.items.map((artist, index) => (
-										<ArtistItem
-											onClick={() => {
-												addRecent(artist);
-												setOpen(false);
-												setQuery("");
-											}}
-											artist={artist}
-											key={index}
-										/>
-									))}
-								</div>
-							</ScrollArea>
-						) : (
-							<div className="flex flex-1 items-center justify-center">
-								<p className="text-muted-foreground">
-									No results found
-								</p>
-							</div>
-						)}
-					</>
-				) : recents.length > 0 ? (
-					<ScrollArea className="px-4">
-						<h4 className="my-4">Recents</h4>
-						<div className="flex flex-1 flex-col justify-start gap-3">
-							{recents.map((recent, index) =>
-								"followers" in recent ? (
-									<ArtistItem
-										onClick={() => setOpen(false)}
-										artist={recent}
-										key={index}
-									/>
-								) : (
-									<AlbumItem
-										album={recent as Album}
-										name={recent.name}
-										category="ALBUM"
-										onClick={() => setOpen(false)}
-										key={index}
-									/>
-								)
-							)}
-						</div>
-					</ScrollArea>
-				) : (
-					<div className="flex flex-1 items-center justify-center">
-						<p className="text-muted-foreground">
-							No recent searches
-						</p>
-					</div>
-				)}
+				<Tabs
+					value={tab}
+					onValueChange={setTab}
+					className="flex h-full flex-col p-4"
+				>
+					<TabsList className="w-full">
+						<TabsTrigger value="music" className="flex-1">
+							Music
+						</TabsTrigger>
+						<TabsTrigger value="profiles" className="flex-1">
+							People
+						</TabsTrigger>
+					</TabsList>
+					{tab === "music" ? (
+						<MusicSearch
+							query={debouncedQuery}
+							onNavigate={() => {
+								setQuery("");
+								setOpen(false);
+							}}
+						/>
+					) : (
+						<ProfileSearch
+							query={debouncedQuery}
+							onNavigate={() => {
+								setQuery("");
+								setOpen(false);
+							}}
+						/>
+					)}
+				</Tabs>
 			</DialogContent>
 		</Dialog>
 	);
