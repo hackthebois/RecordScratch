@@ -97,8 +97,8 @@ const SearchState = ({
 	}
 
 	return (
-		<ScrollArea className="flex flex-col gap-3">
-			<div className="flex flex-col gap-3 py-4">
+		<ScrollArea className="flex flex-col gap-3 px-4">
+			<div className="flex flex-col gap-3 pb-4">
 				{children ? (
 					children
 				) : (
@@ -350,11 +350,7 @@ const SearchBar = () => {
 						onChange={(e) => setQuery(e.target.value)}
 					/>
 				</div>
-				<Tabs
-					value={tab}
-					onValueChange={setTab}
-					className="flex h-full flex-col p-4"
-				>
+				<Tabs value={tab} onValueChange={setTab} className="p-4">
 					<TabsList className="w-full">
 						<TabsTrigger value="music" className="flex-1">
 							Music
@@ -363,24 +359,24 @@ const SearchBar = () => {
 							People
 						</TabsTrigger>
 					</TabsList>
-					{tab === "music" ? (
-						<MusicSearch
-							query={debouncedQuery}
-							onNavigate={() => {
-								setQuery("");
-								setOpen(false);
-							}}
-						/>
-					) : (
-						<ProfileSearch
-							query={debouncedQuery}
-							onNavigate={() => {
-								setQuery("");
-								setOpen(false);
-							}}
-						/>
-					)}
 				</Tabs>
+				{tab === "music" ? (
+					<MusicSearch
+						query={debouncedQuery}
+						onNavigate={() => {
+							setQuery("");
+							setOpen(false);
+						}}
+					/>
+				) : (
+					<ProfileSearch
+						query={debouncedQuery}
+						onNavigate={() => {
+							setQuery("");
+							setOpen(false);
+						}}
+					/>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
