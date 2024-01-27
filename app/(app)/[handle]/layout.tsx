@@ -65,10 +65,10 @@ const Layout = async ({
 					<p className="pb-3 text-center text-muted-foreground">
 						@{profile.handle}
 					</p>
-					<FollowerMenuServer profileId={profile.userId} />
-					<p className="pt-3 text-center text-sm sm:text-left sm:text-base">
+					<p className="pb-3 text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
+					<FollowerMenuServer profileId={profile.userId} />
 				</div>
 			</div>
 			<LinkTabs
