@@ -147,6 +147,13 @@ export const getCommunityReviews = cache(
 	}) => {
 		return unstable_cache(
 			async () => {
+				console.log(
+					"getCommunityReviews",
+					resourceId,
+					category,
+					page,
+					limit
+				);
 				const ratingList = await db.query.ratings.findMany({
 					where: and(
 						eq(ratings.resourceId, resourceId),
@@ -162,7 +169,7 @@ export const getCommunityReviews = cache(
 				});
 				return await appendReviewResource(ratingList);
 			},
-			[`resource:rating:community:${resourceId}`],
+			[`getCommunityReviews:${resourceId}:${page}:${limit}`],
 			{ tags: [resourceId] }
 		)();
 	}
@@ -185,7 +192,7 @@ export const getRating = cache(({ resourceId, category }: Resource) => {
 				);
 			return { ...rating[0], resourceId };
 		},
-		[`resource:rating:get:${resourceId}`],
+		[`getRating:${resourceId}`],
 		{ revalidate: 60, tags: [resourceId] }
 	)();
 });
@@ -203,7 +210,7 @@ export const getUserRating = cache(
 				});
 				return userRating ? userRating : null;
 			},
-			[`user:${userId}:rating:get:${resourceId}`],
+			[`getUserRating:${userId}:${resourceId}`],
 			{ revalidate: 60, tags: [resourceId, userId] }
 		)();
 	}
@@ -227,11 +234,7 @@ export const getRatingsList = cache((resources: Resource[]) => {
 				)
 				.groupBy(ratings.resourceId);
 		},
-		[
-			`resource:rating:getList:[${resources
-				.map((r) => r.resourceId)
-				.join(",")}]`,
-		],
+		[`getRatingsList:[${resources.map((r) => r.resourceId).join(",")}]`],
 		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
 	)();
 });
@@ -251,7 +254,7 @@ export const getUserRatingList = cache(
 				});
 			},
 			[
-				`user:${userId}:rating:getList:[${resources
+				`getUserRatingList:${userId}:[${resources
 					.map((r) => r.resourceId)
 					.join(",")}]`,
 			],
@@ -281,7 +284,7 @@ export const getRatingListAverage = cache((resources: Resource[]) => {
 			return rating[0];
 		},
 		[
-			`resource:rating:getListAverage:[${resources
+			`getRatingListAverage:[${resources
 				.map((r) => r.resourceId)
 				.join(",")}]`,
 		],
@@ -298,7 +301,7 @@ export const getProfile = cache((handle: string) => {
 				})) ?? null
 			);
 		},
-		[`user:profile:get:${handle}`],
+		[`getProfile:${handle}`],
 		{ tags: [handle], revalidate: 60 }
 	)();
 });
@@ -312,13 +315,13 @@ export const getMyProfile = cache((userId: string) => {
 				})) ?? null
 			);
 		},
-		[`user:${userId}:profile:get:me`],
+		[`getMyProfile:${userId}`],
 		{ tags: [userId], revalidate: 60 }
 	)();
 });
 
 export const getRecent = cache(
-	({
+	async ({
 		rating,
 		userId,
 		limit = 25,
@@ -331,6 +334,7 @@ export const getRecent = cache(
 	}) => {
 		return unstable_cache(
 			async () => {
+				if (page < 1) page = 1;
 				const where = rating
 					? and(
 							eq(ratings.userId, userId),
@@ -349,8 +353,8 @@ export const getRecent = cache(
 				});
 				return await appendReviewResource(ratingList);
 			},
-			[`user:recent:get:${userId}${rating ? `:${rating}` : ""}`],
-			{ tags: [userId, "recent"] }
+			[`getRecent:${userId}:${rating}:${page}:${limit}`],
+			{ tags: [userId], revalidate: 60 * 60 }
 		)();
 	}
 );
@@ -378,7 +382,7 @@ export const getDistribution = cache((userId: string) => {
 
 			return outputList;
 		},
-		[`user:profile:distribution:${userId}`],
+		[`getDistribution:${userId}`],
 		{ tags: [userId] }
 	)();
 });
@@ -412,7 +416,7 @@ export const getFollowCount = cache(
 				return count.length ? count[0].count : 0;
 			},
 			[
-				`user:profile:getFollowCount:${userId}:${
+				`getFollowCount:${userId}:${
 					getFollowers ? "followers" : "following"
 				}`,
 			],
@@ -436,7 +440,7 @@ export const isUserFollowing = cache(
 					),
 				}));
 			},
-			[`user:profile:isUserFollowing:${followingId}`],
+			[`isUserFollowing:${followingId}`],
 			{ tags: ["isUserFollowing:" + followingId] }
 		)();
 	}

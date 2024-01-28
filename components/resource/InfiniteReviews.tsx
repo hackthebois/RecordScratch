@@ -1,10 +1,11 @@
 "use client";
 
-import { Review } from "@/components/resource/Review";
 import { Review as ReviewType } from "@/types/rating";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Disc3 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import { Review } from "./Review";
 
 export type GetInfiniteReviews = {
 	page: number;
@@ -15,24 +16,34 @@ export const InfiniteReviews = ({
 	initialReviews,
 	getReviews,
 	pageLimit,
+	key,
 }: {
 	initialReviews: ReviewType[];
 	getReviews: (i: GetInfiniteReviews) => Promise<ReviewType[]>;
 	pageLimit: number;
+	key: string;
 }) => {
-	const [reviews, setReviews] = useState<ReviewType[]>(initialReviews);
-	const [hasMore, setHasMore] = useState(pageLimit === initialReviews.length);
-	const [page, setPage] = useState(2);
 	const { ref, inView } = useInView();
 
-	const fetchNextPage = async () => {
-		const newReviews = await getReviews({ page, limit: pageLimit });
-		setPage(page + 1);
-		setReviews([...reviews, ...newReviews]);
-		if (newReviews.length < pageLimit) {
-			setHasMore(false);
-		}
-	};
+	const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+		queryKey: ["infinite-reviews", key],
+		queryFn: async ({ pageParam }) =>
+			getReviews({
+				page: pageParam,
+				limit: pageLimit,
+			}),
+		initialPageParam: 1,
+		initialData: {
+			pages: [initialReviews],
+			pageParams: [1],
+		},
+		getNextPageParam: (lastPage, _, lastPageParam) => {
+			if (lastPage.length < pageLimit) {
+				return null;
+			}
+			return lastPageParam + 1;
+		},
+	});
 
 	useEffect(() => {
 		if (inView) {
@@ -43,11 +54,15 @@ export const InfiniteReviews = ({
 	return (
 		<>
 			<div>
-				{reviews.map((review, index) => (
-					<Review key={index} {...review} />
+				{data?.pages.map((page, index) => (
+					<div key={index}>
+						{page.map((review, index) => (
+							<Review key={index} {...review} />
+						))}
+					</div>
 				))}
 			</div>
-			{hasMore && initialReviews.length > 0 && (
+			{hasNextPage && initialReviews.length > 0 && (
 				<div
 					ref={ref}
 					className="flex h-40 flex-1 flex-col items-center justify-center"

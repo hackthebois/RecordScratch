@@ -3,6 +3,7 @@ import {
 	GetInfiniteReviews,
 	InfiniteReviews,
 } from "@/components/resource/InfiniteReviews";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Resource } from "@/types/rating";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
@@ -35,14 +36,15 @@ const Page = async ({
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
-				<Suspense>
+				<Suspense fallback={<Skeleton className="h-10 w-20" />}>
 					<ReviewButton resource={resource} name={album.name} />
 				</Suspense>
 			</div>
 			<InfiniteReviews
-				initialReviews={await getReviews({ page: 1, limit: 10 })}
+				key={albumId}
+				initialReviews={await getReviews({ page: 1, limit: 25 })}
 				getReviews={getReviews}
-				pageLimit={10}
+				pageLimit={25}
 			/>
 		</div>
 	);
