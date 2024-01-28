@@ -73,13 +73,15 @@ const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
 			<body className={`${montserrat.className} flex flex-col`}>
-				<Providers>
-					{children}
-					<PostHogPageView />
-					<Suspense>
-						<PostHog />
-					</Suspense>
-				</Providers>
+				<Suspense>
+					<Providers>
+						{children}
+						<PostHogPageView />
+						<Suspense>
+							<PostHog />
+						</Suspense>
+					</Providers>
+				</Suspense>
 				<SpeedInsights />
 			</body>
 		</html>
