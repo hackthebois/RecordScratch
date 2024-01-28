@@ -16,10 +16,11 @@ export const SignOutButton = () => {
 		<Button
 			variant="outline"
 			onClick={() => {
-				if (user) revalidateTagAction(user.id);
-				user?.reload();
-				posthog.reset();
-				signOut(() => router.push("/"));
+				signOut(() => {
+					if (user) revalidateTagAction(user.id);
+					posthog.reset();
+					router.push("/");
+				});
 			}}
 		>
 			Sign out
