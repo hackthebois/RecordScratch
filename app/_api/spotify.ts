@@ -69,7 +69,9 @@ export const getSpotifyToken = async () => {
 		},
 		body: "grant_type=client_credentials",
 		method: "POST",
-		cache: "no-store",
+		next: {
+			revalidate: 60 * 59,
+		},
 	});
 	const data = await res.json();
 	return z.object({ access_token: z.string() }).parse(data).access_token;
