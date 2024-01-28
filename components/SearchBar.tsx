@@ -356,7 +356,7 @@ const SearchBar = () => {
 							Music
 						</TabsTrigger>
 						<TabsTrigger value="profiles" className="flex-1">
-							People
+							Users
 						</TabsTrigger>
 					</TabsList>
 				</Tabs>
