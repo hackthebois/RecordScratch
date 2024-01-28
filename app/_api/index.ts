@@ -79,45 +79,58 @@ export const getArtistDiscography = cache(async (artistId: string) => {
 });
 
 export const getTrending = cache(async () => {
-	const albums = await db
-		.select({
-			total: count(ratings.rating),
-			resourceId: ratings.resourceId,
-		})
-		.from(ratings)
-		.where(eq(ratings.category, "ALBUM"))
-		.groupBy(ratings.resourceId)
-		.orderBy(({ total }) => desc(total))
-		.limit(20);
-	if (albums.length === 0)
-		return {
-			albums: [],
-		};
-	return await spotify({
-		route: "/albums",
-		input: { ids: albums.map((a) => a.resourceId) },
-	});
+	return unstable_cache(
+		async () => {
+			console.log("getTrending");
+			const albums = await db
+				.select({
+					total: count(ratings.rating),
+					resourceId: ratings.resourceId,
+				})
+				.from(ratings)
+				.where(eq(ratings.category, "ALBUM"))
+				.groupBy(ratings.resourceId)
+				.orderBy(({ total }) => desc(total))
+				.limit(20);
+			if (albums.length === 0)
+				return {
+					albums: [],
+				};
+			return await spotify({
+				route: "/albums",
+				input: { ids: albums.map((a) => a.resourceId) },
+			});
+		},
+		["getTrending"],
+		{ revalidate: 60 * 60 }
+	)();
 });
 
 export const getTopRated = cache(async () => {
-	const albums = await db
-		.select({
-			average: avg(ratings.rating),
-			resourceId: ratings.resourceId,
-		})
-		.from(ratings)
-		.where(eq(ratings.category, "ALBUM"))
-		.groupBy(ratings.resourceId)
-		.orderBy(({ average }) => desc(average))
-		.limit(20);
-	if (albums.length === 0)
-		return {
-			albums: [],
-		};
-	return await spotify({
-		route: "/albums",
-		input: { ids: albums.map((a) => a.resourceId) },
-	});
+	return unstable_cache(
+		async () => {
+			const albums = await db
+				.select({
+					average: avg(ratings.rating),
+					resourceId: ratings.resourceId,
+				})
+				.from(ratings)
+				.where(eq(ratings.category, "ALBUM"))
+				.groupBy(ratings.resourceId)
+				.orderBy(({ average }) => desc(average))
+				.limit(20);
+			if (albums.length === 0)
+				return {
+					albums: [],
+				};
+			return await spotify({
+				route: "/albums",
+				input: { ids: albums.map((a) => a.resourceId) },
+			});
+		},
+		[`getTopRated`],
+		{ revalidate: 60 * 60 }
+	)();
 });
 
 export const getFeed = cache(
