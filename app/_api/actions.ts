@@ -16,36 +16,33 @@ import { z } from "zod";
 
 export const action = createSafeActionClient();
 
-export const privateAction = createSafeActionClient({
+export const protectedAction = createSafeActionClient({
 	async middleware() {
 		const { userId } = auth();
 		if (!userId) throw new Error("Not logged in");
-		return userId;
+		return {
+			userId,
+		};
 	},
 });
 
-export const reviewAction = action(ReviewFormSchema, async (input) => {
-	const { userId } = auth();
+export const reviewAction = protectedAction(
+	ReviewFormSchema,
+	async (input, { userId }) => {
+		await db
+			.insert(ratings)
+			.values({ ...input, userId })
+			.onDuplicateKeyUpdate({
+				set: { ...input, userId },
+			});
+		revalidateTag(input.resourceId);
+		revalidateTag(userId);
+	}
+);
 
-	if (!userId) throw new Error("Not logged in");
-
-	await db
-		.insert(ratings)
-		.values({ ...input, userId })
-		.onDuplicateKeyUpdate({
-			set: { ...input, userId },
-		});
-
-	revalidateTag(input.resourceId);
-});
-
-export const rateAction = action(
+export const rateAction = protectedAction(
 	RateFormSchema,
-	async ({ rating, resourceId, category }) => {
-		const { userId } = auth();
-
-		if (!userId) throw new Error("Not logged in");
-
+	async ({ rating, resourceId, category }, { userId }) => {
 		if (rating === null) {
 			await db
 				.delete(ratings)
@@ -65,30 +62,26 @@ export const rateAction = action(
 				});
 		}
 		revalidateTag(resourceId);
+		revalidateTag(userId);
 	}
 );
 
-export const createProfile = action(CreateProfileSchema, async (input) => {
-	const { userId } = auth();
+export const createProfile = protectedAction(
+	CreateProfileSchema,
+	async (input, { userId }) => {
+		await db.insert(profile).values({ ...input, userId });
+		await clerkClient.users.updateUser(userId, {
+			publicMetadata: { onboarded: true },
+		});
+	}
+);
 
-	if (!userId) throw new Error("Not logged in");
-
-	await db.insert(profile).values({ ...input, userId });
-	await clerkClient.users.updateUser(userId, {
-		publicMetadata: { onboarded: true },
-	});
-});
-
-export const updateProfile = action(
+export const updateProfile = protectedAction(
 	z.object({
 		...UpdateProfileSchema.shape,
 		oldHandle: z.string().optional(),
 	}),
-	async ({ oldHandle, ...newProfile }) => {
-		const { userId } = auth();
-
-		if (!userId) throw new Error("Not logged in");
-
+	async ({ oldHandle, ...newProfile }, { userId }) => {
 		await db
 			.update(profile)
 			.set(newProfile)
@@ -100,11 +93,9 @@ export const updateProfile = action(
 	}
 );
 
-export const followUser = privateAction(
+export const followUser = protectedAction(
 	z.string(),
-	async (followingId, userId) => {
-		if (!userId) throw new Error("Not logged in");
-
+	async (followingId, { userId }) => {
 		if (userId === followingId)
 			throw new Error("User Cannot Follow Themselves");
 
@@ -126,11 +117,9 @@ export const followUser = privateAction(
 	}
 );
 
-export const unFollowUser = privateAction(
+export const unFollowUser = protectedAction(
 	z.string(),
-	async (followingId, userId) => {
-		if (!userId) throw new Error("Not logged in");
-
+	async (followingId, { userId }) => {
 		if (userId === followingId)
 			throw new Error("User Cannot unFollow Themselves");
 

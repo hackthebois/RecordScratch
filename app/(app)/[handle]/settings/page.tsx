@@ -1,4 +1,3 @@
-import AuthProvider from "@/app/AuthProvider";
 import { getProfile } from "@/app/_api";
 import { updateProfile } from "@/app/_api/actions";
 import { Label } from "@/components/ui/Label";
@@ -28,34 +27,29 @@ const Page = async ({
 	if (!isUser) notFound();
 
 	return (
-		<AuthProvider>
-			<div className="flex flex-col gap-8">
-				<h3>Appearence</h3>
-				<div className="flex items-center justify-between">
-					<div className="flex flex-col items-start gap-2">
-						<Label>Theme</Label>
-						<p className="text-sm text-muted-foreground">
-							Select a theme for your interface
-						</p>
-					</div>
-					<ThemeToggle />
+		<div className="flex flex-col gap-8">
+			<h3>Appearence</h3>
+			<div className="flex items-center justify-between">
+				<div className="flex flex-col items-start gap-2">
+					<Label>Theme</Label>
+					<p className="text-sm text-muted-foreground">
+						Select a theme for your interface
+					</p>
 				</div>
-				<h3>Account</h3>
-				<div className="flex items-center justify-between">
-					<div className="flex flex-col items-start gap-2">
-						<Label>Edit Profile</Label>
-						<p className="text-sm text-muted-foreground">
-							Update your profile information and image
-						</p>
-					</div>
-					<EditProfile
-						profile={profile}
-						updateProfile={updateProfile}
-					/>
-				</div>
-				<SignOutButton />
+				<ThemeToggle />
 			</div>
-		</AuthProvider>
+			<h3>Account</h3>
+			<div className="flex items-center justify-between">
+				<div className="flex flex-col items-start gap-2">
+					<Label>Edit Profile</Label>
+					<p className="text-sm text-muted-foreground">
+						Update your profile information and image
+					</p>
+				</div>
+				<EditProfile profile={profile} updateProfile={updateProfile} />
+			</div>
+			<SignOutButton />
+		</div>
 	);
 };
 

@@ -77,7 +77,7 @@ const Page = async ({
 				</div>
 			</div>
 			<InfiniteReviews
-				key={rating}
+				key={`${handle}:${rating}`}
 				initialReviews={await getReviews({ page: 1, limit: 10 })}
 				getReviews={getReviews}
 				pageLimit={10}

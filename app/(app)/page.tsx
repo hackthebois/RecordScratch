@@ -14,6 +14,7 @@ const Feed = async () => {
 
 	return (
 		<InfiniteReviews
+			key="feed"
 			initialReviews={initialFeed}
 			getReviews={getFeed}
 			pageLimit={25}
