@@ -42,6 +42,8 @@ const Rating = async ({ artistId }: { artistId: string }) => {
 	return <RatingInfo rating={rating} />;
 };
 
+export const fetchCache = "force-cache";
+
 const Layout = async ({
 	params: { artistId },
 	children,
