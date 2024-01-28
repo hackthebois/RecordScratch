@@ -52,6 +52,8 @@ const AlbumRatings = async ({ resource }: { resource: Resource }) => {
 	);
 };
 
+export const fetchCache = "force-cache";
+
 const Layout = async ({
 	params: { albumId },
 	children,

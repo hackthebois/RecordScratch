@@ -22,6 +22,8 @@ const Feed = async () => {
 	);
 };
 
+export const fetchCache = "force-cache";
+
 const Page = async () => {
 	const newReleases = await spotify({
 		route: "/browse/new-releases",

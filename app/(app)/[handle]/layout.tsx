@@ -27,6 +27,8 @@ export async function generateMetadata({
 	};
 }
 
+export const fetchCache = "force-cache";
+
 const Layout = async ({
 	params: { handle },
 	children,
