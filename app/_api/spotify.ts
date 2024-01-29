@@ -44,7 +44,7 @@ export const AlbumSchema = z.object({
 	external_urls: z.object({
 		spotify: z.string().url(),
 	}),
-	album_type: z.enum(["album", "single", "compilation"]),
+	album_type: z.enum(["album", "single", "compilation", "ep"]),
 	total_tracks: z.number(),
 	images: SpotifyImageSchema.array(),
 	artists: ArtistSchema.array(),
