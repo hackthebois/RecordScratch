@@ -38,7 +38,7 @@ const Feed = async () => {
 		<Tabs defaultValue="for-you" className="w-[400px]">
 			<TabsList>
 				<TabsTrigger value="for-you">For you</TabsTrigger>
-				<TabsTrigger value="friends">Friends</TabsTrigger>
+				<TabsTrigger value="following">Following</TabsTrigger>
 			</TabsList>
 			<TabsContent value="for-you">
 				<InfiniteReviews
@@ -51,9 +51,9 @@ const Feed = async () => {
 					pageLimit={25}
 				/>
 			</TabsContent>
-			<TabsContent value="friends">
+			<TabsContent value="following">
 				<InfiniteReviews
-					key="friends-feed"
+					key="following-feed"
 					initialReviews={await getFollowingFeed({
 						page: 1,
 						limit: 25,
