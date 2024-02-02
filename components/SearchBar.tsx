@@ -4,7 +4,6 @@ import { searchMusicAction, searchProfilesAction } from "@/app/_api/actions";
 import { Artist } from "@/app/_api/spotify";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Profile } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +11,7 @@ import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { UserAvatar } from "./UserAvatar";
+import { ProfileItem } from "./ProfileItem";
 import { AlbumItem } from "./resource/album/AlbumItem";
 import { Button } from "./ui/Button";
 import { Tabs, TabsList, TabsTrigger } from "./ui/Tabs";
@@ -150,32 +149,6 @@ const SearchState = ({
 				)}
 			</div>
 		</ScrollArea>
-	);
-};
-
-const ProfileItem = ({
-	profile,
-	onClick,
-}: {
-	profile: Profile;
-	onClick: () => void;
-}) => {
-	return (
-		<Link
-			href={`/${profile.handle}`}
-			onClick={onClick}
-			className="flex flex-row items-center gap-4 rounded"
-		>
-			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
-				<UserAvatar {...profile} size={64} />
-			</div>
-			<div className="min-w-0 flex-1">
-				<p className="truncate font-medium">{profile.name}</p>
-				<p className="truncate py-1 text-sm text-muted-foreground">
-					{profile.handle}
-				</p>
-			</div>
-		</Link>
 	);
 };
 
