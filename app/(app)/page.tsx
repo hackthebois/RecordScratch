@@ -2,27 +2,67 @@ import { Discord } from "@/components/icons/Discord";
 import { InfiniteReviews } from "@/components/resource/InfiniteReviews";
 import AlbumList from "@/components/resource/album/AlbumList";
 import { buttonVariants } from "@/components/ui/Button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { env } from "@/env.mjs";
+import { auth } from "@clerk/nextjs";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getFeed, getTopRated, getTrending } from "../_api";
+import {
+	getFollowingFeed,
+	getForYouFeed,
+	getTopRated,
+	getTrending,
+} from "../_api";
 import { spotify } from "../_api/spotify";
 
 export const revalidate = 60 * 60 * 24; // 24 hours
 
 const Feed = async () => {
-	const initialFeed = await getFeed({
-		page: 1,
-		limit: 25,
-	});
+	const { userId } = auth();
+
+	if (!userId) {
+		return (
+			<InfiniteReviews
+				key="for-you-feed"
+				initialReviews={await getForYouFeed({
+					page: 1,
+					limit: 25,
+				})}
+				getReviews={getForYouFeed}
+				pageLimit={25}
+			/>
+		);
+	}
 
 	return (
-		<InfiniteReviews
-			key="feed"
-			initialReviews={initialFeed}
-			getReviews={getFeed}
-			pageLimit={25}
-		/>
+		<Tabs defaultValue="for-you" className="w-[400px]">
+			<TabsList>
+				<TabsTrigger value="for-you">For you</TabsTrigger>
+				<TabsTrigger value="friends">Friends</TabsTrigger>
+			</TabsList>
+			<TabsContent value="for-you">
+				<InfiniteReviews
+					key="for-you-feed"
+					initialReviews={await getForYouFeed({
+						page: 1,
+						limit: 25,
+					})}
+					getReviews={getForYouFeed}
+					pageLimit={25}
+				/>
+			</TabsContent>
+			<TabsContent value="friends">
+				<InfiniteReviews
+					key="friends-feed"
+					initialReviews={await getFollowingFeed({
+						page: 1,
+						limit: 25,
+					})}
+					getReviews={getFollowingFeed}
+					pageLimit={25}
+				/>
+			</TabsContent>
+		</Tabs>
 	);
 };
 
