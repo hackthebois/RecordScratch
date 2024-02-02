@@ -136,11 +136,8 @@ export const getTopRated = cache(async () => {
 
 export const getForYouFeed = cache(
 	async ({ page, limit }: { page: number; limit: number }) => {
-		// const { userId } = auth();
-
 		const ratingList = await db.query.ratings.findMany({
 			limit,
-			// where: userId ? ne(ratings.userId, userId) : undefined,
 			offset: (page - 1) * limit,
 			orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
 			with: {
