@@ -6,6 +6,7 @@ import { db } from "@/db/db";
 import { followers, profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
 
+import { auth } from "@clerk/nextjs";
 import {
 	and,
 	avg,
@@ -133,9 +134,37 @@ export const getTopRated = cache(async () => {
 	)();
 });
 
-export const getFeed = cache(
+export const getForYouFeed = cache(
 	async ({ page, limit }: { page: number; limit: number }) => {
+		// const { userId } = auth();
+
 		const ratingList = await db.query.ratings.findMany({
+			limit,
+			// where: userId ? ne(ratings.userId, userId) : undefined,
+			offset: (page - 1) * limit,
+			orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
+			with: {
+				profile: true,
+			},
+		});
+		return await appendReviewResource(ratingList);
+	}
+);
+
+export const getFollowingFeed = cache(
+	async ({ page, limit }: { page: number; limit: number }) => {
+		const { userId } = auth();
+
+		if (!userId) return [];
+
+		const following = await db.query.followers.findMany({
+			where: eq(followers.userId, userId),
+		});
+		const ratingList = await db.query.ratings.findMany({
+			where: inArray(
+				ratings.userId,
+				following.map((f) => f.followingId)
+			),
 			limit,
 			offset: (page - 1) * limit,
 			orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
