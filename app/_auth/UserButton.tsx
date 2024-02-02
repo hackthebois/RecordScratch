@@ -1,6 +1,6 @@
 import { SignInWrapper } from "@/components/SignInWrapper";
 import { UserAvatar } from "@/components/UserAvatar";
-import { Button, buttonVariants } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { auth } from "@clerk/nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -25,13 +25,7 @@ export const UserButton = async () => {
 	}
 
 	return (
-		<Link
-			href={`/${profile.handle}`}
-			className={buttonVariants({
-				variant: "link",
-				className: "relative h-[36px] w-[36px] rounded-full",
-			})}
-		>
+		<Link href={`/${profile.handle}`}>
 			<UserAvatar {...profile} size={36} />
 		</Link>
 	);

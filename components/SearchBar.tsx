@@ -2,9 +2,7 @@
 
 import { searchMusicAction, searchProfilesAction } from "@/app/_api/actions";
 import { Artist } from "@/app/_api/spotify";
-import { buttonVariants } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import { Input } from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Profile } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
@@ -16,6 +14,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { UserAvatar } from "./UserAvatar";
 import { AlbumItem } from "./resource/album/AlbumItem";
+import { Button } from "./ui/Button";
 import { Tabs, TabsList, TabsTrigger } from "./ui/Tabs";
 
 const ArtistItem = ({
@@ -319,24 +318,11 @@ const SearchBar = () => {
 			}}
 			open={open}
 		>
-			<DialogTrigger>
-				<>
-					<Input
-						placeholder="Search"
-						readOnly
-						className="hidden sm:block"
-					/>
-					<div
-						className={buttonVariants({
-							variant: "outline",
-							size: "icon",
-							className: "sm:hidden",
-						})}
-						aria-label="Search"
-					>
-						<Search size={20} />
-					</div>
-				</>
+			<DialogTrigger asChild>
+				<Button variant="outline" className="gap-3">
+					<Search size={17} />
+					Search
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="flex h-full w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
 				<div className="flex items-center border-b pr-10">

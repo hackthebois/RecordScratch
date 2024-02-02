@@ -11,7 +11,7 @@ RecordScratch is a community-driven music rating app that allows users to rate, 
 
 Talk to fellow music lovers, discuss features, report bugs, and talk directly to us.
 
-Join here https://discord.gg/rMbN3d4z
+Join here https://discord.gg/X3X9qrHMUJ
 
 ## Key Features
 
