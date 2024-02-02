@@ -453,8 +453,8 @@ export const isUserFollowing = cache(
 					),
 				}));
 			},
-			[`isUserFollowing:${followingId}`],
-			{ tags: ["isUserFollowing:" + followingId] }
+			[`isUserFollowing:${followingId}:${userId}`],
+			{ tags: [`isUserFollowing:${followingId}:${userId}`] }
 		)();
 	}
 );

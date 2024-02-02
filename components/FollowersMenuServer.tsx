@@ -17,18 +17,18 @@ const FollowerMenuServer = async ({ profileId }: Props) => {
 
 	const showButton = userId === null || userId === profileId;
 
-	const followUsers = async (userId: string) => {
+	const followUsers = async (profileId: string) => {
 		"use server";
 		await followUser(profileId);
-		revalidateTag(`getFollowCount:${userId}`);
-		revalidateTag(`isUserFollowing:${userId}`);
+		revalidateTag(`getFollowCount:${profileId}`);
+		revalidateTag(`isUserFollowing:${profileId}:${userId}`);
 	};
 
-	const unfollowUsers = async (userId: string) => {
+	const unfollowUsers = async (profileId: string) => {
 		"use server";
 		await unFollowUser(profileId);
-		revalidateTag(`getFollowCount:${userId}`);
-		revalidateTag(`isUserFollowing:${userId}`);
+		revalidateTag(`getFollowCount:${profileId}`);
+		revalidateTag(`isUserFollowing:${profileId}:${userId}`);
 	};
 
 	return (
