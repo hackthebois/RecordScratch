@@ -157,6 +157,9 @@ export const getFollowingFeed = cache(
 		const following = await db.query.followers.findMany({
 			where: eq(followers.userId, userId),
 		});
+
+		if (following.length === 0) return [];
+
 		const ratingList = await db.query.ratings.findMany({
 			where: inArray(
 				ratings.userId,
