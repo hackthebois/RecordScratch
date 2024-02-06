@@ -9,6 +9,7 @@ import {
 	DialogTrigger,
 } from "./ui/Dialog";
 import { ProfileItem } from "./ProfileItem";
+import { ScrollArea } from "./ui/ScrollArea";
 
 type Props = {
 	title: string;
@@ -19,8 +20,8 @@ type Props = {
 const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
 	const profileList = profiles.map((profile, index) => {
 		return (
-			<div className="pt-4">
-				<ProfileItem key={index} profile={profile} onClick={() => {}} />
+			<div key={index}>
+				<ProfileItem profile={profile} onClick={() => {}} />
 			</div>
 		);
 	});
@@ -32,11 +33,13 @@ const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
 					{followerCount}
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="max-w-[20rem] gap-4 px-4 md:max-w-[26rem] lg:max-w-[26rem]">
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
-					<DialogDescription>{profileList}</DialogDescription>
 				</DialogHeader>
+				<ScrollArea className=" flex max-h-[24rem] flex-col gap-4 overflow-visible px-4 md:max-h-[30rem] lg:max-h-[35rem]">
+					{profileList}
+				</ScrollArea>
 			</DialogContent>
 		</Dialog>
 	);
