@@ -42,23 +42,25 @@ export const QueryTabs = ({
 	param: string;
 	tabs: {
 		label: string;
-		value?: string;
+		value: string | null;
 	}[];
 }) => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
 	const createQueryString = useCallback(
-		(name: string, value?: string) => {
+		(name: string, value: string | null) => {
 			const params = new URLSearchParams(searchParams.toString());
 
-			if (value === undefined) params.delete(name);
+			if (value === null) params.delete(name);
 			else params.set(name, value);
 
 			return params.toString();
 		},
 		[searchParams]
 	);
+
+	console.log(searchParams.get(param));
 
 	return (
 		<div className="flex h-10 w-full items-center justify-center rounded-md bg-muted p-1 text-muted-foreground sm:w-auto sm:max-w-min">
