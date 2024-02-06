@@ -3,7 +3,7 @@ import {
 	GetInfiniteReviews,
 	InfiniteReviews,
 } from "@/components/resource/InfiniteReviews";
-import { LinkTabs } from "@/components/ui/LinkTabs";
+import { QueryTabs } from "@/components/ui/LinkTabs";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -82,20 +82,25 @@ const Page = async ({
 					))}
 				</div>
 			</div>
-			<LinkTabs
+			<QueryTabs
+				param="category"
 				tabs={[
 					{
+						label: "All",
+						value: undefined,
+					},
+					{
 						label: "Album",
-						href: `/${profile.handle}?category=ALBUM`,
+						value: "ALBUM",
 					},
 					{
 						label: "Song",
-						href: `/${profile.handle}?category=SONG`,
+						value: "SONG",
 					},
 				]}
 			/>
 			<InfiniteReviews
-				key={`${profile.handle}:${rating}`}
+				key={`${profile.handle}:${rating}:${category}`}
 				initialReviews={await getReviews({ page: 1, limit: 25 })}
 				getReviews={getReviews}
 				pageLimit={25}
