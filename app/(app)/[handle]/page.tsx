@@ -57,9 +57,17 @@ const Page = async ({
 							<Link
 								href={
 									Number(rating) === index + 1
-										? `/${profile.handle}`
+										? `/${profile.handle}${
+												category
+													? `?category=${category}`
+													: ""
+										  }`
 										: `/${profile.handle}?rating=${
 												index + 1
+										  }${
+												category
+													? `&category=${category}`
+													: ""
 										  }`
 								}
 								className={cn(
@@ -87,7 +95,7 @@ const Page = async ({
 				tabs={[
 					{
 						label: "All",
-						value: undefined,
+						value: null,
 					},
 					{
 						label: "Album",
