@@ -22,7 +22,7 @@ const FollowerMenuServer = async ({ profileId }: Props) => {
 		getFollowCount(profileId),
 		getFollowCount(profileId, false),
 		isUserFollowing(profileId, userId || "0"),
-		getFollowProfiles(profileId),
+		getFollowProfiles(profileId, true),
 		getFollowProfiles(profileId, false),
 	]);
 
@@ -31,15 +31,21 @@ const FollowerMenuServer = async ({ profileId }: Props) => {
 	const followUsers = async (profileId: string) => {
 		"use server";
 		await followUser(profileId);
-		revalidateTag(`getFollowCount:${profileId}`);
+		revalidateTag(`getFollowCount:${profileId}:${true}`);
+		revalidateTag(`getFollowCount:${userId}:${false}`);
 		revalidateTag(`isUserFollowing:${profileId}:${userId}`);
+		revalidateTag(`getFollowProfiles:${profileId}:${true}`);
+		revalidateTag(`getFollowProfiles:${userId}:${false}`);
 	};
 
 	const unfollowUsers = async (profileId: string) => {
 		"use server";
 		await unFollowUser(profileId);
-		revalidateTag(`getFollowCount:${profileId}`);
+		revalidateTag(`getFollowCount:${profileId}:${true}`);
+		revalidateTag(`getFollowCount:${userId}:${false}`);
 		revalidateTag(`isUserFollowing:${profileId}:${userId}`);
+		revalidateTag(`getFollowProfiles:${profileId}:${true}`);
+		revalidateTag(`getFollowProfiles:${userId}:${false}`);
 	};
 
 	return (

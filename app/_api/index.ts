@@ -443,20 +443,21 @@ export const getFollowCount = cache(
 				if (!userExists) throw new Error("User Doesn't Exist");
 
 				var count;
-				if (getFollowers)
+				if (getFollowers) {
 					count = await db
 						.select({
 							count: sql<number>`count(*)`.mapWith(Number),
 						})
 						.from(followers)
 						.where(eq(followers.followingId, userId));
-				else
+				} else {
 					count = await db
 						.select({
 							count: sql<number>`count(*)`.mapWith(Number),
 						})
 						.from(followers)
 						.where(eq(followers.userId, userId));
+				}
 
 				return count.length ? count[0].count : 0;
 			},
@@ -466,7 +467,7 @@ export const getFollowCount = cache(
 				}`,
 			],
 			{
-				tags: ["getFollowCount:" + userId],
+				tags: ["getFollowCount:" + userId + ":" + getFollowers],
 			}
 		)();
 	}
@@ -549,7 +550,7 @@ export const getFollowProfiles = cache(
 				}`,
 			],
 			{
-				tags: ["getFollowProfiles:" + userId],
+				tags: ["getFollowProfiles:" + userId + ":" + getFollowers],
 			}
 		)();
 	}
