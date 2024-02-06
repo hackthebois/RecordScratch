@@ -1,5 +1,7 @@
 "use client";
 
+import { Profile } from "@/types/profile";
+import FollowersPopup from "./FollowersPopup";
 import { Button } from "./ui/Button";
 import { Tag } from "./ui/Tag";
 
@@ -11,6 +13,8 @@ type Props = {
 	showButton: boolean;
 	followUser: Function;
 	unFollowUser: Function;
+	followerProfiles: Profile[];
+	followingProfiles: Profile[];
 };
 
 const FollowerMenuClient = ({
@@ -21,16 +25,26 @@ const FollowerMenuClient = ({
 	showButton,
 	followUser,
 	unFollowUser,
+	followerProfiles,
+	followingProfiles,
 }: Props) => {
 	return (
 		<div className="flex flex-row items-center justify-center gap-6 py-2 sm:justify-start">
 			<div className="flex flex-col items-center gap-1">
 				<p>Followers</p>
-				<Tag>{followerCount}</Tag>
+				<FollowersPopup
+					title={"Followers"}
+					followerCount={followerCount}
+					profiles={followerProfiles}
+				/>
 			</div>
 			<div className="flex flex-col items-center gap-1">
 				<p>Following</p>
-				<Tag>{followingCount}</Tag>
+				<FollowersPopup
+					title={"Following"}
+					followerCount={followingCount}
+					profiles={followingProfiles}
+				/>
 			</div>
 			{isFollowing ? (
 				<Button

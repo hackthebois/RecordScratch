@@ -1,4 +1,4 @@
-import { getFollowCount, isUserFollowing } from "@/app/_api";
+import { getFollowCount, getFollowProfiles, isUserFollowing } from "@/app/_api";
 import FollowerMenuClient from "./FollowersMenuClient";
 import { auth } from "@clerk/nextjs";
 import { revalidateTag } from "next/cache";
@@ -11,24 +11,41 @@ type Props = {
 const FollowerMenuServer = async ({ profileId }: Props) => {
 	const { userId } = auth();
 
-	const followerCount = await getFollowCount(profileId);
-	const followingCount = await getFollowCount(profileId, false);
-	const isFollowing = await isUserFollowing(profileId, userId || "0");
+	// Execute API calls in parallel
+	const [
+		followerCount,
+		followingCount,
+		isFollowing,
+		followerProfiles,
+		followingProfiles,
+	] = await Promise.all([
+		getFollowCount(profileId, true),
+		getFollowCount(profileId, false),
+		isUserFollowing(profileId, userId || "0"),
+		getFollowProfiles(profileId, true),
+		getFollowProfiles(profileId, false),
+	]);
 
 	const showButton = userId === null || userId === profileId;
 
 	const followUsers = async (profileId: string) => {
 		"use server";
 		await followUser(profileId);
-		revalidateTag(`getFollowCount:${profileId}`);
+		revalidateTag(`getFollowCount:${profileId}:${true}`);
+		revalidateTag(`getFollowCount:${userId}:${false}`);
 		revalidateTag(`isUserFollowing:${profileId}:${userId}`);
+		revalidateTag(`getFollowProfiles:${profileId}:${true}`);
+		revalidateTag(`getFollowProfiles:${userId}:${false}`);
 	};
 
 	const unfollowUsers = async (profileId: string) => {
 		"use server";
 		await unFollowUser(profileId);
-		revalidateTag(`getFollowCount:${profileId}`);
+		revalidateTag(`getFollowCount:${profileId}:${true}`);
+		revalidateTag(`getFollowCount:${userId}:${false}`);
 		revalidateTag(`isUserFollowing:${profileId}:${userId}`);
+		revalidateTag(`getFollowProfiles:${profileId}:${true}`);
+		revalidateTag(`getFollowProfiles:${userId}:${false}`);
 	};
 
 	return (
@@ -40,6 +57,8 @@ const FollowerMenuServer = async ({ profileId }: Props) => {
 			showButton={showButton}
 			followUser={followUsers}
 			unFollowUser={unfollowUsers}
+			followerProfiles={followerProfiles}
+			followingProfiles={followingProfiles}
 		/>
 	);
 };
