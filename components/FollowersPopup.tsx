@@ -20,7 +20,7 @@ type Props = {
 const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
 	const profileList = profiles.map((profile, index) => {
 		return (
-			<div key={index}>
+			<div key={index} className="py-1">
 				<ProfileItem profile={profile} onClick={() => {}} />
 			</div>
 		);
@@ -33,11 +33,11 @@ const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
 					{followerCount}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="max-w-[20rem] gap-4 px-4 md:max-w-[26rem] lg:max-w-[26rem]">
+			<DialogContent className="max-w-[20rem] md:max-w-[26rem] lg:max-w-[26rem]">
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
-				<ScrollArea className=" flex max-h-[24rem] flex-col gap-4 overflow-visible px-4 md:max-h-[30rem] lg:max-h-[35rem]">
+				<ScrollArea className="flex max-h-[24rem] flex-col gap-4 overflow-visible px-4 md:max-h-[30rem] lg:max-h-[35rem]">
 					{profileList}
 				</ScrollArea>
 			</DialogContent>
