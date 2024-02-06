@@ -20,6 +20,7 @@ import {
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { Album, spotify } from "./spotify";
+import { Profile } from "@/types/profile";
 
 // STATIC
 export const getAlbum = cache((albumId: string) =>
@@ -440,20 +441,21 @@ export const getFollowCount = cache(
 				if (!userExists) throw new Error("User Doesn't Exist");
 
 				var count;
-				if (getFollowers)
+				if (getFollowers) {
 					count = await db
 						.select({
 							count: sql<number>`count(*)`.mapWith(Number),
 						})
 						.from(followers)
 						.where(eq(followers.followingId, userId));
-				else
+				} else {
 					count = await db
 						.select({
 							count: sql<number>`count(*)`.mapWith(Number),
 						})
 						.from(followers)
 						.where(eq(followers.userId, userId));
+				}
 
 				return count.length ? count[0].count : 0;
 			},
@@ -463,7 +465,7 @@ export const getFollowCount = cache(
 				}`,
 			],
 			{
-				tags: ["getFollowCount:" + userId],
+				tags: ["getFollowCount:" + userId + ":" + getFollowers],
 			}
 		)();
 	}
@@ -484,6 +486,70 @@ export const isUserFollowing = cache(
 			},
 			[`isUserFollowing:${followingId}:${userId}`],
 			{ tags: [`isUserFollowing:${followingId}:${userId}`] }
+		)();
+	}
+);
+
+export const getFollowProfiles = cache(
+	async (
+		userId: string,
+		getFollowers: boolean = true
+	): Promise<Profile[]> => {
+		return unstable_cache(
+			async () => {
+				const userExists = !!(await db.query.profile.findFirst({
+					where: eq(profile.userId, userId),
+				}));
+
+				if (!userExists) throw new Error("User Doesn't Exist");
+
+				var profiles: Profile[];
+				if (getFollowers) {
+					profiles = await db
+						.select({
+							userId: profile.userId,
+							name: profile.name,
+							handle: profile.handle,
+							imageUrl: profile.imageUrl,
+							bio: profile.bio,
+							createdAt: profile.createdAt,
+							updatedAt: profile.updatedAt,
+						})
+						.from(followers)
+						.innerJoin(
+							profile,
+							eq(followers.userId, profile.userId)
+						)
+						.where(eq(followers.followingId, userId));
+				} else {
+					profiles = await db
+						.select({
+							userId: profile.userId,
+							name: profile.name,
+							handle: profile.handle,
+							imageUrl: profile.imageUrl,
+							bio: profile.bio,
+							createdAt: profile.createdAt,
+							updatedAt: profile.updatedAt,
+						})
+						.from(followers)
+						.innerJoin(
+							profile,
+							eq(followers.followingId, profile.userId)
+						)
+						.where(eq(followers.userId, userId));
+				}
+
+				return profiles;
+			},
+			[
+				`getFollowProfiles:${userId}:${
+					getFollowers ? "followers" : "following"
+				}`,
+			],
+			{
+				tags: ["getFollowProfiles:" + userId + ":" + getFollowers],
+			}
 		)();
 	}
 );
