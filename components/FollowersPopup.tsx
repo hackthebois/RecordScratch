@@ -18,6 +18,7 @@ type Props = {
 };
 
 const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
+	// gets the profiles in each follower
 	const profileList = profiles.map((profile, index) => {
 		return (
 			<div key={index}>
