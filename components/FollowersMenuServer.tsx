@@ -19,7 +19,7 @@ const FollowerMenuServer = async ({ profileId }: Props) => {
 		followerProfiles,
 		followingProfiles,
 	] = await Promise.all([
-		getFollowCount(profileId),
+		getFollowCount(profileId, true),
 		getFollowCount(profileId, false),
 		isUserFollowing(profileId, userId || "0"),
 		getFollowProfiles(profileId, true),
