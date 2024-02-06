@@ -3,7 +3,7 @@ import {
 	getArtistDiscography,
 	getRatingListAverage,
 } from "@/app/_api";
-import { LinkTabs } from "@/components/ui/LinkTabs";
+import { PathnameTabs } from "@/components/ui/LinkTabs";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -85,7 +85,7 @@ const Layout = async ({
 					</Suspense>
 				</div>
 			</div>
-			<LinkTabs
+			<PathnameTabs
 				tabs={[
 					{
 						label: "Top Songs",

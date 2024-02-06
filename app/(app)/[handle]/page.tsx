@@ -3,19 +3,21 @@ import {
 	GetInfiniteReviews,
 	InfiniteReviews,
 } from "@/components/resource/InfiniteReviews";
+import { QueryTabs } from "@/components/ui/LinkTabs";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const Page = async ({
 	params: { handle },
-	searchParams: { rating },
+	searchParams: { rating, category },
 }: {
 	params: {
 		handle: string;
 	};
 	searchParams: {
 		rating: string;
+		category: string;
 	};
 }) => {
 	const profile = await getProfile(handle);
@@ -32,6 +34,10 @@ const Page = async ({
 		return await getRecent({
 			userId: profile.userId,
 			rating: rating ? parseInt(rating) : undefined,
+			category:
+				category === "ALBUM" || category === "SONG"
+					? category
+					: undefined,
 			...input,
 		});
 	};
@@ -51,9 +57,17 @@ const Page = async ({
 							<Link
 								href={
 									Number(rating) === index + 1
-										? `/${profile.handle}`
+										? `/${profile.handle}${
+												category
+													? `?category=${category}`
+													: ""
+										  }`
 										: `/${profile.handle}?rating=${
 												index + 1
+										  }${
+												category
+													? `&category=${category}`
+													: ""
 										  }`
 								}
 								className={cn(
@@ -76,8 +90,25 @@ const Page = async ({
 					))}
 				</div>
 			</div>
+			<QueryTabs
+				param="category"
+				tabs={[
+					{
+						label: "All",
+						value: null,
+					},
+					{
+						label: "Album",
+						value: "ALBUM",
+					},
+					{
+						label: "Song",
+						value: "SONG",
+					},
+				]}
+			/>
 			<InfiniteReviews
-				key={`${handle}:${rating}`}
+				key={`${profile.handle}:${rating}:${category}`}
 				initialReviews={await getReviews({ page: 1, limit: 25 })}
 				getReviews={getReviews}
 				pageLimit={25}

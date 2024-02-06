@@ -1,7 +1,7 @@
 import { getProfile } from "@/app/_api";
 import FollowerMenuServer from "@/components/FollowersMenuServer";
 import { UserAvatar } from "@/components/UserAvatar";
-import { LinkTabs } from "@/components/ui/LinkTabs";
+import { PathnameTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -73,7 +73,7 @@ const Layout = async ({
 					<FollowerMenuServer profileId={profile.userId} />
 				</div>
 			</div>
-			<LinkTabs
+			<PathnameTabs
 				tabs={[
 					{
 						label: "Ratings",
