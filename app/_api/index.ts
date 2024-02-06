@@ -369,21 +369,36 @@ export const getRecent = cache(
 		userId,
 		limit = 25,
 		page = 1,
+		category,
 	}: {
 		rating?: number;
 		userId: string;
 		limit?: number;
 		page?: number;
+		category?: "ALBUM" | "SONG";
 	}) => {
 		return unstable_cache(
 			async () => {
 				if (page < 1) page = 1;
-				const where = rating
-					? and(
-							eq(ratings.userId, userId),
-							eq(ratings.rating, rating)
-					  )
-					: eq(ratings.userId, userId);
+
+				var where;
+				if (rating && category)
+					where = and(
+						eq(ratings.userId, userId),
+						eq(ratings.rating, rating),
+						eq(ratings.category, category)
+					);
+				else if (category)
+					where = and(
+						eq(ratings.userId, userId),
+						eq(ratings.category, category)
+					);
+				else if (rating)
+					where = and(
+						eq(ratings.userId, userId),
+						eq(ratings.rating, rating)
+					);
+				else where = eq(ratings.userId, userId);
 
 				const ratingList = await db.query.ratings.findMany({
 					limit,
@@ -394,9 +409,10 @@ export const getRecent = cache(
 						profile: true,
 					},
 				});
+
 				return await appendReviewResource(ratingList);
 			},
-			[`getRecent:${userId}:${rating}:${page}:${limit}`],
+			[`getRecent:${userId}:${rating}:${page}:${limit}:${category}`],
 			{ tags: [userId], revalidate: 60 * 60 }
 		)();
 	}
