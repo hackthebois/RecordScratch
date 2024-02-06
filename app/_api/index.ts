@@ -367,7 +367,7 @@ export const getRecent = cache(
 	async ({
 		rating,
 		userId,
-		limit = 25,
+		limit = 20,
 		page = 1,
 		category,
 	}: {
