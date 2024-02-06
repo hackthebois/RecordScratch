@@ -54,6 +54,19 @@ export const followers = mysqlTable(
 	})
 );
 
+export const userFollowRelation = relations(followers, ({ one }) => ({
+	// Define the relationship between user_id and following_id
+	user: one(profile, {
+		fields: [followers.userId],
+		references: [profile.userId],
+	}),
+
+	following: one(profile, {
+		fields: [followers.followingId],
+		references: [profile.userId],
+	}),
+}));
+
 export const ratingsRelations = relations(ratings, ({ one }) => ({
 	profile: one(profile, {
 		fields: [ratings.userId],

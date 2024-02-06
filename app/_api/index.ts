@@ -20,6 +20,7 @@ import {
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { Album, spotify } from "./spotify";
+import { Profile } from "@/types/profile";
 
 // STATIC
 export const getAlbum = cache((albumId: string) =>
@@ -491,7 +492,10 @@ export const isUserFollowing = cache(
 );
 
 export const getFollowProfiles = cache(
-	async (userId: string, getFollowers: boolean = true) => {
+	async (
+		userId: string,
+		getFollowers: boolean = true
+	): Promise<Profile[]> => {
 		return unstable_cache(
 			async () => {
 				const userExists = !!(await db.query.profile.findFirst({
@@ -500,12 +504,18 @@ export const getFollowProfiles = cache(
 
 				if (!userExists) throw new Error("User Doesn't Exist");
 
-				var profiles;
-
-				//select * from followers f join profile p on p.user_id = f.user_id where f.following_id="user_2VXWWlwa2rF83rzKD8rnmoYmDac";
+				var profiles: Profile[];
 				if (getFollowers) {
 					profiles = await db
-						.select()
+						.select({
+							userId: profile.userId,
+							name: profile.name,
+							handle: profile.handle,
+							imageUrl: profile.imageUrl,
+							bio: profile.bio,
+							createdAt: profile.createdAt,
+							updatedAt: profile.updatedAt,
+						})
 						.from(followers)
 						.innerJoin(
 							profile,
@@ -514,7 +524,15 @@ export const getFollowProfiles = cache(
 						.where(eq(followers.followingId, userId));
 				} else {
 					profiles = await db
-						.select()
+						.select({
+							userId: profile.userId,
+							name: profile.name,
+							handle: profile.handle,
+							imageUrl: profile.imageUrl,
+							bio: profile.bio,
+							createdAt: profile.createdAt,
+							updatedAt: profile.updatedAt,
+						})
 						.from(followers)
 						.innerJoin(
 							profile,

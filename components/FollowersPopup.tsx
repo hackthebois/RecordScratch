@@ -1,3 +1,4 @@
+import { Profile } from "@/types/profile";
 import { Button } from "./ui/Button";
 import {
 	Dialog,
@@ -7,12 +8,23 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "./ui/Dialog";
+import { ProfileItem } from "./ProfileItem";
 
 type Props = {
+	title: string;
 	followerCount: number;
+	profiles: Profile[];
 };
 
-const FollowersPopup = ({ followerCount }: Props) => {
+const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
+	const profileList = profiles.map((profile, index) => {
+		return (
+			<div className="pt-4">
+				<ProfileItem key={index} profile={profile} onClick={() => {}} />
+			</div>
+		);
+	});
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -22,8 +34,8 @@ const FollowersPopup = ({ followerCount }: Props) => {
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Followers</DialogTitle>
-					<DialogDescription>Fellow Scratchers</DialogDescription>
+					<DialogTitle>{title}</DialogTitle>
+					<DialogDescription>{profileList}</DialogDescription>
 				</DialogHeader>
 			</DialogContent>
 		</Dialog>
