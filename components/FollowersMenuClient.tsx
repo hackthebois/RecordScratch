@@ -1,5 +1,6 @@
 "use client";
 
+import FollowersPopup from "./FollowersPopup";
 import { Button } from "./ui/Button";
 import { Tag } from "./ui/Tag";
 
@@ -26,7 +27,7 @@ const FollowerMenuClient = ({
 		<div className="flex flex-row items-center justify-center gap-6 py-2 sm:justify-start">
 			<div className="flex flex-col items-center gap-1">
 				<p>Followers</p>
-				<Tag>{followerCount}</Tag>
+				<FollowersPopup followerCount={followerCount} />
 			</div>
 			<div className="flex flex-col items-center gap-1">
 				<p>Following</p>

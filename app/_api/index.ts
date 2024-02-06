@@ -157,6 +157,11 @@ export const getFollowingFeed = cache(
 		const following = await db.query.followers.findMany({
 			where: eq(followers.userId, userId),
 		});
+
+		if (!following.length) {
+			return [];
+		}
+
 		const ratingList = await db.query.ratings.findMany({
 			where: inArray(
 				ratings.userId,
@@ -481,6 +486,53 @@ export const isUserFollowing = cache(
 			},
 			[`isUserFollowing:${followingId}:${userId}`],
 			{ tags: [`isUserFollowing:${followingId}:${userId}`] }
+		)();
+	}
+);
+
+export const getFollowProfiles = cache(
+	async (userId: string, getFollowers: boolean = true) => {
+		return unstable_cache(
+			async () => {
+				const userExists = !!(await db.query.profile.findFirst({
+					where: eq(profile.userId, userId),
+				}));
+
+				if (!userExists) throw new Error("User Doesn't Exist");
+
+				var profiles;
+
+				//select * from followers f join profile p on p.user_id = f.user_id where f.following_id="user_2VXWWlwa2rF83rzKD8rnmoYmDac";
+				if (getFollowers) {
+					profiles = await db
+						.select()
+						.from(followers)
+						.innerJoin(
+							profile,
+							eq(followers.userId, profile.userId)
+						)
+						.where(eq(followers.followingId, userId));
+				} else {
+					profiles = await db
+						.select()
+						.from(followers)
+						.innerJoin(
+							profile,
+							eq(followers.followingId, profile.userId)
+						)
+						.where(eq(followers.userId, userId));
+				}
+
+				return profiles;
+			},
+			[
+				`getFollowProfiles:${userId}:${
+					getFollowers ? "followers" : "following"
+				}`,
+			],
+			{
+				tags: ["getFollowProfiles:" + userId],
+			}
 		)();
 	}
 );
