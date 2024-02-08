@@ -1,5 +1,5 @@
 import { getProfile } from "@/app/_api";
-import FollowerMenuServer from "@/components/FollowersMenuServer";
+import FollowerMenu from "@/components/FollowersMenu";
 import { UserAvatar } from "@/components/UserAvatar";
 import { PathnameTabs } from "@/components/ui/LinkTabs";
 import { auth } from "@clerk/nextjs";
@@ -70,7 +70,7 @@ const Layout = async ({
 					<p className="pb-3 text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
-					<FollowerMenuServer profileId={profile.userId} />
+					<FollowerMenu profileId={profile.userId} />
 				</div>
 			</div>
 			<PathnameTabs
