@@ -26,10 +26,10 @@ const Feed = async () => {
 				key="for-you-feed"
 				initialReviews={await getForYouFeed({
 					page: 1,
-					limit: 25,
+					limit: 20,
 				})}
 				getReviews={getForYouFeed}
-				pageLimit={25}
+				pageLimit={20}
 			/>
 		);
 	}
@@ -45,10 +45,10 @@ const Feed = async () => {
 					key="for-you-feed"
 					initialReviews={await getForYouFeed({
 						page: 1,
-						limit: 25,
+						limit: 20,
 					})}
 					getReviews={getForYouFeed}
-					pageLimit={25}
+					pageLimit={20}
 				/>
 			</TabsContent>
 			<TabsContent value="following">
@@ -56,10 +56,10 @@ const Feed = async () => {
 					key="following-feed"
 					initialReviews={await getFollowingFeed({
 						page: 1,
-						limit: 25,
+						limit: 20,
 					})}
 					getReviews={getFollowingFeed}
-					pageLimit={25}
+					pageLimit={20}
 				/>
 			</TabsContent>
 		</Tabs>

@@ -42,9 +42,9 @@ const Page = async ({
 			</div>
 			<InfiniteReviews
 				key={albumId}
-				initialReviews={await getReviews({ page: 1, limit: 25 })}
+				initialReviews={await getReviews({ page: 1, limit: 20 })}
 				getReviews={getReviews}
-				pageLimit={25}
+				pageLimit={20}
 			/>
 		</div>
 	);
