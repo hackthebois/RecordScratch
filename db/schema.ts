@@ -21,6 +21,7 @@ export const profile = mysqlTable("profile", {
 
 export const profileRelations = relations(profile, ({ many }) => ({
 	ratings: many(ratings),
+	followers: many(followers),
 }));
 
 export const ratings = mysqlTable(
