@@ -114,6 +114,12 @@ export const followUser = protectedAction(
 
 		if (followExists) throw new Error("User Already Follows");
 		else await db.insert(followers).values({ userId, followingId });
+
+		revalidateTag(`getFollowCount:${followingId}:followers`);
+		revalidateTag(`getFollowCount:${userId}:following`);
+		revalidateTag(`isUserFollowing:${followingId}:${userId}`);
+		revalidateTag(`getFollowProfiles:${followingId}:followers`);
+		revalidateTag(`getFollowProfiles:${userId}:following`);
 	}
 );
 
@@ -146,6 +152,12 @@ export const unFollowUser = protectedAction(
 						eq(followers.followingId, followingId)
 					)
 				);
+
+		revalidateTag(`getFollowCount:${followingId}:followers`);
+		revalidateTag(`getFollowCount:${userId}:following`);
+		revalidateTag(`isUserFollowing:${followingId}:${userId}`);
+		revalidateTag(`getFollowProfiles:${followingId}:followers`);
+		revalidateTag(`getFollowProfiles:${userId}:following`);
 	}
 );
 

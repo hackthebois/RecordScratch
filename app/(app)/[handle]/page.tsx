@@ -44,39 +44,37 @@ const Page = async ({
 
 	return (
 		<>
-			<div className="flex max-w-lg flex-col rounded-md border p-6 pt-8">
+			<div className="flex max-w-lg flex-col rounded-md border p-6 pt-6">
 				<div className="flex h-20 w-full items-end justify-between gap-1">
 					{distribution.map((ratings, index) => (
-						<div
-							style={{
-								height: `${(ratings / max) * 100}%`,
-							}}
-							className="flex flex-1"
+						<Link
+							href={
+								Number(rating) === index + 1
+									? `/${profile.handle}${
+											category
+												? `?category=${category}`
+												: ""
+									  }`
+									: `/${profile.handle}?rating=${index + 1}${
+											category
+												? `&category=${category}`
+												: ""
+									  }`
+							}
+							className="flex h-full flex-1 flex-col-reverse"
 							key={index}
+							prefetch={false}
 						>
-							<Link
-								href={
-									Number(rating) === index + 1
-										? `/${profile.handle}${
-												category
-													? `?category=${category}`
-													: ""
-										  }`
-										: `/${profile.handle}?rating=${
-												index + 1
-										  }${
-												category
-													? `&category=${category}`
-													: ""
-										  }`
-								}
+							<div
+								style={{
+									height: `${(ratings / max) * 100}%`,
+								}}
 								className={cn(
 									"h-full min-h-0 w-full rounded-t bg-[#ffb703] hover:opacity-90",
 									rating === `${index + 1}` && "bg-orange-500"
 								)}
-								prefetch={false}
 							/>
-						</div>
+						</Link>
 					))}
 				</div>
 				<div className="flex w-full items-end gap-1 pt-1">
@@ -109,9 +107,9 @@ const Page = async ({
 			/>
 			<InfiniteReviews
 				key={`${profile.handle}:${rating}:${category}`}
-				initialReviews={await getReviews({ page: 1, limit: 20 })}
+				initialReviews={await getReviews({ page: 1, limit: 15 })}
 				getReviews={getReviews}
-				pageLimit={20}
+				pageLimit={15}
 			/>
 		</>
 	);
