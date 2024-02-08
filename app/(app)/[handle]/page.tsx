@@ -42,6 +42,8 @@ const Page = async ({
 		});
 	};
 
+	const initialReviews = await getReviews({ page: 1, limit: 20 });
+
 	return (
 		<>
 			<div className="flex max-w-lg flex-col rounded-md border p-6 pt-8">
@@ -108,8 +110,8 @@ const Page = async ({
 				]}
 			/>
 			<InfiniteReviews
-				key={`${profile.handle}:${rating}:${category}`}
-				initialReviews={await getReviews({ page: 1, limit: 20 })}
+				id={`${profile.handle}:${rating}:${category}`}
+				initialReviews={initialReviews}
 				getReviews={getReviews}
 				pageLimit={20}
 			/>

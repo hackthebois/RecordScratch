@@ -23,7 +23,7 @@ const Feed = async () => {
 	if (!userId) {
 		return (
 			<InfiniteReviews
-				key="for-you-feed"
+				id="for-you-feed"
 				initialReviews={await getForYouFeed({
 					page: 1,
 					limit: 20,
@@ -42,7 +42,7 @@ const Feed = async () => {
 			</TabsList>
 			<TabsContent value="for-you">
 				<InfiniteReviews
-					key="for-you-feed"
+					id="for-you-feed"
 					initialReviews={await getForYouFeed({
 						page: 1,
 						limit: 20,
@@ -53,7 +53,7 @@ const Feed = async () => {
 			</TabsContent>
 			<TabsContent value="following">
 				<InfiniteReviews
-					key="following-feed"
+					id="following-feed"
 					initialReviews={await getFollowingFeed({
 						page: 1,
 						limit: 20,

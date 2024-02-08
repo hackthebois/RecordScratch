@@ -33,6 +33,7 @@ const Page = async ({
 		});
 	};
 
+	const initialReviews = await getReviews({ page: 1, limit: 20 });
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
@@ -41,8 +42,8 @@ const Page = async ({
 				</Suspense>
 			</div>
 			<InfiniteReviews
-				key={albumId}
-				initialReviews={await getReviews({ page: 1, limit: 20 })}
+				id={albumId}
+				initialReviews={initialReviews}
 				getReviews={getReviews}
 				pageLimit={20}
 			/>
