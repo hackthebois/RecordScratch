@@ -8,7 +8,10 @@ export async function GET() {
 	// 	"user_2WiWGGohaQHfTZ2GAhIknP2evxi",
 	// 	false
 	// );
-	const res = await getFollowCount("user_2VXWWlwa2rF83rzKD8rnmoYmDac");
+	const res = await getFollowCount(
+		"user_2VXWWlwa2rF83rzKD8rnmoYmDac",
+		"followers"
+	);
 
 	return NextResponse.json({ res });
 }
