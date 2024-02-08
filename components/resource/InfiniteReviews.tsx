@@ -16,17 +16,17 @@ export const InfiniteReviews = ({
 	initialReviews,
 	getReviews,
 	pageLimit,
-	key,
+	id,
 }: {
 	initialReviews: ReviewType[];
 	getReviews: (i: GetInfiniteReviews) => Promise<ReviewType[]>;
 	pageLimit: number;
-	key: string;
+	id: string;
 }) => {
 	const { ref, inView } = useInView();
 
 	const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-		queryKey: ["infinite-reviews", key],
+		queryKey: [`infinite-reviews`, pageLimit, id],
 		queryFn: async ({ pageParam }) =>
 			getReviews({
 				page: pageParam,
