@@ -1,3 +1,5 @@
+"use client";
+
 import { Profile } from "@/types/profile";
 import Link from "next/link";
 import { UserAvatar } from "./UserAvatar";

@@ -6,6 +6,7 @@ import { db } from "@/db/db";
 import { followers, profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
 
+import { Profile } from "@/types/profile";
 import { auth } from "@clerk/nextjs";
 import {
 	and,
@@ -20,7 +21,6 @@ import {
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { Album, spotify } from "./spotify";
-import { Profile } from "@/types/profile";
 
 // STATIC
 export const getAlbum = cache((albumId: string) =>
@@ -447,7 +447,7 @@ export const getDistribution = cache((userId: string) => {
 });
 
 export const getFollowCount = cache(
-	async (userId: string, getFollowers: boolean = true) => {
+	async (userId: string, type: "followers" | "following") => {
 		return unstable_cache(
 			async () => {
 				const userExists = !!(await db.query.profile.findFirst({
@@ -457,7 +457,7 @@ export const getFollowCount = cache(
 				if (!userExists) throw new Error("User Doesn't Exist");
 
 				var count;
-				if (getFollowers) {
+				if (type === "followers") {
 					count = await db
 						.select({
 							count: sql<number>`count(*)`.mapWith(Number),
@@ -475,13 +475,9 @@ export const getFollowCount = cache(
 
 				return count.length ? count[0].count : 0;
 			},
-			[
-				`getFollowCount:${userId}:${
-					getFollowers ? "followers" : "following"
-				}`,
-			],
+			[`getFollowCount:${userId}:${type}`],
 			{
-				tags: ["getFollowCount:" + userId + ":" + getFollowers],
+				tags: [`getFollowCount:${userId}:${type}`],
 			}
 		)();
 	}
@@ -509,7 +505,7 @@ export const isUserFollowing = cache(
 export const getFollowProfiles = cache(
 	async (
 		userId: string,
-		getFollowers: boolean = true
+		type: "followers" | "following"
 	): Promise<Profile[]> => {
 		return unstable_cache(
 			async () => {
@@ -520,7 +516,7 @@ export const getFollowProfiles = cache(
 				if (!userExists) throw new Error("User Doesn't Exist");
 
 				var profiles: Profile[];
-				if (getFollowers) {
+				if (type === "followers") {
 					profiles = await db
 						.select({
 							userId: profile.userId,
@@ -558,13 +554,9 @@ export const getFollowProfiles = cache(
 
 				return profiles;
 			},
-			[
-				`getFollowProfiles:${userId}:${
-					getFollowers ? "followers" : "following"
-				}`,
-			],
+			[`getFollowProfiles:${userId}:${type}`],
 			{
-				tags: ["getFollowProfiles:" + userId + ":" + getFollowers],
+				tags: [`getFollowProfiles:${userId}:${type}`],
 			}
 		)();
 	}
