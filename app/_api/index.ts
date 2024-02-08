@@ -6,7 +6,6 @@ import { db } from "@/db/db";
 import { followers, profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
 
-import { Profile } from "@/types/profile";
 import { auth } from "@clerk/nextjs";
 import {
 	and,
@@ -503,60 +502,67 @@ export const isUserFollowing = cache(
 );
 
 export const getFollowProfiles = cache(
-	async (
-		userId: string,
-		type: "followers" | "following"
-	): Promise<Profile[]> => {
+	async (profileId: string, type: "followers" | "following") => {
+		const userId = auth().userId;
 		return unstable_cache(
 			async () => {
 				const userExists = !!(await db.query.profile.findFirst({
-					where: eq(profile.userId, userId),
+					where: eq(profile.userId, profileId),
 				}));
 
 				if (!userExists) throw new Error("User Doesn't Exist");
 
-				var profiles: Profile[];
 				if (type === "followers") {
-					profiles = await db
-						.select({
-							userId: profile.userId,
-							name: profile.name,
-							handle: profile.handle,
-							imageUrl: profile.imageUrl,
-							bio: profile.bio,
-							createdAt: profile.createdAt,
-							updatedAt: profile.updatedAt,
-						})
-						.from(followers)
-						.innerJoin(
-							profile,
-							eq(followers.userId, profile.userId)
-						)
-						.where(eq(followers.followingId, userId));
+					const data = await db.query.followers.findMany({
+						where: eq(followers.followingId, profileId),
+						with: {
+							user: {
+								extras: {
+									isFollowing:
+										sql<boolean>`exists(select 1 from followers where user_id = ${userId} and following_id = ${followers.userId})`.as(
+											"isFollowing"
+										),
+								},
+							},
+						},
+					});
+					return data.map(
+						({ user: profile, userId, followingId }) => {
+							return {
+								userId,
+								followingId,
+								profile,
+							};
+						}
+					);
 				} else {
-					profiles = await db
-						.select({
-							userId: profile.userId,
-							name: profile.name,
-							handle: profile.handle,
-							imageUrl: profile.imageUrl,
-							bio: profile.bio,
-							createdAt: profile.createdAt,
-							updatedAt: profile.updatedAt,
-						})
-						.from(followers)
-						.innerJoin(
-							profile,
-							eq(followers.followingId, profile.userId)
-						)
-						.where(eq(followers.userId, userId));
+					const data = await db.query.followers.findMany({
+						where: eq(followers.userId, profileId),
+						with: {
+							following: {
+								extras: {
+									isFollowing:
+										sql<boolean>`exists(select 1 from followers where user_id = ${userId} and following_id = ${followers.userId})`.as(
+											"isFollowing"
+										),
+								},
+							},
+						},
+					});
+					return data.map(
+						({ following: profile, userId, followingId }) => {
+							return {
+								userId,
+								followingId,
+								profile,
+							};
+						}
+					);
 				}
-
-				return profiles;
 			},
-			[`getFollowProfiles:${userId}:${type}`],
+			[`getFollowProfiles:${profileId}:${type}`],
 			{
-				tags: [`getFollowProfiles:${userId}:${type}`],
+				tags: [`getFollowProfiles:${profileId}:${type}`],
 			}
 		)();
 	}

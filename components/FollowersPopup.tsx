@@ -1,5 +1,6 @@
 "use client";
 
+import { Follow } from "@/types/follow";
 import { Profile } from "@/types/profile";
 import { ProfileItem } from "./ProfileItem";
 import { Button } from "./ui/Button";
@@ -15,12 +16,12 @@ import { ScrollArea } from "./ui/ScrollArea";
 type Props = {
 	title: string;
 	followerCount: number;
-	profiles: Profile[];
+	profiles: (Follow & { profile: Profile & { isFollowing: boolean } })[];
 };
 
 const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
 	// gets the profiles in each follower
-	const profileList = profiles.map((profile, index) => {
+	const profileList = profiles.map(({ profile }, index) => {
 		return (
 			<div key={index} className="py-1">
 				<ProfileItem profile={profile} onClick={() => {}} />
