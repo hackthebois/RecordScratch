@@ -26,6 +26,10 @@ const Page = async ({
 		notFound();
 	}
 
+	const distribution = await getDistribution(profile.userId);
+	var max: number = Math.max(...distribution);
+	max = max === 0 ? 1 : max;
+
 	const getReviews = async (input: GetInfiniteReviews) => {
 		"use server";
 		return await getRecent({
