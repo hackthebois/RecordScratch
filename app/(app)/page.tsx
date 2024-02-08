@@ -69,12 +69,14 @@ const Feed = async () => {
 export const fetchCache = "force-cache";
 
 const Page = async () => {
-	const newReleases = await spotify({
-		route: "/browse/new-releases",
-		input: undefined,
-	});
-	const trending = await getTrending();
-	const top = await getTopRated();
+	const [newReleases, trending, top] = await Promise.all([
+		spotify({
+			route: "/browse/new-releases",
+			input: undefined,
+		}),
+		getTrending(),
+		getTopRated(),
+	]);
 
 	return (
 		<div className="w-full">
