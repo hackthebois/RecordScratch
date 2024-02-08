@@ -1,14 +1,15 @@
+"use client";
+
 import { Profile } from "@/types/profile";
+import { ProfileItem } from "./ProfileItem";
 import { Button } from "./ui/Button";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
 } from "./ui/Dialog";
-import { ProfileItem } from "./ProfileItem";
 import { ScrollArea } from "./ui/ScrollArea";
 
 type Props = {
