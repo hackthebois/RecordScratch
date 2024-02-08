@@ -112,7 +112,7 @@ const Page = async ({
 				id={`${profile.handle}:${rating}:${category}`}
 				initialReviews={initialReviews}
 				getReviews={getReviews}
-				pageLimit={15}
+				pageLimit={20}
 			/>
 		</>
 	);
