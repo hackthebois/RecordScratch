@@ -78,7 +78,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 					</div>
 				</nav>
 			</header>
-			<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">
+			<main className="mx-auto h-full w-full max-w-screen-lg flex-1 p-4 sm:p-6">
 				{children}
 			</main>
 		</>
