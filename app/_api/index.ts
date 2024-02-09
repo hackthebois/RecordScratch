@@ -483,10 +483,10 @@ export const getFollowCount = cache(
 );
 
 export const isUserFollowing = cache(
-	async (followingId: string, userId: string) => {
+	async (followingId: string, userId: string | null) => {
 		return unstable_cache(
 			async () => {
-				if (userId === followingId || userId === "0") return false;
+				if (!userId || userId === followingId) return false;
 
 				return !!(await db.query.followers.findFirst({
 					where: and(

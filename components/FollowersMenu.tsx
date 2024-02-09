@@ -20,7 +20,7 @@ const FollowerMenu = async ({ profileId }: Props) => {
 	] = await Promise.all([
 		getFollowCount(profileId, "followers"),
 		getFollowCount(profileId, "following"),
-		isUserFollowing(profileId, userId || "0"),
+		isUserFollowing(profileId, userId),
 		getFollowProfiles(profileId, "followers"),
 		getFollowProfiles(profileId, "following"),
 	]);
@@ -35,6 +35,7 @@ const FollowerMenu = async ({ profileId }: Props) => {
 					title={"Followers"}
 					followerCount={followerCount}
 					profiles={followerProfiles}
+					userId={userId}
 				/>
 			</div>
 			<div className="flex flex-col items-center gap-1">
@@ -43,6 +44,7 @@ const FollowerMenu = async ({ profileId }: Props) => {
 					title={"Following"}
 					followerCount={followingCount}
 					profiles={followingProfiles}
+					userId={userId}
 				/>
 			</div>
 			<FollowButton
