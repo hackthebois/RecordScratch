@@ -10,6 +10,7 @@ import {
 	DialogTrigger,
 } from "./ui/Dialog";
 import { ScrollArea } from "./ui/ScrollArea";
+import { followUser, unFollowUser } from "@/app/_api/actions";
 
 type Props = {
 	title: string;
