@@ -134,7 +134,7 @@ export const getTopRated = cache(async () => {
 	)();
 });
 
-export const getForYouFeed = cache(
+export const getRecentFeed = cache(
 	async ({ page, limit }: { page: number; limit: number }) => {
 		const ratingList = await db.query.ratings.findMany({
 			limit,
