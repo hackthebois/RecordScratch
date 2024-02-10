@@ -87,9 +87,9 @@ const RoadmapSection = ({
 
 const Page = () => {
 	return (
-		<div className="flex h-[calc(100svh-56px-32px)] flex-1 flex-col gap-8 overflow-hidden sm:h-[calc(100svh-56px-48px)]">
-			<h1>Roadmap</h1>
-			<div className="flex h-full min-h-0 gap-4 overflow-x-auto pb-2">
+		<div className="-m-4 flex h-[calc(100svh-56px)] flex-1 flex-col overflow-hidden sm:-m-6 sm:h-[calc(100svh-56px)]">
+			<h1 className="p-4 sm:p-6">Roadmap</h1>
+			<div className="flex h-full min-h-0 gap-4 overflow-x-auto px-4 pb-2 sm:px-6">
 				<RoadmapSection name="Planned" items={planned} />
 				<RoadmapSection name="Now" items={now} />
 				<RoadmapSection name="Released" items={released} />
