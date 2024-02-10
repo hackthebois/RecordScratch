@@ -171,7 +171,7 @@ export const handleExistsAction = action(z.string(), async (handle) => {
 export const searchMusicAction = action(z.string(), async (query) => {
 	return await spotify({
 		route: "/search",
-		input: { q: query, limit: 4, type: "album,artist" },
+		input: { q: query, limit: 4, type: "album,artist,track" },
 	});
 });
 
