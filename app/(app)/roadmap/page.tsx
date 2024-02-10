@@ -89,7 +89,7 @@ const Page = () => {
 	return (
 		<div className="-m-4 flex h-[calc(100svh-56px)] flex-1 flex-col overflow-hidden sm:-m-6 sm:h-[calc(100svh-56px)]">
 			<h1 className="p-4 sm:p-6">Roadmap</h1>
-			<div className="flex h-full min-h-0 gap-4 overflow-x-auto px-4 pb-2 sm:px-6">
+			<div className="mb-4 flex h-full min-h-0 gap-4 overflow-x-auto px-4 pb-2">
 				<RoadmapSection name="Planned" items={planned} />
 				<RoadmapSection name="Now" items={now} />
 				<RoadmapSection name="Released" items={released} />
