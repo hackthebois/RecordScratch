@@ -39,7 +39,7 @@ const Feed = async () => {
 	}
 
 	return (
-		<Tabs defaultValue="recent" className="w-[400px]">
+		<Tabs defaultValue="recent" className="w-full">
 			<TabsList>
 				<TabsTrigger value="recent">Recent</TabsTrigger>
 				<TabsTrigger value="following">Following</TabsTrigger>
@@ -47,7 +47,7 @@ const Feed = async () => {
 			<TabsContent value="recent">
 				<RecentFeed />
 			</TabsContent>
-			<TabsContent value="following">
+			<TabsContent value="following" className="w-full">
 				<InfiniteReviews
 					id="following-feed"
 					initialReviews={await getFollowingFeed({
