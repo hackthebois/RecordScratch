@@ -2,20 +2,19 @@
 
 import { isUserFollowing } from "@/app/_api";
 import { followUser, unFollowUser } from "@/app/_api/actions";
-import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "./ui/Button";
 import { Skeleton } from "./ui/skeleton";
 
 export const FollowButton = ({
 	profileId,
+	userId,
 	initialIsFollowing,
 }: {
 	profileId: string;
+	userId: string | null;
 	initialIsFollowing?: boolean;
 }) => {
-	const { userId, isLoaded } = useAuth();
-
 	const {
 		data: isFollowing,
 		isLoading,
@@ -33,9 +32,9 @@ export const FollowButton = ({
 		refetchOnWindowFocus: false,
 	});
 
-	if (isLoading || !isLoaded) return <Skeleton className="h-10 w-20" />;
+	if (!userId || userId === profileId) return null;
 
-	if (!userId) return null;
+	if (isLoading) return <Skeleton className="h-10 w-20" />;
 
 	return (
 		<>

@@ -1,5 +1,3 @@
-"use client";
-
 import { Follow } from "@/types/follow";
 import { Profile } from "@/types/profile";
 import { ProfileItem } from "./ProfileItem";
@@ -12,7 +10,6 @@ import {
 	DialogTrigger,
 } from "./ui/Dialog";
 import { ScrollArea } from "./ui/ScrollArea";
-import { followUser, unFollowUser } from "@/app/_api/actions";
 
 type Props = {
 	title: string;
@@ -30,6 +27,7 @@ const FollowersPopup = ({ title, followerCount, profiles, userId }: Props) => {
 					profile={profile}
 					onClick={() => {}}
 					initialIsFollowing={profile.isFollowing}
+					userId={userId}
 				/>
 			</div>
 		);
