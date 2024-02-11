@@ -35,6 +35,7 @@ const FollowersPopup = ({ title, followerCount, profiles, userId }: Props) => {
 		);
 	});
 
+	// pop up
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
