@@ -45,11 +45,12 @@ const FollowerMenu = async ({ profileId }: Props) => {
 					profiles={followingProfiles}
 				/>
 			</div>
-			<FollowButton
-				profileId={profileId}
-				isFollowing={isFollowing}
-				show={showButton}
-			/>
+			{showButton && (
+				<FollowButton
+					profileId={profileId}
+					initialIsFollowing={isFollowing}
+				/>
+			)}
 		</div>
 	);
 };

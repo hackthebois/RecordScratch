@@ -2,14 +2,17 @@
 
 import { Profile } from "@/types/profile";
 import Link from "next/link";
+import { FollowButton } from "./FollowButton";
 import { UserAvatar } from "./UserAvatar";
 
 export const ProfileItem = ({
 	profile,
 	onClick,
+	initialIsFollowing,
 }: {
 	profile: Profile;
 	onClick: () => void;
+	initialIsFollowing?: boolean;
 }) => {
 	return (
 		<Link
@@ -26,6 +29,10 @@ export const ProfileItem = ({
 					{profile.handle}
 				</p>
 			</div>
+			<FollowButton
+				profileId={profile.userId}
+				initialIsFollowing={initialIsFollowing}
+			/>
 		</Link>
 	);
 };

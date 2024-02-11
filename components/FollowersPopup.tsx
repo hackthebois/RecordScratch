@@ -24,7 +24,11 @@ const FollowersPopup = ({ title, followerCount, profiles }: Props) => {
 	const profileList = profiles.map(({ profile }, index) => {
 		return (
 			<div key={index} className="py-1">
-				<ProfileItem profile={profile} onClick={() => {}} />
+				<ProfileItem
+					profile={profile}
+					onClick={() => {}}
+					initialIsFollowing={profile.isFollowing}
+				/>
 			</div>
 		);
 	});
