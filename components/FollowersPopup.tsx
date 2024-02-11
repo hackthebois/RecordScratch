@@ -43,11 +43,11 @@ const FollowersPopup = ({ title, followerCount, profiles, userId }: Props) => {
 					{followerCount}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="max-w-[20rem] md:max-w-[26rem] lg:max-w-[26rem]">
-				<DialogHeader>
+			<DialogContent className="max-w-[20rem] sm:max-w-[24rem]  md:max-w-[26rem] lg:max-w-[26rem]">
+				<DialogHeader className="items-center">
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
-				<ScrollArea className="flex max-h-[20rem] flex-col gap-4 overflow-visible px-4 md:max-h-[25rem] lg:max-h-[30rem]">
+				<ScrollArea className="flex max-h-[20rem] flex-col gap-4 overflow-visible px-2 md:max-h-[24rem]  lg:max-h-[26rem]">
 					{profileList}
 				</ScrollArea>
 			</DialogContent>

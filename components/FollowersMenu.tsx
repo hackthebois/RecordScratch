@@ -21,8 +21,8 @@ const FollowerMenu = async ({ profileId }: Props) => {
 		getFollowCount(profileId, "followers"),
 		getFollowCount(profileId, "following"),
 		isUserFollowing(profileId, userId),
-		getFollowProfiles(profileId, "followers"),
-		getFollowProfiles(profileId, "following"),
+		getFollowProfiles(profileId, userId, "followers"),
+		getFollowProfiles(profileId, userId, "following"),
 	]);
 
 	const showButton = !!userId && userId !== profileId;

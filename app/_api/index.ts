@@ -502,8 +502,11 @@ export const isUserFollowing = cache(
 );
 
 export const getFollowProfiles = cache(
-	async (profileId: string, type: "followers" | "following") => {
-		const userId = auth().userId;
+	async (
+		profileId: string,
+		userId: string | null,
+		type: "followers" | "following"
+	) => {
 		return unstable_cache(
 			async () => {
 				const userExists = !!(await db.query.profile.findFirst({
