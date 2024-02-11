@@ -66,6 +66,7 @@ const SearchState = ({
 		artists?: boolean;
 		albums?: boolean;
 		profiles?: boolean;
+		songs?: boolean;
 	};
 }) => {
 	const { recents, addRecent } = useRecents();
@@ -117,6 +118,7 @@ const SearchState = ({
 								/>
 							) : recent.type === "ALBUM" && !hide?.albums ? (
 								<AlbumItem
+									showType
 									album={recent.data}
 									name={recent.data.name}
 									category="ALBUM"
@@ -124,6 +126,22 @@ const SearchState = ({
 										addRecent({
 											id: recent.data.id,
 											type: "ALBUM",
+											data: recent.data,
+										});
+										onNavigate();
+									}}
+									key={index}
+								/>
+							) : recent.type === "SONG" && !hide?.songs ? (
+								<AlbumItem
+									showType
+									album={recent.data.album}
+									name={recent.data.name}
+									category="SONG"
+									onClick={() => {
+										addRecent({
+											id: recent.data.id,
+											type: "SONG",
 											data: recent.data,
 										});
 										onNavigate();
@@ -179,7 +197,7 @@ const ProfileSearch = ({
 			isLoading={isLoading}
 			onNavigate={onNavigate}
 			noResults={data?.length === 0}
-			hide={{ artists: true, albums: true }}
+			hide={{ artists: true, albums: true, songs: true }}
 		>
 			{data && (
 				<>
@@ -265,6 +283,23 @@ const MusicSearch = ({
 								onNavigate();
 							}}
 							artist={artist}
+							key={index}
+						/>
+					))}
+					<h4 className="mt-3">Songs</h4>
+					{data.tracks.items.map((song, index) => (
+						<AlbumItem
+							album={song.album}
+							name={song.name}
+							category="SONG"
+							onClick={() => {
+								addRecent({
+									id: song.id,
+									type: "SONG",
+									data: song,
+								});
+								onNavigate();
+							}}
 							key={index}
 						/>
 					))}
