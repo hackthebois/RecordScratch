@@ -56,7 +56,7 @@ const FollowersPopup = ({ title, followerCount, profiles, userId }: Props) => {
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
-				<ScrollArea className="flex max-h-[24rem] flex-col gap-4 overflow-visible px-4 md:max-h-[30rem] lg:max-h-[35rem]">
+				<ScrollArea className="flex max-h-[20rem] flex-col gap-4 overflow-visible px-4 md:max-h-[25rem] lg:max-h-[30rem]">
 					{profileList}
 				</ScrollArea>
 			</DialogContent>
