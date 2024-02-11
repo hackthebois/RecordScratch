@@ -25,22 +25,12 @@ const FollowersPopup = ({ title, followerCount, profiles, userId }: Props) => {
 	// gets the profiles in each follower
 	const profileList = profiles.map(({ profile }, index) => {
 		return (
-			<div key={index} className="flex flex-row justify-between py-1">
-				<ProfileItem profile={profile} onClick={() => {}} />
-				<h4>
-					{userId && userId !== profile.userId ? (
-						profile.isFollowing ? (
-							<Button disabled={true}>Following</Button>
-						) : (
-							<Button
-								variant="secondary"
-								onClick={() => followUser(profile.userId)}
-							>
-								Follow
-							</Button>
-						)
-					) : null}
-				</h4>
+			<div key={index} className="py-1">
+				<ProfileItem
+					profile={profile}
+					onClick={() => {}}
+					initialIsFollowing={profile.isFollowing}
+				/>
 			</div>
 		);
 	});

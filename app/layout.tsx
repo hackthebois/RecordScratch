@@ -72,7 +72,9 @@ export const preferredRegion = ["cle1"];
 const RootLayout = ({ children }: Props) => {
 	return (
 		<html lang="en">
-			<body className={`${montserrat.className} flex flex-col`}>
+			<body
+				className={`${montserrat.className} flex h-[100svh] flex-col`}
+			>
 				<Suspense>
 					<Providers>
 						{children}

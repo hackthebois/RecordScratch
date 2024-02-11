@@ -15,7 +15,7 @@ import UserButton from "../_auth/UserButton";
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<>
-			<header className="flex h-14 w-full items-center justify-center border-b">
+			<header className="flex h-14 w-screen items-center justify-center border-b">
 				<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-6">
 					<div className="flex items-center gap-3">
 						<Link href="/" className="flex items-center gap-3">
@@ -41,6 +41,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 							</PopoverTrigger>
 							<PopoverContent align="end">
 								<div className="flex flex-col gap-2 text-sm font-semibold">
+									<Link href="/roadmap">Roadmap</Link>
 									<div className="flex gap-2">
 										<Link
 											href={env.NEXT_PUBLIC_GITHUB_URL}
@@ -78,7 +79,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 					</div>
 				</nav>
 			</header>
-			<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">
+			<main className="mx-auto h-full w-full max-w-screen-lg flex-1 p-4 sm:p-6">
 				{children}
 			</main>
 		</>

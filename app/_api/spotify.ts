@@ -89,7 +89,10 @@ const SpotifySchema = z.object({
 	"/search": z.object({
 		input: z.object({
 			q: z.string(),
-			type: z.literal("album,artist").optional().default("album,artist"),
+			type: z
+				.literal("album,artist,track")
+				.optional()
+				.default("album,artist,track"),
 			limit: z.number(),
 		}),
 		output: z.object({
@@ -98,6 +101,11 @@ const SpotifySchema = z.object({
 			}),
 			artists: z.object({
 				items: ArtistSchema.array(),
+			}),
+			tracks: z.object({
+				items: TrackSchema.extend({
+					album: AlbumSchema,
+				}).array(),
 			}),
 		}),
 	}),

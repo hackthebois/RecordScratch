@@ -1,4 +1,4 @@
-import { Album, Artist } from "@/app/_api/spotify";
+import { Album, Artist, Track } from "@/app/_api/spotify";
 import { Profile } from "@/types/profile";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -13,6 +13,11 @@ export type Recent =
 			id: string;
 			type: "ARTIST";
 			data: Artist;
+	  }
+	| {
+			id: string;
+			type: "SONG";
+			data: Track & { album: Album };
 	  }
 	| {
 			id: string;

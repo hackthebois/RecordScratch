@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import {
 	getFollowingFeed,
-	getForYouFeed,
+	getRecentFeed,
 	getTopRated,
 	getTrending,
 } from "../_api";
@@ -17,41 +17,37 @@ import { spotify } from "../_api/spotify";
 
 export const revalidate = 60 * 60 * 24; // 24 hours
 
+const RecentFeed = async () => {
+	return (
+		<InfiniteReviews
+			id="recent-feed"
+			initialReviews={await getRecentFeed({
+				page: 1,
+				limit: 20,
+			})}
+			getReviews={getRecentFeed}
+			pageLimit={20}
+		/>
+	);
+};
+
 const Feed = async () => {
 	const { userId } = auth();
 
 	if (!userId) {
-		return (
-			<InfiniteReviews
-				id="for-you-feed"
-				initialReviews={await getForYouFeed({
-					page: 1,
-					limit: 20,
-				})}
-				getReviews={getForYouFeed}
-				pageLimit={20}
-			/>
-		);
+		return <RecentFeed />;
 	}
 
 	return (
-		<Tabs defaultValue="for-you" className="w-[400px]">
+		<Tabs defaultValue="recent" className="w-full">
 			<TabsList>
-				<TabsTrigger value="for-you">For you</TabsTrigger>
+				<TabsTrigger value="recent">Recent</TabsTrigger>
 				<TabsTrigger value="following">Following</TabsTrigger>
 			</TabsList>
-			<TabsContent value="for-you">
-				<InfiniteReviews
-					id="for-you-feed"
-					initialReviews={await getForYouFeed({
-						page: 1,
-						limit: 20,
-					})}
-					getReviews={getForYouFeed}
-					pageLimit={20}
-				/>
+			<TabsContent value="recent">
+				<RecentFeed />
 			</TabsContent>
-			<TabsContent value="following">
+			<TabsContent value="following" className="w-full">
 				<InfiniteReviews
 					id="following-feed"
 					initialReviews={await getFollowingFeed({
