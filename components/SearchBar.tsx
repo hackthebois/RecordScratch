@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
+import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import Image from "next/image";
@@ -70,6 +71,7 @@ const SearchState = ({
 	};
 }) => {
 	const { recents, addRecent } = useRecents();
+	const { userId } = useAuth();
 
 	if (isError) {
 		return (
@@ -151,6 +153,7 @@ const SearchState = ({
 							) : recent.type === "PROFILE" && !hide?.profiles ? (
 								<ProfileItem
 									profile={recent.data}
+									userId={userId ?? null}
 									onClick={() => {
 										addRecent({
 											id: recent.data.userId,
@@ -178,6 +181,7 @@ const ProfileSearch = ({
 	onNavigate: () => void;
 }) => {
 	const { addRecent } = useRecents();
+	const { userId } = useAuth();
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", "search-profiles", query],
@@ -205,6 +209,7 @@ const ProfileSearch = ({
 						<ProfileItem
 							profile={profile}
 							key={index}
+							userId={userId ?? null}
 							onClick={() => {
 								addRecent({
 									id: profile.userId,

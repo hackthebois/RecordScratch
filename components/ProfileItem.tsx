@@ -9,9 +9,11 @@ export const ProfileItem = ({
 	profile,
 	onClick,
 	initialIsFollowing,
+	userId,
 }: {
 	profile: Profile;
-	onClick: () => void;
+	userId: string | null;
+	onClick?: () => void;
 	initialIsFollowing?: boolean;
 }) => {
 	return (
@@ -32,6 +34,7 @@ export const ProfileItem = ({
 			<FollowButton
 				profileId={profile.userId}
 				initialIsFollowing={initialIsFollowing}
+				userId={userId}
 			/>
 		</Link>
 	);

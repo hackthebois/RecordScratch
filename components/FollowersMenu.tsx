@@ -51,6 +51,7 @@ const FollowerMenu = async ({ profileId }: Props) => {
 				<FollowButton
 					profileId={profileId}
 					initialIsFollowing={isFollowing}
+					userId={userId}
 				/>
 			)}
 		</div>
