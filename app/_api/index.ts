@@ -480,7 +480,6 @@ export const getFollowCount = cache(
 						.from(followers)
 						.where(eq(followers.userId, userId));
 				}
-
 				return count.length ? count[0].count : 0;
 			},
 			[`getFollowCount:${userId}:${type}`],

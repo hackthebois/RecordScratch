@@ -118,8 +118,8 @@ export const followUser = protectedAction(
 		revalidateTag(`getFollowCount:${followingId}:followers`);
 		revalidateTag(`getFollowCount:${userId}:following`);
 		revalidateTag(`isUserFollowing:${followingId}:${userId}`);
-		revalidateTag(`getFollowProfiles:${followingId}:followers`);
-		revalidateTag(`getFollowProfiles:${userId}:following`);
+		revalidateTag(`getFollowProfiles:${followingId}:${userId}:followers`);
+		revalidateTag(`getFollowProfiles:${userId}:${userId}:following`);
 	}
 );
 
@@ -156,8 +156,8 @@ export const unFollowUser = protectedAction(
 		revalidateTag(`getFollowCount:${followingId}:followers`);
 		revalidateTag(`getFollowCount:${userId}:following`);
 		revalidateTag(`isUserFollowing:${followingId}:${userId}`);
-		revalidateTag(`getFollowProfiles:${followingId}:followers`);
-		revalidateTag(`getFollowProfiles:${userId}:following`);
+		revalidateTag(`getFollowProfiles:${followingId}:${userId}:followers`);
+		revalidateTag(`getFollowProfiles:${userId}:${userId}:following`);
 	}
 );
 
