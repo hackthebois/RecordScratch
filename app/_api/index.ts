@@ -146,6 +146,7 @@ export const getTopRated = cache(async () => {
 export const getRecentFeed = cache(
 	async ({ page, limit }: { page: number; limit: number }) => {
 		const ratingList = await db.query.ratings.findMany({
+			where: isNotNull(ratings.content),
 			limit,
 			offset: (page - 1) * limit,
 			orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
@@ -170,9 +171,12 @@ export const getFollowingFeed = cache(
 		if (following.length === 0) return [];
 
 		const ratingList = await db.query.ratings.findMany({
-			where: inArray(
-				ratings.userId,
-				following.map((f) => f.followingId)
+			where: and(
+				inArray(
+					ratings.userId,
+					following.map((f) => f.followingId)
+				),
+				isNotNull(ratings.content)
 			),
 			limit,
 			offset: (page - 1) * limit,
