@@ -522,6 +522,8 @@ export const getFollowProfiles = cache(
 					where: eq(profile.userId, profileId),
 				}));
 
+				console.log(`\n\n\n${userExists}\n\n\n`);
+
 				if (!userExists) throw new Error("User Doesn't Exist");
 
 				if (type === "followers") {
@@ -561,6 +563,7 @@ export const getFollowProfiles = cache(
 							},
 						},
 					});
+
 					return data.map(
 						({ following: profile, userId, followingId }) => {
 							return {
@@ -572,9 +575,9 @@ export const getFollowProfiles = cache(
 					);
 				}
 			},
-			[`getFollowProfiles:${profileId}:${type}`],
+			[`getFollowProfiles:${profileId}:${userId}:${type}`],
 			{
-				tags: [`getFollowProfiles:${profileId}:${type}`],
+				tags: [`getFollowProfiles:${profileId}:${userId}:${type}`],
 			}
 		)();
 	}

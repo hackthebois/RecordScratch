@@ -60,7 +60,7 @@ export const QueryTabs = ({
 		[searchParams]
 	);
 
-	console.log(searchParams.get(param));
+	console.log(searchParams.get(param), "HII");
 
 	return (
 		<div className="flex h-10 w-full items-center justify-center rounded-md bg-muted p-1 text-muted-foreground sm:w-auto sm:max-w-min">
