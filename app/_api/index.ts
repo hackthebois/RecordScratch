@@ -13,6 +13,7 @@ import {
 	count,
 	desc,
 	eq,
+	gt,
 	inArray,
 	isNotNull,
 	sql,
@@ -89,7 +90,15 @@ export const getTrending = cache(async () => {
 					resourceId: ratings.resourceId,
 				})
 				.from(ratings)
-				.where(eq(ratings.category, "ALBUM"))
+				.where(
+					and(
+						eq(ratings.category, "ALBUM"),
+						gt(
+							ratings.createdAt,
+							new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
+						)
+					)
+				)
 				.groupBy(ratings.resourceId)
 				.orderBy(({ total }) => desc(total))
 				.limit(20);
