@@ -27,7 +27,7 @@ const Page = async ({
 	if (!isUser) notFound();
 
 	return (
-		<div className="flex flex-col gap-8">
+		<div className="flex flex-col gap-8 pb-8">
 			<h3>Appearence</h3>
 			<div className="flex items-center justify-between">
 				<div className="flex flex-col items-start gap-2">

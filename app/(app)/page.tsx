@@ -93,10 +93,12 @@ const Page = async () => {
 				<h2 className="mb-4">New Releases</h2>
 				<AlbumList albums={newReleases.albums.items} />
 			</div>
-			<div className="mt-[2vh] flex flex-col">
-				<h2 className="mb-4">Trending</h2>
-				<AlbumList albums={trending.albums} />
-			</div>
+			{trending.albums.length > 0 && (
+				<div className="mt-[2vh] flex flex-col">
+					<h2 className="mb-4">Trending</h2>
+					<AlbumList albums={trending.albums} />
+				</div>
+			)}
 			<div className="mt-[2vh] flex flex-col">
 				<h2 className="mb-4">Top Rated</h2>
 				<AlbumList albums={top.albums} />
