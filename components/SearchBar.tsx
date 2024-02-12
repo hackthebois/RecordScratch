@@ -13,7 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ProfileItem } from "./ProfileItem";
-import { AlbumItem } from "./resource/album/AlbumItem";
+import { RatingItem } from "./RatingItem";
 import { Button } from "./ui/Button";
 import { Tabs, TabsList, TabsTrigger } from "./ui/Tabs";
 
@@ -119,11 +119,14 @@ const SearchState = ({
 									key={index}
 								/>
 							) : recent.type === "ALBUM" && !hide?.albums ? (
-								<AlbumItem
+								<RatingItem
 									showType
 									album={recent.data}
 									name={recent.data.name}
-									category="ALBUM"
+									resource={{
+										resourceId: recent.data.id,
+										category: "ALBUM",
+									}}
 									onClick={() => {
 										addRecent({
 											id: recent.data.id,
@@ -135,11 +138,14 @@ const SearchState = ({
 									key={index}
 								/>
 							) : recent.type === "SONG" && !hide?.songs ? (
-								<AlbumItem
+								<RatingItem
 									showType
 									album={recent.data.album}
 									name={recent.data.name}
-									category="SONG"
+									resource={{
+										resourceId: recent.data.id,
+										category: "SONG",
+									}}
 									onClick={() => {
 										addRecent({
 											id: recent.data.id,
@@ -261,10 +267,13 @@ const MusicSearch = ({
 				<>
 					<h4>Albums</h4>
 					{data.albums.items.map((album, index) => (
-						<AlbumItem
+						<RatingItem
 							album={album}
 							name={album.name}
-							category="ALBUM"
+							resource={{
+								resourceId: album.id,
+								category: "ALBUM",
+							}}
 							onClick={() => {
 								addRecent({
 									id: album.id,
@@ -293,10 +302,13 @@ const MusicSearch = ({
 					))}
 					<h4 className="mt-3">Songs</h4>
 					{data.tracks.items.map((song, index) => (
-						<AlbumItem
+						<RatingItem
 							album={song.album}
 							name={song.name}
-							category="SONG"
+							resource={{
+								resourceId: song.id,
+								category: "SONG",
+							}}
 							onClick={() => {
 								addRecent({
 									id: song.id,

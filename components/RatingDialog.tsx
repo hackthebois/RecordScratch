@@ -24,6 +24,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
+import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
@@ -32,14 +33,12 @@ import { Form, FormControl, FormField, FormItem } from "./ui/Form";
 export const RatingDialog = ({
 	resource,
 	initialRating,
-	children,
 	name,
 	onRate,
 }: {
 	resource: Resource;
 	name?: string;
 	initialRating?: Rating;
-	children: React.ReactNode;
 	onRate: (rate: RateForm) => void;
 }) => {
 	const [open, setOpen] = useState(false);
@@ -70,9 +69,21 @@ export const RatingDialog = ({
 		form.reset({ ...resource, ...initialRating });
 	}, [initialRating]);
 
+	const rating = form.watch("rating");
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>{children}</DialogTrigger>
+			<DialogTrigger asChild>
+				<Button variant="outline" size="sm">
+					<Star
+						color="#fb8500"
+						fill={rating ? "#fb8500" : "none"}
+						size={18}
+						className="mr-2"
+					/>
+					{rating ? rating : "Rate"}
+				</Button>
+			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle className="text-center text-2xl">

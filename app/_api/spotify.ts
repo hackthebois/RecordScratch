@@ -34,6 +34,7 @@ export const TrackSchema = z.object({
 		spotify: z.string().url(),
 	}),
 	duration_ms: z.number(),
+	explicit: z.boolean(),
 });
 export type Track = z.infer<typeof TrackSchema>;
 
