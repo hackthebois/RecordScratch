@@ -1,10 +1,8 @@
-import { getAlbum, getRating, getUserRating } from "@/app/_api";
+import { getAlbum } from "@/app/_api";
+import { Ratings } from "@/components/Ratings";
 import { PathnameTabs } from "@/components/ui/LinkTabs";
-import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tag } from "@/components/ui/Tag";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Rating, Resource } from "@/types/rating";
-import { auth } from "@clerk/nextjs";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -34,23 +32,6 @@ export async function generateMetadata({
 		},
 	};
 }
-
-const AlbumRatings = async ({ resource }: { resource: Resource }) => {
-	const rating = await getRating(resource);
-
-	let userRating: Rating | null = null;
-	const { userId } = auth();
-	if (userId) {
-		userRating = await getUserRating(resource, userId);
-	}
-
-	return (
-		<div className="flex items-center gap-4">
-			<RatingInfo rating={rating} />
-			<RateButton resource={resource} userRating={userRating} />
-		</div>
-	);
-};
 
 export const fetchCache = "force-cache";
 
@@ -93,7 +74,7 @@ const Layout = async ({
 						)}
 					</div>
 					<Suspense fallback={<Skeleton className="h-10 w-40" />}>
-						<AlbumRatings
+						<Ratings
 							resource={{
 								resourceId: albumId,
 								category: "ALBUM",

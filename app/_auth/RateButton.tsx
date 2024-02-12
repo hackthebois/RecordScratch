@@ -39,17 +39,7 @@ export const RateButton = async ({
 			initialRating={userRating ?? undefined}
 			name={name}
 			onRate={rateAction}
-		>
-			<Button variant="outline" size="sm">
-				<Star
-					color="#fb8500"
-					fill={userRating ? "#fb8500" : "none"}
-					size={18}
-					className="mr-2"
-				/>
-				{userRating?.rating ? userRating?.rating : "Rate"}
-			</Button>
-		</RatingDialog>
+		/>
 	);
 };
 

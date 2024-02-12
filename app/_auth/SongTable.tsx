@@ -3,6 +3,7 @@ import { Rating, Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { auth } from "@clerk/nextjs";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { Suspense } from "react";
 import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
@@ -61,26 +62,38 @@ const SongTable = async ({ songs }: { songs: Track[] }) => {
 					<div
 						key={song.id}
 						className={cn(
-							"-mx-4 flex flex-1 items-center gap-3 border-b p-3 transition-colors sm:mx-0",
+							"-mx-4 flex flex-1 items-center justify-between border-b transition-colors sm:mx-0",
 							index === songs.length - 1 && "border-none"
 						)}
 					>
-						<p className="w-4 text-center text-sm text-muted-foreground">
-							{index + 1}
-						</p>
-						<div className="min-w-0 flex-1">
-							<p className="truncate text-sm">
-								{song.name.replace(/ *\([^)]*\) */g, "")}
+						<Link
+							href={`/songs/${song.id}`}
+							className="flex w-full min-w-0 gap-3 p-3"
+						>
+							<p className="w-4 text-center text-sm text-muted-foreground">
+								{index + 1}
 							</p>
-							<p className="truncate text-xs text-muted-foreground">
-								{song.artists
-									.map((artist) => artist.name)
-									.join(", ")}
-							</p>
+							<div className="min-w-0 flex-1">
+								<p className="truncate text-sm">
+									{song.name.replace(/ *\([^)]*\) */g, "")}
+								</p>
+								<p className="truncate text-xs text-muted-foreground">
+									{song.artists
+										.map((artist) => artist.name)
+										.join(", ")}
+								</p>
+							</div>
+						</Link>
+						<div className="flex items-center gap-3 pr-3">
+							<Suspense
+								fallback={<Skeleton className="h-8 w-24" />}
+							>
+								<SongRatings
+									song={song}
+									resources={resources}
+								/>
+							</Suspense>
 						</div>
-						<Suspense fallback={<Skeleton className="h-8 w-24" />}>
-							<SongRatings song={song} resources={resources} />
-						</Suspense>
 					</div>
 				);
 			})}

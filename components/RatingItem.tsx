@@ -4,18 +4,21 @@ import { Album } from "@/app/_api/spotify";
 import { Resource } from "@/types/rating";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import AlbumImage from "./AlbumImage";
+import AlbumImage from "./resource/album/AlbumImage";
 
-export const AlbumItem = ({
+export const RatingItem = ({
 	album,
 	name,
-	category,
+	resource: { resourceId, category },
 	showType,
 	onClick,
 }: {
 	album: Album;
 	name: string;
-	category: Resource["category"];
+	resource: {
+		resourceId: string;
+		category: Resource["category"];
+	};
 	showType?: boolean;
 	onClick?: () => void;
 }) => {
@@ -24,7 +27,7 @@ export const AlbumItem = ({
 	return (
 		<Link
 			onClick={onClick}
-			href={`/albums/${album.id}`}
+			href={`/${category.toLowerCase()}s/${resourceId}`}
 			className="flex flex-row items-center gap-4 rounded"
 			prefetch={false}
 		>

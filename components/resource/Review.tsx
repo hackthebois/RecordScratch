@@ -3,16 +3,19 @@
 import { Review as ReviewType } from "@/types/rating";
 import { Star } from "lucide-react";
 import Link from "next/link";
+import { RatingItem } from "../RatingItem";
 import { UserAvatar } from "../UserAvatar";
-import { AlbumItem } from "./album/AlbumItem";
 
 export const Review = ({ rating, profile, album, name }: ReviewType) => {
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
-			<AlbumItem
+			<RatingItem
 				album={album}
 				name={name}
-				category={rating.category}
+				resource={{
+					resourceId: rating.resourceId,
+					category: rating.category,
+				}}
 				showType
 			/>
 			<div className="flex flex-1 flex-col gap-3">
