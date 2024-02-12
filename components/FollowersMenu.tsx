@@ -27,6 +27,8 @@ const FollowerMenu = async ({ profileId }: Props) => {
 
 	const showButton = !!userId && userId !== profileId;
 
+	console.log(profileId, userId);
+
 	return (
 		<div className="flex flex-row items-center justify-center gap-6 py-2 sm:justify-start">
 			<div className="flex flex-col items-center gap-1">

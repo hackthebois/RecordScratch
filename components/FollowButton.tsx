@@ -22,7 +22,7 @@ export const FollowButton = ({
 	} = useQuery({
 		queryKey: ["isUserFollowing", profileId, userId],
 		queryFn: () => {
-			return isUserFollowing(profileId, userId!);
+			return isUserFollowing(profileId, userId);
 		},
 		initialData: initialIsFollowing,
 		enabled: !!userId,
