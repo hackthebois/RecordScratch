@@ -1,3 +1,5 @@
+"use client";
+
 import { ResourceRating } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { Star } from "lucide-react";
