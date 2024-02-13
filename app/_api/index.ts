@@ -1,5 +1,4 @@
 "use server";
-import "server-only";
 
 import { appendReviewResource } from "@/app/_api/utils";
 import { db } from "@/db/db";

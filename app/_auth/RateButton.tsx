@@ -1,12 +1,14 @@
+"use client";
+
 import { SignInWrapper } from "@/components/SignInWrapper";
 import { Rating, Resource } from "@/types/rating";
-import { auth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { Star } from "lucide-react";
 import { RatingDialog } from "../../components/RatingDialog";
 import { Button } from "../../components/ui/Button";
 import { rateAction } from "../_api/actions";
 
-export const RateButton = async ({
+export const RateButton = ({
 	resource,
 	name,
 	userRating = null,
@@ -15,7 +17,7 @@ export const RateButton = async ({
 	name?: string;
 	userRating: Rating | null;
 }) => {
-	const { userId } = auth();
+	const { userId } = useAuth();
 
 	if (!userId) {
 		return (
