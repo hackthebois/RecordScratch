@@ -19,12 +19,13 @@ import {
 } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import { deezer } from "./deezer";
 import { Album, spotify } from "./spotify";
 
 // STATIC
 export const getAlbum = cache((albumId: string) =>
-	spotify({
-		route: "/albums/{id}",
+	deezer({
+		route: "/album/{id}",
 		input: { id: albumId },
 	})
 );
