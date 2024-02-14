@@ -81,15 +81,15 @@ export const RatingItem = ({
 				<p className="truncate font-medium">{name}</p>
 				<div className="flex gap-1">
 					<button
-						key={album.artist.id}
+						key={album.artist?.id}
 						onClick={(e) => {
 							e.preventDefault();
 							close();
-							router.push(`/artists/${album.artist.id}`);
+							router.push(`/artists/${album.artist?.id}`);
 						}}
 						className="truncate py-1 text-sm text-muted-foreground hover:underline"
 					>
-						{album.artist.name}
+						{album.artist?.name}
 					</button>
 					{showType && (
 						<p className="truncate py-1 text-sm text-muted-foreground">
