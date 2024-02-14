@@ -2,8 +2,8 @@
 
 import "server-only";
 
-import { db } from "@/db/db";
-import { followers, profile, ratings } from "@/db/schema";
+import { db } from "@/server/db";
+import { followers, profile, ratings } from "@/server/db/schema";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
 import { RateFormSchema, ReviewFormSchema } from "@/types/rating";
 import { auth, clerkClient } from "@clerk/nextjs";

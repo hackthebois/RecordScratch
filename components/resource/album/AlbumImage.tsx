@@ -9,6 +9,9 @@ const AlbumImage = ({ album, size }: { album: Album; size: number }) => {
 				alt={`${album.title} cover`}
 				width={size}
 				height={size}
+				style={{
+					maxWidth: size,
+				}}
 				className="aspect-square h-auto w-auto overflow-hidden rounded-md object-cover transition-all hover:scale-105"
 			/>
 		</div>

@@ -1,13 +1,6 @@
 "use client";
 
 import { Album, deezer } from "@/app/_api/deezer";
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from "@/components/ui/carousel";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
@@ -75,33 +68,12 @@ const AlbumList = ({
 
 	if (type === "scroll") {
 		return (
-			<div>
-				{/* Carousel for large screens */}
-				<Carousel
-					opts={{
-						align: "start",
-					}}
-					className="hidden lg:flex"
-				>
-					<CarouselContent className="">
-						{Array.from(listItems).map((listitem, index) => (
-							<CarouselItem key={index} className="lg:basis-1/6">
-								<div>{listitem}</div>
-							</CarouselItem>
-						))}
-					</CarouselContent>
-					<CarouselPrevious className="mt-[-30px] grid place-items-center" />
-					<CarouselNext className="mt-[-30px] grid place-items-center" />
-				</Carousel>
-
-				{/* ScrollArea for medium and smaller screens */}
-				<ScrollArea
-					orientation="horizontal"
-					className="-mx-4 sm:-mx-8 lg:hidden"
-				>
-					<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
-				</ScrollArea>
-			</div>
+			<ScrollArea
+				orientation="horizontal"
+				className="-mx-4 sm:-mx-8 lg:hidden"
+			>
+				<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
+			</ScrollArea>
 		);
 	} else {
 		return (
