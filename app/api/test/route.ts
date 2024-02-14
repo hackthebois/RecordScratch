@@ -1,6 +1,4 @@
-import { getFollowCount, getFollowProfiles, isUserFollowing } from "@/app/_api";
-import { unFollowUser } from "@/app/_api/actions";
-import { followers } from "@/db/schema";
+import { getFollowCount, getFollowProfiles } from "@/app/_api";
 import { NextResponse } from "next/server";
 
 // Handles GET requests to /api

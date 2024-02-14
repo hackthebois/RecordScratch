@@ -1,9 +1,10 @@
 "use server";
 
-import { db } from "@/db/db";
-import { followers, profile, ratings } from "@/db/schema";
+import { db } from "@/server/db";
+import { followers, profile, ratings } from "@/server/db/schema";
 import { Resource } from "@/types/rating";
 
+import { api } from "@/trpc/server";
 import { auth } from "@clerk/nextjs";
 import {
 	and,
@@ -167,21 +168,7 @@ export const getCommunityReviews = cache(
 
 export const getRating = cache(({ resourceId, category }: Resource) => {
 	return unstable_cache(
-		async () => {
-			const rating = await db
-				.select({
-					average: avg(ratings.rating),
-					total: count(ratings.rating),
-				})
-				.from(ratings)
-				.where(
-					and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.category, category)
-					)
-				);
-			return { ...rating[0], resourceId };
-		},
+		() => api.ratings.resource.get({ resourceId, category }),
 		[`getRating:${resourceId}`],
 		{ revalidate: 60, tags: [resourceId] }
 	)();
@@ -190,16 +177,7 @@ export const getRating = cache(({ resourceId, category }: Resource) => {
 export const getUserRating = cache(
 	({ resourceId, category }: Resource, userId: string) => {
 		return unstable_cache(
-			async () => {
-				const userRating = await db.query.ratings.findFirst({
-					where: and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.category, category),
-						eq(ratings.userId, userId)
-					),
-				});
-				return userRating ? userRating : null;
-			},
+			() => api.ratings.user.get({ resourceId, category }),
 			[`getUserRating:${userId}:${resourceId}`],
 			{ revalidate: 60, tags: [resourceId, userId] }
 		)();
@@ -208,22 +186,7 @@ export const getUserRating = cache(
 
 export const getRatingsList = cache((resources: Resource[]) => {
 	return unstable_cache(
-		async () => {
-			return await db
-				.select({
-					average: avg(ratings.rating),
-					total: count(ratings.rating),
-					resourceId: ratings.resourceId,
-				})
-				.from(ratings)
-				.where(
-					inArray(
-						ratings.resourceId,
-						resources.map((r) => r.resourceId)
-					)
-				)
-				.groupBy(ratings.resourceId);
-		},
+		() => api.ratings.resource.getList(resources),
 		[`getRatingsList:[${resources.map((r) => r.resourceId).join(",")}]`],
 		{ tags: resources.map((r) => r.resourceId), revalidate: 60 }
 	)();
@@ -232,17 +195,7 @@ export const getRatingsList = cache((resources: Resource[]) => {
 export const getUserRatingList = cache(
 	(resources: Resource[], userId: string) => {
 		return unstable_cache(
-			async () => {
-				return await db.query.ratings.findMany({
-					where: and(
-						inArray(
-							ratings.resourceId,
-							resources.map((r) => r.resourceId)
-						),
-						eq(ratings.userId, userId)
-					),
-				});
-			},
+			() => api.ratings.user.getList(resources),
 			[
 				`getUserRatingList:${userId}:[${resources
 					.map((r) => r.resourceId)
