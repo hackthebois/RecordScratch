@@ -1,57 +1,16 @@
-import { getRatingsList, getUserRatingList } from "@/app/_api";
-import { Rating, Resource } from "@/types/rating";
+"use client";
+
+import { Ratings } from "@/components/Ratings";
+import { Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
-import { auth } from "@clerk/nextjs";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Suspense } from "react";
-import { RatingInfo } from "../../components/ui/RatingInfo";
 import { Skeleton } from "../../components/ui/skeleton";
-import { Track } from "../_api/spotify";
-
-const RateButton = dynamic(() => import("@/app/_auth/RateButton"), {
-	ssr: false,
-});
-
-const SongRatings = async ({
-	song,
-	resources,
-}: {
-	song: Track;
-	resources: Resource[];
-}) => {
-	const ratingsList = await getRatingsList(resources);
-
-	let userRatingsList: Rating[] = [];
-	const { userId } = auth();
-	if (userId) {
-		userRatingsList = await getUserRatingList(resources, userId);
-	}
-
-	return (
-		<>
-			<RatingInfo
-				rating={ratingsList.find((r) => r.resourceId === song.id)!}
-				size="sm"
-			/>
-			<RateButton
-				resource={{
-					resourceId: song.id,
-					category: "SONG",
-				}}
-				name={song.name}
-				userRating={
-					userRatingsList.find((r) => r.resourceId === song.id) ??
-					null
-				}
-			/>
-		</>
-	);
-};
+import { Track } from "../_api/deezer";
 
 const SongTable = async ({ songs }: { songs: Track[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
-		resourceId: song.id,
+		resourceId: song.id.toString(),
 		category: "SONG",
 	}));
 
@@ -75,23 +34,20 @@ const SongTable = async ({ songs }: { songs: Track[] }) => {
 							</p>
 							<div className="min-w-0 flex-1">
 								<p className="truncate text-sm">
-									{song.name.replace(/ *\([^)]*\) */g, "")}
+									{song.title.replace(/ *\([^)]*\) */g, "")}
 								</p>
-								<p className="truncate text-xs text-muted-foreground">
+								{/* <p className="truncate text-xs text-muted-foreground">
 									{song.artists
 										.map((artist) => artist.name)
 										.join(", ")}
-								</p>
+								</p> */}
 							</div>
 						</Link>
 						<div className="flex items-center gap-3 pr-3">
 							<Suspense
 								fallback={<Skeleton className="h-8 w-24" />}
 							>
-								<SongRatings
-									song={song}
-									resources={resources}
-								/>
+								<Ratings resource={resources[index]} />
 							</Suspense>
 						</div>
 					</div>

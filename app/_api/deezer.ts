@@ -1,70 +1,62 @@
 import { z } from "zod";
 
-const SpotifyImageSchema = z.object({
-	url: z.string().url(),
-	width: z.number(),
-	height: z.number(),
-});
-export type SpotifyImage = z.infer<typeof SpotifyImageSchema>;
-
 export const ArtistSchema = z.object({
 	id: z.string(),
-	followers: z
-		.object({
-			total: z.number(),
-		})
-		.optional(),
-	external_urls: z.object({
-		spotify: z.string().url(),
-	}),
 	name: z.string(),
-	images: SpotifyImageSchema.array().optional(),
-	genres: z.string().array().optional(),
+	link: z.string().url(),
+	share: z.string().url(),
+	picture: z.string().url(),
+	picture_small: z.string().url(),
+	picture_medium: z.string().url(),
+	picture_big: z.string().url(),
+	picture_xl: z.string().url(),
+	nb_album: z.number(),
+	nb_fan: z.number(),
+	radio: z.boolean(),
+	tracklist: z.string().url(),
 });
 export type Artist = z.infer<typeof ArtistSchema>;
 
 export const TrackSchema = z.object({
-	name: z.string(),
-	href: z.string().url(),
-	id: z.string(),
-	track_number: z.number(),
-	artists: ArtistSchema.array(),
-	external_urls: z.object({
-		spotify: z.string().url(),
-	}),
-	duration_ms: z.number(),
-	explicit: z.boolean(),
+	id: z.number(),
+	readable: z.boolean(),
+	title: z.string(),
+	title_short: z.string(),
+	title_version: z.string(),
+	duration: z.number(),
 });
 export type Track = z.infer<typeof TrackSchema>;
 
 export const GenreSchema = z.object({
 	id: z.number(),
 	name: z.string(),
-	picture: z.string().url(),
-	picture_small: z.string().url(),
-	picture_medium: z.string().url(),
-	picture_big: z.string().url(),
-	picture_xl: z.string().url(),
+	picture: z.string().url().optional(),
+	picture_small: z.string().url().optional(),
+	picture_medium: z.string().url().optional(),
+	picture_big: z.string().url().optional(),
+	picture_xl: z.string().url().optional(),
 });
 export type Genre = z.infer<typeof GenreSchema>;
 
 export const AlbumSchema = z.object({
-	id: z.string(),
+	id: z.number(),
 	title: z.string(),
-	url: z.string().url(),
+	link: z.string().url(),
+	share: z.string().url(),
 	cover: z.string().url(),
 	cover_small: z.string().url(),
 	cover_medium: z.string().url(),
 	cover_big: z.string().url(),
 	cover_xl: z.string().url(),
 	genre_id: z.number(),
-	genres: GenreSchema.array(),
+	genres: z.object({ data: GenreSchema.array() }),
 	label: z.string(),
 	duration: z.number(),
 	release_date: z.string(),
 	record_type: z.string(),
 	available: z.boolean(),
 	tracklist: z.string().url(),
+	explicit_lyrics: z.boolean(),
 });
 export type Album = z.infer<typeof AlbumSchema>;
 
@@ -88,11 +80,15 @@ const DeezerSchema = z.object({
 			}),
 		}),
 	}),
-	"/albums/{id}": z.object({
+	"/album/{id}": z.object({
 		input: z.object({
 			id: z.string(),
 		}),
-		output: AlbumSchema,
+		output: AlbumSchema.extend({
+			tracks: z.object({
+				data: TrackSchema.array(),
+			}),
+		}),
 	}),
 	"/albums": z.object({
 		input: z.object({
@@ -149,6 +145,11 @@ const DeezerSchema = z.object({
 });
 export type Spotify = z.infer<typeof DeezerSchema>;
 
+const getBaseUrl = () => {
+	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+	return `http://localhost:${process.env.PORT ?? 3000}`;
+};
+
 export const deezer = async <TRoute extends keyof Spotify>({
 	route,
 	input: rawInput,
@@ -156,22 +157,19 @@ export const deezer = async <TRoute extends keyof Spotify>({
 	route: TRoute;
 	input: Spotify[TRoute]["input"];
 }): Promise<Spotify[TRoute]["output"]> => {
-	const input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
+	let input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
 
 	let modifiedRoute = `${route}`;
 	if (input && "id" in input) {
 		modifiedRoute = route.replace("{id}", input.id);
+		input = {} as any;
 	}
 
 	const params = new URLSearchParams(input as any);
-	const url = new URL(`https://api.deezer.com${modifiedRoute}`);
+	const url = new URL(`${getBaseUrl()}/music${modifiedRoute}`);
 	url.search = params.toString();
 
-	const res = await fetch(url, {
-		next: {
-			revalidate: 60 * 60 * 24,
-		},
-	});
+	const res = await fetch(url);
 	const data: unknown = await res.json();
 
 	if (!res.ok) {

@@ -24,6 +24,10 @@ module.exports = withBundleAnalyzer({
 				source: "/ingest/:path*",
 				destination: `${process.env.NEXT_PUBLIC_POSTHOG_HOST}/:path*`,
 			},
+			{
+				source: "/music/:path*",
+				destination: `https://api.deezer.com/:path*`,
+			},
 		];
 	},
 	logging: {
