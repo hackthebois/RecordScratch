@@ -72,6 +72,7 @@ export const RatingDialog = ({
 			...resource,
 			rating: null,
 		});
+		invalidateQuery();
 		setOpen(false);
 	};
 
