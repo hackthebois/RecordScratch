@@ -1,7 +1,7 @@
 "use client";
 
 import { deezer } from "@/app/_api/deezer";
-import SongTable from "@/app/_auth/SongTable";
+import SongTable from "@/components/SongTable";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const Page = ({

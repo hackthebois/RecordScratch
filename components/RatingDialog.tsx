@@ -24,6 +24,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
+import { useQueryClient } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -41,6 +42,14 @@ export const RatingDialog = ({
 	initialRating?: Rating;
 	onRate: (rate: RateForm) => void;
 }) => {
+	const queryClient = useQueryClient();
+
+	const invalidateQuery = () => {
+		queryClient.invalidateQueries({
+			queryKey: ["rating"],
+		});
+	};
+
 	const [open, setOpen] = useState(false);
 
 	const form = useForm<RateForm>({
@@ -50,6 +59,7 @@ export const RatingDialog = ({
 
 	const onSubmit = async (rate: RateForm) => {
 		if (onRate) onRate(rate);
+		invalidateQuery();
 		setOpen(false);
 	};
 
