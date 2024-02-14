@@ -2,10 +2,11 @@
 
 import { Album, deezer } from "@/app/_api/deezer";
 import { Resource } from "@/types/rating";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AlbumImage from "./resource/album/AlbumImage";
+import { Skeleton } from "./ui/skeleton";
 
 export const RatingItem = ({
 	initial,
@@ -25,9 +26,7 @@ export const RatingItem = ({
 	onClick?: () => void;
 }) => {
 	const queryKey = [category.toLowerCase(), resourceId];
-	const {
-		data: { album, name },
-	} = useSuspenseQuery({
+	const { data, isLoading } = useQuery({
 		queryKey,
 		queryFn: async () => {
 			if (category === "SONG") {
@@ -59,36 +58,52 @@ export const RatingItem = ({
 
 	const router = useRouter();
 
-	return (
-		<Link
-			onClick={onClick}
-			href={`/${category.toLowerCase()}s/${resourceId}`}
-			className="flex flex-row items-center gap-4 rounded"
-		>
-			<div className="relative h-16 w-16 min-w-[64px] rounded">
-				<AlbumImage album={album} size={64} />
-			</div>
-			<div className="min-w-0 flex-1">
-				<p className="truncate font-medium">{name}</p>
-				<div className="flex gap-1">
-					<button
-						key={album.artist?.id}
-						onClick={(e) => {
-							e.preventDefault();
-							close();
-							router.push(`/artists/${album.artist?.id}`);
-						}}
-						className="truncate py-1 text-sm text-muted-foreground hover:underline"
-					>
-						{album.artist?.name}
-					</button>
-					{showType && (
-						<p className="truncate py-1 text-sm text-muted-foreground">
-							{category === "SONG" ? "• Song" : "• Album"}
-						</p>
-					)}
+	if (isLoading) {
+		return (
+			<div className="flex flex-row items-center gap-4 rounded">
+				<Skeleton className="h-16 w-16 rounded" />
+				<div className="flex flex-1 flex-col gap-1">
+					<Skeleton className="h-4 w-32" />
+					<Skeleton className="h-4 w-16" />
 				</div>
 			</div>
-		</Link>
-	);
+		);
+	}
+
+	if (data) {
+		return (
+			<Link
+				onClick={onClick}
+				href={`/${category.toLowerCase()}s/${resourceId}`}
+				className="flex flex-row items-center gap-4 rounded"
+			>
+				<div className="relative h-16 w-16 min-w-[64px] rounded">
+					<AlbumImage album={data.album} size={64} />
+				</div>
+				<div className="min-w-0 flex-1">
+					<p className="truncate font-medium">{data.name}</p>
+					<div className="flex gap-1">
+						<button
+							key={data.album.artist?.id}
+							onClick={(e) => {
+								e.preventDefault();
+								close();
+								router.push(
+									`/artists/${data.album.artist?.id}`
+								);
+							}}
+							className="truncate py-1 text-sm text-muted-foreground hover:underline"
+						>
+							{data.album.artist?.name}
+						</button>
+						{showType && (
+							<p className="truncate py-1 text-sm text-muted-foreground">
+								{category === "SONG" ? "• Song" : "• Album"}
+							</p>
+						)}
+					</div>
+				</div>
+			</Link>
+		);
+	}
 };
