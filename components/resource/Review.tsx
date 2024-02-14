@@ -3,7 +3,7 @@
 import { Review as ReviewType } from "@/types/rating";
 import { Star } from "lucide-react";
 import Link from "next/link";
-import { AlbumItem, SongItem } from "../RatingItem";
+import { RatingItem } from "../RatingItem";
 import { UserAvatar } from "../UserAvatar";
 
 export const Review = ({
@@ -16,8 +16,7 @@ export const Review = ({
 	console.log("rating", rating);
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
-			{category === "SONG" && <SongItem id={resourceId} />}
-			{category === "ALBUM" && <AlbumItem id={resourceId} />}
+			<RatingItem resource={{ resourceId, category }} />
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (

@@ -112,7 +112,7 @@ const Page = async ({
 			/>
 			<InfiniteReviews
 				id={`${profile.handle}:${rating}:${category}`}
-				initialReviews={await getReviews({ page: 1, limit: 15 })}
+				initialReviews={initialReviews}
 				getReviews={getReviews}
 				pageLimit={20}
 			/>

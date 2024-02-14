@@ -21,7 +21,7 @@ export const BaseTrackSchema = z.object({
 	readable: z.boolean(),
 	title: z.string(),
 	title_short: z.string(),
-	title_version: z.string(),
+	title_version: z.string().optional(),
 	link: z.string().url(),
 	share: z.string().url().optional(),
 	duration: z.number(),
@@ -70,23 +70,31 @@ export const TrackSchema = BaseTrackSchema.extend({
 export type Track = z.infer<typeof TrackSchema>;
 
 const DeezerSchema = z.object({
-	"/search": z.object({
+	"/search/album": z.object({
 		input: z.object({
 			q: z.string(),
-			limit: z.number(),
+			limit: z.number().optional(),
 		}),
 		output: z.object({
-			albums: z.object({
-				items: AlbumSchema.array(),
-			}),
-			artists: z.object({
-				items: ArtistSchema.array(),
-			}),
-			tracks: z.object({
-				items: TrackSchema.extend({
-					album: AlbumSchema,
-				}).array(),
-			}),
+			data: AlbumSchema.array(),
+		}),
+	}),
+	"/search/artist": z.object({
+		input: z.object({
+			q: z.string(),
+			limit: z.number().optional(),
+		}),
+		output: z.object({
+			data: ArtistSchema.array(),
+		}),
+	}),
+	"/search/track": z.object({
+		input: z.object({
+			q: z.string(),
+			limit: z.number().optional(),
+		}),
+		output: z.object({
+			data: TrackSchema.array(),
 		}),
 	}),
 	"/album/{id}": z.object({
@@ -153,20 +161,20 @@ const DeezerSchema = z.object({
 		}),
 	}),
 });
-export type Spotify = z.infer<typeof DeezerSchema>;
+export type Deezer = z.infer<typeof DeezerSchema>;
 
 const getBaseUrl = () => {
 	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
 	return `http://localhost:${process.env.PORT ?? 3000}`;
 };
 
-export const deezer = async <TRoute extends keyof Spotify>({
+export const deezer = async <TRoute extends keyof Deezer>({
 	route,
 	input: rawInput,
 }: {
 	route: TRoute;
-	input: Spotify[TRoute]["input"];
-}): Promise<Spotify[TRoute]["output"]> => {
+	input: Deezer[TRoute]["input"];
+}): Promise<Deezer[TRoute]["output"]> => {
 	let input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
 
 	let modifiedRoute = `${route}`;

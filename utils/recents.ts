@@ -1,4 +1,4 @@
-import { Album, Artist, Track } from "@/app/_api/spotify";
+import { Album, Artist, Track } from "@/app/_api/deezer";
 import { Profile } from "@/types/profile";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";

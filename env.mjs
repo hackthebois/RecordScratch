@@ -3,8 +3,6 @@ import { z } from "zod";
 
 export const env = createEnv({
 	server: {
-		SPOTIFY_CLIENT: z.string().min(1),
-		SPOTIFY_SECRET: z.string().min(1),
 		DATABASE_URL: z.string().min(1),
 		UPSTASH_REDIS_REST_URL: z.string().min(1),
 		UPSTASH_REDIS_REST_TOKEN: z.string().min(1),

@@ -36,7 +36,7 @@ const Page = async ({
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
 				<Suspense fallback={<Skeleton className="h-10 w-20" />}>
-					<ReviewButton resource={resource} name={""} />
+					<ReviewButton resource={resource} />
 				</Suspense>
 			</div>
 			<InfiniteReviews

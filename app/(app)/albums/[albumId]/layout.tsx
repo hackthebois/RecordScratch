@@ -17,7 +17,7 @@ export async function generateMetadata({
 
 	return {
 		title: album.title,
-		// description: album.artists.map(({ name }) => name).join(", "),
+		description: album.artist?.name,
 		openGraph: {
 			images: [
 				album.cover,
