@@ -1,23 +1,22 @@
 import { z } from "zod";
 
 export const ArtistSchema = z.object({
-	id: z.string(),
+	id: z.number(),
 	name: z.string(),
-	link: z.string().url(),
-	share: z.string().url(),
-	picture: z.string().url(),
-	picture_small: z.string().url(),
-	picture_medium: z.string().url(),
-	picture_big: z.string().url(),
-	picture_xl: z.string().url(),
-	nb_album: z.number(),
-	nb_fan: z.number(),
-	radio: z.boolean(),
+	link: z.string().url().optional(),
+	share: z.string().url().optional(),
+	picture: z.string().url().optional(),
+	picture_small: z.string().url().optional(),
+	picture_medium: z.string().url().optional(),
+	picture_big: z.string().url().optional(),
+	picture_xl: z.string().url().optional(),
+	nb_album: z.number().optional(),
+	nb_fan: z.number().optional(),
 	tracklist: z.string().url(),
 });
 export type Artist = z.infer<typeof ArtistSchema>;
 
-export const TrackSchema = z.object({
+export const BaseTrackSchema = z.object({
 	id: z.number(),
 	readable: z.boolean(),
 	title: z.string(),
@@ -25,7 +24,6 @@ export const TrackSchema = z.object({
 	title_version: z.string(),
 	duration: z.number(),
 });
-export type Track = z.infer<typeof TrackSchema>;
 
 export const GenreSchema = z.object({
 	id: z.number(),
@@ -41,24 +39,30 @@ export type Genre = z.infer<typeof GenreSchema>;
 export const AlbumSchema = z.object({
 	id: z.number(),
 	title: z.string(),
-	link: z.string().url(),
-	share: z.string().url(),
 	cover: z.string().url(),
 	cover_small: z.string().url(),
 	cover_medium: z.string().url(),
 	cover_big: z.string().url(),
 	cover_xl: z.string().url(),
-	genre_id: z.number(),
-	genres: z.object({ data: GenreSchema.array() }),
-	label: z.string(),
-	duration: z.number(),
-	release_date: z.string(),
-	record_type: z.string(),
-	available: z.boolean(),
+	genre_id: z.number().optional(),
+	genres: z.object({ data: GenreSchema.array() }).optional(),
+	label: z.string().optional(),
+	duration: z.number().optional(),
+	release_date: z.string().optional(),
+	record_type: z.string().optional(),
+	available: z.boolean().optional(),
 	tracklist: z.string().url(),
-	explicit_lyrics: z.boolean(),
+	explicit_lyrics: z.boolean().optional(),
+	artist: ArtistSchema.optional(),
+	tracks: z.object({ data: BaseTrackSchema.array() }).optional(),
 });
 export type Album = z.infer<typeof AlbumSchema>;
+
+export const TrackSchema = BaseTrackSchema.extend({
+	artist: ArtistSchema,
+	album: AlbumSchema,
+});
+export type Track = z.infer<typeof TrackSchema>;
 
 const DeezerSchema = z.object({
 	"/search": z.object({
@@ -98,7 +102,7 @@ const DeezerSchema = z.object({
 			albums: AlbumSchema.array(),
 		}),
 	}),
-	"/tracks/{id}": z.object({
+	"/track/{id}": z.object({
 		input: z.object({
 			id: z.string(),
 		}),
@@ -116,30 +120,31 @@ const DeezerSchema = z.object({
 			}).array(),
 		}),
 	}),
-	"/artists/{id}": z.object({
+	"/artist/{id}": z.object({
 		input: z.object({
 			id: z.string(),
 		}),
 		output: ArtistSchema,
 	}),
-	"/artists/{id}/albums": z.object({
+	"/artist/{id}/albums": z.object({
 		input: z.object({
 			id: z.string(),
-			include_groups: z.literal("album,single"),
-			offset: z.number().optional(),
 			limit: z.number().optional(),
 		}),
 		output: z.object({
-			items: AlbumSchema.array(),
+			data: AlbumSchema.array(),
+			next: z.string().url().optional(),
+			total: z.number(),
 		}),
 	}),
-	"/artists/{id}/top-tracks": z.object({
+	"/artist/{id}/top": z.object({
 		input: z.object({
 			id: z.string(),
-			market: z.enum(["US"]).optional().default("US"),
 		}),
 		output: z.object({
-			tracks: TrackSchema.array(),
+			data: TrackSchema.array(),
+			next: z.string().url().optional(),
+			total: z.number(),
 		}),
 	}),
 });

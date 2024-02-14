@@ -1,4 +1,3 @@
-import { Album } from "@/app/_api/spotify";
 import { ratings } from "@/db/schema";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -44,9 +43,6 @@ export const CategorySchema = RatingSchema.pick({
 });
 export type CategoryType = z.infer<typeof CategorySchema>;
 
-export type Review = {
-	rating: Rating;
+export type Review = Rating & {
 	profile: Profile;
-	album: Album;
-	name: string;
 };

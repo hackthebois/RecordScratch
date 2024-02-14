@@ -13,7 +13,6 @@ import {
 	getTopRated,
 	getTrending,
 } from "../_api";
-import { spotify } from "../_api/spotify";
 
 export const revalidate = 60 * 60 * 24; // 24 hours
 
@@ -62,17 +61,8 @@ const Feed = async () => {
 	);
 };
 
-export const fetchCache = "force-cache";
-
 const Page = async () => {
-	const [newReleases, trending, top] = await Promise.all([
-		spotify({
-			route: "/browse/new-releases",
-			input: undefined,
-		}),
-		getTrending(),
-		getTopRated(),
-	]);
+	const [trending, top] = await Promise.all([getTrending(), getTopRated()]);
 
 	return (
 		<div className="w-full">
@@ -89,19 +79,17 @@ const Page = async () => {
 					<p>Join our discord</p>
 				</Link>
 			</div>
-			<div className="mt-[2vh] flex flex-col">
-				<h2 className="mb-4">New Releases</h2>
-				<AlbumList albums={newReleases.albums.items} />
-			</div>
-			{trending.albums.length > 0 && (
+			{trending && (
 				<div className="mt-[2vh] flex flex-col">
 					<h2 className="mb-4">Trending</h2>
-					<AlbumList albums={trending.albums} />
+					<AlbumList
+						albums={trending.map(({ resourceId }) => resourceId)}
+					/>
 				</div>
 			)}
 			<div className="mt-[2vh] flex flex-col">
 				<h2 className="mb-4">Top Rated</h2>
-				<AlbumList albums={top.albums} />
+				<AlbumList albums={top.map(({ resourceId }) => resourceId)} />
 			</div>
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
 			<Suspense>

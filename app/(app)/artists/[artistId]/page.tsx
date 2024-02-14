@@ -1,16 +1,23 @@
-import { getArtistTopTracks } from "@/app/_api";
-import SongTable from "@/app/_auth/SongTable";
+"use client";
 
-const Page = async ({
+import { deezer } from "@/app/_api/deezer";
+import SongTable from "@/app/_auth/SongTable";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+const Page = ({
 	params: { artistId },
 }: {
 	params: {
 		artistId: string;
 	};
 }) => {
-	const topTracks = await getArtistTopTracks(artistId);
+	const { data: top } = useSuspenseQuery({
+		queryKey: ["artist", "top-tracks", artistId],
+		queryFn: () =>
+			deezer({ route: `/artist/{id}/top`, input: { id: artistId } }),
+	});
 
-	return <SongTable songs={topTracks.tracks} />;
+	return <SongTable songs={top.data} />;
 };
 
 export default Page;

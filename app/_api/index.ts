@@ -20,7 +20,7 @@ import {
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { deezer } from "./deezer";
-import { Album, spotify } from "./spotify";
+import { spotify } from "./spotify";
 
 // STATIC
 export const getAlbum = cache((albumId: string) =>
@@ -31,8 +31,8 @@ export const getAlbum = cache((albumId: string) =>
 );
 
 export const getArtist = cache((artistId: string) =>
-	spotify({
-		route: "/artists/{id}",
+	deezer({
+		route: "/artist/{id}",
 		input: { id: artistId },
 	})
 );
@@ -58,33 +58,10 @@ export const getSong = cache((songId: string) =>
 	})
 );
 
-export const getArtistDiscography = cache(async (artistId: string) => {
-	const albums: Album[] = [];
-	const getAllAlbums = async (offset = 0) => {
-		const newAlbums = await spotify({
-			route: "/artists/{id}/albums",
-			input: {
-				id: artistId,
-				include_groups: "album,single",
-				offset,
-				limit: 50,
-			},
-		});
-		albums.push(...newAlbums.items);
-		// TODO: handle this without the extra request for 0 (check next)
-		if (newAlbums.items.length !== 0) {
-			await getAllAlbums(offset + 50);
-		}
-	};
-	await getAllAlbums();
-	return albums;
-});
-
 export const getTrending = cache(async () => {
 	return unstable_cache(
 		async () => {
-			console.log("getTrending");
-			const albums = await db
+			return await db
 				.select({
 					total: count(ratings.rating),
 					resourceId: ratings.resourceId,
@@ -102,14 +79,6 @@ export const getTrending = cache(async () => {
 				.groupBy(ratings.resourceId)
 				.orderBy(({ total }) => desc(total))
 				.limit(20);
-			if (albums.length === 0)
-				return {
-					albums: [],
-				};
-			return await spotify({
-				route: "/albums",
-				input: { ids: albums.map((a) => a.resourceId) },
-			});
 		},
 		["getTrending"],
 		{ revalidate: 60 * 60 }
@@ -119,7 +88,7 @@ export const getTrending = cache(async () => {
 export const getTopRated = cache(async () => {
 	return unstable_cache(
 		async () => {
-			const albums = await db
+			return await db
 				.select({
 					average: avg(ratings.rating),
 					resourceId: ratings.resourceId,
@@ -129,14 +98,6 @@ export const getTopRated = cache(async () => {
 				.groupBy(ratings.resourceId)
 				.orderBy(({ average }) => desc(average))
 				.limit(20);
-			if (albums.length === 0)
-				return {
-					albums: [],
-				};
-			return await spotify({
-				route: "/albums",
-				input: { ids: albums.map((a) => a.resourceId) },
-			});
 		},
 		[`getTopRated`],
 		{ revalidate: 60 * 60 }
@@ -145,7 +106,7 @@ export const getTopRated = cache(async () => {
 
 export const getRecentFeed = cache(
 	async ({ page, limit }: { page: number; limit: number }) => {
-		const ratingList = await db.query.ratings.findMany({
+		return await db.query.ratings.findMany({
 			where: isNotNull(ratings.content),
 			limit,
 			offset: (page - 1) * limit,
@@ -154,7 +115,6 @@ export const getRecentFeed = cache(
 				profile: true,
 			},
 		});
-		return await appendReviewResource(ratingList);
 	}
 );
 
@@ -170,7 +130,7 @@ export const getFollowingFeed = cache(
 
 		if (following.length === 0) return [];
 
-		const ratingList = await db.query.ratings.findMany({
+		return await db.query.ratings.findMany({
 			where: and(
 				inArray(
 					ratings.userId,
@@ -185,7 +145,6 @@ export const getFollowingFeed = cache(
 				profile: true,
 			},
 		});
-		return await appendReviewResource(ratingList);
 	}
 );
 
@@ -412,7 +371,7 @@ export const getRecent = cache(
 					);
 				else where = eq(ratings.userId, userId);
 
-				const ratingList = await db.query.ratings.findMany({
+				return await db.query.ratings.findMany({
 					limit,
 					offset: (page - 1) * limit,
 					orderBy: desc(ratings.updatedAt),
@@ -421,8 +380,6 @@ export const getRecent = cache(
 						profile: true,
 					},
 				});
-
-				return await appendReviewResource(ratingList);
 			},
 			[`getRecent:${userId}:${rating}:${page}:${limit}:${category}`],
 			{ tags: [userId], revalidate: 60 * 60 }

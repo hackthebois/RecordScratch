@@ -1,19 +1,10 @@
 "use client";
 
-import { Ratings } from "@/components/Ratings";
-import { Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
-import { Suspense } from "react";
-import { Skeleton } from "../../components/ui/skeleton";
 import { Track } from "../_api/deezer";
 
 const SongTable = async ({ songs }: { songs: Track[] }) => {
-	const resources: Resource[] = songs.map((song) => ({
-		resourceId: song.id.toString(),
-		category: "SONG",
-	}));
-
 	return (
 		<div className="w-full">
 			{songs.map((song, index) => {
@@ -36,19 +27,14 @@ const SongTable = async ({ songs }: { songs: Track[] }) => {
 								<p className="truncate text-sm">
 									{song.title.replace(/ *\([^)]*\) */g, "")}
 								</p>
-								{/* <p className="truncate text-xs text-muted-foreground">
-									{song.artists
-										.map((artist) => artist.name)
-										.join(", ")}
-								</p> */}
 							</div>
 						</Link>
 						<div className="flex items-center gap-3 pr-3">
-							<Suspense
+							{/* <Suspense
 								fallback={<Skeleton className="h-8 w-24" />}
 							>
 								<Ratings resource={resources[index]} />
-							</Suspense>
+							</Suspense> */}
 						</div>
 					</div>
 				);
