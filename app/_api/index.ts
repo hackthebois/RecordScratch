@@ -19,7 +19,6 @@ import {
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { deezer } from "./deezer";
-import { spotify } from "./spotify";
 
 // STATIC
 export const getAlbum = cache((albumId: string) =>
@@ -36,23 +35,9 @@ export const getArtist = cache((artistId: string) =>
 	})
 );
 
-export const getArtistTopTracks = cache((artistId: string) =>
-	spotify({
-		route: "/artists/{id}/top-tracks",
-		input: { id: artistId, market: "US" },
-	})
-);
-
-export const getNewReleases = cache(() =>
-	spotify({
-		route: "/browse/new-releases",
-		input: undefined,
-	})
-);
-
 export const getSong = cache((songId: string) =>
-	spotify({
-		route: "/tracks/{id}",
+	deezer({
+		route: "/track/{id}",
 		input: { id: songId },
 	})
 );

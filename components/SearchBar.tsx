@@ -1,7 +1,7 @@
 "use client";
 
-import { searchMusicAction, searchProfilesAction } from "@/app/_api/actions";
-import { Artist } from "@/app/_api/spotify";
+import { searchProfilesAction } from "@/app/_api/actions";
+import { Artist, deezer } from "@/app/_api/deezer";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useDebounce } from "@/utils/hooks";
@@ -24,7 +24,7 @@ const ArtistItem = ({
 	artist: Artist;
 	onClick: () => void;
 }) => {
-	const artistImage = artist.images?.find((i) => i.url);
+	const artistImage = artist.picture_small;
 
 	return (
 		<Link
@@ -37,7 +37,7 @@ const ArtistItem = ({
 				{artistImage ? (
 					<Image
 						alt={artist.name}
-						src={artistImage.url}
+						src={artistImage}
 						fill
 						className="object-cover"
 					/>
@@ -109,7 +109,7 @@ const SearchState = ({
 								<ArtistItem
 									onClick={() => {
 										addRecent({
-											id: recent.data.id,
+											id: String(recent.data.id),
 											type: "ARTIST",
 											data: recent.data,
 										});
@@ -121,15 +121,17 @@ const SearchState = ({
 							) : recent.type === "ALBUM" && !hide?.albums ? (
 								<RatingItem
 									showType
-									album={recent.data}
-									name={recent.data.name}
+									initial={{
+										album: recent.data,
+										name: recent.data.title,
+									}}
 									resource={{
-										resourceId: recent.data.id,
+										resourceId: String(recent.data.id),
 										category: "ALBUM",
 									}}
 									onClick={() => {
 										addRecent({
-											id: recent.data.id,
+											id: String(recent.data.id),
 											type: "ALBUM",
 											data: recent.data,
 										});
@@ -140,15 +142,17 @@ const SearchState = ({
 							) : recent.type === "SONG" && !hide?.songs ? (
 								<RatingItem
 									showType
-									album={recent.data.album}
-									name={recent.data.name}
+									initial={{
+										album: recent.data.album,
+										name: recent.data.title,
+									}}
 									resource={{
-										resourceId: recent.data.id,
+										resourceId: String(recent.data.id),
 										category: "SONG",
 									}}
 									onClick={() => {
 										addRecent({
-											id: recent.data.id,
+											id: String(recent.data.id),
 											type: "SONG",
 											data: recent.data,
 										});
@@ -241,42 +245,58 @@ const MusicSearch = ({
 }) => {
 	const { addRecent } = useRecents();
 
-	const { data, isLoading, isError } = useQuery({
+	const { data, isLoading, isError, error } = useQuery({
 		queryKey: ["search", "search-music", query],
 		queryFn: async () => {
-			const { data, serverError } = await searchMusicAction(query);
-			if (serverError) throw new Error(serverError);
-			return data;
+			const artists = await deezer({
+				route: "/search/artist",
+				input: { q: query, limit: 4 },
+			});
+			const albums = await deezer({
+				route: "/search/album",
+				input: { q: query, limit: 4 },
+			});
+			const songs = await deezer({
+				route: "/search/track",
+				input: { q: query, limit: 4 },
+			});
+
+			return {
+				artists: artists.data,
+				albums: albums.data,
+				songs: songs.data,
+			};
 		},
 		refetchOnMount: false,
 		enabled: query.length > 0,
 	});
+
+	console.log(error);
 
 	return (
 		<SearchState
 			isError={isError}
 			isLoading={isLoading}
 			onNavigate={onNavigate}
-			noResults={
-				data?.albums.items.length === 0 &&
-				data?.artists.items.length === 0
-			}
+			noResults={data?.albums.length === 0 && data?.artists.length === 0}
 			hide={{ profiles: true }}
 		>
 			{data && (
 				<>
 					<h4>Albums</h4>
-					{data.albums.items.map((album, index) => (
+					{data.albums.map((album, index) => (
 						<RatingItem
-							album={album}
-							name={album.name}
+							initial={{
+								album: album,
+								name: album.title,
+							}}
 							resource={{
-								resourceId: album.id,
+								resourceId: String(album.id),
 								category: "ALBUM",
 							}}
 							onClick={() => {
 								addRecent({
-									id: album.id,
+									id: String(album.id),
 									type: "ALBUM",
 									data: album,
 								});
@@ -286,11 +306,11 @@ const MusicSearch = ({
 						/>
 					))}
 					<h4 className="mt-3">Artists</h4>
-					{data.artists.items.map((artist, index) => (
+					{data.artists.map((artist, index) => (
 						<ArtistItem
 							onClick={() => {
 								addRecent({
-									id: artist.id,
+									id: String(artist.id),
 									type: "ARTIST",
 									data: artist,
 								});
@@ -301,17 +321,19 @@ const MusicSearch = ({
 						/>
 					))}
 					<h4 className="mt-3">Songs</h4>
-					{data.tracks.items.map((song, index) => (
+					{data.songs.map((song, index) => (
 						<RatingItem
-							album={song.album}
-							name={song.name}
+							initial={{
+								album: song.album,
+								name: song.title,
+							}}
 							resource={{
-								resourceId: song.id,
+								resourceId: String(song.id),
 								category: "SONG",
 							}}
 							onClick={() => {
 								addRecent({
-									id: song.id,
+									id: String(song.id),
 									type: "SONG",
 									data: song,
 								});

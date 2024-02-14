@@ -2,7 +2,6 @@
 
 import "server-only";
 
-import { spotify } from "@/app/_api/spotify";
 import { db } from "@/db/db";
 import { followers, profile, ratings } from "@/db/schema";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
@@ -166,13 +165,6 @@ export const handleExistsAction = action(z.string(), async (handle) => {
 		where: eq(profile.handle, handle),
 	}));
 	return exists ? true : false;
-});
-
-export const searchMusicAction = action(z.string(), async (query) => {
-	return await spotify({
-		route: "/search",
-		input: { q: query, limit: 4, type: "album,artist,track" },
-	});
 });
 
 export const searchProfilesAction = action(z.string(), async (query) => {

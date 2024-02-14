@@ -1,4 +1,4 @@
-import { getAlbum, getCommunityReviews } from "@/app/_api";
+import { getCommunityReviews } from "@/app/_api";
 import {
 	GetInfiniteReviews,
 	InfiniteReviews,
@@ -19,7 +19,6 @@ const Page = async ({
 		albumId: string;
 	};
 }) => {
-	const album = await getAlbum(albumId);
 	const resource: Resource = {
 		category: "ALBUM",
 		resourceId: albumId,
@@ -38,7 +37,7 @@ const Page = async ({
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
 				<Suspense fallback={<Skeleton className="h-10 w-20" />}>
-					<ReviewButton resource={resource} name={album.name} />
+					<ReviewButton resource={resource} />
 				</Suspense>
 			</div>
 			<InfiniteReviews

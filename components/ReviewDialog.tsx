@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -23,11 +22,9 @@ export const ReviewDialog = ({
 	resource,
 	initialRating,
 	children,
-	name,
 	reviewAction,
 }: {
 	resource: Resource;
-	name?: string;
 	initialRating?: Rating;
 	children: React.ReactNode;
 	reviewAction: (rating: ReviewForm) => void;
@@ -54,15 +51,8 @@ export const ReviewDialog = ({
 			<DialogContent className="w-full sm:max-w-[600px]">
 				<DialogHeader>
 					<DialogTitle className="text-center text-2xl">
-						{name ?? "Review"}
+						Review
 					</DialogTitle>
-					<DialogDescription className="text-center">
-						{resource.category === "ALBUM"
-							? "Review this album"
-							: resource.category === "ARTIST"
-							? "Review this artist"
-							: "Review this song"}
-					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form

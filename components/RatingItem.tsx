@@ -7,57 +7,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AlbumImage from "./resource/album/AlbumImage";
 
-export const SongItem = ({ id }: { id: string }) => {
-	const { data: song } = useSuspenseQuery({
-		queryKey: ["song", id],
-		queryFn: () =>
-			deezer({
-				route: `/track/{id}`,
-				input: {
-					id,
-				},
-			}),
-	});
-
-	return (
-		<RatingItem
-			album={song.album}
-			name={song.title}
-			resource={{ resourceId: id, category: "SONG" }}
-		/>
-	);
-};
-
-export const AlbumItem = ({ id }: { id: string }) => {
-	const { data: album } = useSuspenseQuery({
-		queryKey: ["album", id],
-		queryFn: () =>
-			deezer({
-				route: `/album/{id}`,
-				input: {
-					id,
-				},
-			}),
-	});
-
-	return (
-		<RatingItem
-			album={album}
-			name={album.title}
-			resource={{ resourceId: id, category: "ALBUM" }}
-		/>
-	);
-};
-
 export const RatingItem = ({
-	album,
-	name,
+	initial,
 	resource: { resourceId, category },
 	showType,
 	onClick,
 }: {
-	album: Album;
-	name: string;
+	initial?: {
+		album: Album;
+		name: string;
+	};
 	resource: {
 		resourceId: string;
 		category: Resource["category"];
@@ -65,6 +24,39 @@ export const RatingItem = ({
 	showType?: boolean;
 	onClick?: () => void;
 }) => {
+	const queryKey = [category.toLowerCase(), resourceId];
+	const {
+		data: { album, name },
+	} = useSuspenseQuery({
+		queryKey,
+		queryFn: async () => {
+			if (category === "SONG") {
+				const song = await deezer({
+					route: `/track/{id}`,
+					input: {
+						id: resourceId,
+					},
+				});
+				return {
+					album: song.album,
+					name: song.title,
+				};
+			} else {
+				const album = await deezer({
+					route: `/album/{id}`,
+					input: {
+						id: resourceId,
+					},
+				});
+				return {
+					album,
+					name: album.title,
+				};
+			}
+		},
+		initialData: initial,
+	});
+
 	const router = useRouter();
 
 	return (

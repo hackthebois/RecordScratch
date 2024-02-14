@@ -7,13 +7,7 @@ import { auth } from "@clerk/nextjs";
 import { Text } from "lucide-react";
 import { reviewAction } from "../_api/actions";
 
-export const ReviewButton = async ({
-	resource,
-	name,
-}: {
-	resource: Resource;
-	name: string;
-}) => {
+export const ReviewButton = async ({ resource }: { resource: Resource }) => {
 	const { userId } = auth();
 
 	if (!userId) {
@@ -33,7 +27,6 @@ export const ReviewButton = async ({
 		<ReviewDialog
 			resource={resource}
 			initialRating={userRating ?? undefined}
-			name={name}
 			reviewAction={reviewAction}
 		>
 			<Button variant="outline" className="gap-2 self-end">
