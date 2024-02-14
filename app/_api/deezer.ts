@@ -185,10 +185,10 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	}
 
 	const params = new URLSearchParams(input as any);
-	const url = new URL(`${getBaseUrl()}/music${modifiedRoute}`);
-	url.search = params.toString();
 
-	const res = await fetch(url);
+	const res = await fetch(
+		`${getBaseUrl()}/music${modifiedRoute}?${params.toString()}`
+	);
 	const data: unknown = await res.json();
 
 	if (!res.ok) {
