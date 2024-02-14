@@ -68,7 +68,6 @@ const Page = async ({
 							}
 							className="flex h-full flex-1 flex-col-reverse"
 							key={index}
-							prefetch={false}
 						>
 							<div
 								style={{

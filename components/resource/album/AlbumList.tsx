@@ -37,7 +37,7 @@ const AlbumItem = ({
 
 	return (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col">
-			<Link href={`/albums/${album.id}`} prefetch={false}>
+			<Link href={`/albums/${album.id}`}>
 				<AlbumImage album={album} size={144} />
 				<p className="mt-1 truncate font-medium">{album.title}</p>
 				{field === "date" && (
@@ -50,7 +50,6 @@ const AlbumItem = ({
 				<Link
 					href={`/artists/${album.artist?.id}`}
 					className="py-1 text-sm text-muted-foreground hover:underline"
-					prefetch={false}
 				>
 					{album.artist?.name}
 				</Link>

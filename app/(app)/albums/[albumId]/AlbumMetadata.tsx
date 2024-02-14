@@ -62,7 +62,6 @@ export const AlbumMetadata = ({
 				<Link
 					href={`/artists/${album.artist?.id}`}
 					className="text-muted-foreground hover:underline"
-					prefetch={false}
 				>
 					{album.artist?.name}
 				</Link>
