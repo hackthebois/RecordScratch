@@ -1,6 +1,6 @@
 "use client";
 
-import { Album } from "@/app/_api/spotify";
+import { Album, deezer } from "@/app/_api/deezer";
 import {
 	Carousel,
 	CarouselContent,
@@ -8,42 +8,70 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { ScrollArea } from "../../ui/ScrollArea";
 import AlbumImage from "./AlbumImage";
 
-type Props = {
-	albums: Album[];
-	type?: "wrap" | "scroll";
-	field?: "date" | "artist";
-};
+const AlbumItem = ({
+	album: albumOrId,
+	field,
+}: {
+	album: string | Album;
+	field: "date" | "artist";
+}) => {
+	const { data: album } = useSuspenseQuery({
+		queryKey: ["album", albumOrId],
+		queryFn: () =>
+			deezer({
+				route: `/album/{id}`,
+				input: {
+					id:
+						typeof albumOrId === "string"
+							? albumOrId
+							: String(albumOrId.id),
+				},
+			}),
+		initialData: typeof albumOrId === "string" ? undefined : albumOrId,
+	});
 
-const AlbumList = ({ albums, field = "artist", type = "scroll" }: Props) => {
-	const listAlbums = albums;
-
-	const listItems = listAlbums.map((album, index) => (
-		<div className="mb-4 flex w-[144px] flex-1 flex-col" key={index}>
+	return (
+		<div className="mb-4 flex w-[144px] flex-1 flex-col">
 			<Link href={`/albums/${album.id}`} prefetch={false}>
 				<AlbumImage album={album} size={144} />
-				<p className="mt-1 truncate font-medium">{album.name}</p>
+				<p className="mt-1 truncate font-medium">{album.title}</p>
 				{field === "date" && (
 					<p className="py-1 text-sm text-muted-foreground">
 						{album.release_date}
 					</p>
 				)}
 			</Link>
-			{field === "artist" &&
-				album.artists.slice(0, 1).map((artist, index) => (
-					<Link
-						href={`/artists/${artist.id}`}
-						className="py-1 text-sm text-muted-foreground hover:underline"
-						key={index}
-						prefetch={false}
-					>
-						{artist.name}
-					</Link>
-				))}
+			{field === "artist" && (
+				<Link
+					href={`/artists/${album.artist.id}`}
+					className="py-1 text-sm text-muted-foreground hover:underline"
+					prefetch={false}
+				>
+					{album.artist.name}
+				</Link>
+			)}
 		</div>
+	);
+};
+
+const AlbumList = ({
+	albums,
+	field = "artist",
+	type = "scroll",
+}: {
+	albums: string[] | Album[];
+	type?: "wrap" | "scroll";
+	field?: "date" | "artist";
+}) => {
+	const listAlbums = albums;
+
+	const listItems = listAlbums.map((album, index) => (
+		<AlbumItem key={index} album={album} field={field} />
 	));
 
 	if (type === "scroll") {

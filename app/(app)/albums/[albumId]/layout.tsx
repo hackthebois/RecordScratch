@@ -1,6 +1,9 @@
 import { getAlbum } from "@/app/_api";
+import { Ratings } from "@/components/Ratings";
 import { PathnameTabs } from "@/components/ui/LinkTabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
+import { Suspense } from "react";
 import AlbumMetadata from "./AlbumMetadata";
 
 export async function generateMetadata({
@@ -38,22 +41,33 @@ const Layout = async ({
 	children: React.ReactNode;
 }) => {
 	return (
-		<div className="flex flex-col gap-6">
-			<AlbumMetadata albumId={albumId} />
-			<PathnameTabs
-				tabs={[
-					{
-						label: "Songs",
-						href: `/albums/${albumId}`,
-					},
-					{
-						label: "Reviews",
-						href: `/albums/${albumId}/reviews`,
-					},
-				]}
-			/>
-			{children}
-		</div>
+		<Suspense>
+			<div className="flex flex-col gap-6">
+				<AlbumMetadata albumId={albumId}>
+					<Suspense fallback={<Skeleton className="h-10 w-40" />}>
+						<Ratings
+							resource={{
+								resourceId: albumId,
+								category: "ALBUM",
+							}}
+						/>
+					</Suspense>
+				</AlbumMetadata>
+				<PathnameTabs
+					tabs={[
+						{
+							label: "Songs",
+							href: `/albums/${albumId}`,
+						},
+						{
+							label: "Reviews",
+							href: `/albums/${albumId}/reviews`,
+						},
+					]}
+				/>
+				{children}
+			</div>
+		</Suspense>
 	);
 };
 

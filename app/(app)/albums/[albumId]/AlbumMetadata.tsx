@@ -5,8 +5,16 @@ import { Tag } from "@/components/ui/Tag";
 import { formatMs } from "@/utils/date";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
-export const AlbumMetadata = ({ albumId }: { albumId: string }) => {
+export const AlbumMetadata = ({
+	albumId,
+	children,
+}: {
+	albumId: string;
+	children: React.ReactNode;
+}) => {
 	const { data: album } = useSuspenseQuery({
 		queryKey: ["album", albumId],
 		queryFn: () =>
@@ -34,40 +42,30 @@ export const AlbumMetadata = ({ albumId }: { albumId: string }) => {
 			/>
 			<div className="flex flex-col items-center gap-4 sm:items-start">
 				<p className="text-sm tracking-widest text-muted-foreground">
-					{album.record_type.toUpperCase()}
+					{album.record_type?.toUpperCase()}
 				</p>
 				<h1 className="text-center sm:text-left">{album.title}</h1>
 				<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 					<Tag variant="outline">{album.release_date}</Tag>
-					<Tag variant="outline">
-						{formatMs(album.duration * 1000)}
-					</Tag>
-					{album.genres.data.map((genre, index) => (
+					{album.duration && (
+						<Tag variant="outline">
+							{formatMs(album.duration * 1000)}
+						</Tag>
+					)}
+					{album.genres?.data.map((genre, index) => (
 						<Tag variant="outline" key={index}>
 							{genre.name}
 						</Tag>
 					))}
 				</div>
-				{/* <Suspense fallback={<Skeleton className="h-10 w-40" />}>
-					<Ratings
-						resource={{
-							resourceId: albumId,
-							category: "ALBUM",
-						}}
-					/>
-				</Suspense> */}
-				{/* <div className="flex gap-3">
-					{album..map((artist, index) => (
-						<Link
-							href={`/artists/${artist.id}`}
-							className="text-muted-foreground hover:underline"
-							key={index}
-							prefetch={false}
-						>
-							{artist.name}
-						</Link>
-					))}
-				</div> */}
+				{children}
+				<Link
+					href={`/artists/${album.artist?.id}`}
+					className="text-muted-foreground hover:underline"
+					prefetch={false}
+				>
+					{album.artist?.name}
+				</Link>
 			</div>
 		</div>
 	);

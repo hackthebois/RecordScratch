@@ -3,24 +3,24 @@
 import { Review as ReviewType } from "@/types/rating";
 import { Star } from "lucide-react";
 import Link from "next/link";
-import { RatingItem } from "../RatingItem";
+import { AlbumItem, SongItem } from "../RatingItem";
 import { UserAvatar } from "../UserAvatar";
 
-export const Review = ({ rating, profile, album, name }: ReviewType) => {
+export const Review = ({
+	rating,
+	profile,
+	content,
+	resourceId,
+	category,
+}: ReviewType) => {
+	console.log("rating", rating);
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
-			<RatingItem
-				album={album}
-				name={name}
-				resource={{
-					resourceId: rating.resourceId,
-					category: rating.category,
-				}}
-				showType
-			/>
+			{category === "SONG" && <SongItem id={resourceId} />}
+			{category === "ALBUM" && <AlbumItem id={resourceId} />}
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex items-center gap-1">
-					{Array.from(Array(rating.rating)).map((_, i) => (
+					{Array.from(Array(rating)).map((_, i) => (
 						<Star
 							key={i}
 							size={18}
@@ -28,7 +28,7 @@ export const Review = ({ rating, profile, album, name }: ReviewType) => {
 							fill="#ffb703"
 						/>
 					))}
-					{Array.from(Array(10 - rating.rating)).map((_, i) => (
+					{Array.from(Array(10 - rating)).map((_, i) => (
 						<Star key={i} size={18} color="#ffb703" />
 					))}
 				</div>
@@ -40,7 +40,7 @@ export const Review = ({ rating, profile, album, name }: ReviewType) => {
 					<UserAvatar {...profile} size={30} />
 					<p className="flex">{profile.name}</p>
 				</Link>
-				<p className="whitespace-pre-line text-sm">{rating.content}</p>
+				<p className="whitespace-pre-line text-sm">{content}</p>
 			</div>
 		</div>
 	);
