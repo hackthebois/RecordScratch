@@ -48,11 +48,11 @@ const AlbumItem = ({
 			</Link>
 			{field === "artist" && (
 				<Link
-					href={`/artists/${album.artist.id}`}
+					href={`/artists/${album.artist?.id}`}
 					className="py-1 text-sm text-muted-foreground hover:underline"
 					prefetch={false}
 				>
-					{album.artist.name}
+					{album.artist?.name}
 				</Link>
 			)}
 		</div>

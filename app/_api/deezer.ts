@@ -22,7 +22,12 @@ export const BaseTrackSchema = z.object({
 	title: z.string(),
 	title_short: z.string(),
 	title_version: z.string(),
+	link: z.string().url(),
+	share: z.string().url().optional(),
 	duration: z.number(),
+	track_position: z.number().optional(),
+	disk_number: z.number().optional(),
+	explicit_lyrics: z.boolean(),
 });
 
 export const GenreSchema = z.object({

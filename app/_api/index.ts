@@ -1,6 +1,5 @@
 "use server";
 
-import { appendReviewResource } from "@/app/_api/utils";
 import { db } from "@/db/db";
 import { followers, profile, ratings } from "@/db/schema";
 import { Resource } from "@/types/rating";
@@ -161,14 +160,7 @@ export const getCommunityReviews = cache(
 	}) => {
 		return unstable_cache(
 			async () => {
-				console.log(
-					"getCommunityReviews",
-					resourceId,
-					category,
-					page,
-					limit
-				);
-				const ratingList = await db.query.ratings.findMany({
+				return await db.query.ratings.findMany({
 					where: and(
 						eq(ratings.resourceId, resourceId),
 						eq(ratings.category, category),
@@ -181,7 +173,6 @@ export const getCommunityReviews = cache(
 						profile: true,
 					},
 				});
-				return await appendReviewResource(ratingList);
 			},
 			[`getCommunityReviews:${resourceId}:${page}:${limit}`],
 			{ tags: [resourceId] }

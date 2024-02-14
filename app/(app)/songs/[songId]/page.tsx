@@ -1,4 +1,4 @@
-import { getCommunityReviews, getSong } from "@/app/_api";
+import { getCommunityReviews } from "@/app/_api";
 import {
 	GetInfiniteReviews,
 	InfiniteReviews,
@@ -19,12 +19,10 @@ const Page = async ({
 		songId: string;
 	};
 }) => {
-	const song = await getSong(songId);
 	const resource: Resource = {
 		category: "SONG",
 		resourceId: songId,
 	};
-
 	const getReviews = async (input: GetInfiniteReviews) => {
 		"use server";
 		return await getCommunityReviews({
@@ -38,7 +36,7 @@ const Page = async ({
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
 				<Suspense fallback={<Skeleton className="h-10 w-20" />}>
-					<ReviewButton resource={resource} name={song.name} />
+					<ReviewButton resource={resource} name={""} />
 				</Suspense>
 			</div>
 			<InfiniteReviews
