@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 export const ArtistSchema = z.object({
@@ -196,4 +197,17 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	}
 
 	return DeezerSchema.shape[route].shape["output"].parse(data);
+};
+
+export const useDeezer = <TRoute extends keyof Deezer>({
+	route,
+	input,
+}: {
+	route: TRoute;
+	input: Deezer[TRoute]["input"];
+}) => {
+	return useSuspenseQuery({
+		queryKey: [route, input],
+		queryFn: () => deezer({ route, input }),
+	});
 };

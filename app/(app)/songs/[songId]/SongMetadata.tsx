@@ -1,10 +1,9 @@
 "use client";
 
-import { deezer } from "@/app/_api/deezer";
+import { useDeezer } from "@/app/_api/deezer";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tag } from "@/components/ui/Tag";
 import { formatMs } from "@/utils/date";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -16,15 +15,11 @@ const SongMetadata = ({
 	songId: string;
 	children: React.ReactNode;
 }) => {
-	const { data: song } = useSuspenseQuery({
-		queryKey: ["song", songId],
-		queryFn: () =>
-			deezer({
-				route: `/track/{id}`,
-				input: {
-					id: songId,
-				},
-			}),
+	const { data: song } = useDeezer({
+		route: `/track/{id}`,
+		input: {
+			id: songId,
+		},
 	});
 	const album = song.album;
 

@@ -1,8 +1,7 @@
 "use client";
 
-import { deezer } from "@/app/_api/deezer";
+import { useDeezer } from "@/app/_api/deezer";
 import AlbumList from "@/components/resource/album/AlbumList";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
 const Page = ({
 	params: { artistId },
@@ -11,13 +10,11 @@ const Page = ({
 		artistId: string;
 	};
 }) => {
-	const { data: discography } = useSuspenseQuery({
-		queryKey: ["artist", "discography", artistId],
-		queryFn: () =>
-			deezer({
-				route: `/artist/{id}/albums`,
-				input: { id: artistId, limit: 1000 },
-			}),
+	const { data: discography } = useDeezer({
+		route: `/artist/{id}/albums`,
+		input: {
+			id: artistId,
+		},
 	});
 
 	return <AlbumList albums={discography.data} type="wrap" field="date" />;

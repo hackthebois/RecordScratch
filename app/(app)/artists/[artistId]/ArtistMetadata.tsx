@@ -1,20 +1,15 @@
 "use client";
 
-import { deezer } from "@/app/_api/deezer";
+import { useDeezer } from "@/app/_api/deezer";
 import { Tag } from "@/components/ui/Tag";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import Image from "next/image";
 
 const ArtistMetadata = ({ artistId }: { artistId: string }) => {
-	const { data: artist } = useSuspenseQuery({
-		queryKey: ["artist", artistId],
-		queryFn: () =>
-			deezer({
-				route: "/artist/{id}",
-				input: {
-					id: artistId,
-				},
-			}),
+	const { data: artist } = useDeezer({
+		route: `/artist/{id}`,
+		input: {
+			id: artistId,
+		},
 	});
 
 	return (
