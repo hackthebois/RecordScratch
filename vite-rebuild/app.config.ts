@@ -5,24 +5,6 @@ import { createApp } from "vinxi";
 import { input } from "vinxi/plugins/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-/** @returns {import('vinxi').RouterSchemaInput} */
-function trpcRouter() {
-	return {
-		name: "server",
-		base: "/trpc",
-		type: "http",
-		handler: fileURLToPath(new URL("./handler.js", import.meta.url)),
-		target: "server",
-		plugins: () => [
-			input(
-				"#vinxi/trpc/router",
-				fileURLToPath(new URL("./app/server/root.ts", import.meta.url))
-			),
-			tsconfigPaths(),
-		],
-	};
-}
-
 export default createApp({
 	server: {
 		routeRules: {
@@ -38,7 +20,20 @@ export default createApp({
 			dir: "./public",
 			base: "/",
 		},
-		trpcRouter(),
+		{
+			name: "server",
+			base: "/trpc",
+			type: "http",
+			handler: fileURLToPath(new URL("./handler.js", import.meta.url)),
+			target: "server",
+			plugins: () => [
+				input(
+					"#vinxi/trpc/router",
+					fileURLToPath(new URL("./app/server/root.ts", import.meta.url))
+				),
+				tsconfigPaths(),
+			],
+		},
 		{
 			name: "client",
 			type: "spa",
