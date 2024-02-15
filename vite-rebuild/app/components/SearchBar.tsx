@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
-import { ScrollArea } from "@/components/ui/ScrollArea";
-import { useDebounce } from "@/utils/hooks";
-import { useRecents } from "@/utils/recents";
+import { Dialog, DialogContent, DialogTrigger } from "app/components/ui/Dialog";
+import { ScrollArea } from "app/components/ui/ScrollArea";
+import { useDebounce } from "app/utils/hooks";
+import { useRecents } from "app/utils/recents";
 // import { useAuth } from "@clerk/nextjs";
-import { Artist, deezer } from "@/utils/deezer";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { Artist, deezer } from "app/utils/deezer";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { RatingItem } from "./RatingItem";

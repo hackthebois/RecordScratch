@@ -1,7 +1,7 @@
-import { Resource } from "@/types/rating";
-import { Album, deezer } from "@/utils/deezer";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Resource } from "app/types/rating";
+import { Album, deezer } from "app/utils/deezer";
 import AlbumImage from "./resource/album/AlbumImage";
 import { Skeleton } from "./ui/skeleton";
 

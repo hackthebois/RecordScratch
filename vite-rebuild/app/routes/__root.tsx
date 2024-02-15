@@ -1,36 +1,26 @@
-import SearchBar from "@/components/SearchBar";
-import { Discord } from "@/components/icons/Discord";
-import { Button } from "@/components/ui/Button";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/Popover";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import SearchBar from "app/components/SearchBar";
+import { Discord } from "app/components/icons/Discord";
+import { Button } from "app/components/ui/Button";
+import { Popover, PopoverContent, PopoverTrigger } from "app/components/ui/Popover";
+import { TRPCReactProvider } from "app/trpc/react";
 import { Disc3, Github, Menu } from "lucide-react";
-
-const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
 	component: () => (
-		<QueryClientProvider client={queryClient}>
+		<TRPCReactProvider>
 			<header className="flex h-14 w-screen items-center justify-center border-b">
 				<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-6">
 					<div className="flex items-center gap-3">
 						<Link to="/" className="flex items-center gap-3">
-							<Button
-								size="icon"
-								variant="outline"
-								aria-label="Home"
-							>
+							<Button size="icon" variant="outline" aria-label="Home">
 								<Disc3 size={22} />
 							</Button>
 						</Link>
-						<SearchBar/>
+						<SearchBar />
 					</div>
-				
+
 					<div className="flex items-center gap-3">
 						<Popover>
 							<PopoverTrigger asChild>
@@ -60,10 +50,7 @@ export const Route = createRootRoute({
 								</div>
 								<hr className="my-2" />
 								<div className="flex items-center gap-2">
-									<Link
-										to="/terms"
-										className="text-sm text-muted-foreground"
-									>
+									<Link to="/terms" className="text-sm text-muted-foreground">
 										Terms
 									</Link>
 									<Link
@@ -82,6 +69,6 @@ export const Route = createRootRoute({
 				<Outlet />
 			</main>
 			<TanStackRouterDevtools />
-		</QueryClientProvider>
+		</TRPCReactProvider>
 	),
 });

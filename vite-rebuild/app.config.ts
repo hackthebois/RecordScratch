@@ -1,7 +1,27 @@
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import reactRefresh from "@vitejs/plugin-react";
+import { fileURLToPath } from "url";
 import { createApp } from "vinxi";
+import { input } from "vinxi/plugins/config";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+/** @returns {import('vinxi').RouterSchemaInput} */
+function trpcRouter() {
+	return {
+		name: "server",
+		base: "/trpc",
+		type: "http",
+		handler: fileURLToPath(new URL("./handler.js", import.meta.url)),
+		target: "server",
+		plugins: () => [
+			input(
+				"#vinxi/trpc/router",
+				fileURLToPath(new URL("./app/server/root.ts", import.meta.url))
+			),
+			tsconfigPaths(),
+		],
+	};
+}
 
 export default createApp({
 	server: {
@@ -18,6 +38,7 @@ export default createApp({
 			dir: "./public",
 			base: "/",
 		},
+		trpcRouter(),
 		{
 			name: "client",
 			type: "spa",
