@@ -3,11 +3,6 @@ import { z } from "zod";
 
 export const env = createEnv({
 	clientPrefix: "VITE_",
-	server: {
-		DATABASE_URL: z.string().min(1),
-		UPSTASH_REDIS_REST_URL: z.string().min(1),
-		UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
-	},
 	client: {
 		VITE_CLERK_PUBLISHABLE_KEY: z.string().min(1),
 		VITE_CLERK_SIGN_IN_URL: z.string().min(1),
@@ -19,5 +14,5 @@ export const env = createEnv({
 		VITE_GITHUB_URL: z.string().url(),
 		VITE_DISCORD_URL: z.string().url(),
 	},
-	runtimeEnv: import.meta.env ?? process.env,
+	runtimeEnv: import.meta.env,
 });

@@ -1,16 +1,17 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import SuperJSON from "superjson";
+import { db } from "./db";
 
-// export const createTRPCContext = async (opts: { userId: string | null }) => {
-// 	const userId = opts.userId ?? null;
+export const createTRPCContext = async () => {
+	const userId = null;
 
-// 	return {
-// 		db,
-// 		userId,
-// 	};
-// };
+	return {
+		db,
+		userId,
+	};
+};
 
-const t = initTRPC.create({
+const t = initTRPC.context<typeof createTRPCContext>().create({
 	transformer: SuperJSON,
 	// errorFormatter({ shape, error }) {
 	// 	return {

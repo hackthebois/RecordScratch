@@ -1,17 +1,17 @@
 import appRouter from "#vinxi/trpc/router";
+import { createTRPCContext } from "@/server/trpc";
 import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import { fromNodeMiddleware } from "vinxi/http";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const handler = createHTTPHandler({
 	router: appRouter,
-
-	createContext() {
-		return {};
-	},
+	createContext: createTRPCContext,
 });
 
 export default fromNodeMiddleware((req, res) => {
-	console.log(req.url);
 	req.url = req.url.replace(import.meta.env.BASE_URL, "");
 	return handler(req, res);
 });
