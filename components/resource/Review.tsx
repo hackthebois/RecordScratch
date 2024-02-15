@@ -13,7 +13,6 @@ export const Review = ({
 	resourceId,
 	category,
 }: ReviewType) => {
-	console.log("rating", rating);
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
 			<RatingItem resource={{ resourceId, category }} />

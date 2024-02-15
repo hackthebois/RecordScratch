@@ -70,6 +70,8 @@ export const RatingItem = ({
 		);
 	}
 
+	console.log(data);
+
 	if (data) {
 		return (
 			<Link
