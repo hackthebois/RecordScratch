@@ -5,11 +5,11 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vinxi dev",
-		"build": "tsc && vinxi build",
-		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-		"preview": "vite preview"
+		"build": "vinxi build",
+		"start": "vinxi start"
 	},
 	"dependencies": {
+		"@planetscale/database": "^1.16.0",
 		"@radix-ui/react-dialog": "^1.0.5",
 		"@radix-ui/react-label": "^2.0.2",
 		"@radix-ui/react-popover": "^1.0.7",
@@ -19,11 +19,18 @@
 		"@tanstack/react-query": "^5.20.5",
 		"@tanstack/react-router": "^1.16.2",
 		"@tanstack/router-devtools": "^1.16.2",
+		"@trpc/client": "next",
+		"@trpc/react-query": "next",
+		"@trpc/server": "next",
+		"@vinxi/plugin-references": "^0.0.29",
 		"class-variance-authority": "^0.7.0",
+		"drizzle-orm": "^0.29.3",
+		"drizzle-zod": "^0.5.1",
 		"lucide-react": "^0.331.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.50.1",
+		"superjson": "^2.2.1",
 		"tailwind-merge": "^2.2.1",
 		"tailwindcss-animate": "^1.0.7",
 		"vinxi": "^0.3.3",
