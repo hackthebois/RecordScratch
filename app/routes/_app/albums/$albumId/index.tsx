@@ -19,8 +19,9 @@ import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app/albums/$albumId/")({
 	component: Album,
+	pendingComponent: () => <></>,
 	loader: ({ params: { albumId } }) => {
-		return queryClient.ensureQueryData(
+		queryClient.ensureQueryData(
 			getQueryOptions({
 				route: "/album/{id}",
 				input: { id: albumId },
@@ -68,7 +69,13 @@ function Album() {
 							</Tag>
 						))}
 					</div>
-					<Link to="/" className="text-muted-foreground hover:underline">
+					<Link
+						to="/artists/$artistId"
+						params={{
+							artistId: String(album.artist?.id),
+						}}
+						className="text-muted-foreground hover:underline"
+					>
 						{album.artist?.name}
 					</Link>
 					<Suspense fallback={<Skeleton className="w-24 h-8" />}>

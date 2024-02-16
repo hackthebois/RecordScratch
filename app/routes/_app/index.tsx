@@ -52,5 +52,5 @@ export const Route = createFileRoute("/_app/")({
 		};
 	},
 	component: Index,
-	pendingComponent: () => <div>Loading...</div>,
+	pendingComponent: () => <></>,
 });

@@ -43,7 +43,13 @@ const AlbumItem = ({
 				)}
 			</Link>
 			{field === "artist" && (
-				<Link to={"/"} className="py-1 text-sm text-muted-foreground hover:underline">
+				<Link
+					to="/artists/$artistId"
+					params={{
+						artistId: String(album.artist?.id),
+					}}
+					className="py-1 text-sm text-muted-foreground hover:underline"
+				>
 					{album.artist?.name}
 				</Link>
 			)}

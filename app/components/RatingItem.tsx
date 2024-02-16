@@ -67,25 +67,42 @@ export const RatingItem = ({
 		);
 	}
 
+	const link =
+		category === "SONG"
+			? {
+					to: `/albums/$albumId/songs/$songId`,
+					params: {
+						albumId: String(data?.album.id),
+						songId: resourceId,
+					},
+				}
+			: {
+					to: `/albums/$albumId`,
+					params: {
+						albumId: resourceId,
+					},
+				};
+
 	if (data) {
 		return (
-			<Link
-				onClick={onClick}
-				to={`/${category.toLowerCase()}/${resourceId}`}
-				className="flex flex-row items-center gap-4 rounded"
-			>
+			<Link onClick={onClick} {...link} className="flex flex-row items-center gap-4 rounded">
 				<div className="relative h-16 w-16 min-w-[64px] rounded">
 					<AlbumImage album={data.album} size={64} />
 				</div>
 				<div className="min-w-0 flex-1">
 					<p className="truncate font-medium">{data.name}</p>
-				<div className="flex gap-1">
+					<div className="flex gap-1">
 						<button
 							key={data.album.artist?.id}
 							onClick={(e) => {
 								e.preventDefault();
 								close();
-								// navigate(`/artists/${data.album.artist?.id}`);
+								navigate({
+									to: "/artists/$artistId",
+									params: {
+										artistId: String(data.album.artist?.id),
+									},
+								});
 								navigate({
 									to: "/",
 								});
