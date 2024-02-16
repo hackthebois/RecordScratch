@@ -1,4 +1,4 @@
-import { Album } from "app/utils/deezer";
+import { Album } from "@/utils/deezer";
 
 const AlbumImage = ({ album, size }: { album: Album; size: number }) => {
 	return (

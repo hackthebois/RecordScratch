@@ -1,4 +1,4 @@
-import { followers } from "app/server/db/schema";
+import { followers } from "@/server/db/schema";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 

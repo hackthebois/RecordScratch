@@ -1,6 +1,6 @@
-import { followers, ratings } from "app/server/db/schema";
-import { protectedProcedure, publicProcedure, router } from "app/server/trpc";
-import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "app/types/rating";
+import { followers, ratings } from "@/server/db/schema";
+import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
+import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@/types/rating";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull } from "drizzle-orm";
 import { z } from "zod";
 

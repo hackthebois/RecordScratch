@@ -1,4 +1,4 @@
-import { ratings } from "app/server/db/schema";
+import { ratings } from "@/server/db/schema";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Profile } from "./profile";

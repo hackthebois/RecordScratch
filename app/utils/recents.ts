@@ -1,5 +1,5 @@
-import { Profile } from "app/types/profile";
-import { Album, Artist, Track } from "app/utils/deezer";
+import { Profile } from "@/types/profile";
+import { Album, Artist, Track } from "@/utils/deezer";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

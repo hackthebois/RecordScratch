@@ -1,7 +1,7 @@
+import { followers, profile, ratings } from "@/server/db/schema";
+import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
 import clerkClient from "@clerk/clerk-sdk-node";
-import { followers, profile, ratings } from "app/server/db/schema";
-import { protectedProcedure, publicProcedure, router } from "app/server/trpc";
 import { and, count, eq, like, or, sql } from "drizzle-orm";
 import { z } from "zod";
 

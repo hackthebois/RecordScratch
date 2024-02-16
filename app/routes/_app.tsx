@@ -1,11 +1,11 @@
+import SearchBar from "@/components/SearchBar";
 import UserButton from "@/components/UserButton";
+import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
+import { Button } from "@/components/ui/Button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { env } from "@/env";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
-import SearchBar from "app/components/SearchBar";
-import { Discord } from "app/components/icons/Discord";
-import { Button } from "app/components/ui/Button";
-import { Popover, PopoverContent, PopoverTrigger } from "app/components/ui/Popover";
 import { Disc3, Menu } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({

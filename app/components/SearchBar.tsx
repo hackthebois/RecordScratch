@@ -1,18 +1,17 @@
-import { Dialog, DialogContent, DialogTrigger } from "app/components/ui/Dialog";
-import { ScrollArea } from "app/components/ui/ScrollArea";
-import { useDebounce } from "app/utils/hooks";
-import { useRecents } from "app/utils/recents";
-// import { useAuth } from "@clerk/nextjs";
+import { ProfileItem } from "@/components/ProfileItem";
+import { RatingItem } from "@/components/RatingItem";
+import { Button } from "@/components/ui/Button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
+import { ScrollArea } from "@/components/ui/ScrollArea";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api } from "@/trpc/react";
+import { Artist, deezer } from "@/utils/deezer";
+import { useDebounce } from "@/utils/hooks";
+import { useRecents } from "@/utils/recents";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Artist, deezer } from "app/utils/deezer";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
-import { ProfileItem } from "./ProfileItem";
-import { RatingItem } from "./RatingItem";
-import { Button } from "./ui/Button";
-import { Tabs, TabsList, TabsTrigger } from "./ui/Tabs";
 
 const ArtistItem = ({ artist, onClick }: { artist: Artist; onClick: () => void }) => {
 	const artistImage = artist.picture_small;
