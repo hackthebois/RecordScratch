@@ -30,7 +30,7 @@ const AlbumItem = ({
 	return (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col">
 			<Link
-				to={"/album/$albumId"}
+				to={"/albums/$albumId"}
 				params={{
 					albumId: String(album.id),
 				}}

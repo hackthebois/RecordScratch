@@ -8,27 +8,35 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
+import { queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
-import { deezer } from "@/utils/deezer";
+import { getQueryOptions } from "@/utils/deezer";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
-import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 
-export const Route = createFileRoute("/_app/album/$albumId/")({
-	component: LayoutComponent,
-	loader: ({ params: { albumId } }) =>
-		deezer({
-			route: `/album/{id}`,
-			input: {
-				id: albumId,
-			},
-		}),
+export const Route = createFileRoute("/_app/albums/$albumId/")({
+	component: Album,
+	loader: ({ params: { albumId } }) => {
+		return queryClient.ensureQueryData(
+			getQueryOptions({
+				route: "/album/{id}",
+				input: { id: albumId },
+			})
+		);
+	},
 });
 
-function LayoutComponent() {
-	// const { albumId } = Route.useParams();
-	const album = Route.useLoaderData();
+function Album() {
+	const { albumId } = Route.useParams();
+	const { data: album } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/album/{id}",
+			input: { id: albumId },
+		})
+	);
 	const resource: Resource = {
 		resourceId: String(album.id),
 		category: "ALBUM",
@@ -103,7 +111,6 @@ function LayoutComponent() {
 					</div>
 				</TabsContent>
 			</Tabs>
-			<Outlet />
 		</div>
 	);
 }

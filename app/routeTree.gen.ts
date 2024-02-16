@@ -17,7 +17,8 @@ import { Route as OnboardImport } from './routes/onboard'
 import { Route as AppImport } from './routes/_app'
 import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as AppHandleIndexImport } from './routes/_app/$handle/index'
-import { Route as AppAlbumAlbumIdIndexImport } from './routes/_app/album/$albumId/index'
+import { Route as AppAlbumsAlbumIdIndexImport } from './routes/_app/albums/$albumId/index'
+import { Route as AppAlbumsAlbumIdSongsSongIdIndexImport } from './routes/_app/albums/$albumId/songs/$songId/index'
 
 // Create Virtual Routes
 
@@ -64,10 +65,16 @@ const AppHandleIndexRoute = AppHandleIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
-const AppAlbumAlbumIdIndexRoute = AppAlbumAlbumIdIndexImport.update({
-  path: '/album/$albumId/',
+const AppAlbumsAlbumIdIndexRoute = AppAlbumsAlbumIdIndexImport.update({
+  path: '/albums/$albumId/',
   getParentRoute: () => AppRoute,
 } as any)
+
+const AppAlbumsAlbumIdSongsSongIdIndexRoute =
+  AppAlbumsAlbumIdSongsSongIdIndexImport.update({
+    path: '/albums/$albumId/songs/$songId/',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -101,8 +108,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHandleIndexImport
       parentRoute: typeof AppImport
     }
-    '/_app/album/$albumId/': {
-      preLoaderRoute: typeof AppAlbumAlbumIdIndexImport
+    '/_app/albums/$albumId/': {
+      preLoaderRoute: typeof AppAlbumsAlbumIdIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/albums/$albumId/songs/$songId/': {
+      preLoaderRoute: typeof AppAlbumsAlbumIdSongsSongIdIndexImport
       parentRoute: typeof AppImport
     }
   }
@@ -117,7 +128,8 @@ export const routeTree = rootRoute.addChildren([
     AppTermsLazyRoute,
     AppIndexRoute,
     AppHandleIndexRoute,
-    AppAlbumAlbumIdIndexRoute,
+    AppAlbumsAlbumIdIndexRoute,
+    AppAlbumsAlbumIdSongsSongIdIndexRoute,
   ]),
   OnboardRoute,
 ])
