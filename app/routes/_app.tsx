@@ -1,9 +1,11 @@
+import Github from "@/components/icons/Github";
+import { env } from "@/env";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import SearchBar from "app/components/SearchBar";
 import { Discord } from "app/components/icons/Discord";
 import { Button } from "app/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "app/components/ui/Popover";
-import { Disc3, Github, Menu } from "lucide-react";
+import { Disc3, Menu } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({
 	component: LayoutComponent,
@@ -33,20 +35,20 @@ function LayoutComponent() {
 								<div className="flex flex-col gap-2 text-sm font-semibold">
 									<Link to="/roadmap">Roadmap</Link>
 									<div className="flex gap-2">
-										<Link
-											href={"https://google.com"}
+										<a
+											href={env.VITE_DISCORD_URL}
 											className="p-1"
 											target="_blank"
 										>
 											<Discord size={23} />
-										</Link>
-										<Link
-											href={"https://google.com"}
+										</a>
+										<a
+											href={env.VITE_GITHUB_URL}
 											className="p-1"
 											target="_blank"
 										>
 											<Github size={22} />
-										</Link>
+										</a>
 									</div>
 								</div>
 								<hr className="my-2" />

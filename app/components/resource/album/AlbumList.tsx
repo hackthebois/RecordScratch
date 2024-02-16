@@ -60,22 +60,22 @@ const AlbumList = ({
 	type?: "wrap" | "scroll";
 	field?: "date" | "artist";
 }) => {
-	const listAlbums = albums;
-
-	const listItems = listAlbums.map((album, index) => (
-		<AlbumItem key={index} album={album} field={field} />
-	));
-
 	if (type === "scroll") {
 		return (
-			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8 lg:hidden">
-				<div className="flex gap-4 px-4 sm:px-8">{listItems}</div>
+			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
+				<div className="flex gap-4 px-4 sm:px-8">
+					{albums.map((album, index) => (
+						<AlbumItem key={index} album={album} field={field} />
+					))}
+				</div>
 			</ScrollArea>
 		);
 	} else {
 		return (
 			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-				{listItems}
+				{albums.map((album, index) => (
+					<AlbumItem key={index} album={album} field={field} />
+				))}
 			</div>
 		);
 	}
