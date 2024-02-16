@@ -1,12 +1,12 @@
+import { RatingDialog } from "@/components/RatingDialog";
+import { SignInRateButton } from "@/components/SignInRateButton";
+import { RatingInfo } from "@/components/ui/RatingInfo";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { Track } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { RatingDialog } from "./RatingDialog";
-import { SignInRateButton } from "./SignInRateButton";
-import { RatingInfo } from "./ui/RatingInfo";
-import { Skeleton } from "./ui/Skeleton";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (
