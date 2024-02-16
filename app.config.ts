@@ -27,11 +27,11 @@ export default createApp({
 			handler: fileURLToPath(new URL("./handler.js", import.meta.url)),
 			target: "server",
 			plugins: () => [
+				tsconfigPaths(),
 				input(
 					"#vinxi/trpc/router",
 					fileURLToPath(new URL("./app/server/root.ts", import.meta.url))
 				),
-				tsconfigPaths(),
 			],
 		},
 		{
@@ -39,7 +39,7 @@ export default createApp({
 			type: "spa",
 			handler: "index.html",
 			target: "browser",
-			plugins: () => [reactRefresh(), TanStackRouterVite(), tsconfigPaths()],
+			plugins: () => [tsconfigPaths(), reactRefresh(), TanStackRouterVite()],
 		},
 	],
 });
