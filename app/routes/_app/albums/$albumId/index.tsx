@@ -1,9 +1,9 @@
+import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
 import { RatingDialog } from "@/components/RatingDialog";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
 import { SignInReviewButton } from "@/components/SignInReviewButton";
 import SongTable from "@/components/SongTable";
-import { InfiniteCommunityReviews } from "@/components/resource/InfiniteCommunityReviews";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -39,6 +39,7 @@ function Album() {
 		})
 	);
 	const resource: Resource = {
+		parentId: String(album.artist?.id),
 		resourceId: String(album.id),
 		category: "ALBUM",
 	};
@@ -103,12 +104,7 @@ function Album() {
 					<div className="flex w-full flex-col gap-4">
 						<div className="flex w-full gap-2">
 							<SignedIn>
-								<ReviewDialog
-									resource={{
-										resourceId: String(album.id),
-										category: "ALBUM",
-									}}
-								/>
+								<ReviewDialog resource={resource} />
 							</SignedIn>
 							<SignedOut>
 								<SignInReviewButton />

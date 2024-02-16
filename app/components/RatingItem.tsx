@@ -1,13 +1,12 @@
-import AlbumImage from "@/components/resource/album/AlbumImage";
-import { Skeleton } from "@/components/ui/Skeleton";
+import AlbumImage from "@/components/album/AlbumImage";
 import { Resource } from "@/types/rating";
-import { Album, deezer } from "@/utils/deezer";
-import { useQuery } from "@tanstack/react-query";
+import { Album, getQueryOptions } from "@/utils/deezer";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 
 export const RatingItem = ({
 	initial,
-	resource: { resourceId, category },
+	resource,
 	showType,
 	onClick,
 }: {
@@ -15,110 +14,77 @@ export const RatingItem = ({
 		album: Album;
 		name: string;
 	};
-	resource: {
-		resourceId: string;
-		category: Resource["category"];
-	};
+	resource: Resource;
 	showType?: boolean;
 	onClick?: () => void;
 }) => {
-	const queryKey = [category.toLowerCase(), resourceId];
-	const { data, isLoading } = useQuery({
-		queryKey,
-		queryFn: async () => {
-			if (category === "SONG") {
-				const song = await deezer({
-					route: `/track/{id}`,
-					input: {
-						id: resourceId,
-					},
-				});
-				return {
-					album: song.album,
-					name: song.title,
-				};
-			} else {
-				const album = await deezer({
-					route: `/album/{id}`,
-					input: {
-						id: resourceId,
-					},
-				});
-				return {
-					album,
-					name: album.title,
-				};
-			}
-		},
-		initialData: initial,
+	const { data: album } = useSuspenseQuery({
+		...getQueryOptions({
+			route: "/album/{id}",
+			input: {
+				id: resource.category === "SONG" ? resource.parentId : resource.resourceId,
+			},
+		}),
+		initialData: initial?.album,
 	});
+
+	const name =
+		resource.category === "SONG"
+			? album.tracks?.data.find((track) => track.id === Number(resource.resourceId))?.title
+			: album.title;
 
 	const navigate = useNavigate();
 
-	if (isLoading) {
-		return (
-			<div className="flex flex-row items-center gap-4 rounded">
-				<Skeleton className="h-16 w-16 rounded" />
-				<div className="flex flex-1 flex-col gap-1">
-					<Skeleton className="h-4 w-32" />
-					<Skeleton className="h-4 w-16" />
-				</div>
-			</div>
-		);
-	}
-
 	const link =
-		category === "SONG"
+		resource.category === "SONG"
 			? {
 					to: `/albums/$albumId/songs/$songId`,
 					params: {
-						albumId: String(data?.album.id),
-						songId: resourceId,
+						albumId: String(album.id),
+						songId: resource.resourceId,
 					},
 				}
 			: {
 					to: `/albums/$albumId`,
 					params: {
-						albumId: resourceId,
+						albumId: resource.resourceId,
 					},
 				};
 
-	if (data) {
-		return (
-			<Link onClick={onClick} {...link} className="flex flex-row items-center gap-4 rounded">
-				<div className="relative h-16 w-16 min-w-[64px] rounded">
-					<AlbumImage album={data.album} size={64} />
+	return (
+		<Link onClick={onClick} {...link} className="flex flex-row items-center gap-4 rounded">
+			<div className="relative h-16 w-16 min-w-[64px] rounded">
+				<AlbumImage album={album} size={64} />
+			</div>
+			<div className="min-w-0 flex-1">
+				<p className="truncate font-medium">{name}</p>
+				<div className="flex gap-1">
+					<button
+						key={album.artist?.id}
+						onClick={(e) => {
+							e.preventDefault();
+							close();
+							navigate({
+								to: "/artists/$artistId",
+								params: {
+									artistId: String(album.artist?.id),
+								},
+							});
+							navigate({
+								to: "/",
+							});
+						}}
+						className="truncate py-1 text-sm text-muted-foreground hover:underline"
+					>
+						{album.artist?.name}
+					</button>
+					{showType && (
+						<p className="truncate py-1 text-sm text-muted-foreground">
+							{resource.category === "SONG" ? "• Song" : "• Album"}
+						</p>
+					)}
 				</div>
-				<div className="min-w-0 flex-1">
-					<p className="truncate font-medium">{data.name}</p>
-					<div className="flex gap-1">
-						<button
-							key={data.album.artist?.id}
-							onClick={(e) => {
-								e.preventDefault();
-								close();
-								navigate({
-									to: "/artists/$artistId",
-									params: {
-										artistId: String(data.album.artist?.id),
-									},
-								});
-								navigate({
-									to: "/",
-								});
-							}}
-							className="truncate py-1 text-sm text-muted-foreground hover:underline"
-						>
-							{data.album.artist?.name}
-						</button>
-						{showType && (
-							<p className="truncate py-1 text-sm text-muted-foreground">
-								{category === "SONG" ? "• Song" : "• Album"}
-							</p>
-						)}
-					</div>
-				</div>
-			</Link>
-		);
-	}
+			</div>
+		</Link>
+	);
 };

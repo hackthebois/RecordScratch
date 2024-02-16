@@ -27,6 +27,7 @@ export const profileRelations = relations(profile, ({ many }) => ({
 export const ratings = mysqlTable(
 	"ratings",
 	{
+		parentId: varchar("parent_id", { length: 256 }).notNull(),
 		resourceId: varchar("resource_id", { length: 256 }).notNull(),
 		userId: varchar("user_id", { length: 256 }).notNull(),
 		rating: tinyint("rating").notNull(),

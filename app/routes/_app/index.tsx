@@ -1,5 +1,6 @@
+import { InfiniteFeedReviews } from "@/components/InfiniteFeedReviews";
+import AlbumList from "@/components/album/AlbumList";
 import { Discord } from "@/components/icons/Discord";
-import AlbumList from "@/components/resource/album/AlbumList";
 import { buttonVariants } from "@/components/ui/Button";
 import { env } from "@/env";
 import { api, apiUtils } from "@/trpc/react";
@@ -37,9 +38,7 @@ const Index = () => {
 				</div>
 			)}
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
-			{/* <Suspense>
-				<Feed />
-			</Suspense> */}
+			<InfiniteFeedReviews pageLimit={20} />
 		</div>
 	);
 };

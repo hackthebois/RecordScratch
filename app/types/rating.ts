@@ -17,12 +17,14 @@ export const RatingSchema = createSelectSchema(ratings, {
 export type Rating = z.infer<typeof RatingSchema>;
 
 export const ResourceSchema = RatingSchema.pick({
+	parentId: true,
 	resourceId: true,
 	category: true,
 });
 export type Resource = z.infer<typeof ResourceSchema>;
 
 export const RateFormSchema = RatingSchema.pick({
+	parentId: true,
 	resourceId: true,
 	category: true,
 	rating: true,
@@ -32,6 +34,7 @@ export const RateFormSchema = RatingSchema.pick({
 export type RateForm = z.infer<typeof RateFormSchema>;
 
 export const ReviewFormSchema = RatingSchema.pick({
+	parentId: true,
 	resourceId: true,
 	category: true,
 	content: true,

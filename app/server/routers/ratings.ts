@@ -223,26 +223,28 @@ export const ratingsRouter = router({
 	}),
 	rate: protectedProcedure
 		.input(RateFormSchema)
-		.mutation(async ({ ctx: { db, userId }, input: { rating, resourceId, category } }) => {
-			if (rating === null) {
-				await db
-					.delete(ratings)
-					.where(
-						and(
-							eq(ratings.userId, userId),
-							eq(ratings.resourceId, resourceId),
-							eq(ratings.category, category)
-						)
-					);
-			} else {
-				await db
-					.insert(ratings)
-					.values({ rating, resourceId, category, userId })
-					.onDuplicateKeyUpdate({
-						set: { rating, resourceId, category, userId },
-					});
+		.mutation(
+			async ({ ctx: { db, userId }, input: { rating, resourceId, parentId, category } }) => {
+				if (rating === null) {
+					await db
+						.delete(ratings)
+						.where(
+							and(
+								eq(ratings.userId, userId),
+								eq(ratings.resourceId, resourceId),
+								eq(ratings.category, category)
+							)
+						);
+				} else {
+					await db
+						.insert(ratings)
+						.values({ rating, resourceId, category, userId, parentId })
+						.onDuplicateKeyUpdate({
+							set: { rating, resourceId, category, userId, parentId },
+						});
+				}
 			}
-		}),
+		),
 	review: protectedProcedure
 		.input(ReviewFormSchema)
 		.mutation(async ({ ctx: { db, userId }, input }) => {
