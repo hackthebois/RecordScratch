@@ -1,7 +1,7 @@
+import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { api } from "@/trpc/react";
 import { useAuth } from "@clerk/clerk-react";
-import { Button } from "./ui/Button";
-import { Skeleton } from "./ui/Skeleton";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
 	const { userId } = useAuth();
