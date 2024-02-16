@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Profile } from "./profile";
 
 export const ResourceRatingSchema = z.object({
+	resourceId: z.string(),
 	average: z.string().nullable(),
 	total: z.number(),
 });

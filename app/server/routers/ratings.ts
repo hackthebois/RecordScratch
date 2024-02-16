@@ -5,7 +5,7 @@ import { and, avg, count, desc, eq, gt, inArray, isNotNull } from "drizzle-orm";
 import { z } from "zod";
 
 const PaginatedInput = z.object({
-	page: z.number().optional(),
+	cursor: z.number().min(1).max(100).optional(),
 	limit: z.number().optional(),
 });
 
@@ -113,23 +113,29 @@ export const ratingsRouter = router({
 				ctx: { db },
 				input: {
 					limit = 20,
-					page = 1,
+					cursor = 0,
 					resource: { resourceId, category },
 				},
 			}) => {
-				return await db.query.ratings.findMany({
+				const items = await db.query.ratings.findMany({
 					where: and(
 						eq(ratings.resourceId, resourceId),
 						eq(ratings.category, category),
 						isNotNull(ratings.content)
 					),
-					limit,
-					offset: (page - 1) * limit,
+					limit: limit + 1,
+					offset: cursor,
 					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
 					with: {
 						profile: true,
 					},
 				});
+				let nextCursor: typeof cursor | undefined = undefined;
+				if (items.length > limit) {
+					items.pop();
+					nextCursor = cursor + items.length;
+				}
+				return { items, nextCursor };
 			}
 		),
 	}),

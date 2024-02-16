@@ -22,61 +22,48 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { api } from "@/trpc/react";
-import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
-import { useQueryClient } from "@tanstack/react-query";
+import { RateForm, RateFormSchema, Resource } from "@/types/rating";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
 import { Form, FormControl, FormField, FormItem } from "./ui/Form";
 
-export const RatingDialog = ({
-	resource,
-	initialRating,
-	name,
-}: {
-	resource: Resource;
-	name?: string;
-	initialRating?: Rating;
-}) => {
-	const queryClient = useQueryClient();
-	const { mutate: rateMutation } = api.ratings.rate.useMutation();
-
-	const invalidateQuery = () => {
-		queryClient.invalidateQueries({
-			queryKey: ["rating"],
-		});
-	};
+export const RatingDialog = ({ resource, name }: { resource: Resource; name?: string }) => {
+	const utils = api.useUtils();
+	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
+	const { mutate: rateMutation } = api.ratings.rate.useMutation({
+		onSettled: () => {
+			utils.ratings.user.get.invalidate(resource);
+			utils.ratings.get.invalidate(resource);
+		},
+	});
 
 	const [open, setOpen] = useState(false);
 
 	const form = useForm<RateForm>({
 		resolver: zodResolver(RateFormSchema),
-		defaultValues: { ...resource, ...initialRating },
+		defaultValues: { ...resource, ...userRating },
 	});
 
 	const onSubmit = async (rate: RateForm) => {
 		rateMutation(rate);
-		invalidateQuery();
 		setOpen(false);
 	};
 
 	const clearRating = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-		if (!initialRating) return;
+		if (!userRating) return;
 		rateMutation({
 			...resource,
 			rating: null,
 		});
-		invalidateQuery();
 		setOpen(false);
 	};
 
 	useEffect(() => {
-		form.reset({ ...resource, ...initialRating });
-	}, [initialRating]);
-
-	const rating = form.watch("rating");
+		form.reset({ ...resource, ...userRating });
+	}, [userRating, form, resource]);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -84,11 +71,11 @@ export const RatingDialog = ({
 				<Button variant="outline" size="sm">
 					<Star
 						color="#fb8500"
-						fill={rating ? "#fb8500" : "none"}
+						fill={userRating ? "#fb8500" : "none"}
 						size={18}
 						className="mr-2"
 					/>
-					{rating ? rating : "Rate"}
+					{userRating ? userRating.rating : "Rate"}
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
@@ -124,8 +111,8 @@ export const RatingDialog = ({
 								>
 									Rate
 								</Button>
-								{initialRating &&
-									(initialRating.content ? (
+								{userRating &&
+									(userRating.content ? (
 										<AlertDialog>
 											<AlertDialogTrigger asChild>
 												<Button variant="ghost" className="mt-2" size="sm">

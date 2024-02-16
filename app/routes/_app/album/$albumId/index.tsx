@@ -1,9 +1,19 @@
+import { RatingDialog } from "@/components/RatingDialog";
+import { ReviewDialog } from "@/components/ReviewDialog";
+import { SignInRateButton } from "@/components/SignInRateButton";
+import { SignInReviewButton } from "@/components/SignInReviewButton";
 import SongTable from "@/components/SongTable";
+import { InfiniteCommunityReviews } from "@/components/resource/InfiniteCommunityReviews";
+import { RatingInfo } from "@/components/ui/RatingInfo";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
+import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
 import { deezer } from "@/utils/deezer";
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app/album/$albumId/")({
 	component: LayoutComponent,
@@ -19,6 +29,10 @@ export const Route = createFileRoute("/_app/album/$albumId/")({
 function LayoutComponent() {
 	// const { albumId } = Route.useParams();
 	const album = Route.useLoaderData();
+	const resource: Resource = {
+		resourceId: String(album.id),
+		category: "ALBUM",
+	};
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -46,12 +60,20 @@ function LayoutComponent() {
 							</Tag>
 						))}
 					</div>
-					{/* <Link
-						href={`/artists/${album.artist?.id}`}
-						className="text-muted-foreground hover:underline"
-					>
+					<Link to="/" className="text-muted-foreground hover:underline">
 						{album.artist?.name}
-					</Link> */}
+					</Link>
+					<Suspense fallback={<Skeleton className="w-24 h-8" />}>
+						<div className="flex items-center gap-4">
+							<RatingInfo resource={resource} />
+							<SignedIn>
+								<RatingDialog resource={resource} />
+							</SignedIn>
+							<SignedOut>
+								<SignInRateButton />
+							</SignedOut>
+						</div>
+					</Suspense>
 				</div>
 			</div>
 			<Tabs defaultValue="songs">
@@ -64,21 +86,20 @@ function LayoutComponent() {
 				</TabsContent>
 				<TabsContent value="reviews">
 					<div className="flex w-full flex-col gap-4">
-						{/* <div className="flex w-full gap-2">
-							<ReviewButton
-								name={album.title}
-								resource={{
-									resourceId: String(album.id),
-									category: "ALBUM",
-								}}
-							/>
-						</div> */}
-						{/* <InfiniteReviews
-							id={String(album.id)}
-							initialReviews={initialReviews}
-							getReviews={getReviews}
-							pageLimit={20}
-						/> */}
+						<div className="flex w-full gap-2">
+							<SignedIn>
+								<ReviewDialog
+									resource={{
+										resourceId: String(album.id),
+										category: "ALBUM",
+									}}
+								/>
+							</SignedIn>
+							<SignedOut>
+								<SignInReviewButton />
+							</SignedOut>
+						</div>
+						<InfiniteCommunityReviews resource={resource} pageLimit={20} />
 					</div>
 				</TabsContent>
 			</Tabs>

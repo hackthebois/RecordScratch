@@ -1,3 +1,4 @@
+import UserButton from "@/components/UserButton";
 import Github from "@/components/icons/Github";
 import { env } from "@/env";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
@@ -25,6 +26,7 @@ function LayoutComponent() {
 						<SearchBar />
 					</div>
 					<div className="flex items-center gap-3">
+						<UserButton />
 						<Popover>
 							<PopoverTrigger asChild>
 								<Button size="icon" variant="outline">

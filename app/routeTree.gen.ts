@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as OnboardImport } from './routes/onboard'
 import { Route as AppImport } from './routes/_app'
 import { Route as AppIndexImport } from './routes/_app/index'
+import { Route as AppHandleIndexImport } from './routes/_app/$handle/index'
 import { Route as AppAlbumAlbumIdIndexImport } from './routes/_app/album/$albumId/index'
 
 // Create Virtual Routes
@@ -58,6 +59,11 @@ const AppPrivacyPolicyLazyRoute = AppPrivacyPolicyLazyImport.update({
   import('./routes/_app/privacy-policy.lazy').then((d) => d.Route),
 )
 
+const AppHandleIndexRoute = AppHandleIndexImport.update({
+  path: '/$handle/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppAlbumAlbumIdIndexRoute = AppAlbumAlbumIdIndexImport.update({
   path: '/album/$albumId/',
   getParentRoute: () => AppRoute,
@@ -91,6 +97,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppImport
     }
+    '/_app/$handle/': {
+      preLoaderRoute: typeof AppHandleIndexImport
+      parentRoute: typeof AppImport
+    }
     '/_app/album/$albumId/': {
       preLoaderRoute: typeof AppAlbumAlbumIdIndexImport
       parentRoute: typeof AppImport
@@ -106,6 +116,7 @@ export const routeTree = rootRoute.addChildren([
     AppRoadmapLazyRoute,
     AppTermsLazyRoute,
     AppIndexRoute,
+    AppHandleIndexRoute,
     AppAlbumAlbumIdIndexRoute,
   ]),
   OnboardRoute,
