@@ -3,12 +3,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 
 export const UserAvatar = ({
 	imageUrl,
-	name,
 	size = 36,
 	className,
 }: {
 	imageUrl: Profile["imageUrl"];
-	name: Profile["name"];
 	size?: number;
 	className?: string;
 }) => {
@@ -36,7 +34,7 @@ export const UserAvatar = ({
 					fontSize: size / 2,
 				}}
 			>
-				{name && name[0] ? name[0].toUpperCase() : "U"}
+				{"U"}
 			</AvatarFallback>
 		</Avatar>
 	);

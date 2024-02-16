@@ -12,42 +12,47 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { RatingInput } from "@/components/RatingInput";
-import { Rating, Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
+import { api } from "@/trpc/react";
+import { Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
+import { Text } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { Textarea } from "./ui/Textarea";
 
-export const ReviewDialog = ({
-	resource,
-	initialRating,
-	children,
-	reviewAction,
-}: {
-	resource: Resource;
-	initialRating?: Rating;
-	children: React.ReactNode;
-	reviewAction: (rating: ReviewForm) => void;
-}) => {
+export const ReviewDialog = ({ resource }: { resource: Resource }) => {
+	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
+	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
+	const { mutate: reviewMutation } = api.ratings.review.useMutation({
+		onSettled: () => {
+			utils.ratings.user.get.invalidate(resource);
+			utils.ratings.get.invalidate(resource);
+		},
+	});
 
 	const form = useForm<ReviewForm>({
 		resolver: zodResolver(ReviewFormSchema),
-		defaultValues: { ...resource, ...initialRating },
+		defaultValues: { ...resource, ...userRating },
 	});
 
 	const onSubmit = async (review: ReviewForm) => {
-		reviewAction(review);
+		reviewMutation(review);
 		setOpen(false);
 	};
 
 	useEffect(() => {
-		form.reset({ ...resource, ...initialRating });
-	}, [initialRating]);
+		form.reset({ ...resource, ...userRating });
+	}, [userRating]);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>{children}</DialogTrigger>
+			<DialogTrigger asChild>
+				<Button variant="outline" className="gap-2 self-end">
+					<Text size={18} color="#fb8500" />
+					Review
+				</Button>
+			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[600px]">
 				<DialogHeader>
 					<DialogTitle className="text-center text-2xl">Review</DialogTitle>
@@ -95,7 +100,7 @@ export const ReviewDialog = ({
 								>
 									Review
 								</Button>
-								{initialRating?.content && (
+								{userRating?.content && (
 									<Button
 										variant="ghost"
 										className="mt-2"
@@ -104,7 +109,7 @@ export const ReviewDialog = ({
 											e.preventDefault();
 											onSubmit({
 												...resource,
-												...initialRating,
+												...userRating,
 												content: null,
 											});
 											setOpen(false);

@@ -1,58 +1,14 @@
-import { Skeleton } from "@/components/ui/Skeleton";
-import { api } from "@/trpc/react";
-import { Resource } from "@/types/rating";
 import { Track } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
-import { useAuth } from "@clerk/clerk-react";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
-import { useMemo } from "react";
-import RateButton from "./RateButton";
+import { Suspense } from "react";
+import { RatingDialog } from "./RatingDialog";
+import { SignInRateButton } from "./SignInRateButton";
 import { RatingInfo } from "./ui/RatingInfo";
-
-const SongRatings = ({ song, resources }: { song: Track; resources: Resource[] }) => {
-	const { userId } = useAuth();
-
-	const { data: ratingsList, isLoading } = api.ratings.list.useQuery(resources);
-
-	const { data: userRatingList, isLoading: isLoadingUser } = api.ratings.user.getList.useQuery(
-		resources,
-		{
-			enabled: !!userId,
-		}
-	);
-
-	const userRating = useMemo(
-		() => userRatingList?.find((r) => r.resourceId === String(song.id)),
-		[userRatingList]
-	);
-
-	if (isLoading || isLoadingUser) {
-		return <Skeleton className="h-8 w-24" />;
-	}
-
-	return (
-		<>
-			<RatingInfo
-				rating={ratingsList.find((r) => r.resourceId === String(song.id))!}
-				size="sm"
-			/>
-			<RateButton
-				resource={{
-					resourceId: String(song.id),
-					category: "SONG",
-				}}
-				name={song.title}
-				userRating={userRating ?? null}
-			/>
-		</>
-	);
-};
+import { Skeleton } from "./ui/Skeleton";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
-	const resources: Resource[] = songs.map((song) => ({
-		resourceId: String(song.id),
-		category: "SONG",
-	}));
 	return (
 		<div className="w-full">
 			{songs.map((song, index) => {
@@ -74,9 +30,29 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 								</p>
 							</div>
 						</Link>
-						<div className="flex items-center gap-3 pr-3">
-							<SongRatings song={song} resources={resources} />
-						</div>
+						<Suspense fallback={<Skeleton className="h-10 w-32" />}>
+							<div className="flex items-center gap-3 pr-3">
+								<RatingInfo
+									resource={{
+										resourceId: String(song.id),
+										category: "SONG",
+									}}
+									size="sm"
+								/>
+								<SignedIn>
+									<RatingDialog
+										resource={{
+											resourceId: String(song.id),
+											category: "SONG",
+										}}
+										name={song.title}
+									/>
+								</SignedIn>
+								<SignedOut>
+									<SignInRateButton />
+								</SignedOut>
+							</div>
+						</Suspense>
 					</div>
 				);
 			})}

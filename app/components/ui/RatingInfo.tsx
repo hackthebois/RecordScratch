@@ -1,16 +1,17 @@
-"use client";
-
-import { ResourceRating } from "@/types/rating";
+import { api } from "@/trpc/react";
+import { Resource } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { Star } from "lucide-react";
 
 export const RatingInfo = ({
-	rating,
+	resource,
 	size = "lg",
 }: {
-	rating: ResourceRating;
+	resource: Resource;
 	size?: "lg" | "sm";
 }) => {
+	const [rating] = api.ratings.get.useSuspenseQuery(resource);
+
 	return (
 		<div className="flex items-center gap-4">
 			{!(size === "sm" && !rating?.average) && (
