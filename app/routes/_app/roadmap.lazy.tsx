@@ -82,6 +82,6 @@ const Roadmap = () => {
 	);
 };
 
-export const Route = createLazyFileRoute("/roadmap")({
+export const Route = createLazyFileRoute("/_app/roadmap")({
 	component: Roadmap,
 });

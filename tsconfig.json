@@ -1,5 +1,4 @@
 {
-
 	"compilerOptions": {
 		"strict": true,
 		"target": "ESNext",
@@ -15,7 +14,7 @@
 		"isolatedModules": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["app/*"]	
-		},
+			"@/*": ["app/*"]
+		}
 	}
 }

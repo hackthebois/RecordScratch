@@ -1,13 +1,14 @@
 "use client";
 
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/recordscratch/components/ui/select";
-import { usePathname, useRouter } from "next/navigation";
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { useNavigate } from "@tanstack/react-router";
+import { usePathname } from "next/navigation";
 
 const Sort = ({
 	options,
@@ -23,10 +24,10 @@ const Sort = ({
 	name: string;
 	defaultValue?: string;
 }) => {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const pathname = usePathname();
 	const onChange = (value: string) => {
-		router.push(`${pathname}?${queryParam}=${value}`);
+		navigate(`${pathname}?${queryParam}=${value}`);
 	};
 
 	return (

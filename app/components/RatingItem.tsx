@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Resource } from "app/types/rating";
 import { Album, deezer } from "app/utils/deezer";
 import AlbumImage from "./resource/album/AlbumImage";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "./ui/Skeleton";
 
 export const RatingItem = ({
 	initial,
@@ -71,8 +71,7 @@ export const RatingItem = ({
 		return (
 			<Link
 				onClick={onClick}
-				// to={`/${category.toLowerCase()}s/${resourceId}`}
-				to={"/"}
+				to={`/${category.toLowerCase()}/${resourceId}`}
 				className="flex flex-row items-center gap-4 rounded"
 			>
 				<div className="relative h-16 w-16 min-w-[64px] rounded">

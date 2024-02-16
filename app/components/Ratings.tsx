@@ -1,6 +1,6 @@
-import { getRating, getUserRating } from "@/recordscratch/app/_api";
-import RateButton from "@/recordscratch/app/_auth/RateButton";
-import { Rating, Resource } from "@/recordscratch/types/rating";
+import { getRating, getUserRating } from "@/app/_api";
+import RateButton from "@/components/RateButton";
+import { Rating, Resource } from "@/types/rating";
 import { auth } from "@clerk/nextjs";
 import { RatingInfo } from "./ui/RatingInfo";
 

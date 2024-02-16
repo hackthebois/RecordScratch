@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useClerk } from "@clerk/clerk-react";
 import React from "react";
 
 export const SignInWrapper = ({ children }: { children: React.ReactNode }) => {
-	const pathname = usePathname();
+	const { openSignIn } = useClerk();
 
-	return <Link href={`/sign-in?redirect_url=${pathname}`}>{children}</Link>;
+	return <button onClick={() => openSignIn()}>{children}</button>;
 };

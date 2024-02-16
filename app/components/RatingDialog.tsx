@@ -1,29 +1,28 @@
-"use client";
-
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/recordscratch/components/ui/AlertDialog";
-import { Button } from "@/recordscratch/components/ui/Button";
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/AlertDialog";
+import { Button } from "@/components/ui/Button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/recordscratch/components/ui/Dialog";
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RateForm, RateFormSchema, Rating, Resource } from "@/recordscratch/types/rating";
+import { api } from "@/trpc/react";
+import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
 import { useQueryClient } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -35,14 +34,13 @@ export const RatingDialog = ({
 	resource,
 	initialRating,
 	name,
-	onRate,
 }: {
 	resource: Resource;
 	name?: string;
 	initialRating?: Rating;
-	onRate: (rate: RateForm) => void;
 }) => {
 	const queryClient = useQueryClient();
+	const { mutate: rateMutation } = api.ratings.rate.useMutation();
 
 	const invalidateQuery = () => {
 		queryClient.invalidateQueries({
@@ -58,17 +56,15 @@ export const RatingDialog = ({
 	});
 
 	const onSubmit = async (rate: RateForm) => {
-		if (onRate) onRate(rate);
+		rateMutation(rate);
 		invalidateQuery();
 		setOpen(false);
 	};
 
-	const clearRating = (
-		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-	) => {
+	const clearRating = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		if (!initialRating) return;
-		onRate({
+		rateMutation({
 			...resource,
 			rating: null,
 		});
@@ -97,32 +93,24 @@ export const RatingDialog = ({
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="text-center text-2xl">
-						{name ?? "Rate"}
-					</DialogTitle>
+					<DialogTitle className="text-center text-2xl">{name ?? "Rate"}</DialogTitle>
 					<DialogDescription className="text-center">
 						{resource.category === "ALBUM"
 							? "Rate this album"
 							: resource.category === "ARTIST"
-							? "Rate this artist"
-							: "Rate this song"}
+								? "Rate this artist"
+								: "Rate this song"}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="space-y-4"
-					>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<FormField
 							control={form.control}
 							name="rating"
 							render={({ field: { onChange, value } }) => (
 								<FormItem>
 									<FormControl>
-										<RatingInput
-											value={value}
-											onChange={onChange}
-										/>
+										<RatingInput value={value} onChange={onChange} />
 									</FormControl>
 								</FormItem>
 							)}
@@ -140,11 +128,7 @@ export const RatingDialog = ({
 									(initialRating.content ? (
 										<AlertDialog>
 											<AlertDialogTrigger asChild>
-												<Button
-													variant="ghost"
-													className="mt-2"
-													size="sm"
-												>
+												<Button variant="ghost" className="mt-2" size="sm">
 													Remove rating
 												</Button>
 											</AlertDialogTrigger>
@@ -154,17 +138,12 @@ export const RatingDialog = ({
 														Remove your review?
 													</AlertDialogTitle>
 													<AlertDialogDescription>
-														This action will remove
-														your current review
+														This action will remove your current review
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>
-													<AlertDialogCancel>
-														Cancel
-													</AlertDialogCancel>
-													<AlertDialogAction
-														onClick={clearRating}
-													>
+													<AlertDialogCancel>Cancel</AlertDialogCancel>
+													<AlertDialogAction onClick={clearRating}>
 														Continue
 													</AlertDialogAction>
 												</AlertDialogFooter>

@@ -1,54 +1,39 @@
-"use client";
-
-import { getRatingsList, getUserRatingList } from "@/recordscratch/app/_api";
-import RateButton from "@/recordscratch/app/_auth/RateButton";
-import { Resource } from "@/recordscratch/types/rating";
-import { cn } from "@/recordscratch/utils/utils";
-import { useAuth } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { api } from "@/trpc/react";
+import { Resource } from "@/types/rating";
+import { Track } from "@/utils/deezer";
+import { cn } from "@/utils/utils";
+import { useAuth } from "@clerk/clerk-react";
+import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { Track } from "../app/_api/deezer";
+import RateButton from "./RateButton";
 import { RatingInfo } from "./ui/RatingInfo";
-import { Skeleton } from "./ui/skeleton";
 
-const SongRatings = ({
-	song,
-	resources,
-}: {
-	song: Track;
-	resources: Resource[];
-}) => {
+const SongRatings = ({ song, resources }: { song: Track; resources: Resource[] }) => {
 	const { userId } = useAuth();
 
-	const { data: ratingsList } = useQuery({
-		queryKey: ["rating", "list", resources.map((r) => r)],
-		queryFn: () => getRatingsList(resources),
-	});
+	const { data: ratingsList, isLoading } = api.ratings.list.useQuery(resources);
 
-	const { data: userRatingList } = useQuery({
-		queryKey: ["rating", "user-list", resources.map((r) => r), userId],
-		queryFn: () => {
-			if (!userId) return [];
-			return getUserRatingList(resources, userId);
-		},
-	});
+	const { data: userRatingList, isLoading: isLoadingUser } = api.ratings.user.getList.useQuery(
+		resources,
+		{
+			enabled: !!userId,
+		}
+	);
 
 	const userRating = useMemo(
 		() => userRatingList?.find((r) => r.resourceId === String(song.id)),
 		[userRatingList]
 	);
 
-	if (!ratingsList || !userRatingList) {
+	if (isLoading || isLoadingUser) {
 		return <Skeleton className="h-8 w-24" />;
 	}
 
 	return (
 		<>
 			<RatingInfo
-				rating={
-					ratingsList.find((r) => r.resourceId === String(song.id))!
-				}
+				rating={ratingsList.find((r) => r.resourceId === String(song.id))!}
 				size="sm"
 			/>
 			<RateButton
@@ -63,7 +48,7 @@ const SongRatings = ({
 	);
 };
 
-const SongTable = async ({ songs }: { songs: Track[] }) => {
+const SongTable = ({ songs }: { songs: Track[] }) => {
 	const resources: Resource[] = songs.map((song) => ({
 		resourceId: String(song.id),
 		category: "SONG",
@@ -79,10 +64,7 @@ const SongTable = async ({ songs }: { songs: Track[] }) => {
 							index === songs.length - 1 && "border-none"
 						)}
 					>
-						<Link
-							href={`/songs/${song.id}`}
-							className="flex w-full min-w-0 gap-3 p-3"
-						>
+						<Link to="/" className="flex w-full min-w-0 gap-3 p-3">
 							<p className="w-4 text-center text-sm text-muted-foreground">
 								{index + 1}
 							</p>
