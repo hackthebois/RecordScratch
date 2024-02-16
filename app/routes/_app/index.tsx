@@ -3,7 +3,7 @@ import AlbumList from "@/components/resource/album/AlbumList";
 import { buttonVariants } from "@/components/ui/Button";
 import { env } from "@/env";
 import { api, apiUtils } from "@/trpc/react";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 const Index = () => {
 	const [trending] = api.ratings.trending.useSuspenseQuery();
@@ -12,7 +12,7 @@ const Index = () => {
 	return (
 		<div className="w-full">
 			<div className="flex gap-4">
-				<Link
+				<a
 					href={env.VITE_DISCORD_URL}
 					className={buttonVariants({
 						variant: "outline",
@@ -22,7 +22,7 @@ const Index = () => {
 				>
 					<Discord size={22} />
 					<p>Join our discord</p>
-				</Link>
+				</a>
 			</div>
 			{trending && (
 				<div className="mt-[2vh] flex flex-col">
@@ -44,7 +44,7 @@ const Index = () => {
 	);
 };
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_app/")({
 	loader: async () => {
 		return {
 			top: apiUtils.ratings.top.ensureData(),

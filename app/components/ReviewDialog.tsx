@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@/recordscratch/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/recordscratch/components/ui/Dialog";
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RatingInput } from "@/recordscratch/components/RatingInput";
-import { Rating, Resource, ReviewForm, ReviewFormSchema } from "@/recordscratch/types/rating";
+import { RatingInput } from "@/components/RatingInput";
+import { Rating, Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
@@ -50,15 +50,10 @@ export const ReviewDialog = ({
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[600px]">
 				<DialogHeader>
-					<DialogTitle className="text-center text-2xl">
-						Review
-					</DialogTitle>
+					<DialogTitle className="text-center text-2xl">Review</DialogTitle>
 				</DialogHeader>
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="flex flex-col gap-4"
-					>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
 						<FormField
 							control={form.control}
 							name="rating"
@@ -67,10 +62,7 @@ export const ReviewDialog = ({
 									<FormControl>
 										<div className="flex justify-center">
 											<span className="w-full max-w-[375px]">
-												<RatingInput
-													value={value}
-													onChange={onChange}
-												/>
+												<RatingInput value={value} onChange={onChange} />
 											</span>
 										</div>
 									</FormControl>

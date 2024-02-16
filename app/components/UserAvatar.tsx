@@ -1,5 +1,4 @@
-import { Profile } from "@/recordscratch/types/profile";
-import Image from "next/image";
+import { Profile } from "@/types/profile";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 
 export const UserAvatar = ({
@@ -23,7 +22,7 @@ export const UserAvatar = ({
 		>
 			<AvatarImage asChild src={imageUrl ?? undefined}>
 				{imageUrl && (
-					<Image
+					<img
 						src={imageUrl}
 						alt="Profile photo"
 						width={size}

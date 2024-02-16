@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-import { cn } from "@/recordscratch/utils/utils";
+import { cn } from "@/utils/utils";
 
 const tagVarients = cva(
 	"inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -28,9 +28,7 @@ export interface TagProps
 		VariantProps<typeof tagVarients> {}
 
 function Tag({ className, variant, ...props }: TagProps) {
-	return (
-		<div className={cn(tagVarients({ variant }), className)} {...props} />
-	);
+	return <div className={cn(tagVarients({ variant }), className)} {...props} />;
 }
 
 export { Tag, tagVarients };

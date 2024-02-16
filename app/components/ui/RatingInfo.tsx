@@ -1,7 +1,7 @@
 "use client";
 
-import { ResourceRating } from "@/recordscratch/types/rating";
-import { cn } from "@/recordscratch/utils/utils";
+import { ResourceRating } from "@/types/rating";
+import { cn } from "@/utils/utils";
 import { Star } from "lucide-react";
 
 export const RatingInfo = ({

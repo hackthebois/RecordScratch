@@ -13,57 +13,87 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as OnboardImport } from './routes/onboard'
+import { Route as AppImport } from './routes/_app'
+import { Route as AppIndexImport } from './routes/_app/index'
+import { Route as AppAlbumAlbumIdIndexImport } from './routes/_app/album/$albumId/index'
 
 // Create Virtual Routes
 
-const TermsLazyImport = createFileRoute('/terms')()
-const RoadmapLazyImport = createFileRoute('/roadmap')()
-const PrivacyPolicyLazyImport = createFileRoute('/privacy-policy')()
-const IndexLazyImport = createFileRoute('/')()
+const AppTermsLazyImport = createFileRoute('/_app/terms')()
+const AppRoadmapLazyImport = createFileRoute('/_app/roadmap')()
+const AppPrivacyPolicyLazyImport = createFileRoute('/_app/privacy-policy')()
 
 // Create/Update Routes
 
-const TermsLazyRoute = TermsLazyImport.update({
+const OnboardRoute = OnboardImport.update({
+  path: '/onboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppRoute = AppImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppIndexRoute = AppIndexImport.update({
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppTermsLazyRoute = AppTermsLazyImport.update({
   path: '/terms',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/terms.lazy').then((d) => d.Route))
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/_app/terms.lazy').then((d) => d.Route))
 
-const RoadmapLazyRoute = RoadmapLazyImport.update({
+const AppRoadmapLazyRoute = AppRoadmapLazyImport.update({
   path: '/roadmap',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/roadmap.lazy').then((d) => d.Route))
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/_app/roadmap.lazy').then((d) => d.Route))
 
-const PrivacyPolicyLazyRoute = PrivacyPolicyLazyImport.update({
+const AppPrivacyPolicyLazyRoute = AppPrivacyPolicyLazyImport.update({
   path: '/privacy-policy',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AppRoute,
 } as any).lazy(() =>
-  import('./routes/privacy-policy.lazy').then((d) => d.Route),
+  import('./routes/_app/privacy-policy.lazy').then((d) => d.Route),
 )
 
-const IndexLazyRoute = IndexLazyImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+const AppAlbumAlbumIdIndexRoute = AppAlbumAlbumIdIndexImport.update({
+  path: '/album/$albumId/',
+  getParentRoute: () => AppRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexLazyImport
+    '/_app': {
+      preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
-    '/privacy-policy': {
-      preLoaderRoute: typeof PrivacyPolicyLazyImport
+    '/onboard': {
+      preLoaderRoute: typeof OnboardImport
       parentRoute: typeof rootRoute
     }
-    '/roadmap': {
-      preLoaderRoute: typeof RoadmapLazyImport
-      parentRoute: typeof rootRoute
+    '/_app/privacy-policy': {
+      preLoaderRoute: typeof AppPrivacyPolicyLazyImport
+      parentRoute: typeof AppImport
     }
-    '/terms': {
-      preLoaderRoute: typeof TermsLazyImport
-      parentRoute: typeof rootRoute
+    '/_app/roadmap': {
+      preLoaderRoute: typeof AppRoadmapLazyImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/terms': {
+      preLoaderRoute: typeof AppTermsLazyImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/': {
+      preLoaderRoute: typeof AppIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/album/$albumId/': {
+      preLoaderRoute: typeof AppAlbumAlbumIdIndexImport
+      parentRoute: typeof AppImport
     }
   }
 }
@@ -71,10 +101,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexLazyRoute,
-  PrivacyPolicyLazyRoute,
-  RoadmapLazyRoute,
-  TermsLazyRoute,
+  AppRoute.addChildren([
+    AppPrivacyPolicyLazyRoute,
+    AppRoadmapLazyRoute,
+    AppTermsLazyRoute,
+    AppIndexRoute,
+    AppAlbumAlbumIdIndexRoute,
+  ]),
+  OnboardRoute,
 ])
 
 /* prettier-ignore-end */

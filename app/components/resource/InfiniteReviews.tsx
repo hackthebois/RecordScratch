@@ -1,6 +1,6 @@
 "use client";
 
-import { Review as ReviewType } from "@/recordscratch/types/rating";
+import { Review as ReviewType } from "@/types/rating";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
@@ -63,10 +63,7 @@ export const InfiniteReviews = ({
 				))}
 			</div>
 			{hasNextPage && initialReviews.length > 0 && (
-				<div
-					ref={ref}
-					className="flex h-40 flex-1 flex-col items-center justify-center"
-				>
+				<div ref={ref} className="flex h-40 flex-1 flex-col items-center justify-center">
 					<Disc3 size={35} className="animate-spin" />
 				</div>
 			)}

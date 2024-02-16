@@ -29,7 +29,13 @@ const AlbumItem = ({
 
 	return (
 		<div className="mb-4 flex w-[144px] flex-1 flex-col">
-			<Link to={"/"}>
+			<Link
+				to={"/album/$albumId"}
+				params={{
+					albumId: String(album.id),
+				}}
+				className="cursor-pointer"
+			>
 				<AlbumImage album={album} size={144} />
 				<p className="mt-1 truncate font-medium">{album.title}</p>
 				{field === "date" && (

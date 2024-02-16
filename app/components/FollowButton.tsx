@@ -1,36 +1,20 @@
-"use client";
-
-import { isUserFollowing } from "@/recordscratch/app/_api";
-import { followUser, unFollowUser } from "@/recordscratch/app/_api/actions";
-import { useQuery } from "@tanstack/react-query";
+import { api } from "@/trpc/react";
+import { useAuth } from "@clerk/clerk-react";
 import { Button } from "./ui/Button";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "./ui/Skeleton";
 
-export const FollowButton = ({
-	profileId,
-	userId,
-	initialIsFollowing,
-}: {
-	profileId: string;
-	userId: string | null;
-	initialIsFollowing?: boolean;
-}) => {
+export const FollowButton = ({ profileId }: { profileId: string }) => {
+	const { userId } = useAuth();
 	const {
 		data: isFollowing,
 		isLoading,
 		refetch,
-	} = useQuery({
-		queryKey: ["isUserFollowing", profileId, userId],
-		queryFn: () => {
-			return isUserFollowing(profileId, userId);
-		},
-		initialData: initialIsFollowing,
+	} = api.profiles.isFollowing.useQuery(profileId, {
 		enabled: !!userId,
-		staleTime: 60 * 1000,
-		refetchOnMount: false,
-		refetchOnReconnect: false,
-		refetchOnWindowFocus: false,
 	});
+
+	const followUser = api.profiles.follow.useMutation();
+	const unFollowUser = api.profiles.unFollow.useMutation();
 
 	if (!userId || userId === profileId) return null;
 
@@ -44,7 +28,7 @@ export const FollowButton = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						e.preventDefault();
-						unFollowUser(profileId);
+						unFollowUser.mutate(profileId);
 						refetch();
 					}}
 				>
@@ -56,7 +40,7 @@ export const FollowButton = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						e.preventDefault();
-						followUser(profileId);
+						followUser.mutate(profileId);
 						refetch();
 					}}
 				>

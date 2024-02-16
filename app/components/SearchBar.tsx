@@ -3,11 +3,13 @@ import { ScrollArea } from "app/components/ui/ScrollArea";
 import { useDebounce } from "app/utils/hooks";
 import { useRecents } from "app/utils/recents";
 // import { useAuth } from "@clerk/nextjs";
+import { api } from "@/trpc/react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Artist, deezer } from "app/utils/deezer";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
+import { ProfileItem } from "./ProfileItem";
 import { RatingItem } from "./RatingItem";
 import { Button } from "./ui/Button";
 import { Tabs, TabsList, TabsTrigger } from "./ui/Tabs";
@@ -56,8 +58,7 @@ const SearchState = ({
 		songs?: boolean;
 	};
 }) => {
-	// const { recents, addRecent } = useRecents();
-	// const { userId } = useAuth();
+	const { recents, addRecent } = useRecents();
 
 	if (isError) {
 		return (
@@ -90,7 +91,7 @@ const SearchState = ({
 					children
 				) : (
 					<>
-						{/* {recents.map((recent, index) =>
+						{recents.map((recent, index) =>
 							recent.type === "ARTIST" && !hide?.artists ? (
 								<ArtistItem
 									onClick={() => {
@@ -149,7 +150,6 @@ const SearchState = ({
 							) : recent.type === "PROFILE" && !hide?.profiles ? (
 								<ProfileItem
 									profile={recent.data}
-									userId={userId ?? null}
 									onClick={() => {
 										addRecent({
 											id: recent.data.userId,
@@ -161,7 +161,7 @@ const SearchState = ({
 									key={index}
 								/>
 							) : null
-						)} */}
+						)}
 					</>
 				)}
 			</div>
@@ -170,14 +170,9 @@ const SearchState = ({
 };
 
 const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () => void }) => {
-	// const { addRecent } = useRecents();
-	// const { userId } = useAuth();
+	const { addRecent } = useRecents();
 
-	const { data, isLoading, isError } = useQuery({
-		queryKey: ["search", "search-profiles", query],
-		queryFn: async () => {
-			return [];
-		},
+	const { data, isLoading, isError } = api.profiles.search.useQuery(query, {
 		gcTime: 0,
 		refetchOnMount: false,
 		enabled: query.length > 0,
@@ -193,11 +188,10 @@ const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () =>
 		>
 			{data && (
 				<>
-					{/* {data.map((profile, index) => (
+					{data.map((profile, index) => (
 						<ProfileItem
 							profile={profile}
 							key={index}
-							userId={userId ?? null}
 							onClick={() => {
 								addRecent({
 									id: profile.userId,
@@ -207,7 +201,7 @@ const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () =>
 								onNavigate();
 							}}
 						/>
-					))} */}
+					))}
 				</>
 			)}
 		</SearchState>

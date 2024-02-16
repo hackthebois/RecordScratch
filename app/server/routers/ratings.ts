@@ -1,6 +1,6 @@
 import { followers, ratings } from "app/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "app/server/trpc";
-import { ResourceSchema } from "app/types/rating";
+import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "app/types/rating";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull } from "drizzle-orm";
 import { z } from "zod";
 
@@ -199,4 +199,36 @@ export const ratingsRouter = router({
 				}
 			),
 	}),
+	rate: protectedProcedure
+		.input(RateFormSchema)
+		.mutation(async ({ ctx: { db, userId }, input: { rating, resourceId, category } }) => {
+			if (rating === null) {
+				await db
+					.delete(ratings)
+					.where(
+						and(
+							eq(ratings.userId, userId),
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category)
+						)
+					);
+			} else {
+				await db
+					.insert(ratings)
+					.values({ rating, resourceId, category, userId })
+					.onDuplicateKeyUpdate({
+						set: { rating, resourceId, category, userId },
+					});
+			}
+		}),
+	review: protectedProcedure
+		.input(ReviewFormSchema)
+		.mutation(async ({ ctx: { db, userId }, input }) => {
+			await db
+				.insert(ratings)
+				.values({ ...input, userId })
+				.onDuplicateKeyUpdate({
+					set: { ...input, userId },
+				});
+		}),
 });

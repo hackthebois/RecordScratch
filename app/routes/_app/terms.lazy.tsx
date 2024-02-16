@@ -104,6 +104,6 @@ const Terms = () => {
 	);
 };
 
-export const Route = createLazyFileRoute("/terms")({
+export const Route = createLazyFileRoute("/_app/terms")({
 	component: Terms,
 });

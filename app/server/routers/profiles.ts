@@ -1,6 +1,8 @@
+import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
+import clerkClient from "@clerk/clerk-sdk-node";
 import { followers, profile, ratings } from "app/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "app/server/trpc";
-import { and, count, eq, sql } from "drizzle-orm";
+import { and, count, eq, like, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
 export const profilesRouter = router({
@@ -70,7 +72,7 @@ export const profilesRouter = router({
 			}
 			return count.length ? count[0].count : 0;
 		}),
-	following: protectedProcedure
+	isFollowing: protectedProcedure
 		.input(z.string())
 		.query(async ({ ctx: { db, userId }, input: followingId }) => {
 			if (!userId || userId === followingId) return false;
@@ -140,4 +142,76 @@ export const profilesRouter = router({
 				});
 			}
 		}),
+	create: protectedProcedure
+		.input(CreateProfileSchema)
+		.mutation(async ({ ctx: { db, userId }, input }) => {
+			await db.insert(profile).values({ ...input, userId });
+			await clerkClient.users.updateUser(userId, {
+				publicMetadata: { onboarded: true },
+			});
+		}),
+	update: protectedProcedure
+		.input(UpdateProfileSchema)
+		.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
+			await db.update(profile).set(newProfile).where(eq(profile.userId, userId));
+		}),
+	follow: protectedProcedure
+		.input(z.string())
+		.mutation(async ({ ctx: { db, userId }, input: followingId }) => {
+			if (userId === followingId) throw new Error("User Cannot Follow Themselves");
+
+			const followExists =
+				(
+					await db
+						.select()
+						.from(followers)
+						.where(
+							and(
+								eq(followers.userId, userId),
+								eq(followers.followingId, followingId)
+							)
+						)
+				).length > 0;
+
+			if (followExists) throw new Error("User Already Follows");
+			else await db.insert(followers).values({ userId, followingId });
+		}),
+	unFollow: protectedProcedure
+		.input(z.string())
+		.mutation(async ({ ctx: { db, userId }, input: followingId }) => {
+			if (userId === followingId) throw new Error("User Cannot unFollow Themselves");
+
+			const followExists =
+				(
+					await db
+						.select()
+						.from(followers)
+						.where(
+							and(
+								eq(followers.userId, userId),
+								eq(followers.followingId, followingId)
+							)
+						)
+				).length > 0;
+
+			if (!followExists) throw new Error("User Doesn't Follow");
+			else
+				await db
+					.delete(followers)
+					.where(
+						and(eq(followers.userId, userId), eq(followers.followingId, followingId))
+					);
+		}),
+	handleExists: publicProcedure
+		.input(z.string())
+		.query(async ({ ctx: { db }, input: handle }) => {
+			return !!(await db.query.profile.findFirst({
+				where: eq(profile.handle, handle),
+			}));
+		}),
+	search: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: query }) => {
+		return await db.query.profile.findMany({
+			where: or(like(profile.handle, `%${query}%`), like(profile.name, `%${query}%`)),
+		});
+	}),
 });

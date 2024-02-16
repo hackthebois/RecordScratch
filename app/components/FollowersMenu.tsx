@@ -1,4 +1,4 @@
-import { getFollowCount, getFollowProfiles, isUserFollowing } from "@/recordscratch/app/_api";
+import { getFollowCount, getFollowProfiles, isUserFollowing } from "@/app/_api";
 import { auth } from "@clerk/nextjs";
 import { FollowButton } from "./FollowButton";
 import FollowersPopup from "./FollowersPopup";
@@ -11,19 +11,14 @@ const FollowerMenu = async ({ profileId }: Props) => {
 	const { userId } = auth();
 
 	// Execute API calls in parallel
-	const [
-		followerCount,
-		followingCount,
-		isFollowing,
-		followerProfiles,
-		followingProfiles,
-	] = await Promise.all([
-		getFollowCount(profileId, "followers"),
-		getFollowCount(profileId, "following"),
-		isUserFollowing(profileId, userId),
-		getFollowProfiles(profileId, userId, "followers"),
-		getFollowProfiles(profileId, userId, "following"),
-	]);
+	const [followerCount, followingCount, isFollowing, followerProfiles, followingProfiles] =
+		await Promise.all([
+			getFollowCount(profileId, "followers"),
+			getFollowCount(profileId, "following"),
+			isUserFollowing(profileId, userId),
+			getFollowProfiles(profileId, userId, "followers"),
+			getFollowProfiles(profileId, userId, "following"),
+		]);
 
 	const showButton = !!userId && userId !== profileId;
 
