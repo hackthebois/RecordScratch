@@ -79,7 +79,7 @@ export const RatingItem = ({
 				</div>
 				<div className="min-w-0 flex-1">
 					<p className="truncate font-medium">{data.name}</p>
-					<div className="flex gap-1">
+				<div className="flex gap-1">
 						<button
 							key={data.album.artist?.id}
 							onClick={(e) => {

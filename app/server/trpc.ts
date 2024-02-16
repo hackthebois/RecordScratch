@@ -1,13 +1,26 @@
-import { initTRPC, TRPCError } from "@trpc/server";
+import { decodeJwt } from "@clerk/clerk-sdk-node";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
+import Cookies from "cookies";
 import SuperJSON from "superjson";
 import { db } from "./db";
 
-export const createTRPCContext = async () => {
-	const userId = null;
+export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
+	const cookies = new Cookies(opts.req, opts.res);
+	const clientToken = cookies.get("__session");
+
+	if (!clientToken) {
+		return {
+			db,
+			userId: null,
+		};
+	}
+
+	const client = decodeJwt(clientToken);
 
 	return {
 		db,
-		userId,
+		userId: client.payload.sub,
 	};
 };
 
@@ -29,10 +42,7 @@ export const publicProcedure = t.procedure;
 export const router = t.router;
 
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-	// const { userId } = auth();
-	const userId = null;
-
-	if (!userId) {
+	if (!ctx.userId) {
 		throw new TRPCError({
 			code: "UNAUTHORIZED",
 			message: "You must be logged in to access this resource.",
@@ -42,7 +52,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 	return next({
 		ctx: {
 			...ctx,
-			userId,
+			userId: ctx.userId,
 		},
 	});
 });

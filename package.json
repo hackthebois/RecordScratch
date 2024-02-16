@@ -33,6 +33,7 @@
     "@trpc/server": "next",
     "@vinxi/plugin-references": "^0.0.29",
     "class-variance-authority": "^0.7.0",
+    "cookies": "^0.9.1",
     "dotenv": "^16.4.4",
     "drizzle-orm": "^0.29.3",
     "drizzle-zod": "^0.5.1",
