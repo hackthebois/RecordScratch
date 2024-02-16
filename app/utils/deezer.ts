@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { z } from "zod";
 
 export const ArtistSchema = z.object({
@@ -182,9 +183,7 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 
-	console.log(`http://localhost:3000/music${modifiedRoute}?${params.toString()}`);
-
-	const res = await fetch(`http://localhost:3000/music${modifiedRoute}?${params.toString()}`);
+	const res = await fetch(`${env.VITE_BASE_URL}/music${modifiedRoute}?${params.toString()}`);
 	const data: unknown = await res.json();
 
 	if (!res.ok) {

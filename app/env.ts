@@ -13,6 +13,7 @@ export const env = createEnv({
 		VITE_POSTHOG_HOST: z.string().min(1),
 		VITE_GITHUB_URL: z.string().url(),
 		VITE_DISCORD_URL: z.string().url(),
+		VITE_BASE_URL: z.string().url(),
 	},
 	runtimeEnv: import.meta.env,
 });
