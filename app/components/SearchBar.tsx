@@ -19,8 +19,10 @@ const ArtistItem = ({ artist, onClick }: { artist: Artist; onClick: () => void }
 
 	return (
 		<Link
-			// to={`/artists/${artist.id}`}
-			to="/"
+			to="/artists/$artistId"
+			params={{
+				artistId: String(artist.id),
+			}}
 			onClick={onClick}
 			className="flex w-full min-w-0 flex-row items-center gap-4 rounded"
 		>

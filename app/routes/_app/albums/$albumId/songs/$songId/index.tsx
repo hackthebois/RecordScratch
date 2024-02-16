@@ -14,6 +14,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
+	pendingComponent: () => <></>,
 	loader: ({ params: { albumId } }) =>
 		queryClient.ensureQueryData(
 			getQueryOptions({
