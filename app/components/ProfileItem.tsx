@@ -6,7 +6,10 @@ import { UserAvatar } from "./UserAvatar";
 export const ProfileItem = ({ profile, onClick }: { profile: Profile; onClick?: () => void }) => {
 	return (
 		<Link
-			href={`/${profile.handle}`}
+			to="/$handle"
+			params={{
+				handle: String(profile.handle),
+			}}
 			onClick={onClick}
 			className="flex flex-row justify-between gap-4 rounded"
 		>

@@ -246,12 +246,7 @@ function Onboard() {
 					<SlideWrapper page={page} pageIndex={3}>
 						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
-						<UserAvatar
-							className="mt-8"
-							size={160}
-							name={name}
-							imageUrl={imageUrl ?? null}
-						/>
+						<UserAvatar className="mt-8" size={160} imageUrl={imageUrl ?? null} />
 						<Input
 							className="hidden"
 							id="image"

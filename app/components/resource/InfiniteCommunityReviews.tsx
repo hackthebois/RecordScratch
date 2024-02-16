@@ -1,5 +1,3 @@
-"use client";
-
 import { api } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { Disc3 } from "lucide-react";

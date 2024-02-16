@@ -72,27 +72,33 @@ export const ratingsRouter = router({
 	feed: router({
 		recent: publicProcedure
 			.input(PaginatedInput)
-			.query(async ({ ctx: { db }, input: { limit = 20, page = 1 } }) => {
-				return await db.query.ratings.findMany({
+			.query(async ({ ctx: { db }, input: { limit = 20, cursor = 0 } }) => {
+				const items = await db.query.ratings.findMany({
 					where: isNotNull(ratings.content),
 					limit,
-					offset: (page - 1) * limit,
+					offset: cursor,
 					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
 					with: {
 						profile: true,
 					},
 				});
+				let nextCursor: typeof cursor | undefined = undefined;
+				if (items.length > limit) {
+					items.pop();
+					nextCursor = cursor + items.length;
+				}
+				return { items, nextCursor };
 			}),
 		following: protectedProcedure
 			.input(PaginatedInput)
-			.query(async ({ ctx: { db, userId }, input: { limit = 20, page = 1 } }) => {
+			.query(async ({ ctx: { db, userId }, input: { limit = 20, cursor = 0 } }) => {
 				const following = await db.query.followers.findMany({
 					where: eq(followers.userId, userId),
 				});
 
 				if (following.length === 0) return [];
 
-				return await db.query.ratings.findMany({
+				const items = await db.query.ratings.findMany({
 					where: and(
 						inArray(
 							ratings.userId,
@@ -100,13 +106,19 @@ export const ratingsRouter = router({
 						),
 						isNotNull(ratings.content)
 					),
-					limit,
-					offset: (page - 1) * limit,
+					limit: limit + 1,
+					offset: cursor,
 					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
 					with: {
 						profile: true,
 					},
 				});
+				let nextCursor: typeof cursor | undefined = undefined;
+				if (items.length > limit) {
+					items.pop();
+					nextCursor = cursor + items.length;
+				}
+				return { items, nextCursor };
 			}),
 		community: publicProcedure.input(PaginatedInput.extend({ resource: ResourceSchema })).query(
 			async ({
@@ -176,10 +188,8 @@ export const ratingsRouter = router({
 			.query(
 				async ({
 					ctx: { db },
-					input: { limit = 20, page = 1, rating, category, profileId },
+					input: { limit = 20, cursor = 0, rating, category, profileId },
 				}) => {
-					if (page < 1) page = 1;
-
 					let where;
 					if (rating && category)
 						where = and(
@@ -193,15 +203,21 @@ export const ratingsRouter = router({
 						where = and(eq(ratings.userId, profileId), eq(ratings.rating, rating));
 					else where = eq(ratings.userId, profileId);
 
-					return await db.query.ratings.findMany({
+					const items = await db.query.ratings.findMany({
 						limit,
-						offset: (page - 1) * limit,
+						offset: cursor,
 						orderBy: desc(ratings.updatedAt),
 						where,
 						with: {
 							profile: true,
 						},
 					});
+					let nextCursor: typeof cursor | undefined = undefined;
+					if (items.length > limit) {
+						items.pop();
+						nextCursor = cursor + items.length;
+					}
+					return { items, nextCursor };
 				}
 			),
 	}),
