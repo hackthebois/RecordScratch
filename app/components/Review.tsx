@@ -1,13 +1,20 @@
 import { Review as ReviewType } from "@/types/rating";
 import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
-import { RatingItem } from "../RatingItem";
-import { UserAvatar } from "../UserAvatar";
+import { RatingItem } from "./RatingItem";
+import { UserAvatar } from "./UserAvatar";
 
-export const Review = ({ rating, profile, content, resourceId, category }: ReviewType) => {
+export const Review = ({
+	parentId,
+	rating,
+	profile,
+	content,
+	resourceId,
+	category,
+}: ReviewType) => {
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
-			<RatingItem resource={{ resourceId, category }} />
+			<RatingItem resource={{ parentId, resourceId, category }} />
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (

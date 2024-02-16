@@ -1,26 +1,26 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Album, deezer } from "@/utils/deezer";
+import { Album, getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import AlbumImage from "./AlbumImage";
 
 const AlbumItem = ({
-	album: albumOrId,
+	albumId,
 	field,
+	initial,
 }: {
-	album: string | Album;
+	albumId: string;
 	field: "date" | "artist";
+	initial?: Album;
 }) => {
 	const { data: album } = useSuspenseQuery({
-		queryKey: ["album", albumOrId],
-		queryFn: () =>
-			deezer({
-				route: `/album/{id}`,
-				input: {
-					id: typeof albumOrId === "string" ? albumOrId : String(albumOrId.id),
-				},
-			}),
-		initialData: typeof albumOrId === "string" ? undefined : albumOrId,
+		...getQueryOptions({
+			route: "/album/{id}",
+			input: {
+				id: albumId,
+			},
+		}),
+		initialData: initial,
 	});
 
 	if (!album) {
@@ -71,7 +71,12 @@ const AlbumList = ({
 			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
 				<div className="flex gap-4 px-4 sm:px-8">
 					{albums.map((album, index) => (
-						<AlbumItem key={index} album={album} field={field} />
+						<AlbumItem
+							key={index}
+							albumId={typeof album === "string" ? album : String(album.id)}
+							initial={typeof album === "string" ? undefined : album}
+							field={field}
+						/>
 					))}
 				</div>
 			</ScrollArea>
@@ -80,7 +85,12 @@ const AlbumList = ({
 		return (
 			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
 				{albums.map((album, index) => (
-					<AlbumItem key={index} album={album} field={field} />
+					<AlbumItem
+						key={index}
+						albumId={typeof album === "string" ? album : String(album.id)}
+						initial={typeof album === "string" ? undefined : album}
+						field={field}
+					/>
 				))}
 			</div>
 		);

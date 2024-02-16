@@ -36,6 +36,7 @@
     "class-variance-authority": "^0.7.0",
     "cookies": "^0.9.1",
     "dotenv": "^16.4.4",
+    "drizzle-kit": "^0.20.14",
     "drizzle-orm": "^0.29.3",
     "drizzle-zod": "^0.5.1",
     "lucide-react": "^0.331.0",

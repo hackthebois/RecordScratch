@@ -1,6 +1,6 @@
+import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInReviewButton } from "@/components/SignInReviewButton";
-import { InfiniteCommunityReviews } from "@/components/resource/InfiniteCommunityReviews";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
@@ -40,6 +40,7 @@ function Song() {
 	const song = album.tracks.data.find((track) => track.id === Number(songId))!;
 
 	const resource: Resource = {
+		parentId: String(album.id),
 		resourceId: String(song.id),
 		category: "SONG",
 	};

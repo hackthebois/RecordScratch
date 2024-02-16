@@ -41,6 +41,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 							<div className="flex items-center gap-3 pr-3">
 								<RatingInfo
 									resource={{
+										parentId: String(song.album.id),
 										resourceId: String(song.id),
 										category: "SONG",
 									}}
@@ -49,6 +50,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 								<SignedIn>
 									<RatingDialog
 										resource={{
+											parentId: String(song.album.id),
 											resourceId: String(song.id),
 											category: "SONG",
 										}}

@@ -24,6 +24,7 @@ export const ReviewDialog = ({ resource }: { resource: Resource }) => {
 	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
 	const { mutate: reviewMutation } = api.ratings.review.useMutation({
 		onSettled: () => {
+			utils.ratings.feed.community.invalidate({ resource });
 			utils.ratings.user.get.invalidate(resource);
 			utils.ratings.get.invalidate(resource);
 		},

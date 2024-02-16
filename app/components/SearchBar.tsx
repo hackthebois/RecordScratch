@@ -114,6 +114,7 @@ const SearchState = ({
 										name: recent.data.title,
 									}}
 									resource={{
+										parentId: String(recent.data.artist?.id),
 										resourceId: String(recent.data.id),
 										category: "ALBUM",
 									}}
@@ -135,6 +136,7 @@ const SearchState = ({
 										name: recent.data.title,
 									}}
 									resource={{
+										parentId: String(recent.data.album.id),
 										resourceId: String(recent.data.id),
 										category: "SONG",
 									}}
@@ -258,6 +260,7 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 								name: album.title,
 							}}
 							resource={{
+								parentId: String(album.artist?.id),
 								resourceId: String(album.id),
 								category: "ALBUM",
 							}}
@@ -295,6 +298,7 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 								name: song.title,
 							}}
 							resource={{
+								parentId: String(song.album.id),
 								resourceId: String(song.id),
 								category: "SONG",
 							}}

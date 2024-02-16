@@ -1,5 +1,5 @@
 import SongTable from "@/components/SongTable";
-import AlbumList from "@/components/resource/album/AlbumList";
+import AlbumList from "@/components/album/AlbumList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { queryClient } from "@/trpc/react";

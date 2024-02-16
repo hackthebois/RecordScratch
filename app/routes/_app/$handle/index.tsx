@@ -1,6 +1,6 @@
 import FollowerMenu from "@/components/FollowersMenu";
+import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { UserAvatar } from "@/components/UserAvatar";
-import { InfiniteProfileReviews } from "@/components/resource/InfiniteProfileReviews";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
