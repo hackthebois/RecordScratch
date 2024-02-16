@@ -43,13 +43,13 @@ export const profilesRouter = router({
 	followCount: publicProcedure
 		.input(
 			z.object({
-				userId: z.string(),
+				profileId: z.string(),
 				type: z.literal("followers").or(z.literal("following")),
 			})
 		)
-		.query(async ({ ctx: { db }, input: { userId, type } }) => {
+		.query(async ({ ctx: { db }, input: { profileId, type } }) => {
 			const userExists = !!(await db.query.profile.findFirst({
-				where: eq(profile.userId, userId),
+				where: eq(profile.userId, profileId),
 			}));
 
 			if (!userExists) throw new Error("User Doesn't Exist");
@@ -61,14 +61,14 @@ export const profilesRouter = router({
 						count: sql<number>`count(*)`.mapWith(Number),
 					})
 					.from(followers)
-					.where(eq(followers.followingId, userId));
+					.where(eq(followers.followingId, profileId));
 			} else {
 				count = await db
 					.select({
 						count: sql<number>`count(*)`.mapWith(Number),
 					})
 					.from(followers)
-					.where(eq(followers.userId, userId));
+					.where(eq(followers.userId, profileId));
 			}
 			return count.length ? count[0].count : 0;
 		}),

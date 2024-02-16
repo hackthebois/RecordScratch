@@ -1,23 +1,23 @@
 import { api } from "@/trpc/react";
-import { Resource } from "@/types/rating";
+import { RouterInputs } from "@/trpc/shared";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { Review } from "./Review";
 
-export const InfiniteCommunityReviews = ({
+export const InfiniteProfileReviews = ({
 	pageLimit,
-	resource,
+	input,
 }: {
 	pageLimit: number;
-	resource: Resource;
+	input: RouterInputs["ratings"]["user"]["recent"];
 }) => {
 	const { ref, inView } = useInView();
 
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.community.useInfiniteQuery(
+	const { data, fetchNextPage, hasNextPage } = api.ratings.user.recent.useInfiniteQuery(
 		{
 			limit: pageLimit,
-			resource,
+			...input,
 		},
 		{
 			getNextPageParam: (lastPage) => lastPage.nextCursor,

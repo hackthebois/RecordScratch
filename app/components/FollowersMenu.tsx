@@ -10,11 +10,11 @@ type Props = {
 const FollowerMenu = ({ profileId }: Props) => {
 	const { userId } = useAuth();
 	const [followerCount] = api.profiles.followCount.useSuspenseQuery({
-		userId: profileId,
+		profileId,
 		type: "followers",
 	});
 	const [followingCount] = api.profiles.followCount.useSuspenseQuery({
-		userId: profileId,
+		profileId,
 		type: "following",
 	});
 	const [followerProfiles] = api.profiles.followProfiles.useSuspenseQuery({
