@@ -1,7 +1,7 @@
 import appRouter from "#vinxi/trpc/router";
-import { createTRPCContext } from "@/server/trpc";
 import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import { fromNodeMiddleware } from "vinxi/http";
+import { createTRPCContext } from "./app/server/trpc";
 
 import dotenv from "dotenv";
 dotenv.config();
