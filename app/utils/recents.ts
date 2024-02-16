@@ -27,6 +27,7 @@ export type Recent =
 
 type RecentStore = {
 	recents: Recent[];
+	// eslint-disable-next-line no-unused-vars
 	addRecent: (recent: Recent) => void;
 };
 

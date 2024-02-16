@@ -3,7 +3,7 @@
 		"strict": true,
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"jsx": "react-jsx",
@@ -16,5 +16,7 @@
 		"paths": {
 			"@/*": ["app/*"]
 		}
-	}
+	},
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": ["node_modules"]
 }

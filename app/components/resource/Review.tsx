@@ -17,7 +17,13 @@ export const Review = ({ rating, profile, content, resourceId, category }: Revie
 						<Star key={i} size={18} color="#ffb703" />
 					))}
 				</div>
-				<Link href={`/${profile.handle}`} className="flex items-center gap-2">
+				<Link
+					to="/$handle"
+					params={{
+						handle: String(profile.handle),
+					}}
+					className="flex items-center gap-2"
+				>
 					<UserAvatar {...profile} size={30} />
 					<p className="flex">{profile.name}</p>
 				</Link>
