@@ -1,9 +1,7 @@
-"use client";
-
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import * as React from "react";
 
-import { cn } from "app/utils/utils";
+import { cn } from "@/utils/utils";
 
 interface RootProps extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {
 	orientation?: "vertical" | "horizontal";

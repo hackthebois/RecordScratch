@@ -1,8 +1,8 @@
 import { env } from "@/env";
+import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { TRPCReactProvider } from "app/trpc/react";
 
 export const Route = createRootRoute({
 	component: () => (
