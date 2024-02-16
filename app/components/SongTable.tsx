@@ -20,7 +20,14 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 							index === songs.length - 1 && "border-none"
 						)}
 					>
-						<Link to="/" className="flex w-full min-w-0 gap-3 p-3">
+						<Link
+							to="/albums/$albumId/songs/$songId"
+							params={{
+								albumId: String(song.album.id),
+								songId: String(song.id),
+							}}
+							className="flex w-full min-w-0 gap-3 p-3"
+						>
 							<p className="w-4 text-center text-sm text-muted-foreground">
 								{index + 1}
 							</p>
