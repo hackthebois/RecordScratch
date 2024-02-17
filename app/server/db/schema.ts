@@ -20,8 +20,15 @@ export const profile = mysqlTable("profile", {
 });
 
 export const profileRelations = relations(profile, ({ many }) => ({
-	ratings: many(ratings),
-	followers: many(followers),
+	profile: many(ratings, {
+		relationName: "profile",
+	}),
+	follower: many(followers, {
+		relationName: "follower",
+	}),
+	following: many(followers, {
+		relationName: "following",
+	}),
 }));
 
 export const ratings = mysqlTable(
@@ -43,6 +50,14 @@ export const ratings = mysqlTable(
 	})
 );
 
+export const ratingsRelations = relations(ratings, ({ one }) => ({
+	profile: one(profile, {
+		fields: [ratings.userId],
+		references: [profile.userId],
+		relationName: "profile",
+	}),
+}));
+
 export const followers = mysqlTable(
 	"followers",
 	{
@@ -58,20 +73,14 @@ export const followers = mysqlTable(
 
 export const userFollowRelation = relations(followers, ({ one }) => ({
 	// Define the relationship between user_id and following_id
-	user: one(profile, {
+	follower: one(profile, {
 		fields: [followers.userId],
 		references: [profile.userId],
+		relationName: "follower",
 	}),
-
 	following: one(profile, {
 		fields: [followers.followingId],
 		references: [profile.userId],
-	}),
-}));
-
-export const ratingsRelations = relations(ratings, ({ one }) => ({
-	profile: one(profile, {
-		fields: [ratings.userId],
-		references: [profile.userId],
+		relationName: "following",
 	}),
 }));
