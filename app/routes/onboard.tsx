@@ -1,3 +1,4 @@
+import { Pending } from "@/components/Pending";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/Form";
@@ -18,7 +19,7 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/onboard")({
 	component: Onboard,
-	pendingComponent: () => <></>,
+	pendingComponent: Pending,
 });
 
 const SlideWrapper = ({

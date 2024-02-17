@@ -1,3 +1,4 @@
+import { Pending } from "@/components/Pending";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -9,7 +10,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/artists/$artistId/")({
 	component: Artist,
-	pendingComponent: () => <></>,
+	pendingComponent: Pending,
 	loader: ({ params: { artistId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({

@@ -1,4 +1,5 @@
 import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
+import { Pending } from "@/components/Pending";
 import { RatingDialog } from "@/components/RatingDialog";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
@@ -19,7 +20,7 @@ import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app/albums/$albumId/")({
 	component: Album,
-	pendingComponent: () => <></>,
+	pendingComponent: Pending,
 	loader: ({ params: { albumId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({
