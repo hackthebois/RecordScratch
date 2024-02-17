@@ -1,4 +1,5 @@
 import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
+import { Pending } from "@/components/Pending";
 import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInReviewButton } from "@/components/SignInReviewButton";
 import { buttonVariants } from "@/components/ui/Button";
@@ -14,7 +15,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
-	pendingComponent: () => <></>,
+	pendingComponent: Pending,
 	loader: ({ params: { albumId } }) =>
 		queryClient.ensureQueryData(
 			getQueryOptions({

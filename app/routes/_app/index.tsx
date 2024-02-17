@@ -1,4 +1,5 @@
 import { InfiniteFeedReviews } from "@/components/InfiniteFeedReviews";
+import { Pending } from "@/components/Pending";
 import AlbumList from "@/components/album/AlbumList";
 import { Discord } from "@/components/icons/Discord";
 import { buttonVariants } from "@/components/ui/Button";
@@ -51,5 +52,5 @@ export const Route = createFileRoute("/_app/")({
 		};
 	},
 	component: Index,
-	pendingComponent: () => <></>,
+	pendingComponent: Pending,
 });

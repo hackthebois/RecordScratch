@@ -1,5 +1,6 @@
 import FollowerMenu from "@/components/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
+import { Pending } from "@/components/Pending";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -11,7 +12,7 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
 	component: Handle,
-	pendingComponent: () => <></>,
+	pendingComponent: Pending,
 	validateSearch: (search) => {
 		return z
 			.object({
