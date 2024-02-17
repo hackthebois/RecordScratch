@@ -71,7 +71,10 @@ export const RatingItem = ({
 								},
 							});
 							navigate({
-								to: "/",
+								to: "/artists/$artistId",
+								params: {
+									artistId: String(album.artist?.id),
+								},
 							});
 						}}
 						className="truncate py-1 text-sm text-muted-foreground hover:underline"
