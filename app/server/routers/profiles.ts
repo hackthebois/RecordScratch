@@ -101,7 +101,7 @@ export const profilesRouter = router({
 				const data = await db.query.followers.findMany({
 					where: eq(followers.followingId, profileId),
 					with: {
-						user: {
+						follower: {
 							extras: {
 								isFollowing:
 									sql<boolean>`exists(select 1 from followers where user_id = ${userId} and following_id = ${followers.userId})`.as(
@@ -111,7 +111,7 @@ export const profilesRouter = router({
 						},
 					},
 				});
-				return data.map(({ user: profile, userId, followingId }) => {
+				return data.map(({ follower: profile, userId, followingId }) => {
 					return {
 						userId,
 						followingId,

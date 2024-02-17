@@ -18,6 +18,7 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/onboard")({
 	component: Onboard,
+	pendingComponent: () => <></>,
 });
 
 const SlideWrapper = ({
@@ -54,7 +55,7 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 
 function Onboard() {
 	const [page, setPage] = useState(0);
-	const { user } = useUser();
+	const { user, isLoaded } = useUser();
 	const navigate = useNavigate();
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 	const form = useForm<Onboard>({
@@ -70,7 +71,22 @@ function Onboard() {
 	const { name, image, handle, bio } = form.watch();
 	const imageRef = useRef<HTMLInputElement>(null);
 
-	const createProfile = api.profiles.create.useMutation();
+	useEffect(() => {
+		if (isLoaded && (user?.publicMetadata.onboarded || !user?.id)) {
+			navigate({
+				to: "/",
+			});
+		}
+	}, [user?.publicMetadata.onboarded, user?.id, navigate, isLoaded]);
+
+	const createProfile = api.profiles.create.useMutation({
+		onSuccess: () => {
+			user?.reload();
+			navigate({
+				to: "/",
+			});
+		},
+	});
 
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
@@ -104,7 +120,6 @@ function Onboard() {
 			imageUrl,
 			bio: bio ?? null,
 		});
-		user?.reload();
 	};
 
 	useEffect(() => {
@@ -148,24 +163,16 @@ function Onboard() {
 		}
 	};
 
-	useEffect(() => {
-		if (user?.publicMetadata.onboarded) {
-			navigate({
-				to: "/",
-			});
-		}
-	}, [user?.publicMetadata.onboarded]);
-
 	if (form.formState.isSubmitting || form.formState.isSubmitSuccessful) {
 		return (
-			<div className="flex flex-1 flex-col items-center justify-center">
+			<main className="mx-auto h-[100svh] flex flex-col justify-center items-center w-full max-w-screen-lg flex-1 p-4 sm:p-6">
 				<Disc3 size={50} className="animate-spin" />
-			</div>
+			</main>
 		);
 	}
 
 	return (
-		<>
+		<main className="mx-auto h-[100svh] flex flex-col justify-center items-center w-full max-w-screen-lg flex-1 p-4 sm:p-6">
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>
@@ -311,6 +318,6 @@ function Onboard() {
 								: "Next"}
 				</Button>
 			</div>
-		</>
+		</main>
 	);
 }
