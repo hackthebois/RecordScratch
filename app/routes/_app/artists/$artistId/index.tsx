@@ -6,11 +6,19 @@ import { Tag } from "@/components/ui/Tag";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_app/artists/$artistId/")({
 	component: Artist,
 	pendingComponent: Pending,
+	validateSearch: (search) => {
+		return z
+			.object({
+				tab: z.enum(["top-songs", "discography"]).optional(),
+			})
+			.parse(search);
+	},
 	loader: ({ params: { artistId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({
@@ -41,6 +49,10 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 
 function Artist() {
 	const { artistId } = Route.useParams();
+	const { tab = "top-songs" } = Route.useSearch();
+	const navigate = useNavigate({
+		from: Route.fullPath,
+	});
 	const { data: artist } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/artist/{id}",
@@ -86,10 +98,32 @@ function Artist() {
 					</div>
 				</div>
 			</div>
-			<Tabs defaultValue="top-songs">
+			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger value="top-songs">Top Songs</TabsTrigger>
-					<TabsTrigger value="discography">Discography</TabsTrigger>
+					<TabsTrigger
+						value="top-songs"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "top-songs",
+								},
+							})
+						}
+					>
+						Top Songs
+					</TabsTrigger>
+					<TabsTrigger
+						value="discography"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "discography",
+								},
+							})
+						}
+					>
+						Discography
+					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="top-songs">
 					<SongTable songs={top.data} />

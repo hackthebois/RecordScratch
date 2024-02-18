@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
+				tab: z.enum(["reviews", "settings"]).optional(),
 			})
 			.parse(search);
 	},
@@ -57,8 +58,11 @@ const SignOutButton = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { rating } = Route.useSearch();
+	const { rating, tab = "reviews" } = Route.useSearch();
 	const { userId } = useAuth();
+	const navigate = useNavigate({
+		from: Route.fullPath,
+	});
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const [distribution] = api.profiles.distribution.useSuspenseQuery(profile?.userId || "");
 
@@ -85,10 +89,34 @@ function Handle() {
 					<FollowerMenu profileId={profile.userId} />
 				</div>
 			</div>
-			<Tabs defaultValue="reviews">
+			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger value="reviews">Reviews</TabsTrigger>
-					{isUser && <TabsTrigger value="settings">Settings</TabsTrigger>}
+					<TabsTrigger
+						value="reviews"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "reviews",
+								},
+							})
+						}
+					>
+						Reviews
+					</TabsTrigger>
+					{isUser && (
+						<TabsTrigger
+							value="settings"
+							onClick={() =>
+								navigate({
+									search: {
+										tab: "settings",
+									},
+								})
+							}
+						>
+							Settings
+						</TabsTrigger>
+					)}
 				</TabsList>
 				<TabsContent value="reviews">
 					<div className="flex max-w-lg flex-col rounded-md border p-6 pt-6">

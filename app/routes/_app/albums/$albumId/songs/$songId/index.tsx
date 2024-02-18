@@ -1,7 +1,5 @@
-import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
+import CommunityReviews from "@/components/CommunityReviews";
 import { Pending } from "@/components/Pending";
-import { ReviewDialog } from "@/components/ReviewDialog";
-import { SignInReviewButton } from "@/components/SignInReviewButton";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
@@ -9,7 +7,6 @@ import { queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
@@ -85,17 +82,7 @@ function Song() {
 					<TabsTrigger value="reviews">Reviews</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
-					<div className="flex w-full flex-col gap-4">
-						<div className="flex w-full gap-2">
-							<SignedIn>
-								<ReviewDialog resource={resource} />
-							</SignedIn>
-							<SignedOut>
-								<SignInReviewButton />
-							</SignedOut>
-						</div>
-						<InfiniteCommunityReviews resource={resource} pageLimit={20} />
-					</div>
+					<CommunityReviews resource={resource} pageLimit={20} />
 				</TabsContent>
 			</Tabs>
 		</div>
