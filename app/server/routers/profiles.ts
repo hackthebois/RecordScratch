@@ -1,7 +1,6 @@
 import { followers, profile, ratings } from "@/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
-import clerkClient from "@clerk/clerk-sdk-node";
 import { and, count, eq, like, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
@@ -146,9 +145,6 @@ export const profilesRouter = router({
 		.input(CreateProfileSchema)
 		.mutation(async ({ ctx: { db, userId }, input }) => {
 			await db.insert(profile).values({ ...input, userId });
-			await clerkClient.users.updateUser(userId, {
-				publicMetadata: { onboarded: true },
-			});
 		}),
 	update: protectedProcedure
 		.input(UpdateProfileSchema)
