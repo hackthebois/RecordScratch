@@ -55,6 +55,7 @@ export const OnboardSchema = CreateProfileSchema.omit({
 export type Onboard = z.infer<typeof OnboardSchema>;
 
 function Onboard() {
+	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
 	const { user, isLoaded } = useUser();
 	const navigate = useNavigate();
@@ -71,18 +72,20 @@ function Onboard() {
 	});
 	const { name, image, handle, bio } = form.watch();
 	const imageRef = useRef<HTMLInputElement>(null);
+	const { data: profile, isSuccess } = api.profiles.me.useQuery();
 
 	useEffect(() => {
-		if (isLoaded && (user?.publicMetadata.onboarded || !user?.id)) {
+		if (profile !== null && isSuccess) {
 			navigate({
 				to: "/",
 			});
 		}
-	}, [user?.publicMetadata.onboarded, user?.id, navigate, isLoaded]);
+	}, [profile, isSuccess, navigate]);
 
 	const createProfile = api.profiles.create.useMutation({
 		onSuccess: () => {
 			user?.reload();
+			utils.profiles.me.invalidate();
 			navigate({
 				to: "/",
 			});

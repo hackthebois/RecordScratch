@@ -1,11 +1,13 @@
 import { api } from "@/trpc/react";
 import { useAuth } from "@clerk/clerk-react";
+import React from "react";
 import { FollowButton } from "./FollowButton";
-import FollowersPopup from "./FollowersPopup";
 
 type Props = {
 	profileId: string;
 };
+
+const FollowersPopup = React.lazy(() => import("./FollowersPopup"));
 
 const FollowerMenu = ({ profileId }: Props) => {
 	const { userId } = useAuth();
@@ -17,14 +19,6 @@ const FollowerMenu = ({ profileId }: Props) => {
 		profileId,
 		type: "following",
 	});
-	const [followerProfiles] = api.profiles.followProfiles.useSuspenseQuery({
-		profileId,
-		type: "followers",
-	});
-	const [followingProfiles] = api.profiles.followProfiles.useSuspenseQuery({
-		profileId,
-		type: "following",
-	});
 
 	const showButton = !!userId && userId !== profileId;
 
@@ -33,17 +27,17 @@ const FollowerMenu = ({ profileId }: Props) => {
 			<div className="flex flex-col items-center gap-1">
 				<p>Followers</p>
 				<FollowersPopup
-					title={"Followers"}
+					profileId={profileId}
+					type="followers"
 					followerCount={followerCount}
-					profiles={followerProfiles}
 				/>
 			</div>
 			<div className="flex flex-col items-center gap-1">
 				<p>Following</p>
 				<FollowersPopup
-					title={"Following"}
+					profileId={profileId}
+					type="following"
 					followerCount={followingCount}
-					profiles={followingProfiles}
 				/>
 			</div>
 			{showButton && <FollowButton profileId={profileId} />}

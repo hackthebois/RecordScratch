@@ -24,6 +24,8 @@ export const Route = createFileRoute("/_app/$handle/")({
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) throw notFound();
 		apiUtils.profiles.distribution.ensureData(profile.userId);
+		apiUtils.profiles.followCount.ensureData({ profileId: profile.userId, type: "followers" });
+		apiUtils.profiles.followCount.ensureData({ profileId: profile.userId, type: "following" });
 	},
 });
 
