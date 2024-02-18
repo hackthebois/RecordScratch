@@ -57,7 +57,7 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 function Onboard() {
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
-	const { user, isLoaded } = useUser();
+	const { user } = useUser();
 	const navigate = useNavigate();
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 	const form = useForm<Onboard>({

@@ -1,9 +1,7 @@
-import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
+import CommunityReviews from "@/components/CommunityReviews";
 import { Pending } from "@/components/Pending";
 import { RatingDialog } from "@/components/RatingDialog";
-import { ReviewDialog } from "@/components/ReviewDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
-import { SignInReviewButton } from "@/components/SignInReviewButton";
 import SongTable from "@/components/SongTable";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -15,12 +13,20 @@ import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_app/albums/$albumId/")({
 	component: Album,
 	pendingComponent: Pending,
+	validateSearch: (search) => {
+		return z
+			.object({
+				tab: z.enum(["songs", "reviews"]).optional(),
+			})
+			.parse(search);
+	},
 	loader: ({ params: { albumId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({
@@ -32,7 +38,11 @@ export const Route = createFileRoute("/_app/albums/$albumId/")({
 });
 
 function Album() {
+	const navigate = useNavigate({
+		from: Route.fullPath,
+	});
 	const { albumId } = Route.useParams();
+	const { tab = "songs" } = Route.useSearch();
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
@@ -93,26 +103,38 @@ function Album() {
 					</Suspense>
 				</div>
 			</div>
-			<Tabs defaultValue="songs">
+			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger value="songs">Songs</TabsTrigger>
-					<TabsTrigger value="reviews">Reviews</TabsTrigger>
+					<TabsTrigger
+						value="songs"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "songs",
+								},
+							})
+						}
+					>
+						Songs
+					</TabsTrigger>
+					<TabsTrigger
+						value="reviews"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "reviews",
+								},
+							})
+						}
+					>
+						Reviews
+					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="songs">
 					<SongTable songs={album.tracks?.data ?? []} />
 				</TabsContent>
 				<TabsContent value="reviews">
-					<div className="flex w-full flex-col gap-4">
-						<div className="flex w-full gap-2">
-							<SignedIn>
-								<ReviewDialog resource={resource} />
-							</SignedIn>
-							<SignedOut>
-								<SignInReviewButton />
-							</SignedOut>
-						</div>
-						<InfiniteCommunityReviews resource={resource} pageLimit={20} />
-					</div>
+					<CommunityReviews resource={resource} pageLimit={20} />
 				</TabsContent>
 			</Tabs>
 		</div>
