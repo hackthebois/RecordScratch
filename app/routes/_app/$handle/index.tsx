@@ -27,6 +27,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 			.object({
 				rating: z.number().optional(),
 				tab: z.enum(["reviews", "settings"]).optional(),
+				category: z.enum(["ALBUM", "SONG"]).optional(),
 			})
 			.parse(search);
 	},
@@ -84,7 +85,7 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { rating, tab = "reviews" } = Route.useSearch();
+	const { rating, tab = "reviews", category } = Route.useSearch();
 	const { userId } = useAuth();
 	const navigate = useNavigate({
 		from: Route.fullPath,
@@ -182,8 +183,48 @@ function Handle() {
 							))}
 						</div>
 					</div>
+					<Tabs value={category} defaultValue="all" className="mt-2">
+						<TabsList>
+							<TabsTrigger
+								value="all"
+								onClick={() =>
+									navigate({
+										search: {
+											category: undefined,
+										},
+									})
+								}
+							>
+								All
+							</TabsTrigger>
+							<TabsTrigger
+								value="ALBUM"
+								onClick={() =>
+									navigate({
+										search: {
+											category: "ALBUM",
+										},
+									})
+								}
+							>
+								Album
+							</TabsTrigger>
+							<TabsTrigger
+								value="SONG"
+								onClick={() =>
+									navigate({
+										search: {
+											category: "SONG",
+										},
+									})
+								}
+							>
+								Song
+							</TabsTrigger>
+						</TabsList>
+					</Tabs>
 					<InfiniteProfileReviews
-						input={{ profileId: profile.userId, rating }}
+						input={{ profileId: profile.userId, rating, category }}
 						pageLimit={20}
 					/>
 				</TabsContent>
