@@ -60,7 +60,5 @@ export const CreateProfileSchema = ProfileSchema.pick({
 });
 export type CreateProfile = z.infer<typeof CreateProfileSchema>;
 
-export const UpdateProfileSchema = CreateProfileSchema.extend({
-	oldHandle: z.string().optional(),
-});
+export const UpdateProfileSchema = CreateProfileSchema;
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;

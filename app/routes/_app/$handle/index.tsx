@@ -1,8 +1,17 @@
+import { EditProfile } from "@/components/EditProfile";
 import FollowerMenu from "@/components/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { Pending } from "@/components/Pending";
+import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
+import { Label } from "@/components/ui/Label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
@@ -23,7 +32,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) throw notFound();
+		if (!profile) throw notFound({ route: "/_app" });
 		apiUtils.profiles.distribution.ensureData(profile.userId);
 		apiUtils.profiles.followCount.ensureData({ profileId: profile.userId, type: "followers" });
 		apiUtils.profiles.followCount.ensureData({ profileId: profile.userId, type: "following" });
@@ -53,6 +62,23 @@ const SignOutButton = () => {
 		>
 			Sign out
 		</Button>
+	);
+};
+
+const ThemeToggle = () => {
+	const { theme, setTheme } = useTheme();
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button>{theme && theme?.charAt(0).toUpperCase() + theme?.slice(1)}</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
 
@@ -163,7 +189,27 @@ function Handle() {
 				</TabsContent>
 				{isUser && (
 					<TabsContent value="settings">
-						<div className="flex flex-col gap-6">
+						<div className="flex flex-col gap-8 py-6">
+							<h3>Appearence</h3>
+							<div className="flex items-center justify-between">
+								<div className="flex flex-col items-start gap-2">
+									<Label>Theme</Label>
+									<p className="text-sm text-muted-foreground">
+										Select a theme for your interface
+									</p>
+								</div>
+								<ThemeToggle />
+							</div>
+							<h3>Account</h3>
+							<div className="flex items-center justify-between">
+								<div className="flex flex-col items-start gap-2">
+									<Label>Edit Profile</Label>
+									<p className="text-sm text-muted-foreground">
+										Update your profile information and image
+									</p>
+								</div>
+								<EditProfile profile={profile} />
+							</div>
 							<SignOutButton />
 						</div>
 					</TabsContent>

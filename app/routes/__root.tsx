@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { env } from "@/env";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/clerk-react";
@@ -24,11 +25,13 @@ function Root() {
 	return (
 		<ClerkProvider publishableKey={env.VITE_CLERK_PUBLISHABLE_KEY}>
 			<TRPCReactProvider>
-				<ScrollRestoration />
-				<Outlet />
-				<Suspense>
-					<TanStackRouterDevtools />
-				</Suspense>
+				<ThemeProvider defaultTheme="dark" storageKey="theme">
+					<ScrollRestoration />
+					<Outlet />
+					<Suspense>
+						<TanStackRouterDevtools />
+					</Suspense>
+				</ThemeProvider>
 			</TRPCReactProvider>
 		</ClerkProvider>
 	);

@@ -10,10 +10,19 @@ import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Disc3, Menu } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({
-	component: LayoutComponent,
+	component: () => (
+		<LayoutComponent>
+			<Outlet />
+		</LayoutComponent>
+	),
+	notFoundComponent: () => (
+		<LayoutComponent>
+			<p>Not Found</p>
+		</LayoutComponent>
+	),
 });
 
-function LayoutComponent() {
+function LayoutComponent({ children }: { children: React.ReactNode }) {
 	const { openSignIn } = useClerk();
 	return (
 		<>
@@ -78,7 +87,7 @@ function LayoutComponent() {
 				</nav>
 			</header>
 			<main className="mx-auto h-full w-full max-w-screen-lg flex-1 p-4 sm:p-6">
-				<Outlet />
+				{children}
 			</main>
 		</>
 	);
