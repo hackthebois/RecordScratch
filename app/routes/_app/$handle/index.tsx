@@ -85,7 +85,7 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { rating, tab = "reviews", category } = Route.useSearch();
+	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
 	const { userId } = useAuth();
 	const navigate = useNavigate({
 		from: Route.fullPath,
@@ -183,7 +183,7 @@ function Handle() {
 							))}
 						</div>
 					</div>
-					<Tabs value={category} defaultValue="all" className="mt-2">
+					<Tabs value={category} className="mt-2">
 						<TabsList>
 							<TabsTrigger
 								value="all"
@@ -224,7 +224,11 @@ function Handle() {
 						</TabsList>
 					</Tabs>
 					<InfiniteProfileReviews
-						input={{ profileId: profile.userId, rating, category }}
+						input={{
+							profileId: profile.userId,
+							rating,
+							category: category === "all" ? undefined : category,
+						}}
 						pageLimit={20}
 					/>
 				</TabsContent>
