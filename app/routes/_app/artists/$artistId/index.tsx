@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 	validateSearch: (search) => {
 		return z
 			.object({
-				tab: z.enum(["top-songs", "discography"]).optional(),
+				tab: z.enum(["discography"]).optional(),
 			})
 			.parse(search);
 	},
@@ -105,7 +105,7 @@ function Artist() {
 						onClick={() =>
 							navigate({
 								search: {
-									tab: "top-songs",
+									tab: undefined,
 								},
 							})
 						}
