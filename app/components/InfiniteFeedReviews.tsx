@@ -15,6 +15,7 @@ export const InfiniteFeedReviews = ({ pageLimit }: { pageLimit: number }) => {
 			getNextPageParam: (lastPage) => lastPage.nextCursor,
 		}
 	);
+	console.log(hasNextPage);
 
 	useEffect(() => {
 		if (inView) {

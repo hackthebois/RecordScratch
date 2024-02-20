@@ -28,7 +28,7 @@ const AlbumItem = ({
 	}
 
 	return (
-		<div className="mb-4 flex w-[144px] flex-1 flex-col">
+		<div className="mb-4 flex w-[144px] flex-col">
 			<Link
 				to={"/albums/$albumId"}
 				params={{

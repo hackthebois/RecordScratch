@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -18,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { Textarea } from "./ui/Textarea";
 
-export const ReviewDialog = ({ resource }: { resource: Resource }) => {
+export const ReviewDialog = ({ resource, name }: { resource: Resource; name: string }) => {
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
@@ -54,7 +55,10 @@ export const ReviewDialog = ({ resource }: { resource: Resource }) => {
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[600px]">
 				<DialogHeader>
-					<DialogTitle className="text-center text-2xl">Review</DialogTitle>
+					<DialogTitle className="text-center text-2xl">{name}</DialogTitle>
+					<DialogDescription className="text-center">
+						{resource.category === "ALBUM" ? "Review this album" : "Review this song"}
+					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
