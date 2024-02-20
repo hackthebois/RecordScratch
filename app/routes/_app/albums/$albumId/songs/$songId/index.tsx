@@ -13,15 +13,14 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
 	pendingComponent: Pending,
-	loader: ({ params: { albumId } }) =>
+	loader: ({ params: { albumId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({
 				route: "/album/{id}",
-				input: {
-					id: albumId,
-				},
+				input: { id: albumId },
 			})
-		),
+		);
+	},
 });
 
 function Song() {
@@ -29,9 +28,7 @@ function Song() {
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
-			input: {
-				id: albumId,
-			},
+			input: { id: albumId },
 		})
 	);
 

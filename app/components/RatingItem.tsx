@@ -1,39 +1,49 @@
 import AlbumImage from "@/components/album/AlbumImage";
 import { Resource } from "@/types/rating";
 import { Album, getQueryOptions } from "@/utils/deezer";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Skeleton } from "./ui/Skeleton";
 
 export const RatingItem = ({
-	initial,
+	initialAlbum,
 	resource,
 	showType,
 	onClick,
 }: {
-	initial?: {
-		album: Album;
-		name: string;
-	};
+	initialAlbum?: Album;
 	resource: Resource;
 	showType?: boolean;
 	onClick?: () => void;
 }) => {
-	const { data: album } = useSuspenseQuery({
+	console.log(resource);
+	const navigate = useNavigate();
+	const { data: album } = useQuery({
 		...getQueryOptions({
 			route: "/album/{id}",
 			input: {
 				id: resource.category === "SONG" ? resource.parentId : resource.resourceId,
 			},
 		}),
-		initialData: initial?.album,
+		initialData: initialAlbum,
 	});
+
+	if (!album) {
+		return (
+			<div className="flex flex-row items-center gap-4 rounded">
+				<Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
+				<div className="gap-2 flex flex-col">
+					<Skeleton className="w-32 h-4 mb-1" />
+					<Skeleton className="w-24 h-4" />
+				</div>
+			</div>
+		);
+	}
 
 	const name =
 		resource.category === "SONG"
 			? album.tracks?.data.find((track) => track.id === Number(resource.resourceId))?.title
 			: album.title;
-
-	const navigate = useNavigate();
 
 	const link =
 		resource.category === "SONG"

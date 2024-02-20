@@ -10,7 +10,7 @@ const AlbumImage = ({ album, size }: { album: Album; size: number }) => {
 			}}
 		>
 			<img
-				src={album.cover_medium}
+				src={album.cover_medium ?? ""}
 				alt={`${album.title} cover`}
 				width={size}
 				height={size}

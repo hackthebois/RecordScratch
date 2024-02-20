@@ -110,10 +110,7 @@ const SearchState = ({
 							) : recent.type === "ALBUM" && !hide?.albums ? (
 								<RatingItem
 									showType
-									initial={{
-										album: recent.data,
-										name: recent.data.title,
-									}}
+									initialAlbum={recent.data}
 									resource={{
 										parentId: String(recent.data.artist?.id),
 										resourceId: String(recent.data.id),
@@ -132,10 +129,6 @@ const SearchState = ({
 							) : recent.type === "SONG" && !hide?.songs ? (
 								<RatingItem
 									showType
-									initial={{
-										album: recent.data.album,
-										name: recent.data.title,
-									}}
 									resource={{
 										parentId: String(recent.data.album.id),
 										resourceId: String(recent.data.id),
@@ -231,6 +224,8 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 				input: { q: query, limit: 4 },
 			});
 
+			console.log(songs);
+
 			return {
 				artists: artists.data,
 				albums: albums.data,
@@ -256,10 +251,7 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 					<h4>Albums</h4>
 					{data.albums.map((album, index) => (
 						<RatingItem
-							initial={{
-								album: album,
-								name: album.title,
-							}}
+							initialAlbum={album}
 							resource={{
 								parentId: String(album.artist?.id),
 								resourceId: String(album.id),
@@ -294,10 +286,6 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 					<h4 className="mt-3">Songs</h4>
 					{data.songs.map((song, index) => (
 						<RatingItem
-							initial={{
-								album: song.album,
-								name: song.title,
-							}}
 							resource={{
 								parentId: String(song.album.id),
 								resourceId: String(song.id),

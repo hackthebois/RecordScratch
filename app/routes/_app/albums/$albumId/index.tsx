@@ -62,7 +62,7 @@ function Album() {
 					width={250}
 					height={250}
 					alt={`${album.title} cover`}
-					src={album.cover_big}
+					src={album.cover_big ?? ""}
 					className="w-[250px] self-center rounded-xl"
 				/>
 				<div className="flex flex-col items-center gap-4 sm:items-start">
