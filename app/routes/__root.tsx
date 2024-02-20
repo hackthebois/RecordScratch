@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/clerk-react";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, ScrollRestoration, createRootRoute } from "@tanstack/react-router";
 import React, { Suspense } from "react";
 
 const TanStackRouterDevtools =
@@ -24,6 +24,7 @@ function Root() {
 	return (
 		<ClerkProvider publishableKey={env.VITE_CLERK_PUBLISHABLE_KEY}>
 			<TRPCReactProvider>
+				<ScrollRestoration />
 				<Outlet />
 				<Suspense>
 					<TanStackRouterDevtools />

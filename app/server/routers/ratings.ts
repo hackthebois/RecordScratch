@@ -75,7 +75,7 @@ export const ratingsRouter = router({
 			.query(async ({ ctx: { db }, input: { limit = 20, cursor = 0 } }) => {
 				const items = await db.query.ratings.findMany({
 					where: isNotNull(ratings.content),
-					limit,
+					limit: limit + 1,
 					offset: cursor,
 					orderBy: (ratings, { desc }) => [desc(ratings.createdAt)],
 					with: {

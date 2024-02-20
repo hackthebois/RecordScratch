@@ -94,7 +94,7 @@ function Album() {
 						<div className="flex items-center gap-4">
 							<RatingInfo resource={resource} />
 							<SignedIn>
-								<RatingDialog resource={resource} />
+								<RatingDialog resource={resource} name={album.title} />
 							</SignedIn>
 							<SignedOut>
 								<SignInRateButton />
@@ -134,7 +134,7 @@ function Album() {
 					<SongTable songs={album.tracks?.data ?? []} />
 				</TabsContent>
 				<TabsContent value="reviews">
-					<CommunityReviews resource={resource} pageLimit={20} />
+					<CommunityReviews resource={resource} pageLimit={20} name={album.title} />
 				</TabsContent>
 			</Tabs>
 		</div>

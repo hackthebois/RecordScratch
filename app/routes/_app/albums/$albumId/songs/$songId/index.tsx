@@ -82,7 +82,7 @@ function Song() {
 					<TabsTrigger value="reviews">Reviews</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
-					<CommunityReviews resource={resource} pageLimit={20} />
+					<CommunityReviews resource={resource} pageLimit={20} name={song.title} />
 				</TabsContent>
 			</Tabs>
 		</div>

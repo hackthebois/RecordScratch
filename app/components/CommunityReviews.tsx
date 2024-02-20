@@ -8,7 +8,15 @@ import { Review } from "./Review";
 import { ReviewDialog } from "./ReviewDialog";
 import { SignInReviewButton } from "./SignInReviewButton";
 
-const CommunityReviews = ({ pageLimit, resource }: { pageLimit: number; resource: Resource }) => {
+const CommunityReviews = ({
+	pageLimit,
+	resource,
+	name,
+}: {
+	pageLimit: number;
+	resource: Resource;
+	name: string;
+}) => {
 	const { ref, inView } = useInView();
 
 	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.community.useInfiniteQuery(
@@ -31,7 +39,7 @@ const CommunityReviews = ({ pageLimit, resource }: { pageLimit: number; resource
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
 				<SignedIn>
-					<ReviewDialog resource={resource} />
+					<ReviewDialog resource={resource} name={name} />
 				</SignedIn>
 				<SignedOut>
 					<SignInReviewButton />
