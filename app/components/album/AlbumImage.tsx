@@ -7,6 +7,8 @@ const AlbumImage = ({ album, size }: { album: Album; size: number }) => {
 			style={{
 				maxWidth: size,
 				maxHeight: size,
+				minWidth: size,
+				minHeight: size,
 			}}
 		>
 			<img
@@ -17,6 +19,8 @@ const AlbumImage = ({ album, size }: { album: Album; size: number }) => {
 				style={{
 					maxWidth: size,
 					maxHeight: size,
+					minWidth: size,
+					minHeight: size,
 				}}
 				className="aspect-square h-auto w-auto overflow-hidden rounded-md object-cover transition-all hover:scale-105"
 			/>
