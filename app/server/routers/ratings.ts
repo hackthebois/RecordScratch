@@ -96,7 +96,11 @@ export const ratingsRouter = router({
 					where: eq(followers.userId, userId),
 				});
 
-				if (following.length === 0) return [];
+				if (following.length === 0)
+					return {
+						items: [],
+						nextCursor: undefined,
+					};
 
 				const items = await db.query.ratings.findMany({
 					where: and(
