@@ -82,7 +82,7 @@ function Onboard() {
 		}
 	}, [profile, isSuccess, navigate]);
 
-	const createProfile = api.profiles.create.useMutation({
+	const { mutate: createProfile } = api.profiles.create.useMutation({
 		onSuccess: () => {
 			user?.reload();
 			utils.profiles.me.invalidate();
@@ -111,14 +111,20 @@ function Onboard() {
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		let imageUrl: string | null = null;
-		if (image) {
-			const profileImage = await user?.setProfileImage({
-				file: image,
+		try {
+			if (image) {
+				const profileImage = await user?.setProfileImage({
+					file: image,
+				});
+				imageUrl = profileImage?.publicUrl ?? null;
+			}
+		} catch (e) {
+			form.setError("image", {
+				type: "validate",
+				message: "Error uploading image",
 			});
-			imageUrl = profileImage?.publicUrl ?? null;
 		}
-
-		createProfile.mutate({
+		createProfile({
 			name,
 			handle,
 			imageUrl,
