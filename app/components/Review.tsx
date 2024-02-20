@@ -14,7 +14,7 @@ export const Review = ({
 }: ReviewType) => {
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
-			<RatingItem resource={{ parentId, resourceId, category }} />
+			<RatingItem resource={{ parentId, resourceId, category }} showType />
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
