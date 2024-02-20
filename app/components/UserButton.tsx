@@ -22,7 +22,11 @@ export const UserButton = () => {
 				handle: String(profile?.handle),
 			}}
 		>
-			<UserAvatar imageUrl={profile?.imageUrl ?? null} size={36} />
+			<UserAvatar
+				imageUrl={profile?.imageUrl ?? null}
+				size={40}
+				className="border-muted border"
+			/>
 		</Link>
 	);
 };

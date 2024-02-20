@@ -12,9 +12,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
+import { UserAvatar } from "./UserAvatar";
 
 const ArtistItem = ({ artist, onClick }: { artist: Artist; onClick: () => void }) => {
-	const artistImage = artist.picture_small;
+	const artistImage = artist.picture_medium;
 
 	return (
 		<Link
@@ -27,7 +28,7 @@ const ArtistItem = ({ artist, onClick }: { artist: Artist; onClick: () => void }
 		>
 			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
 				{artistImage ? (
-					<img alt={artist.name} src={artistImage} className="object-cover" />
+					<UserAvatar imageUrl={artistImage} size={64} />
 				) : (
 					<div className="h-full w-full bg-muted"></div>
 				)}
