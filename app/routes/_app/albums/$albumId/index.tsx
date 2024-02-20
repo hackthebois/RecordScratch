@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_app/albums/$albumId/")({
 	validateSearch: (search) => {
 		return z
 			.object({
-				tab: z.enum(["songs", "reviews"]).optional(),
+				tab: z.enum(["reviews"]).optional(),
 			})
 			.parse(search);
 	},
@@ -110,7 +110,7 @@ function Album() {
 						onClick={() =>
 							navigate({
 								search: {
-									tab: "songs",
+									tab: undefined,
 								},
 							})
 						}
