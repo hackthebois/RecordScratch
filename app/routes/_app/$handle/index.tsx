@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["reviews", "settings"]).optional(),
+				tab: z.enum(["settings"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
 			})
 			.parse(search);
@@ -123,7 +123,7 @@ function Handle() {
 						onClick={() =>
 							navigate({
 								search: {
-									tab: "reviews",
+									tab: undefined,
 								},
 							})
 						}
@@ -156,6 +156,7 @@ function Handle() {
 									}}
 									search={{
 										rating: index + 1,
+										category: category === "all" ? undefined : category,
 									}}
 									className="flex h-full flex-1 flex-col-reverse"
 									key={index}
@@ -189,9 +190,10 @@ function Handle() {
 								value="all"
 								onClick={() =>
 									navigate({
-										search: {
+										search: (prev) => ({
+											...prev,
 											category: undefined,
-										},
+										}),
 									})
 								}
 							>
@@ -201,9 +203,10 @@ function Handle() {
 								value="ALBUM"
 								onClick={() =>
 									navigate({
-										search: {
+										search: (prev) => ({
+											...prev,
 											category: "ALBUM",
-										},
+										}),
 									})
 								}
 							>
@@ -213,9 +216,10 @@ function Handle() {
 								value="SONG"
 								onClick={() =>
 									navigate({
-										search: {
+										search: (prev) => ({
+											...prev,
 											category: "SONG",
-										},
+										}),
 									})
 								}
 							>
