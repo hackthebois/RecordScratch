@@ -3,9 +3,9 @@ import type { Config } from "drizzle-kit";
 dotenv.config();
 
 export default {
-	schema: "./db/schema.ts",
+	schema: "./app/server/db/schema.ts",
 	driver: "mysql2",
-	out: "./db/migrations",
+	out: "./app/server/db/migrations",
 	dbCredentials: {
 		uri: process.env.DATABASE_URL!,
 	},
