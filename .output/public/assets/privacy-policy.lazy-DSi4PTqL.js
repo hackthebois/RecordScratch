@@ -1,0 +1,1 @@
+import{c as e,j as c}from"./index-BWMo8qqn.js";const r=e("/_app/privacy-policy")({component:i});function i(){return c.jsxs("div",{className:"flex flex-col gap-6",children:[c.jsx("h1",{children:"Privacy Policy"}),c.jsx("p",{children:"TODO"})]})}export{r as Route};

@@ -1,0 +1,7 @@
+{
+  "virtual:#vinxi/handler/server": {
+    "file": "server.js",
+    "src": "virtual:#vinxi/handler/server",
+    "isEntry": true
+  }
+}

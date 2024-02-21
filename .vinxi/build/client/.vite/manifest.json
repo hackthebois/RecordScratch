@@ -1,0 +1,39 @@
+{
+  "app/routes/_app/privacy-policy.lazy.tsx": {
+    "file": "assets/privacy-policy.lazy-NMR5IgJ7.js",
+    "src": "app/routes/_app/privacy-policy.lazy.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "app/routes/_app/roadmap.lazy.tsx": {
+    "file": "assets/roadmap.lazy-BOZcEOfh.js",
+    "src": "app/routes/_app/roadmap.lazy.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "app/routes/_app/terms.lazy.tsx": {
+    "file": "assets/terms.lazy-7gNV0LM-.js",
+    "src": "app/routes/_app/terms.lazy.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-jywW_2QH.js",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "app/routes/_app/terms.lazy.tsx",
+      "app/routes/_app/roadmap.lazy.tsx",
+      "app/routes/_app/privacy-policy.lazy.tsx"
+    ],
+    "css": [
+      "assets/index-CqvpFZuJ.css"
+    ]
+  }
+}
