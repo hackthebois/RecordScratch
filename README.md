@@ -26,4 +26,4 @@ We invite contributors to help us in any way they can to improve the RecordScrat
 
 ## License
 
-RecordScratch is an open-source project and is governed by the MIT License. For a comprehensive view of licensing details, kindly refer to the [LICENSE](LICENSE.md) file.
+RecordScratch is an open-source project and is governed by the MIT License. For a comprehensive view of licensing details, kindly refer to the [LICENSE](LICENSE.md) file
