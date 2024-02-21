@@ -10,6 +10,7 @@ const FollowersPopup = React.lazy(() => import("./FollowersPopup"));
 
 const FollowerMenu = ({ profileId }: Props) => {
 	const { data: profile } = api.profiles.me.useQuery();
+
 	const [followerCount] = api.profiles.followCount.useSuspenseQuery({
 		profileId,
 		type: "followers",

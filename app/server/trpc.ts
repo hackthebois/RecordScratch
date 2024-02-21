@@ -7,7 +7,9 @@ import { db } from "./db";
 
 export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
 	const cookies = new Cookies(opts.req, opts.res);
-	const sessionId = cookies.get("session");
+	const sessionId = cookies.get("auth_session");
+
+	console.log("sessionId", sessionId);
 
 	if (!sessionId) {
 		return {

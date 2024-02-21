@@ -77,6 +77,7 @@ function Handle() {
 	const { handle } = Route.useParams();
 	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
 	const { data: myProfile } = api.profiles.me.useQuery();
+
 	const navigate = useNavigate({
 		from: Route.fullPath,
 	});
