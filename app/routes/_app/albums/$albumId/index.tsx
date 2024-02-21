@@ -43,6 +43,7 @@ function Album() {
 	const { albumId } = Route.useParams();
 	const { tab = "songs" } = Route.useSearch();
 	const { data: profile } = api.profiles.me.useQuery();
+
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",

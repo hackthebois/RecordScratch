@@ -1,22 +1,20 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { api } from "@/trpc/react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { buttonVariants } from "./ui/Button";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
-	const { data: profile, isSuccess } = api.profiles.me.useQuery();
+	const [profile] = api.profiles.me.useSuspenseQuery();
+	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
-	useEffect(() => {
-		if (profile === null && isSuccess) {
-			navigate({
-				to: "/onboard",
-			});
-		}
-	}, [profile, navigate, isSuccess]);
+	if (needsOnboarding) {
+		navigate({
+			to: "/onboard",
+		});
+	}
 
-	if (!profile && isSuccess) {
+	if (!profile) {
 		return (
 			<a href="/auth/google" className={buttonVariants({})}>
 				Sign In

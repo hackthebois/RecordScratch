@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover
 import { env } from "@/env";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Disc3, Menu } from "lucide-react";
+import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app")({
 	component: () => (
@@ -35,7 +36,9 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 						<SearchBar />
 					</div>
 					<div className="flex items-center gap-3">
-						<UserButton />
+						<Suspense fallback={null}>
+							<UserButton />
+						</Suspense>
 						<Popover>
 							<PopoverTrigger asChild>
 								<Button size="icon" variant="outline">

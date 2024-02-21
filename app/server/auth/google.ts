@@ -69,6 +69,7 @@ export const callback = async (event: H3Event<EventHandlerRequest>) => {
 		.parse(user);
 
 	let userId: string;
+	let redirect: string;
 	const existingUser = await db.query.users.findFirst({
 		where: eq(users.googleId, googleId),
 	});
@@ -80,19 +81,16 @@ export const callback = async (event: H3Event<EventHandlerRequest>) => {
 			email,
 			googleId,
 		});
+		redirect = "/onboard";
 	} else {
 		userId = existingUser.id;
+		redirect = "/";
 	}
 	const session = await lucia.createSession(userId, {
 		email,
 		googleId,
 	});
 	const sessionCookie = lucia.createSessionCookie(session.id);
-	setCookie(event, "session", sessionCookie.serialize(), {
-		secure: process.env.NODE_ENV === "production",
-		path: "/",
-		httpOnly: true,
-		maxAge: 60 * 60 * 24 * 7, // 1 week
-	});
-	sendRedirect(event, "/");
+	setCookie(event, sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	sendRedirect(event, redirect);
 };
