@@ -2,6 +2,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { api } from "@/trpc/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { buttonVariants } from "./ui/Button";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
@@ -14,6 +15,14 @@ export const UserButton = () => {
 			});
 		}
 	}, [profile, navigate, isSuccess]);
+
+	if (!profile && isSuccess) {
+		return (
+			<a href="/auth/google" className={buttonVariants({})}>
+				Sign In
+			</a>
+		);
+	}
 
 	return (
 		<Link

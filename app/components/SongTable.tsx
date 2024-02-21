@@ -2,13 +2,15 @@ import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { api } from "@/trpc/react";
 import { Track } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
+	const { data: profile } = api.profiles.me.useQuery();
+
 	return (
 		<div className="w-full">
 			{songs.map((song, index) => {
@@ -47,7 +49,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 									}}
 									size="sm"
 								/>
-								<SignedIn>
+								{profile ? (
 									<RatingDialog
 										resource={{
 											parentId: String(song.album.id),
@@ -56,10 +58,9 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 										}}
 										name={song.title}
 									/>
-								</SignedIn>
-								<SignedOut>
+								) : (
 									<SignInRateButton />
-								</SignedOut>
+								)}
 							</div>
 						</Suspense>
 					</div>

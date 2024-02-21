@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/Label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
-import { useAuth, useClerk, useUser } from "@clerk/clerk-react";
 import { Link, createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -42,8 +41,6 @@ export const Route = createFileRoute("/_app/$handle/")({
 
 const SignOutButton = () => {
 	const utils = api.useUtils();
-	const { signOut } = useClerk();
-	const { user } = useUser();
 	// const posthog = usePostHog();
 	const navigate = useNavigate();
 
@@ -51,14 +48,7 @@ const SignOutButton = () => {
 		<Button
 			variant="outline"
 			onClick={() => {
-				signOut(() => {
-					user?.reload();
-					utils.profiles.me.invalidate();
-					// posthog.reset();
-					navigate({
-						to: "/",
-					});
-				});
+				// SETUP: Sign out
 			}}
 		>
 			Sign out
@@ -86,7 +76,7 @@ const ThemeToggle = () => {
 function Handle() {
 	const { handle } = Route.useParams();
 	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
-	const { userId } = useAuth();
+	const { data: myProfile } = api.profiles.me.useQuery();
 	const navigate = useNavigate({
 		from: Route.fullPath,
 	});
@@ -100,7 +90,7 @@ function Handle() {
 	let max: number = Math.max(...distribution);
 	max = max === 0 ? 1 : max;
 
-	const isUser = userId === profile.userId;
+	const isUser = myProfile?.userId === profile.userId;
 
 	return (
 		<div className="flex flex-col gap-6">

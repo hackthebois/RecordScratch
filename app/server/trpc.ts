@@ -1,26 +1,33 @@
-import { decodeJwt } from "@clerk/clerk-sdk-node";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import Cookies from "cookies";
 import SuperJSON from "superjson";
+import { lucia } from "./auth/lucia";
 import { db } from "./db";
 
 export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
 	const cookies = new Cookies(opts.req, opts.res);
-	const clientToken = cookies.get("__session");
+	const sessionId = cookies.get("session");
 
-	if (!clientToken) {
+	if (!sessionId) {
 		return {
 			db,
 			userId: null,
 		};
 	}
 
-	const client = decodeJwt(clientToken);
+	const { session } = await lucia.validateSession(sessionId);
+
+	if (!session) {
+		return {
+			db,
+			userId: null,
+		};
+	}
 
 	return {
 		db,
-		userId: client.payload.sub,
+		userId: session.userId,
 	};
 };
 

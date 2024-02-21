@@ -31,7 +31,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { api } from "@/trpc/react";
-import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "@tanstack/react-router";
 
 const UpdateProfileFormSchema = UpdateProfileSchema.omit({
@@ -46,7 +45,6 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const { bio, handle: defaultHandle, imageUrl: defaultImageUrl, name } = profile;
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
-	const { user } = useUser();
 	const navigate = useNavigate();
 	const imageRef = useRef<HTMLInputElement>(null);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(defaultImageUrl ?? undefined);
@@ -65,7 +63,6 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		onSuccess: (_, { handle }) => {
 			utils.profiles.me.invalidate();
 			utils.profiles.get.invalidate(handle);
-			user?.reload();
 			setOpen(false);
 			if (handle !== defaultHandle) {
 				navigate({
@@ -114,20 +111,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	}, [handleExists]);
 
 	const onSubmit = async ({ bio, name, handle, image }: UpdateProfileForm) => {
-		let imageUrl: string | null = null;
-		try {
-			if (image) {
-				const profileImage = await user?.setProfileImage({
-					file: image,
-				});
-				imageUrl = profileImage?.publicUrl ?? null;
-			}
-		} catch (e) {
-			form.setError("image", {
-				type: "validate",
-				message: "Error uploading image",
-			});
-		}
+		// TODO: SETUP IMAGES
 		updateProfile({
 			bio: bio ?? null,
 			imageUrl: imageUrl ?? defaultImageUrl,

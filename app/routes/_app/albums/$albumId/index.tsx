@@ -7,11 +7,10 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { queryClient } from "@/trpc/react";
+import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Suspense } from "react";
@@ -43,6 +42,7 @@ function Album() {
 	});
 	const { albumId } = Route.useParams();
 	const { tab = "songs" } = Route.useSearch();
+	const { data: profile } = api.profiles.me.useQuery();
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
@@ -93,12 +93,11 @@ function Album() {
 					<Suspense fallback={<Skeleton className="w-24 h-8" />}>
 						<div className="flex items-center gap-4">
 							<RatingInfo resource={resource} />
-							<SignedIn>
+							{profile ? (
 								<RatingDialog resource={resource} name={album.title} />
-							</SignedIn>
-							<SignedOut>
+							) : (
 								<SignInRateButton />
-							</SignedOut>
+							)}
 						</div>
 					</Suspense>
 				</div>

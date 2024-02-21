@@ -10,8 +10,6 @@
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^4.30.5",
-    "@clerk/clerk-sdk-node": "^4.13.9",
     "@hookform/resolvers": "^3.3.4",
     "@lucia-auth/adapter-drizzle": "^1.0.2",
     "@planetscale/database": "^1.16.0",

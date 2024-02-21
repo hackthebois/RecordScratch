@@ -5,7 +5,6 @@ import Github from "@/components/icons/Github";
 import { Button } from "@/components/ui/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { env } from "@/env";
-import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Disc3, Menu } from "lucide-react";
 
@@ -23,7 +22,6 @@ export const Route = createFileRoute("/_app")({
 });
 
 function LayoutComponent({ children }: { children: React.ReactNode }) {
-	const { openSignIn } = useClerk();
 	return (
 		<>
 			<header className="flex h-14 w-screen items-center justify-center border-b">
@@ -37,12 +35,7 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 						<SearchBar />
 					</div>
 					<div className="flex items-center gap-3">
-						<SignedIn>
-							<UserButton />
-						</SignedIn>
-						<SignedOut>
-							<Button onClick={() => openSignIn()}>Sign in</Button>
-						</SignedOut>
+						<UserButton />
 						<Popover>
 							<PopoverTrigger asChild>
 								<Button size="icon" variant="outline">
