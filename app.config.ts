@@ -43,7 +43,14 @@ export default createApp({
 			type: "spa",
 			handler: "index.html",
 			target: "browser",
-			plugins: () => [tsconfigPaths(), reactRefresh(), TanStackRouterVite(), VitePWA()],
+			plugins: () => [
+				tsconfigPaths(),
+				VitePWA({
+					registerType: "autoUpdate",
+				}),
+				reactRefresh(),
+				TanStackRouterVite(),
+			],
 		},
 		{
 			name: "auth",
