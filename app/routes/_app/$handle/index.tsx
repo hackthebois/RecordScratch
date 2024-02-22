@@ -147,7 +147,7 @@ function Handle() {
 					)}
 				</TabsList>
 				<TabsContent value="reviews">
-					<div className="flex max-w-lg flex-col rounded-md border p-6 pt-6">
+					<div className="flex w-full sm:max-w-lg flex-col rounded-md border p-6 pt-6">
 						<div className="flex h-20 w-full items-end justify-between gap-1">
 							{distribution.map((ratings, index) => (
 								<Link
