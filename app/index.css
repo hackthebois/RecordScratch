@@ -100,7 +100,7 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-	@apply bg-muted;
+	@apply bg-background;
 }
 
 /* Handle */
