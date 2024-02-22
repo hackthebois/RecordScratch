@@ -6,7 +6,6 @@ import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { env } from "@/env";
 import { api, apiUtils } from "@/trpc/react";
-import { useAuth } from "@clerk/clerk-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -35,7 +34,7 @@ function Index() {
 	const { feed = "recent" } = Route.useSearch();
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
-	const { userId, isLoaded } = useAuth();
+	const { data: profile } = api.profiles.me.useQuery();
 
 	return (
 		<div className="w-full">
@@ -65,47 +64,43 @@ function Index() {
 				</div>
 			)}
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>
-			{isLoaded && (
-				<>
-					{userId && (
-						<Tabs value={feed} className="w-full">
-							<TabsList>
-								<TabsTrigger
-									value="recent"
-									onClick={() => {
-										navigate({
-											search: {
-												feed: undefined,
-											},
-										});
-									}}
-								>
-									Recent
-								</TabsTrigger>
-								<TabsTrigger
-									value="following"
-									onClick={() => {
-										navigate({
-											search: {
-												feed: "following",
-											},
-										});
-									}}
-								>
-									Following
-								</TabsTrigger>
-							</TabsList>
-							<TabsContent value="recent">
-								<RecentFeedReviews input={{ limit: 20 }} />
-							</TabsContent>
-							<TabsContent value="following">
-								<FollowingFeedReviews input={{ limit: 20 }} />
-							</TabsContent>
-						</Tabs>
-					)}
-					{!userId && <RecentFeedReviews input={{ limit: 20 }} />}
-				</>
+			{profile && (
+				<Tabs value={feed} className="w-full">
+					<TabsList>
+						<TabsTrigger
+							value="recent"
+							onClick={() => {
+								navigate({
+									search: {
+										feed: undefined,
+									},
+								});
+							}}
+						>
+							Recent
+						</TabsTrigger>
+						<TabsTrigger
+							value="following"
+							onClick={() => {
+								navigate({
+									search: {
+										feed: "following",
+									},
+								});
+							}}
+						>
+							Following
+						</TabsTrigger>
+					</TabsList>
+					<TabsContent value="recent">
+						<RecentFeedReviews input={{ limit: 20 }} />
+					</TabsContent>
+					<TabsContent value="following">
+						<FollowingFeedReviews input={{ limit: 20 }} />
+					</TabsContent>
+				</Tabs>
 			)}
+			{!profile && <RecentFeedReviews input={{ limit: 20 }} />}
 		</div>
 	);
 }

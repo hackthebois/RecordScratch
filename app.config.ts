@@ -12,6 +12,9 @@ export default createApp({
 				proxy: "https://api.deezer.com/**",
 			},
 		},
+		experimental: {
+			asyncContext: true,
+		},
 	},
 	routers: [
 		{
@@ -40,6 +43,14 @@ export default createApp({
 			handler: "index.html",
 			target: "browser",
 			plugins: () => [tsconfigPaths(), reactRefresh(), TanStackRouterVite()],
+		},
+		{
+			name: "auth",
+			type: "http",
+			base: "/auth",
+			handler: "./app/server/auth/index.ts",
+			target: "server",
+			plugins: () => [tsconfigPaths()],
 		},
 	],
 });

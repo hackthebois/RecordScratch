@@ -1,6 +1,5 @@
 import { api } from "@/trpc/react";
 import { Resource } from "@/types/rating";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -18,6 +17,7 @@ const CommunityReviews = ({
 	name: string;
 }) => {
 	const { ref, inView } = useInView();
+	const { data: profile } = api.profiles.me.useQuery();
 
 	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.community.useInfiniteQuery(
 		{
@@ -38,12 +38,11 @@ const CommunityReviews = ({
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
-				<SignedIn>
+				{profile ? (
 					<ReviewDialog resource={resource} name={name} />
-				</SignedIn>
-				<SignedOut>
+				) : (
 					<SignInReviewButton />
-				</SignedOut>
+				)}
 			</div>
 			<div>
 				{data?.pages.map((page, index) => (
