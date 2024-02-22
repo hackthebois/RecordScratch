@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/Label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -40,12 +41,23 @@ export const Route = createFileRoute("/_app/$handle/")({
 });
 
 const SignOutButton = () => {
+	const navigate = useNavigate({
+		from: Route.fullPath,
+	});
+	const queryClient = useQueryClient();
+
 	return (
 		<Button
 			variant="outline"
 			onClick={() => {
 				fetch("/auth/signout").then(() => {
-					window.location.reload();
+					navigate({
+						to: "/$handle",
+						search: {
+							tab: undefined,
+						},
+					});
+					queryClient.clear();
 				});
 			}}
 		>
