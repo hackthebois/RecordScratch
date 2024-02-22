@@ -3,7 +3,6 @@ import reactRefresh from "@vitejs/plugin-react";
 import { fileURLToPath } from "url";
 import { createApp } from "vinxi";
 import { input } from "vinxi/plugins/config";
-import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default createApp({
@@ -43,14 +42,7 @@ export default createApp({
 			type: "spa",
 			handler: "index.html",
 			target: "browser",
-			plugins: () => [
-				tsconfigPaths(),
-				VitePWA({
-					registerType: "autoUpdate",
-				}),
-				reactRefresh(),
-				TanStackRouterVite(),
-			],
+			plugins: () => [tsconfigPaths(), reactRefresh(), TanStackRouterVite()],
 		},
 		{
 			name: "auth",
