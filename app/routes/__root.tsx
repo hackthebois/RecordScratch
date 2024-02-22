@@ -1,7 +1,5 @@
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { env } from "@/env";
 import { TRPCReactProvider } from "@/trpc/react";
-import { ClerkProvider } from "@clerk/clerk-react";
 import { Outlet, ScrollRestoration, createRootRoute } from "@tanstack/react-router";
 import React, { Suspense } from "react";
 
@@ -23,16 +21,14 @@ export const Route = createRootRoute({
 
 function Root() {
 	return (
-		<ClerkProvider publishableKey={env.VITE_CLERK_PUBLISHABLE_KEY}>
-			<TRPCReactProvider>
-				<ThemeProvider defaultTheme="dark" storageKey="theme">
-					<ScrollRestoration />
-					<Outlet />
-					<Suspense>
-						<TanStackRouterDevtools />
-					</Suspense>
-				</ThemeProvider>
-			</TRPCReactProvider>
-		</ClerkProvider>
+		<TRPCReactProvider>
+			<ThemeProvider defaultTheme="dark" storageKey="theme">
+				<ScrollRestoration />
+				<Outlet />
+				<Suspense>
+					<TanStackRouterDevtools />
+				</Suspense>
+			</ThemeProvider>
+		</TRPCReactProvider>
 	);
 }

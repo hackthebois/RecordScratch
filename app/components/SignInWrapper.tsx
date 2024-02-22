@@ -1,8 +1,6 @@
-import { useClerk } from "@clerk/clerk-react";
+import { env } from "@/env";
 import React from "react";
 
 export const SignInWrapper = ({ children }: { children: React.ReactNode }) => {
-	const { openSignIn } = useClerk();
-
-	return <button onClick={() => openSignIn()}>{children}</button>;
+	return <a href={env.VITE_BASE_URL + "/auth/google"}>{children}</a>;
 };

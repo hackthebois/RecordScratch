@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+	datetime,
 	mysqlEnum,
 	mysqlTable,
 	primaryKey,
@@ -8,6 +9,38 @@ import {
 	tinyint,
 	varchar,
 } from "drizzle-orm/mysql-core";
+
+export const users = mysqlTable("users", {
+	id: varchar("id", {
+		length: 255,
+	}).primaryKey(),
+	email: varchar("email", {
+		length: 100,
+	})
+		.unique()
+		.notNull(),
+	googleId: varchar("google_id", {
+		length: 255,
+	}).unique(),
+});
+
+export const sessions = mysqlTable("sessions", {
+	id: varchar("id", {
+		length: 255,
+	}).primaryKey(),
+	userId: varchar("user_id", {
+		length: 255,
+	}).notNull(),
+	expiresAt: datetime("expires_at").notNull(),
+});
+
+export const sessionRelations = relations(sessions, ({ one }) => ({
+	userId: one(users, {
+		fields: [sessions.userId],
+		references: [users.id],
+		relationName: "userId",
+	}),
+}));
 
 export const profile = mysqlTable("profile", {
 	userId: varchar("user_id", { length: 256 }).notNull().primaryKey(),
@@ -19,7 +52,12 @@ export const profile = mysqlTable("profile", {
 	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 });
 
-export const profileRelations = relations(profile, ({ many }) => ({
+export const profileRelations = relations(profile, ({ one, many }) => ({
+	user: one(users, {
+		fields: [profile.userId],
+		references: [users.id],
+		relationName: "user",
+	}),
 	profile: many(ratings, {
 		relationName: "profile",
 	}),

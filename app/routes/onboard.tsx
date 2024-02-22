@@ -9,7 +9,6 @@ import { api } from "@/trpc/react";
 import { CreateProfileSchema, handleRegex } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";
-import { useUser } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AtSign, Disc3 } from "lucide-react";
@@ -57,7 +56,6 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 function Onboard() {
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
-	const { user } = useUser();
 	const navigate = useNavigate();
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 	const form = useForm<Onboard>({
@@ -84,7 +82,6 @@ function Onboard() {
 
 	const { mutate: createProfile } = api.profiles.create.useMutation({
 		onSuccess: () => {
-			user?.reload();
 			utils.profiles.me.invalidate();
 			navigate({
 				to: "/",
@@ -110,24 +107,11 @@ function Onboard() {
 	}, [handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
-		let imageUrl: string | null = null;
-		try {
-			if (image) {
-				const profileImage = await user?.setProfileImage({
-					file: image,
-				});
-				imageUrl = profileImage?.publicUrl ?? null;
-			}
-		} catch (e) {
-			form.setError("image", {
-				type: "validate",
-				message: "Error uploading image",
-			});
-		}
+		// TODO: handle image upload
 		createProfile({
 			name,
 			handle,
-			imageUrl,
+			imageUrl: null,
 			bio: bio ?? null,
 		});
 	};

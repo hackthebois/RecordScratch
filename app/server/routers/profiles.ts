@@ -12,12 +12,21 @@ export const profilesRouter = router({
 			})) ?? null
 		);
 	}),
-	me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
+	me: publicProcedure.query(async ({ ctx: { db, userId } }) => {
+		if (!userId) return null;
+
 		return (
 			(await db.query.profile.findFirst({
 				where: eq(profile.userId, userId),
 			})) ?? null
 		);
+	}),
+	needsOnboarding: publicProcedure.query(async ({ ctx: { db, userId } }) => {
+		if (!userId) return false;
+
+		return !(await db.query.profile.findFirst({
+			where: eq(profile.userId, userId),
+		}));
 	}),
 	distribution: publicProcedure
 		.input(z.string())
