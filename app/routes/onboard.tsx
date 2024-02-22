@@ -49,7 +49,23 @@ export const OnboardSchema = CreateProfileSchema.omit({
 	imageUrl: true,
 }).extend({
 	bio: z.string().optional(),
-	image: z.custom<File>((v) => v instanceof File).optional(),
+	image: z
+		.custom<File>((v) => v instanceof File)
+		.superRefine((v, ctx) => {
+			if (v.size > 5 * 1024 * 1024) {
+				return ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "Image must be less than 5MB",
+				});
+			}
+			if (!v.type.startsWith("image")) {
+				return ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: "File must be an image",
+				});
+			}
+		})
+		.optional(),
 });
 export type Onboard = z.infer<typeof OnboardSchema>;
 
@@ -88,6 +104,7 @@ function Onboard() {
 			});
 		},
 	});
+	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
 
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
@@ -107,11 +124,28 @@ function Onboard() {
 	}, [handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
-		// TODO: handle image upload
+		let imageUrl: string | null = null;
+		if (image) {
+			const url = await getSignedURL({
+				type: image.type,
+				size: image.size,
+			});
+
+			await fetch(url, {
+				method: "PUT",
+				body: image,
+				headers: {
+					"Content-Type": image?.type,
+				},
+			});
+
+			imageUrl = url.split("?")[0];
+		}
+
 		createProfile({
 			name,
 			handle,
-			imageUrl: null,
+			imageUrl,
 			bio: bio ?? null,
 		});
 	};

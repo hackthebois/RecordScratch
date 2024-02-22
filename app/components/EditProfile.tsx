@@ -71,9 +71,12 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 						handle,
 					},
 				});
+			} else {
+				window.location.reload();
 			}
 		},
 	});
+	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
 
 	useEffect(() => {
 		form.reset({
@@ -111,7 +114,24 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	}, [handleExists]);
 
 	const onSubmit = async ({ bio, name, handle, image }: UpdateProfileForm) => {
-		// TODO: SETUP IMAGES
+		let imageUrl: string | null = null;
+		if (image) {
+			const url = await getSignedURL({
+				type: image.type,
+				size: image.size,
+			});
+
+			await fetch(url, {
+				method: "PUT",
+				body: image,
+				headers: {
+					"Content-Type": image?.type,
+				},
+			});
+
+			imageUrl = url.split("?")[0];
+		}
+
 		updateProfile({
 			bio: bio ?? null,
 			imageUrl: imageUrl ?? defaultImageUrl,

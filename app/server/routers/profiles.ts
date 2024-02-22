@@ -1,8 +1,19 @@
 import { followers, profile, ratings } from "@/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { and, count, eq, like, or, sql } from "drizzle-orm";
 import { z } from "zod";
+
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+const s3 = new S3Client({
+	region: process.env.AWS_BUCKET_REGION!,
+	credentials: {
+		accessKeyId: process.env.AWS_KEY!,
+		secretAccessKey: process.env.AWS_SECRET!,
+	},
+});
 
 export const profilesRouter = router({
 	get: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: handle }) => {
@@ -159,6 +170,28 @@ export const profilesRouter = router({
 		.input(UpdateProfileSchema)
 		.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
 			await db.update(profile).set(newProfile).where(eq(profile.userId, userId));
+		}),
+	getSignedURL: protectedProcedure
+		.input(
+			z.object({
+				type: z.string(),
+				size: z.number(),
+			})
+		)
+		.mutation(async ({ ctx: { userId }, input: { type, size } }) => {
+			const putObjectCommand = new PutObjectCommand({
+				Bucket: process.env.AWS_BUCKET_NAME!,
+				Key: `profile-images/${userId}`,
+				ContentType: type,
+				ContentLength: size,
+				Metadata: {
+					userId,
+				},
+			});
+
+			return await getSignedUrl(s3, putObjectCommand, {
+				expiresIn: 60,
+			});
 		}),
 	follow: protectedProcedure
 		.input(z.string())
