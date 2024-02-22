@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
 import { api } from "@/trpc/react";
-import { CreateProfileSchema, handleRegex } from "@/types/profile";
+import type { Onboard } from "@/types/profile";
+import { OnboardSchema, handleRegex } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { cn } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +15,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AtSign, Disc3 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 export const Route = createFileRoute("/onboard")({
 	component: Onboard,
@@ -44,30 +44,6 @@ const SlideWrapper = ({
 		</div>
 	);
 };
-
-export const OnboardSchema = CreateProfileSchema.omit({
-	imageUrl: true,
-}).extend({
-	bio: z.string().optional(),
-	image: z
-		.custom<File>((v) => v instanceof File)
-		.superRefine((v, ctx) => {
-			if (v.size > 5 * 1024 * 1024) {
-				return ctx.addIssue({
-					code: z.ZodIssueCode.custom,
-					message: "Image must be less than 5MB",
-				});
-			}
-			if (!v.type.startsWith("image")) {
-				return ctx.addIssue({
-					code: z.ZodIssueCode.custom,
-					message: "File must be an image",
-				});
-			}
-		})
-		.optional(),
-});
-export type Onboard = z.infer<typeof OnboardSchema>;
 
 function Onboard() {
 	const utils = api.useUtils();
@@ -289,7 +265,10 @@ function Onboard() {
 							type="file"
 							onChange={(e) => {
 								if (e.target.files) {
-									form.setValue("image", e.target.files[0]);
+									form.setValue("image", e.target.files[0], {
+										shouldDirty: true,
+										shouldValidate: true,
+									});
 								}
 							}}
 						/>
@@ -300,6 +279,7 @@ function Onboard() {
 								onClick={(e) => {
 									e.preventDefault();
 									form.setValue("image", undefined);
+									form.clearErrors("image");
 									setImageUrl(undefined);
 								}}
 							>
@@ -317,6 +297,7 @@ function Onboard() {
 								Add Profile Image
 							</Button>
 						)}
+						<FormMessage>{form.formState.errors.image?.message}</FormMessage>
 					</SlideWrapper>
 				</form>
 			</Form>
