@@ -60,5 +60,38 @@ export const CreateProfileSchema = ProfileSchema.pick({
 });
 export type CreateProfile = z.infer<typeof CreateProfileSchema>;
 
+export const ProfilePhotoSchema = z
+	.custom<File>((v) => v instanceof File)
+	.superRefine((v, ctx) => {
+		if (v.size > 5 * 1024 * 1024) {
+			return ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Image must be less than 5MB",
+			});
+		}
+		if (!v.type.startsWith("image")) {
+			return ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "File must be an image",
+			});
+		}
+	});
+
+export const OnboardSchema = CreateProfileSchema.omit({
+	imageUrl: true,
+}).extend({
+	bio: z.string().optional(),
+	image: ProfilePhotoSchema.optional(),
+});
+export type Onboard = z.infer<typeof OnboardSchema>;
+
 export const UpdateProfileSchema = CreateProfileSchema;
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
+
+export const UpdateProfileFormSchema = UpdateProfileSchema.omit({
+	imageUrl: true,
+}).extend({
+	bio: ProfileBioSchema.optional(),
+	image: ProfilePhotoSchema.optional(),
+});
+export type UpdateProfileForm = z.infer<typeof UpdateProfileFormSchema>;

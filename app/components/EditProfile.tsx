@@ -23,23 +23,14 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Profile, ProfileBioSchema, UpdateProfileSchema } from "@/types/profile";
+import { Profile, UpdateProfileForm, UpdateProfileFormSchema } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { AtSign } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { api } from "@/trpc/react";
 import { useNavigate } from "@tanstack/react-router";
-
-const UpdateProfileFormSchema = UpdateProfileSchema.omit({
-	imageUrl: true,
-}).extend({
-	bio: ProfileBioSchema.optional(),
-	image: z.custom<File>((v) => v instanceof File).optional(),
-});
-export type UpdateProfileForm = z.infer<typeof UpdateProfileFormSchema>;
 
 export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const { bio, handle: defaultHandle, imageUrl: defaultImageUrl, name } = profile;
@@ -163,6 +154,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 									if (e.target.files) {
 										form.setValue("image", e.target.files[0], {
 											shouldDirty: true,
+											shouldValidate: true,
 										});
 									}
 								}}
@@ -190,6 +182,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								</Button>
 							)}
 						</div>
+						<FormMessage>{form.formState.errors.image?.message}</FormMessage>
 						<FormField
 							control={form.control}
 							name="name"
