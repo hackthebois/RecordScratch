@@ -1,5 +1,5 @@
 import { ProfileItem } from "@/components/ProfileItem";
-import { RatingItem } from "@/components/RatingItem";
+import { ResourceItem } from "@/components/ResourceItem";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { ScrollArea } from "@/components/ui/ScrollArea";
@@ -108,7 +108,7 @@ const SearchState = ({
 									key={index}
 								/>
 							) : recent.type === "ALBUM" && !hide?.albums ? (
-								<RatingItem
+								<ResourceItem
 									showType
 									initialAlbum={recent.data}
 									resource={{
@@ -127,7 +127,7 @@ const SearchState = ({
 									key={index}
 								/>
 							) : recent.type === "SONG" && !hide?.songs ? (
-								<RatingItem
+								<ResourceItem
 									showType
 									resource={{
 										parentId: String(recent.data.album.id),
@@ -250,7 +250,7 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 				<>
 					<h4>Albums</h4>
 					{data.albums.map((album, index) => (
-						<RatingItem
+						<ResourceItem
 							initialAlbum={album}
 							resource={{
 								parentId: String(album.artist?.id),
@@ -285,7 +285,7 @@ const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => v
 					))}
 					<h4 className="mt-3">Songs</h4>
 					{data.songs.map((song, index) => (
-						<RatingItem
+						<ResourceItem
 							resource={{
 								parentId: String(song.album.id),
 								resourceId: String(song.id),

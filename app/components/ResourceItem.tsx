@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "./ui/Skeleton";
 
-export const RatingItem = ({
+export const ResourceItem = ({
 	initialAlbum,
 	resource,
 	showType,
@@ -73,7 +73,7 @@ export const RatingItem = ({
 						key={album.artist?.id}
 						onClick={(e) => {
 							e.preventDefault();
-							close();
+							if (onClick) onClick();
 							navigate({
 								to: "/artists/$artistId",
 								params: {
