@@ -47,9 +47,9 @@ function Song() {
 					<img
 						width={250}
 						height={250}
-						alt={`${song.album.title} cover`}
-						src={song.album.cover_big}
-						className="w-[250px] self-center rounded-xl"
+						alt={`${album.title} cover`}
+						src={album.cover_big ?? ""}
+						className="w-[250px] h-[250px] self-center sm:self-start rounded-xl"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
@@ -60,6 +60,15 @@ function Song() {
 						{song.explicit_lyrics && <Tag variant="outline">Explicit</Tag>}
 						<Tag variant="outline">{formatMs(song.duration * 1000)}</Tag>
 					</div>
+					<Link
+						to="/artists/$artistId"
+						params={{
+							artistId: String(album.artist?.id),
+						}}
+						className="text-muted-foreground hover:underline"
+					>
+						{album.artist?.name}
+					</Link>
 					<Link
 						to="/albums/$albumId"
 						params={{
@@ -76,7 +85,9 @@ function Song() {
 			</div>
 			<Tabs defaultValue="reviews">
 				<TabsList>
-					<TabsTrigger value="reviews">Reviews</TabsTrigger>
+					<TabsTrigger value="reviews" className="flex-1">
+						Reviews
+					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
 					<CommunityReviews resource={resource} pageLimit={20} name={song.title} />

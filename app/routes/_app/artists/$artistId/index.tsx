@@ -87,7 +87,7 @@ function Artist() {
 						height={250}
 						alt={`${artist.name} cover`}
 						src={artist.picture_big}
-						className="w-[250px] self-center rounded-xl"
+						className="w-[250px] self-center sm:self-start rounded-xl"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
