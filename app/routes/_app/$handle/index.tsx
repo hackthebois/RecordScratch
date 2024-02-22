@@ -40,15 +40,13 @@ export const Route = createFileRoute("/_app/$handle/")({
 });
 
 const SignOutButton = () => {
-	const utils = api.useUtils();
-	// const posthog = usePostHog();
-	const navigate = useNavigate();
-
 	return (
 		<Button
 			variant="outline"
 			onClick={() => {
-				// SETUP: Sign out
+				fetch("/auth/signout").then(() => {
+					window.location.reload();
+				});
 			}}
 		>
 			Sign out
