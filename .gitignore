@@ -28,3 +28,4 @@ dist-ssr
 .output
 .vinxi
 .vercel
+.env*.local
