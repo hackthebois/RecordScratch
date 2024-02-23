@@ -128,7 +128,9 @@ function Handle() {
 				<UserAvatar
 					{...profile}
 					imageUrl={
-						profile.imageUrl + "?" + profile.updatedAt.getTime()
+						profile.imageUrl +
+						"?updatedAt=" +
+						profile.updatedAt.getTime()
 					}
 					size={160}
 				/>

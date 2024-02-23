@@ -30,7 +30,11 @@ export const UserButton = () => {
 			}}
 		>
 			<UserAvatar
-				imageUrl={profile.imageUrl + "?" + profile.updatedAt.toString()}
+				imageUrl={
+					profile.imageUrl +
+					"?updatedAt=" +
+					profile.updatedAt.getTime()
+				}
 				size={40}
 				className="border border-muted"
 			/>
