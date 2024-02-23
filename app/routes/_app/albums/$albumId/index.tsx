@@ -1,4 +1,5 @@
 import CommunityReviews from "@/components/CommunityReviews";
+import Metadata from "@/components/Metadata";
 import { Pending } from "@/components/Pending";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
@@ -6,7 +7,6 @@ import SongTable from "@/components/SongTable";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Tag } from "@/components/ui/Tag";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
@@ -59,56 +59,41 @@ function Album() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-				<img
-					width={250}
-					height={250}
-					alt={`${album.title} cover`}
-					src={album.cover_big ?? ""}
-					className="h-[250px] w-[250px] self-center rounded-xl sm:self-start"
-				/>
-				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<p className="text-sm tracking-widest text-muted-foreground">
-						{album.record_type?.toUpperCase()}
-					</p>
-					<h1 className="text-center sm:text-left">{album.title}</h1>
-					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
-						<Tag variant="outline">{album.release_date}</Tag>
-						{album.duration && (
-							<Tag variant="outline">
-								{formatMs(album.duration * 1000)}
-							</Tag>
+			<Metadata
+				title={album.title}
+				cover={album.cover_big ?? ""}
+				tags={[
+					album.release_date,
+					album.duration
+						? `${formatMs(album.duration * 1000)}`
+						: undefined,
+					...(album.genres?.data.map((genre) => genre.name) ?? []),
+				]}
+				type={album.record_type?.toUpperCase() ?? "ALBUM"}
+			>
+				<Link
+					to="/artists/$artistId"
+					params={{
+						artistId: String(album.artist?.id),
+					}}
+					className="text-muted-foreground hover:underline"
+				>
+					{album.artist?.name}
+				</Link>
+				<Suspense fallback={<Skeleton className="h-8 w-24" />}>
+					<div className="flex items-center gap-4">
+						<RatingInfo resource={resource} />
+						{profile ? (
+							<RatingDialog
+								resource={resource}
+								name={album.title}
+							/>
+						) : (
+							<SignInRateButton />
 						)}
-						{album.genres?.data.map((genre, index) => (
-							<Tag variant="outline" key={index}>
-								{genre.name}
-							</Tag>
-						))}
 					</div>
-					<Link
-						to="/artists/$artistId"
-						params={{
-							artistId: String(album.artist?.id),
-						}}
-						className="text-muted-foreground hover:underline"
-					>
-						{album.artist?.name}
-					</Link>
-					<Suspense fallback={<Skeleton className="h-8 w-24" />}>
-						<div className="flex items-center gap-4">
-							<RatingInfo resource={resource} />
-							{profile ? (
-								<RatingDialog
-									resource={resource}
-									name={album.title}
-								/>
-							) : (
-								<SignInRateButton />
-							)}
-						</div>
-					</Suspense>
-				</div>
-			</div>
+				</Suspense>
+			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
 					<TabsTrigger

@@ -1,10 +1,10 @@
 import { ArtistItem } from "@/components/ArtistItem";
+import Metadata from "@/components/Metadata";
 import { Pending } from "@/components/Pending";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Tag } from "@/components/ui/Tag";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -98,32 +98,19 @@ function Artist() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-				{artist.picture_big && (
-					<img
-						width={250}
-						height={250}
-						alt={`${artist.name} cover`}
-						src={artist.picture_big}
-						className="w-[250px] self-center rounded-xl sm:self-start"
-					/>
-				)}
-				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<p className="text-sm tracking-widest text-muted-foreground">
-						ARTIST
-					</p>
-					<h1 className="text-center sm:text-left">{artist.name}</h1>
-					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
-						<Tag variant="outline">{artist.nb_album} Albums</Tag>
-					</div>
-					<RatingInfo
-						resource={{
-							resourceId: String(artist.id),
-							category: "ARTIST",
-						}}
-					/>
-				</div>
-			</div>
+			<Metadata
+				title={artist.name}
+				cover={artist.picture_big ?? ""}
+				tags={[`${artist.nb_album} Albums`]}
+				type="ARTIST"
+			>
+				<RatingInfo
+					resource={{
+						resourceId: String(artist.id),
+						category: "ARTIST",
+					}}
+				/>
+			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
 					<TabsTrigger
