@@ -5,44 +5,13 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api } from "@/trpc/react";
-import { Artist, deezer } from "@/utils/deezer";
+import { deezer } from "@/utils/deezer";
 import { useDebounce } from "@/utils/hooks";
 import { useRecents } from "@/utils/recents";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
-import { UserAvatar } from "./UserAvatar";
-
-const ArtistItem = ({
-	artist,
-	onClick,
-}: {
-	artist: Artist;
-	onClick: () => void;
-}) => {
-	const artistImage = artist.picture_medium;
-
-	return (
-		<Link
-			to="/artists/$artistId"
-			params={{
-				artistId: String(artist.id),
-			}}
-			onClick={onClick}
-			className="flex w-full min-w-0 flex-row items-center gap-4 rounded"
-		>
-			<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
-				{artistImage ? (
-					<UserAvatar imageUrl={artistImage} size={64} />
-				) : (
-					<div className="h-full w-full bg-muted"></div>
-				)}
-			</div>
-			<p className="flex flex-1 truncate font-medium">{artist.name}</p>
-		</Link>
-	);
-};
+import { ArtistItem } from "./ArtistItem";
 
 const SearchState = ({
 	isError,

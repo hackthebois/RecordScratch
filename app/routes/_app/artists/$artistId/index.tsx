@@ -1,3 +1,4 @@
+import { ArtistItem } from "@/components/ArtistItem";
 import { Pending } from "@/components/Pending";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 	validateSearch: (search) => {
 		return z
 			.object({
-				tab: z.enum(["discography"]).optional(),
+				tab: z.enum(["related", "discography"]).optional(),
 			})
 			.parse(search);
 	},
@@ -40,6 +41,14 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 		queryClient.ensureQueryData(
 			getQueryOptions({
 				route: "/artist/{id}/albums",
+				input: {
+					id: artistId,
+				},
+			})
+		);
+		queryClient.ensureQueryData(
+			getQueryOptions({
+				route: "/artist/{id}/related",
 				input: {
 					id: artistId,
 				},
@@ -73,6 +82,14 @@ function Artist() {
 	const { data: albums } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/artist/{id}/albums",
+			input: {
+				id: artistId,
+			},
+		})
+	);
+	const { data: artists } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/artist/{id}/related",
 			input: {
 				id: artistId,
 			},
@@ -122,6 +139,18 @@ function Artist() {
 						Top Songs
 					</TabsTrigger>
 					<TabsTrigger
+						value="related"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "related",
+								},
+							})
+						}
+					>
+						Related
+					</TabsTrigger>
+					<TabsTrigger
 						value="discography"
 						onClick={() =>
 							navigate({
@@ -136,6 +165,11 @@ function Artist() {
 				</TabsList>
 				<TabsContent value="top-songs">
 					<SongTable songs={top.data} />
+				</TabsContent>
+				<TabsContent value="related" className="flex flex-col gap-4">
+					{artists.data.map((artist) => (
+						<ArtistItem artist={artist} key={artist.id} />
+					))}
 				</TabsContent>
 				<TabsContent value="discography">
 					<AlbumList albums={albums.data} type="wrap" field="date" />
