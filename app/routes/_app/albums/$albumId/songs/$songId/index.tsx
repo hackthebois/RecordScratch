@@ -1,4 +1,5 @@
 import CommunityReviews from "@/components/CommunityReviews";
+import Metadata from "@/components/Metadata";
 import { Pending } from "@/components/Pending";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
@@ -6,7 +7,6 @@ import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Tag } from "@/components/ui/Tag";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
@@ -50,66 +50,51 @@ function Song() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-				{song.album.cover_big && (
-					<img
-						width={250}
-						height={250}
-						alt={`${album.title} cover`}
-						src={album.cover_big ?? ""}
-						className="h-[250px] w-[250px] self-center rounded-xl sm:self-start"
-					/>
-				)}
-				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<p className="text-sm tracking-widest text-muted-foreground">
-						SONG
-					</p>
-					<h1 className="text-center sm:text-left">{song.title}</h1>
-					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
-						<Tag variant="outline">{album.release_date}</Tag>
-						{song.explicit_lyrics && (
-							<Tag variant="outline">Explicit</Tag>
+			<Metadata
+				title={song.title}
+				cover={album.cover_big ?? ""}
+				type="SONG"
+				tags={[
+					album.release_date,
+					song.explicit_lyrics ? "Explicit" : undefined,
+					formatMs(song.duration * 1000),
+				]}
+			>
+				<Link
+					to="/artists/$artistId"
+					params={{
+						artistId: String(album.artist?.id),
+					}}
+					className="text-muted-foreground hover:underline"
+				>
+					{album.artist?.name}
+				</Link>
+				<Suspense fallback={<Skeleton className="h-8 w-24" />}>
+					<div className="flex items-center gap-4">
+						<RatingInfo resource={resource} />
+						{profile ? (
+							<RatingDialog
+								resource={resource}
+								name={album.title}
+							/>
+						) : (
+							<SignInRateButton />
 						)}
-						<Tag variant="outline">
-							{formatMs(song.duration * 1000)}
-						</Tag>
 					</div>
-					<Link
-						to="/artists/$artistId"
-						params={{
-							artistId: String(album.artist?.id),
-						}}
-						className="text-muted-foreground hover:underline"
-					>
-						{album.artist?.name}
-					</Link>
-					<Suspense fallback={<Skeleton className="h-8 w-24" />}>
-						<div className="flex items-center gap-4">
-							<RatingInfo resource={resource} />
-							{profile ? (
-								<RatingDialog
-									resource={resource}
-									name={album.title}
-								/>
-							) : (
-								<SignInRateButton />
-							)}
-						</div>
-					</Suspense>
-					<Link
-						to="/albums/$albumId"
-						params={{
-							albumId: String(album.id),
-						}}
-						className={buttonVariants({
-							size: "sm",
-							variant: "secondary",
-						})}
-					>
-						Go to album
-					</Link>
-				</div>
-			</div>
+				</Suspense>
+				<Link
+					to="/albums/$albumId"
+					params={{
+						albumId: String(album.id),
+					}}
+					className={buttonVariants({
+						size: "sm",
+						variant: "secondary",
+					})}
+				>
+					Go to album
+				</Link>
+			</Metadata>
 			<Tabs defaultValue="reviews">
 				<TabsList>
 					<TabsTrigger value="reviews" className="flex-1">
