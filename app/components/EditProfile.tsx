@@ -48,7 +48,8 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const navigate = useNavigate();
 	const imageRef = useRef<HTMLInputElement>(null);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(
-		defaultImageUrl ?? undefined
+		defaultImageUrl + "?updatedAt=" + profile.updatedAt.getTime() ??
+			undefined
 	);
 
 	const form = useForm<UpdateProfileForm>({
