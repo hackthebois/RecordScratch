@@ -213,8 +213,6 @@ const MusicSearch = ({
 				input: { q: query, limit: 4 },
 			});
 
-			console.log(songs);
-
 			return {
 				artists: artists.data,
 				albums: albums.data,
@@ -224,8 +222,6 @@ const MusicSearch = ({
 		refetchOnMount: false,
 		enabled: query.length > 0,
 	});
-
-	console.log(error);
 
 	return (
 		<SearchState

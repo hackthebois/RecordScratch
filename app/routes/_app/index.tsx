@@ -49,6 +49,42 @@ const albums = [
 		albumId: "6982611",
 		date: new Date(2024, 1, 26),
 	},
+	{
+		albumId: "423868847",
+		date: new Date(2024, 1, 27),
+	},
+	{
+		albumId: "60322892",
+		date: new Date(2024, 1, 28),
+	},
+	{
+		albumId: "1440807",
+		date: new Date(2024, 1, 29),
+	},
+	{
+		albumId: "93038342",
+		date: new Date(2024, 2, 1),
+	},
+	{
+		albumId: "107638",
+		date: new Date(2024, 2, 2),
+	},
+	{
+		albumId: "384314",
+		date: new Date(2024, 2, 3),
+	},
+	{
+		albumId: "476178105",
+		date: new Date(2024, 2, 4),
+	},
+	{
+		albumId: "231352",
+		date: new Date(2024, 2, 5),
+	},
+	{
+		albumId: "79786972",
+		date: new Date(2024, 2, 6),
+	},
 ];
 
 const isCurrentDay = (date: Date) => {
