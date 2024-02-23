@@ -16,7 +16,6 @@ export const ResourceItem = ({
 	showType?: boolean;
 	onClick?: () => void;
 }) => {
-	console.log(resource);
 	const navigate = useNavigate();
 	const { data: album } = useQuery({
 		...getQueryOptions({
