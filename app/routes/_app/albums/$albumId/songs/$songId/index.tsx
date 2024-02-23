@@ -1,14 +1,19 @@
 import CommunityReviews from "@/components/CommunityReviews";
 import { Pending } from "@/components/Pending";
+import { RatingDialog } from "@/components/RatingDialog";
+import { SignInRateButton } from "@/components/SignInRateButton";
 import { buttonVariants } from "@/components/ui/Button";
+import { RatingInfo } from "@/components/ui/RatingInfo";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
-import { queryClient } from "@/trpc/react";
+import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
@@ -31,10 +36,11 @@ function Song() {
 			input: { id: albumId },
 		})
 	);
-
 	const song = album.tracks.data.find(
 		(track) => track.id === Number(songId)
 	)!;
+
+	const { data: profile } = api.profiles.me.useQuery();
 
 	const resource: Resource = {
 		parentId: String(album.id),
@@ -77,6 +83,19 @@ function Song() {
 					>
 						{album.artist?.name}
 					</Link>
+					<Suspense fallback={<Skeleton className="h-8 w-24" />}>
+						<div className="flex items-center gap-4">
+							<RatingInfo resource={resource} />
+							{profile ? (
+								<RatingDialog
+									resource={resource}
+									name={album.title}
+								/>
+							) : (
+								<SignInRateButton />
+							)}
+						</div>
+					</Suspense>
 					<Link
 						to="/albums/$albumId"
 						params={{

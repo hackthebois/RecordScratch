@@ -17,5 +17,6 @@ module.exports = {
 		"no-unused-vars": "warn",
 		"@typescript-eslint/no-unused-vars": "warn",
 		"no-mixed-spaces-and-tabs": "off",
+		"react-refresh/only-export-components": "off",
 	},
 };

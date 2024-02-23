@@ -50,6 +50,7 @@ function Album() {
 			input: { id: albumId },
 		})
 	);
+
 	const resource: Resource = {
 		parentId: String(album.artist?.id),
 		resourceId: String(album.id),

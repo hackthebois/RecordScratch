@@ -15,20 +15,26 @@ const PaginatedInput = z.object({
 
 export const ratingsRouter = router({
 	get: publicProcedure
-		.input(ResourceSchema)
+		.input(ResourceSchema.pick({ resourceId: true, category: true }))
 		.query(async ({ ctx: { db }, input: { resourceId, category } }) => {
+			const where =
+				category === "ARTIST"
+					? and(
+							eq(ratings.parentId, resourceId),
+							eq(ratings.category, "ALBUM")
+						)
+					: and(
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category)
+						);
+
 			const rating = await db
 				.select({
 					average: avg(ratings.rating),
 					total: count(ratings.rating),
 				})
 				.from(ratings)
-				.where(
-					and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.category, category)
-					)
-				);
+				.where(where);
 			return { ...rating[0], resourceId };
 		}),
 	list: publicProcedure
