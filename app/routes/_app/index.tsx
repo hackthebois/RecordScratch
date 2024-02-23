@@ -85,6 +85,15 @@ const AlbumOfTheDay = () => {
 			type="ALBUM OF THE DAY"
 		>
 			<Link
+				to="/artists/$artistId"
+				params={{
+					artistId: String(album.artist?.id),
+				}}
+				className="text-muted-foreground hover:underline"
+			>
+				{album.artist?.name}
+			</Link>
+			<Link
 				to="/albums/$albumId"
 				params={{
 					albumId: albums[0].albumId,

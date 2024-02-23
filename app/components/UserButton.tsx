@@ -26,11 +26,11 @@ export const UserButton = () => {
 		<Link
 			to="/$handle"
 			params={{
-				handle: String(profile?.handle),
+				handle: String(profile.handle),
 			}}
 		>
 			<UserAvatar
-				imageUrl={profile?.imageUrl ?? null}
+				imageUrl={profile.imageUrl + "?" + profile.updatedAt.getTime()}
 				size={40}
 				className="border border-muted"
 			/>
