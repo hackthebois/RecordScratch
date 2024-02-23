@@ -115,8 +115,6 @@ function Handle() {
 		profile?.userId || ""
 	);
 
-	console.log({ distribution });
-
 	if (!profile) return null;
 
 	let max: number = Math.max(...distribution);
@@ -127,7 +125,13 @@ function Handle() {
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-				<UserAvatar {...profile} size={160} />
+				<UserAvatar
+					{...profile}
+					imageUrl={
+						profile.imageUrl + "?" + profile.updatedAt.getTime()
+					}
+					size={160}
+				/>
 				<div className="flex flex-col items-center sm:items-start">
 					<p className="pb-4 text-sm tracking-widest text-muted-foreground">
 						PROFILE
