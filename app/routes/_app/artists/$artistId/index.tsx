@@ -1,6 +1,7 @@
 import { Pending } from "@/components/Pending";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
+import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { queryClient } from "@/trpc/react";
@@ -98,6 +99,12 @@ function Artist() {
 					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						<Tag variant="outline">{artist.nb_album} Albums</Tag>
 					</div>
+					<RatingInfo
+						resource={{
+							resourceId: String(artist.id),
+							category: "ARTIST",
+						}}
+					/>
 				</div>
 			</div>
 			<Tabs value={tab}>

@@ -7,7 +7,10 @@ export const RatingInfo = ({
 	resource,
 	size = "lg",
 }: {
-	resource: Resource;
+	resource: {
+		resourceId: Resource["resourceId"];
+		category: Resource["category"];
+	};
 	size?: "lg" | "sm";
 }) => {
 	const [rating] = api.ratings.get.useSuspenseQuery(resource);
@@ -36,7 +39,9 @@ export const RatingInfo = ({
 							<p className="text-sm text-muted-foreground">
 								{rating?.total && Number(rating.total) !== 0
 									? rating.total
-									: "Be first to rate"}
+									: resource.category === "ARTIST"
+										? "No ratings yet"
+										: "Be first to rate"}
 							</p>
 						)}
 					</div>
