@@ -23,9 +23,9 @@ const FollowerMenu = ({ profileId }: Props) => {
 	const showButton = !!profile?.userId && profile?.userId !== profileId;
 
 	return (
-		<div className="flex flex-row items-center justify-center gap-6 py-2 sm:justify-start">
+		<div className="flex flex-row items-center justify-center gap-6 sm:justify-start">
 			<div className="flex flex-col items-center gap-1">
-				<p>Followers</p>
+				<p className="text-sm font-medium">Followers</p>
 				<FollowersPopup
 					profileId={profileId}
 					type="followers"
@@ -33,7 +33,7 @@ const FollowerMenu = ({ profileId }: Props) => {
 				/>
 			</div>
 			<div className="flex flex-col items-center gap-1">
-				<p>Following</p>
+				<p className="text-sm font-medium">Following</p>
 				<FollowersPopup
 					profileId={profileId}
 					type="following"

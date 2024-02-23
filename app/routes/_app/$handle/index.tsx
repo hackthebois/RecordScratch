@@ -4,6 +4,8 @@ import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { Pending } from "@/components/Pending";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
+import AlbumList from "@/components/album/AlbumList";
+import { ArtistList } from "@/components/artist/ArtistList";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
@@ -31,7 +33,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["settings"]).optional(),
+				tab: z.enum(["reviews", "settings"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
 			})
 			.parse(search);
@@ -104,7 +106,7 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
+	const { rating, tab = "profile", category = "all" } = Route.useSearch();
 	const { data: myProfile } = api.profiles.me.useQuery();
 
 	const navigate = useNavigate({
@@ -153,11 +155,23 @@ function Handle() {
 			<Tabs value={tab}>
 				<TabsList>
 					<TabsTrigger
-						value="reviews"
+						value="profile"
 						onClick={() =>
 							navigate({
 								search: {
 									tab: undefined,
+								},
+							})
+						}
+					>
+						Profile
+					</TabsTrigger>
+					<TabsTrigger
+						value="reviews"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "reviews",
 								},
 							})
 						}
@@ -179,6 +193,23 @@ function Handle() {
 						</TabsTrigger>
 					)}
 				</TabsList>
+				<TabsContent value="profile" className="flex flex-col gap-4">
+					<h3 className="mt-4">Top Albums</h3>
+					<AlbumList
+						albums={[
+							"60322892",
+							"1440807",
+							"542677642",
+							"44730061",
+							"6982611",
+							"107638",
+						]}
+					/>
+					<ArtistList
+						direction="vertical"
+						artists={["1", "2", "3", "4", "5", "6"]}
+					/>
+				</TabsContent>
 				<TabsContent value="reviews">
 					<div className="flex w-full flex-col rounded-md border p-6 pt-6 sm:max-w-lg">
 						<div className="flex h-20 w-full items-end justify-between gap-1">

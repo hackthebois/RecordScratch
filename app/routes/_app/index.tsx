@@ -5,10 +5,8 @@ import {
 import Metadata from "@/components/Metadata";
 import { Pending } from "@/components/Pending";
 import AlbumList from "@/components/album/AlbumList";
-import { Discord } from "@/components/icons/Discord";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { env } from "@/env";
 import { api, apiUtils } from "@/trpc/react";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
@@ -155,19 +153,6 @@ function Index() {
 
 	return (
 		<div className="flex w-full flex-col gap-8">
-			<div className="flex gap-4">
-				<a
-					href={env.VITE_DISCORD_URL}
-					className={buttonVariants({
-						variant: "outline",
-						className: "gap-3",
-					})}
-					target="_blank"
-				>
-					<Discord size={22} />
-					<p>Join our discord</p>
-				</a>
-			</div>
 			<AlbumOfTheDay />
 			{trending && (
 				<div className="flex flex-col">

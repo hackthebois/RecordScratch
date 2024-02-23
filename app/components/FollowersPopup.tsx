@@ -43,7 +43,7 @@ const FollowersPopup = ({
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger asChild>
-				<Button className="text-md rounded-lg px-4 py-1">
+				<Button size="sm" className="h-8">
 					{followerCount}
 				</Button>
 			</DialogTrigger>

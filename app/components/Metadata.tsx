@@ -16,14 +16,14 @@ const Metadata = ({
 	return (
 		<div className="flex flex-col gap-6 sm:flex-row sm:items-start">
 			<img
-				width={250}
-				height={250}
+				width={200}
+				height={200}
 				alt={`${title} cover`}
 				src={cover}
-				className="h-[250px] w-[250px] self-center rounded-xl sm:self-start"
+				className="h-[200px] w-[200px] self-center rounded-xl sm:self-start"
 			/>
 			<div className="flex flex-col items-center gap-4 sm:items-start">
-				<p className="text-sm tracking-widest text-muted-foreground">
+				<p className="-mb-2 text-sm tracking-widest text-muted-foreground">
 					{type.toUpperCase()}
 				</p>
 				<h1 className="text-center sm:text-left">{title}</h1>
