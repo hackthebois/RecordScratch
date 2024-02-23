@@ -11,7 +11,7 @@ import { useRecents } from "@/utils/recents";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
-import { ArtistItem } from "./ArtistItem";
+import { ArtistItem } from "./artist/ArtistItem";
 
 const SearchState = ({
 	isError,
@@ -79,7 +79,8 @@ const SearchState = ({
 										});
 										onNavigate();
 									}}
-									artist={recent.data}
+									artistId={String(recent.data.id)}
+									initialArtist={recent.data}
 									key={index}
 								/>
 							) : recent.type === "ALBUM" && !hide?.albums ? (
@@ -197,7 +198,7 @@ const MusicSearch = ({
 }) => {
 	const { addRecent } = useRecents();
 
-	const { data, isLoading, isError, error } = useQuery({
+	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", "search-music", query],
 		queryFn: async () => {
 			const artists = await deezer({
@@ -264,7 +265,8 @@ const MusicSearch = ({
 								});
 								onNavigate();
 							}}
-							artist={artist}
+							artistId={String(artist.id)}
+							initialArtist={artist}
 							key={index}
 						/>
 					))}

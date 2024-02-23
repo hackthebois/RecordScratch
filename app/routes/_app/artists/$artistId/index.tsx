@@ -1,14 +1,15 @@
-import { ArtistItem } from "@/components/ArtistItem";
 import Metadata from "@/components/Metadata";
 import { Pending } from "@/components/Pending";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
+import { ArtistItem } from "@/components/artist/ArtistItem";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Suspense } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/artists/$artistId/")({
@@ -104,12 +105,14 @@ function Artist() {
 				tags={[`${artist.nb_album} Albums`]}
 				type="ARTIST"
 			>
-				<RatingInfo
-					resource={{
-						resourceId: String(artist.id),
-						category: "ARTIST",
-					}}
-				/>
+				<Suspense fallback={null}>
+					<RatingInfo
+						resource={{
+							resourceId: String(artist.id),
+							category: "ARTIST",
+						}}
+					/>
+				</Suspense>
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
@@ -155,7 +158,11 @@ function Artist() {
 				</TabsContent>
 				<TabsContent value="related" className="flex flex-col gap-4">
 					{artists.data.map((artist) => (
-						<ArtistItem artist={artist} key={artist.id} />
+						<ArtistItem
+							artistId={String(artist.id)}
+							initialArtist={artist}
+							key={artist.id}
+						/>
 					))}
 				</TabsContent>
 				<TabsContent value="discography">
