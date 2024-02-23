@@ -1,6 +1,10 @@
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { TRPCReactProvider } from "@/trpc/react";
-import { Outlet, ScrollRestoration, createRootRoute } from "@tanstack/react-router";
+import {
+	Outlet,
+	ScrollRestoration,
+	createRootRoute,
+} from "@tanstack/react-router";
 import React, { Suspense } from "react";
 
 const TanStackRouterDevtools =

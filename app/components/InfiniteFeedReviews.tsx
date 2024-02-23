@@ -12,14 +12,15 @@ export const RecentFeedReviews = ({
 }) => {
 	const { ref, inView } = useInView();
 
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.recent.useInfiniteQuery(
-		{
-			...input,
-		},
-		{
-			getNextPageParam: (lastPage) => lastPage.nextCursor,
-		}
-	);
+	const { data, fetchNextPage, hasNextPage } =
+		api.ratings.feed.recent.useInfiniteQuery(
+			{
+				...input,
+			},
+			{
+				getNextPageParam: (lastPage) => lastPage.nextCursor,
+			}
+		);
 
 	useEffect(() => {
 		if (inView) {
@@ -39,7 +40,10 @@ export const RecentFeedReviews = ({
 				))}
 			</div>
 			{hasNextPage && (
-				<div ref={ref} className="flex h-40 flex-1 flex-col items-center justify-center">
+				<div
+					ref={ref}
+					className="flex h-40 flex-1 flex-col items-center justify-center"
+				>
 					<Disc3 size={35} className="animate-spin" />
 				</div>
 			)}
@@ -54,14 +58,15 @@ export const FollowingFeedReviews = ({
 }) => {
 	const { ref, inView } = useInView();
 
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.following.useInfiniteQuery(
-		{
-			...input,
-		},
-		{
-			getNextPageParam: (lastPage) => lastPage.nextCursor,
-		}
-	);
+	const { data, fetchNextPage, hasNextPage } =
+		api.ratings.feed.following.useInfiniteQuery(
+			{
+				...input,
+			},
+			{
+				getNextPageParam: (lastPage) => lastPage.nextCursor,
+			}
+		);
 
 	useEffect(() => {
 		if (inView) {
@@ -81,7 +86,10 @@ export const FollowingFeedReviews = ({
 				))}
 			</div>
 			{hasNextPage && (
-				<div ref={ref} className="flex h-40 flex-1 flex-col items-center justify-center">
+				<div
+					ref={ref}
+					className="flex h-40 flex-1 flex-col items-center justify-center"
+				>
 					<Disc3 size={35} className="animate-spin" />
 				</div>
 			)}

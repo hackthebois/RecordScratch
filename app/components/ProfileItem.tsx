@@ -3,7 +3,13 @@ import { Link } from "@tanstack/react-router";
 import { FollowButton } from "./FollowButton";
 import { UserAvatar } from "./UserAvatar";
 
-export const ProfileItem = ({ profile, onClick }: { profile: Profile; onClick?: () => void }) => {
+export const ProfileItem = ({
+	profile,
+	onClick,
+}: {
+	profile: Profile;
+	onClick?: () => void;
+}) => {
 	return (
 		<Link
 			to="/$handle"
@@ -19,7 +25,9 @@ export const ProfileItem = ({ profile, onClick }: { profile: Profile; onClick?: 
 				</div>
 				<div className="min-w-0 max-w-[5rem] truncate px-3 sm:max-w-[7rem] md:max-w-[10rem] lg:max-w-[12rem]">
 					<p className="truncate font-medium">{profile.name}</p>
-					<p className="truncate py-1 text-sm text-muted-foreground">{profile.handle}</p>
+					<p className="truncate py-1 text-sm text-muted-foreground">
+						{profile.handle}
+					</p>
 				</div>
 			</div>
 			<FollowButton profileId={profile.userId} />

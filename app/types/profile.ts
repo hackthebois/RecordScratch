@@ -43,7 +43,9 @@ export const ProfileHandleSchema = z
 		}
 		return true;
 	});
-export const ProfileBioSchema = z.string().max(200, "Must be less than 200 characters");
+export const ProfileBioSchema = z
+	.string()
+	.max(200, "Must be less than 200 characters");
 
 export const ProfileSchema = createSelectSchema(profile, {
 	name: ProfileNameSchema,

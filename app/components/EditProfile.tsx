@@ -23,7 +23,11 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { Profile, UpdateProfileForm, UpdateProfileFormSchema } from "@/types/profile";
+import {
+	Profile,
+	UpdateProfileForm,
+	UpdateProfileFormSchema,
+} from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { AtSign } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -33,12 +37,19 @@ import { api } from "@/trpc/react";
 import { useNavigate } from "@tanstack/react-router";
 
 export const EditProfile = ({ profile }: { profile: Profile }) => {
-	const { bio, handle: defaultHandle, imageUrl: defaultImageUrl, name } = profile;
+	const {
+		bio,
+		handle: defaultHandle,
+		imageUrl: defaultImageUrl,
+		name,
+	} = profile;
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 	const navigate = useNavigate();
 	const imageRef = useRef<HTMLInputElement>(null);
-	const [imageUrl, setImageUrl] = useState<string | undefined>(defaultImageUrl ?? undefined);
+	const [imageUrl, setImageUrl] = useState<string | undefined>(
+		defaultImageUrl ?? undefined
+	);
 
 	const form = useForm<UpdateProfileForm>({
 		resolver: zodResolver(UpdateProfileFormSchema),
@@ -67,7 +78,8 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 			}
 		},
 	});
-	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
+	const { mutateAsync: getSignedURL } =
+		api.profiles.getSignedURL.useMutation();
 
 	useEffect(() => {
 		form.reset({
@@ -87,9 +99,13 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	}, [image]);
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
-		enabled: debouncedHandle.length > 0 && debouncedHandle !== defaultHandle,
-	});
+	const { data: handleExists } = api.profiles.handleExists.useQuery(
+		debouncedHandle,
+		{
+			enabled:
+				debouncedHandle.length > 0 && debouncedHandle !== defaultHandle,
+		}
+	);
 
 	useEffect(() => {
 		if (handleExists) {
@@ -98,13 +114,21 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 				message: "Handle already exists",
 			});
 		} else {
-			if (form.formState.errors.handle?.message === "Handle already exists") {
+			if (
+				form.formState.errors.handle?.message ===
+				"Handle already exists"
+			) {
 				form.clearErrors("handle");
 			}
 		}
 	}, [handleExists]);
 
-	const onSubmit = async ({ bio, name, handle, image }: UpdateProfileForm) => {
+	const onSubmit = async ({
+		bio,
+		name,
+		handle,
+		image,
+	}: UpdateProfileForm) => {
 		let imageUrl: string | null = null;
 		if (image) {
 			const url = await getSignedURL({
@@ -139,10 +163,15 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle className="text-2xl">Edit Profile</DialogTitle>
-					<DialogDescription>Update your profile information</DialogDescription>
+					<DialogDescription>
+						Update your profile information
+					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="space-y-4"
+					>
 						<div className="flex items-center gap-4">
 							<UserAvatar size={80} imageUrl={imageUrl ?? null} />
 							<Input
@@ -152,10 +181,14 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								type="file"
 								onChange={(e) => {
 									if (e.target.files) {
-										form.setValue("image", e.target.files[0], {
-											shouldDirty: true,
-											shouldValidate: true,
-										});
+										form.setValue(
+											"image",
+											e.target.files[0],
+											{
+												shouldDirty: true,
+												shouldValidate: true,
+											}
+										);
 									}
 								}}
 							/>
@@ -165,7 +198,9 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 									onClick={(e) => {
 										e.preventDefault();
 										form.setValue("image", undefined);
-										setImageUrl(defaultImageUrl ?? undefined);
+										setImageUrl(
+											defaultImageUrl ?? undefined
+										);
 									}}
 								>
 									Clear Image
@@ -182,7 +217,9 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								</Button>
 							)}
 						</div>
-						<FormMessage>{form.formState.errors.image?.message}</FormMessage>
+						<FormMessage>
+							{form.formState.errors.image?.message}
+						</FormMessage>
 						<FormField
 							control={form.control}
 							name="name"
@@ -190,7 +227,11 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								<FormItem>
 									<FormLabel>Name</FormLabel>
 									<FormControl>
-										<Input type="text" placeholder="Name" {...field} />
+										<Input
+											type="text"
+											placeholder="Name"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -227,14 +268,20 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								<FormItem>
 									<FormLabel>Bio</FormLabel>
 									<FormControl>
-										<Textarea placeholder="Bio" {...field} />
+										<Textarea
+											placeholder="Bio"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 						<DialogFooter>
-							<Button type="submit" disabled={!form.formState.isDirty}>
+							<Button
+								type="submit"
+								disabled={!form.formState.isDirty}
+							>
 								Update
 							</Button>
 						</DialogFooter>

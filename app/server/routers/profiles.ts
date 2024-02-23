@@ -16,13 +16,15 @@ const s3 = new S3Client({
 });
 
 export const profilesRouter = router({
-	get: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: handle }) => {
-		return (
-			(await db.query.profile.findFirst({
-				where: eq(profile.handle, handle),
-			})) ?? null
-		);
-	}),
+	get: publicProcedure
+		.input(z.string())
+		.query(async ({ ctx: { db }, input: handle }) => {
+			return (
+				(await db.query.profile.findFirst({
+					where: eq(profile.handle, handle),
+				})) ?? null
+			);
+		}),
 	me: publicProcedure.query(async ({ ctx: { db, userId } }) => {
 		if (!userId) return null;
 
@@ -52,10 +54,13 @@ export const profilesRouter = router({
 				.groupBy(ratings.rating)
 				.orderBy(ratings.rating);
 
-			const outputList: number[] = userRatings.reduce((result, { rating, rating_count }) => {
-				result[rating - 1] = rating_count;
-				return result;
-			}, Array(10).fill(0));
+			const outputList: number[] = userRatings.reduce(
+				(result, { rating, rating_count }) => {
+					result[rating - 1] = rating_count;
+					return result;
+				},
+				Array(10).fill(0)
+			);
 
 			return outputList;
 		}),
@@ -97,7 +102,10 @@ export const profilesRouter = router({
 			if (!userId || userId === followingId) return false;
 
 			return !!(await db.query.followers.findFirst({
-				where: and(eq(followers.userId, userId), eq(followers.followingId, followingId)),
+				where: and(
+					eq(followers.userId, userId),
+					eq(followers.followingId, followingId)
+				),
 			}));
 		}),
 	followProfiles: publicProcedure
@@ -130,13 +138,15 @@ export const profilesRouter = router({
 						},
 					},
 				});
-				return data.map(({ follower: profile, userId, followingId }) => {
-					return {
-						userId,
-						followingId,
-						profile,
-					};
-				});
+				return data.map(
+					({ follower: profile, userId, followingId }) => {
+						return {
+							userId,
+							followingId,
+							profile,
+						};
+					}
+				);
 			} else {
 				const data = await db.query.followers.findMany({
 					where: eq(followers.userId, profileId),
@@ -152,13 +162,15 @@ export const profilesRouter = router({
 					},
 				});
 
-				return data.map(({ following: profile, userId, followingId }) => {
-					return {
-						userId,
-						followingId,
-						profile,
-					};
-				});
+				return data.map(
+					({ following: profile, userId, followingId }) => {
+						return {
+							userId,
+							followingId,
+							profile,
+						};
+					}
+				);
 			}
 		}),
 	create: protectedProcedure
@@ -169,7 +181,10 @@ export const profilesRouter = router({
 	update: protectedProcedure
 		.input(UpdateProfileSchema)
 		.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
-			await db.update(profile).set(newProfile).where(eq(profile.userId, userId));
+			await db
+				.update(profile)
+				.set(newProfile)
+				.where(eq(profile.userId, userId));
 		}),
 	getSignedURL: protectedProcedure
 		.input(
@@ -196,7 +211,8 @@ export const profilesRouter = router({
 	follow: protectedProcedure
 		.input(z.string())
 		.mutation(async ({ ctx: { db, userId }, input: followingId }) => {
-			if (userId === followingId) throw new Error("User Cannot Follow Themselves");
+			if (userId === followingId)
+				throw new Error("User Cannot Follow Themselves");
 
 			const followExists =
 				(
@@ -217,7 +233,8 @@ export const profilesRouter = router({
 	unFollow: protectedProcedure
 		.input(z.string())
 		.mutation(async ({ ctx: { db, userId }, input: followingId }) => {
-			if (userId === followingId) throw new Error("User Cannot unFollow Themselves");
+			if (userId === followingId)
+				throw new Error("User Cannot unFollow Themselves");
 
 			const followExists =
 				(
@@ -237,7 +254,10 @@ export const profilesRouter = router({
 				await db
 					.delete(followers)
 					.where(
-						and(eq(followers.userId, userId), eq(followers.followingId, followingId))
+						and(
+							eq(followers.userId, userId),
+							eq(followers.followingId, followingId)
+						)
 					);
 		}),
 	handleExists: publicProcedure
@@ -247,9 +267,14 @@ export const profilesRouter = router({
 				where: eq(profile.handle, handle),
 			}));
 		}),
-	search: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: query }) => {
-		return await db.query.profile.findMany({
-			where: or(like(profile.handle, `%${query}%`), like(profile.name, `%${query}%`)),
-		});
-	}),
+	search: publicProcedure
+		.input(z.string())
+		.query(async ({ ctx: { db }, input: query }) => {
+			return await db.query.profile.findMany({
+				where: or(
+					like(profile.handle, `%${query}%`),
+					like(profile.name, `%${query}%`)
+				),
+			});
+		}),
 });

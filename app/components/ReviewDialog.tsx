@@ -19,7 +19,13 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
 import { Textarea } from "./ui/Textarea";
 
-export const ReviewDialog = ({ resource, name }: { resource: Resource; name: string }) => {
+export const ReviewDialog = ({
+	resource,
+	name,
+}: {
+	resource: Resource;
+	name: string;
+}) => {
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
@@ -55,13 +61,20 @@ export const ReviewDialog = ({ resource, name }: { resource: Resource; name: str
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[600px]">
 				<DialogHeader>
-					<DialogTitle className="text-center text-2xl">{name}</DialogTitle>
+					<DialogTitle className="text-center text-2xl">
+						{name}
+					</DialogTitle>
 					<DialogDescription className="text-center">
-						{resource.category === "ALBUM" ? "Review this album" : "Review this song"}
+						{resource.category === "ALBUM"
+							? "Review this album"
+							: "Review this song"}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="flex flex-col gap-4"
+					>
 						<FormField
 							control={form.control}
 							name="rating"
@@ -70,7 +83,10 @@ export const ReviewDialog = ({ resource, name }: { resource: Resource; name: str
 									<FormControl>
 										<div className="flex justify-center">
 											<span className="w-full max-w-[375px]">
-												<RatingInput value={value} onChange={onChange} />
+												<RatingInput
+													value={value}
+													onChange={onChange}
+												/>
 											</span>
 										</div>
 									</FormControl>

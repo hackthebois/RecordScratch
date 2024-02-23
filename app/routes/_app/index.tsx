@@ -1,4 +1,7 @@
-import { FollowingFeedReviews, RecentFeedReviews } from "@/components/InfiniteFeedReviews";
+import {
+	FollowingFeedReviews,
+	RecentFeedReviews,
+} from "@/components/InfiniteFeedReviews";
 import { Pending } from "@/components/Pending";
 import AlbumList from "@/components/album/AlbumList";
 import { Discord } from "@/components/icons/Discord";
@@ -54,13 +57,17 @@ function Index() {
 			{trending && (
 				<div className="mt-[2vh] flex flex-col">
 					<h2 className="mb-4">Trending</h2>
-					<AlbumList albums={trending.map(({ resourceId }) => resourceId)} />
+					<AlbumList
+						albums={trending.map(({ resourceId }) => resourceId)}
+					/>
 				</div>
 			)}
 			{top && (
 				<div className="mt-[2vh] flex flex-col">
 					<h2 className="mb-4">Top Rated</h2>
-					<AlbumList albums={top.map(({ resourceId }) => resourceId)} />
+					<AlbumList
+						albums={top.map(({ resourceId }) => resourceId)}
+					/>
 				</div>
 			)}
 			<h2 className="mb-2 mt-[2vh]">Feed</h2>

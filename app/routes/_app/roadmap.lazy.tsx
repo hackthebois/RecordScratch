@@ -1,4 +1,9 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+	Card,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/Card";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 type RoadmapItem = {
@@ -21,7 +26,8 @@ const planned: RoadmapItem[] = [
 	},
 	{
 		title: "Recommendations",
-		description: "Based on your ratings, we'll recommend new music and personalized reviews.",
+		description:
+			"Based on your ratings, we'll recommend new music and personalized reviews.",
 	},
 ];
 
@@ -36,19 +42,28 @@ const released: RoadmapItem[] = [
 	},
 	{
 		title: "User Profiles",
-		description: "View users' profiles, rating distributions and recent activity.",
+		description:
+			"View users' profiles, rating distributions and recent activity.",
 	},
 	{
 		title: "Feeds",
-		description: "View recent activity from everyone and users' you follow.",
+		description:
+			"View recent activity from everyone and users' you follow.",
 	},
 	{
 		title: "Music Information",
-		description: "View detailed information about songs, albums, and artists.",
+		description:
+			"View detailed information about songs, albums, and artists.",
 	},
 ];
 
-const RoadmapSection = ({ name, items }: { name: string; items: RoadmapItem[] }) => {
+const RoadmapSection = ({
+	name,
+	items,
+}: {
+	name: string;
+	items: RoadmapItem[];
+}) => {
 	return (
 		<div className="flex h-full min-h-0 w-[400px] min-w-[300px] flex-col gap-4 rounded-xl border p-4">
 			<h3>{name}</h3>
@@ -60,7 +75,9 @@ const RoadmapSection = ({ name, items }: { name: string; items: RoadmapItem[] })
 					>
 						<CardHeader>
 							<CardTitle>{item.title}</CardTitle>
-							<CardDescription>{item.description}</CardDescription>
+							<CardDescription>
+								{item.description}
+							</CardDescription>
 						</CardHeader>
 					</Card>
 				))}

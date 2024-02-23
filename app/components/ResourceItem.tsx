@@ -22,7 +22,10 @@ export const ResourceItem = ({
 		...getQueryOptions({
 			route: "/album/{id}",
 			input: {
-				id: resource.category === "SONG" ? resource.parentId : resource.resourceId,
+				id:
+					resource.category === "SONG"
+						? resource.parentId
+						: resource.resourceId,
 			},
 		}),
 		initialData: initialAlbum,
@@ -32,9 +35,9 @@ export const ResourceItem = ({
 		return (
 			<div className="flex flex-row items-center gap-4 rounded">
 				<Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
-				<div className="gap-2 flex flex-col">
-					<Skeleton className="w-32 h-4 mb-1" />
-					<Skeleton className="w-24 h-4" />
+				<div className="flex flex-col gap-2">
+					<Skeleton className="mb-1 h-4 w-32" />
+					<Skeleton className="h-4 w-24" />
 				</div>
 			</div>
 		);
@@ -42,7 +45,9 @@ export const ResourceItem = ({
 
 	const name =
 		resource.category === "SONG"
-			? album.tracks?.data.find((track) => track.id === Number(resource.resourceId))?.title
+			? album.tracks?.data.find(
+					(track) => track.id === Number(resource.resourceId)
+				)?.title
 			: album.title;
 
 	const link =
@@ -62,7 +67,11 @@ export const ResourceItem = ({
 				};
 
 	return (
-		<Link onClick={onClick} {...link} className="flex flex-row items-center gap-4 rounded">
+		<Link
+			onClick={onClick}
+			{...link}
+			className="flex flex-row items-center gap-4 rounded"
+		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">
 				<AlbumImage album={album} size={64} />
 			</div>
@@ -87,7 +96,9 @@ export const ResourceItem = ({
 					</button>
 					{showType && (
 						<p className="truncate py-1 text-sm text-muted-foreground">
-							{resource.category === "SONG" ? "• Song" : "• Album"}
+							{resource.category === "SONG"
+								? "• Song"
+								: "• Album"}
 						</p>
 					)}
 				</div>

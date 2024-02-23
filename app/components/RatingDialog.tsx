@@ -29,7 +29,13 @@ import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
 import { Form, FormControl, FormField, FormItem } from "./ui/Form";
 
-export const RatingDialog = ({ resource, name }: { resource: Resource; name?: string }) => {
+export const RatingDialog = ({
+	resource,
+	name,
+}: {
+	resource: Resource;
+	name?: string;
+}) => {
 	const utils = api.useUtils();
 	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
@@ -51,7 +57,9 @@ export const RatingDialog = ({ resource, name }: { resource: Resource; name?: st
 		setOpen(false);
 	};
 
-	const clearRating = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const clearRating = (
+		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+	) => {
 		e.preventDefault();
 		if (!userRating) return;
 		rateMutation({
@@ -80,7 +88,9 @@ export const RatingDialog = ({ resource, name }: { resource: Resource; name?: st
 			</DialogTrigger>
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle className="text-center text-2xl">{name ?? "Rate"}</DialogTitle>
+					<DialogTitle className="text-center text-2xl">
+						{name ?? "Rate"}
+					</DialogTitle>
 					<DialogDescription className="text-center">
 						{resource.category === "ALBUM"
 							? "Rate this album"
@@ -90,14 +100,20 @@ export const RatingDialog = ({ resource, name }: { resource: Resource; name?: st
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="space-y-4"
+					>
 						<FormField
 							control={form.control}
 							name="rating"
 							render={({ field: { onChange, value } }) => (
 								<FormItem>
 									<FormControl>
-										<RatingInput value={value} onChange={onChange} />
+										<RatingInput
+											value={value}
+											onChange={onChange}
+										/>
 									</FormControl>
 								</FormItem>
 							)}
@@ -115,7 +131,11 @@ export const RatingDialog = ({ resource, name }: { resource: Resource; name?: st
 									(userRating.content ? (
 										<AlertDialog>
 											<AlertDialogTrigger asChild>
-												<Button variant="ghost" className="mt-2" size="sm">
+												<Button
+													variant="ghost"
+													className="mt-2"
+													size="sm"
+												>
 													Remove rating
 												</Button>
 											</AlertDialogTrigger>
@@ -125,12 +145,17 @@ export const RatingDialog = ({ resource, name }: { resource: Resource; name?: st
 														Remove your review?
 													</AlertDialogTitle>
 													<AlertDialogDescription>
-														This action will remove your current review
+														This action will remove
+														your current review
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>
-													<AlertDialogCancel>Cancel</AlertDialogCancel>
-													<AlertDialogAction onClick={clearRating}>
+													<AlertDialogCancel>
+														Cancel
+													</AlertDialogCancel>
+													<AlertDialogAction
+														onClick={clearRating}
+													>
 														Continue
 													</AlertDialogAction>
 												</AlertDialogFooter>

@@ -64,7 +64,7 @@ function Album() {
 					height={250}
 					alt={`${album.title} cover`}
 					src={album.cover_big ?? ""}
-					className="w-[250px] h-[250px] self-center sm:self-start rounded-xl"
+					className="h-[250px] w-[250px] self-center rounded-xl sm:self-start"
 				/>
 				<div className="flex flex-col items-center gap-4 sm:items-start">
 					<p className="text-sm tracking-widest text-muted-foreground">
@@ -74,7 +74,9 @@ function Album() {
 					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						<Tag variant="outline">{album.release_date}</Tag>
 						{album.duration && (
-							<Tag variant="outline">{formatMs(album.duration * 1000)}</Tag>
+							<Tag variant="outline">
+								{formatMs(album.duration * 1000)}
+							</Tag>
 						)}
 						{album.genres?.data.map((genre, index) => (
 							<Tag variant="outline" key={index}>
@@ -91,11 +93,14 @@ function Album() {
 					>
 						{album.artist?.name}
 					</Link>
-					<Suspense fallback={<Skeleton className="w-24 h-8" />}>
+					<Suspense fallback={<Skeleton className="h-8 w-24" />}>
 						<div className="flex items-center gap-4">
 							<RatingInfo resource={resource} />
 							{profile ? (
-								<RatingDialog resource={resource} name={album.title} />
+								<RatingDialog
+									resource={resource}
+									name={album.title}
+								/>
 							) : (
 								<SignInRateButton />
 							)}
@@ -134,7 +139,11 @@ function Album() {
 					<SongTable songs={album.tracks?.data ?? []} />
 				</TabsContent>
 				<TabsContent value="reviews">
-					<CommunityReviews resource={resource} pageLimit={20} name={album.title} />
+					<CommunityReviews
+						resource={resource}
+						pageLimit={20}
+						name={album.title}
+					/>
 				</TabsContent>
 			</Tabs>
 		</div>

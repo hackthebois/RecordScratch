@@ -32,7 +32,9 @@ function Song() {
 		})
 	);
 
-	const song = album.tracks.data.find((track) => track.id === Number(songId))!;
+	const song = album.tracks.data.find(
+		(track) => track.id === Number(songId)
+	)!;
 
 	const resource: Resource = {
 		parentId: String(album.id),
@@ -49,16 +51,22 @@ function Song() {
 						height={250}
 						alt={`${album.title} cover`}
 						src={album.cover_big ?? ""}
-						className="w-[250px] h-[250px] self-center sm:self-start rounded-xl"
+						className="h-[250px] w-[250px] self-center rounded-xl sm:self-start"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<p className="text-sm tracking-widest text-muted-foreground">SONG</p>
+					<p className="text-sm tracking-widest text-muted-foreground">
+						SONG
+					</p>
 					<h1 className="text-center sm:text-left">{song.title}</h1>
 					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						<Tag variant="outline">{album.release_date}</Tag>
-						{song.explicit_lyrics && <Tag variant="outline">Explicit</Tag>}
-						<Tag variant="outline">{formatMs(song.duration * 1000)}</Tag>
+						{song.explicit_lyrics && (
+							<Tag variant="outline">Explicit</Tag>
+						)}
+						<Tag variant="outline">
+							{formatMs(song.duration * 1000)}
+						</Tag>
 					</div>
 					<Link
 						to="/artists/$artistId"
@@ -90,7 +98,11 @@ function Song() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
-					<CommunityReviews resource={resource} pageLimit={20} name={song.title} />
+					<CommunityReviews
+						resource={resource}
+						pageLimit={20}
+						name={song.title}
+					/>
 				</TabsContent>
 			</Tabs>
 		</div>

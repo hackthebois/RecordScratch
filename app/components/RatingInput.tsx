@@ -28,10 +28,10 @@ export const RatingInput = ({
 									? "orange"
 									: "none"
 								: rating
-								? index <= rating
-									? "orange"
+									? index <= rating
+										? "orange"
+										: "none"
 									: "none"
-								: "none"
 						}
 					/>
 				</div>

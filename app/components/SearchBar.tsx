@@ -14,7 +14,13 @@ import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { UserAvatar } from "./UserAvatar";
 
-const ArtistItem = ({ artist, onClick }: { artist: Artist; onClick: () => void }) => {
+const ArtistItem = ({
+	artist,
+	onClick,
+}: {
+	artist: Artist;
+	onClick: () => void;
+}) => {
 	const artistImage = artist.picture_medium;
 
 	return (
@@ -112,7 +118,9 @@ const SearchState = ({
 									showType
 									initialAlbum={recent.data}
 									resource={{
-										parentId: String(recent.data.artist?.id),
+										parentId: String(
+											recent.data.artist?.id
+										),
 										resourceId: String(recent.data.id),
 										category: "ALBUM",
 									}}
@@ -166,7 +174,13 @@ const SearchState = ({
 	);
 };
 
-const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () => void }) => {
+const ProfileSearch = ({
+	query,
+	onNavigate,
+}: {
+	query: string;
+	onNavigate: () => void;
+}) => {
 	const { addRecent } = useRecents();
 
 	const { data, isLoading, isError } = api.profiles.search.useQuery(query, {
@@ -205,7 +219,13 @@ const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () =>
 	);
 };
 
-const MusicSearch = ({ query, onNavigate }: { query: string; onNavigate: () => void }) => {
+const MusicSearch = ({
+	query,
+	onNavigate,
+}: {
+	query: string;
+	onNavigate: () => void;
+}) => {
 	const { addRecent } = useRecents();
 
 	const { data, isLoading, isError, error } = useQuery({

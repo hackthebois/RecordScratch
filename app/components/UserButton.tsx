@@ -32,7 +32,7 @@ export const UserButton = () => {
 			<UserAvatar
 				imageUrl={profile?.imageUrl ?? null}
 				size={40}
-				className="border-muted border"
+				className="border border-muted"
 			/>
 		</Link>
 	);
