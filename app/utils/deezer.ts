@@ -160,6 +160,16 @@ const DeezerSchema = z.object({
 			total: z.number(),
 		}),
 	}),
+	"/artist/{id}/related": z.object({
+		input: z.object({
+			id: z.string(),
+		}),
+		output: z.object({
+			data: ArtistSchema.array(),
+			next: z.string().url().optional(),
+			total: z.number(),
+		}),
+	}),
 });
 export type Deezer = z.infer<typeof DeezerSchema>;
 
