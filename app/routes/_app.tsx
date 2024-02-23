@@ -3,7 +3,11 @@ import UserButton from "@/components/UserButton";
 import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
 import { Button } from "@/components/ui/Button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/Popover";
 import { env } from "@/env";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Disc3, Menu } from "lucide-react";
@@ -29,7 +33,11 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 				<nav className="flex w-full max-w-screen-lg items-center justify-between gap-3 p-4 sm:p-6">
 					<div className="flex items-center gap-3">
 						<Link to="/" className="flex items-center gap-3">
-							<Button size="icon" variant="outline" aria-label="Home">
+							<Button
+								size="icon"
+								variant="outline"
+								aria-label="Home"
+							>
 								<Disc3 size={22} />
 							</Button>
 						</Link>
@@ -67,7 +75,10 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 								</div>
 								<hr className="my-2" />
 								<div className="flex items-center gap-2">
-									<Link to="/terms" className="text-sm text-muted-foreground">
+									<Link
+										to="/terms"
+										className="text-sm text-muted-foreground"
+									>
 										Terms
 									</Link>
 									<Link

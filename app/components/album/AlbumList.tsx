@@ -39,7 +39,9 @@ const AlbumItem = ({
 				<AlbumImage album={album} size={144} />
 				<p className="mt-1 truncate font-medium">{album.title}</p>
 				{field === "date" && (
-					<p className="py-1 text-sm text-muted-foreground">{album.release_date}</p>
+					<p className="py-1 text-sm text-muted-foreground">
+						{album.release_date}
+					</p>
 				)}
 			</Link>
 			{field === "artist" && (
@@ -73,8 +75,14 @@ const AlbumList = ({
 					{albums.map((album, index) => (
 						<AlbumItem
 							key={index}
-							albumId={typeof album === "string" ? album : String(album.id)}
-							initial={typeof album === "string" ? undefined : album}
+							albumId={
+								typeof album === "string"
+									? album
+									: String(album.id)
+							}
+							initial={
+								typeof album === "string" ? undefined : album
+							}
 							field={field}
 						/>
 					))}
@@ -83,11 +91,13 @@ const AlbumList = ({
 		);
 	} else {
 		return (
-			<div className="flex flex-wrap gap-4 sm:gap-6 justify-around">
+			<div className="flex flex-wrap justify-around gap-4 sm:gap-6">
 				{albums.map((album, index) => (
 					<AlbumItem
 						key={index}
-						albumId={typeof album === "string" ? album : String(album.id)}
+						albumId={
+							typeof album === "string" ? album : String(album.id)
+						}
 						initial={typeof album === "string" ? undefined : album}
 						field={field}
 					/>

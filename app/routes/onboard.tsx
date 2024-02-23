@@ -1,7 +1,13 @@
 import { Pending } from "@/components/Pending";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/Form";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+} from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
@@ -80,12 +86,16 @@ function Onboard() {
 			});
 		},
 	});
-	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
+	const { mutateAsync: getSignedURL } =
+		api.profiles.getSignedURL.useMutation();
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
-		enabled: debouncedHandle.length > 0,
-	});
+	const { data: handleExists } = api.profiles.handleExists.useQuery(
+		debouncedHandle,
+		{
+			enabled: debouncedHandle.length > 0,
+		}
+	);
 	useEffect(() => {
 		if (handleExists) {
 			form.setError("handle", {
@@ -93,7 +103,10 @@ function Onboard() {
 				message: "Handle already exists",
 			});
 		} else {
-			if (form.formState.errors.handle?.message === "Handle already exists") {
+			if (
+				form.formState.errors.handle?.message ===
+				"Handle already exists"
+			) {
 				form.clearErrors("handle");
 			}
 		}
@@ -130,7 +143,9 @@ function Onboard() {
 		if (!form.getFieldState("handle").isTouched) {
 			form.setValue(
 				"handle",
-				name.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "").replace(" ", "")
+				name
+					.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "")
+					.replace(" ", "")
 			);
 		}
 	}, [name]);
@@ -169,21 +184,24 @@ function Onboard() {
 
 	if (form.formState.isSubmitting || form.formState.isSubmitSuccessful) {
 		return (
-			<main className="mx-auto h-[100svh] flex flex-col justify-center items-center w-full max-w-screen-lg flex-1 p-4 sm:p-6">
+			<main className="mx-auto flex h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 				<Disc3 size={50} className="animate-spin" />
 			</main>
 		);
 	}
 
 	return (
-		<main className="mx-auto h-[100svh] flex flex-col justify-center items-center w-full max-w-screen-lg flex-1 p-4 sm:p-6">
+		<main className="mx-auto flex h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>
 						<Disc3 size={200} className="animate-spin" />
-						<h1 className="mt-12 text-center">Welcome to RecordScratch!</h1>
+						<h1 className="mt-12 text-center">
+							Welcome to RecordScratch!
+						</h1>
 						<p className="mt-6 text-center text-muted-foreground">
-							Before you get started we have to set up your profile.
+							Before you get started we have to set up your
+							profile.
 						</p>
 						<p className="mt-3 text-center text-muted-foreground">
 							Press next below to get started.
@@ -257,7 +275,11 @@ function Onboard() {
 					<SlideWrapper page={page} pageIndex={3}>
 						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
-						<UserAvatar className="mt-8" size={160} imageUrl={imageUrl ?? null} />
+						<UserAvatar
+							className="mt-8"
+							size={160}
+							imageUrl={imageUrl ?? null}
+						/>
 						<Input
 							className="hidden"
 							id="image"
@@ -297,13 +319,18 @@ function Onboard() {
 								Add Profile Image
 							</Button>
 						)}
-						<FormMessage>{form.formState.errors.image?.message}</FormMessage>
+						<FormMessage>
+							{form.formState.errors.image?.message}
+						</FormMessage>
 					</SlideWrapper>
 				</form>
 			</Form>
 			<div className="mt-8 flex gap-4">
 				{page !== 0 && (
-					<Button variant="outline" onClick={() => setPage((page) => page - 1)}>
+					<Button
+						variant="outline"
+						onClick={() => setPage((page) => page - 1)}
+					>
 						Back
 					</Button>
 				)}

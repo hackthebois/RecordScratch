@@ -1,6 +1,11 @@
 const Github = ({ size = 25 }: { size?: number }) => {
 	return (
-		<svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 96">
+		<svg
+			width={size}
+			height={size}
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 98 96"
+		>
 			<path
 				fill-rule="evenodd"
 				clip-rule="evenodd"

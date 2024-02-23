@@ -87,11 +87,13 @@ function Artist() {
 						height={250}
 						alt={`${artist.name} cover`}
 						src={artist.picture_big}
-						className="w-[250px] self-center sm:self-start rounded-xl"
+						className="w-[250px] self-center rounded-xl sm:self-start"
 					/>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
-					<p className="text-sm tracking-widest text-muted-foreground">ARTIST</p>
+					<p className="text-sm tracking-widest text-muted-foreground">
+						ARTIST
+					</p>
 					<h1 className="text-center sm:text-left">{artist.name}</h1>
 					<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
 						<Tag variant="outline">{artist.nb_album} Albums</Tag>

@@ -54,12 +54,18 @@ export const callback = async (event: H3Event<EventHandlerRequest>) => {
 		throw new Error("Invalid request");
 	}
 
-	const tokens = await google.validateAuthorizationCode(code, storedCodeVerifier);
-	const response = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
-		headers: {
-			Authorization: `Bearer ${tokens.accessToken}`,
-		},
-	});
+	const tokens = await google.validateAuthorizationCode(
+		code,
+		storedCodeVerifier
+	);
+	const response = await fetch(
+		"https://openidconnect.googleapis.com/v1/userinfo",
+		{
+			headers: {
+				Authorization: `Bearer ${tokens.accessToken}`,
+			},
+		}
+	);
 	const user: unknown = await response.json();
 	const { sub: googleId, email } = z
 		.object({
@@ -91,6 +97,11 @@ export const callback = async (event: H3Event<EventHandlerRequest>) => {
 		googleId,
 	});
 	const sessionCookie = lucia.createSessionCookie(session.id);
-	setCookie(event, sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	setCookie(
+		event,
+		sessionCookie.name,
+		sessionCookie.value,
+		sessionCookie.attributes
+	);
 	sendRedirect(event, redirect);
 };

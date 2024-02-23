@@ -14,11 +14,19 @@ export const Review = ({
 }: ReviewType) => {
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
-			<ResourceItem resource={{ parentId, resourceId, category }} showType />
+			<ResourceItem
+				resource={{ parentId, resourceId, category }}
+				showType
+			/>
 			<div className="flex flex-1 flex-col gap-3">
 				<div className="flex items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
-						<Star key={i} size={18} color="#ffb703" fill="#ffb703" />
+						<Star
+							key={i}
+							size={18}
+							color="#ffb703"
+							fill="#ffb703"
+						/>
 					))}
 					{Array.from(Array(10 - rating)).map((_, i) => (
 						<Star key={i} size={18} color="#ffb703" />

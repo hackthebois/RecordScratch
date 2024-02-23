@@ -33,7 +33,9 @@ export default createApp({
 				tsconfigPaths(),
 				input(
 					"#vinxi/trpc/router",
-					fileURLToPath(new URL("./app/server/root.ts", import.meta.url))
+					fileURLToPath(
+						new URL("./app/server/root.ts", import.meta.url)
+					)
 				),
 			],
 		},
@@ -42,7 +44,11 @@ export default createApp({
 			type: "spa",
 			handler: "index.html",
 			target: "browser",
-			plugins: () => [tsconfigPaths(), reactRefresh(), TanStackRouterVite()],
+			plugins: () => [
+				tsconfigPaths(),
+				reactRefresh(),
+				TanStackRouterVite(),
+			],
 		},
 		{
 			name: "auth",

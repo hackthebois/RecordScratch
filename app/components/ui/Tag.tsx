@@ -28,7 +28,9 @@ export interface TagProps
 		VariantProps<typeof tagVarients> {}
 
 function Tag({ className, variant, ...props }: TagProps) {
-	return <div className={cn(tagVarients({ variant }), className)} {...props} />;
+	return (
+		<div className={cn(tagVarients({ variant }), className)} {...props} />
+	);
 }
 
 export { Tag, tagVarients };

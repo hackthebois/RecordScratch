@@ -182,7 +182,9 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 
-	const res = await fetch(`${env.VITE_BASE_URL}/music${modifiedRoute}?${params.toString()}`);
+	const res = await fetch(
+		`${env.VITE_BASE_URL}/music${modifiedRoute}?${params.toString()}`
+	);
 	const data: unknown = await res.json();
 
 	if (!res.ok) {

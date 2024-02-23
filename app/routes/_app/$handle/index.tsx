@@ -16,7 +16,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import {
+	Link,
+	createFileRoute,
+	notFound,
+	useNavigate,
+} from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
@@ -35,8 +40,14 @@ export const Route = createFileRoute("/_app/$handle/")({
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) throw notFound({ route: "/_app" });
 		apiUtils.profiles.distribution.ensureData(profile.userId);
-		apiUtils.profiles.followCount.ensureData({ profileId: profile.userId, type: "followers" });
-		apiUtils.profiles.followCount.ensureData({ profileId: profile.userId, type: "following" });
+		apiUtils.profiles.followCount.ensureData({
+			profileId: profile.userId,
+			type: "followers",
+		});
+		apiUtils.profiles.followCount.ensureData({
+			profileId: profile.userId,
+			type: "following",
+		});
 	},
 });
 
@@ -72,12 +83,20 @@ const ThemeToggle = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button>{theme && theme?.charAt(0).toUpperCase() + theme?.slice(1)}</Button>
+				<Button>
+					{theme && theme?.charAt(0).toUpperCase() + theme?.slice(1)}
+				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
-				<DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("light")}>
+					Light
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("dark")}>
+					Dark
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => setTheme("system")}>
+					System
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
@@ -92,7 +111,9 @@ function Handle() {
 		from: Route.fullPath,
 	});
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-	const [distribution] = api.profiles.distribution.useSuspenseQuery(profile?.userId || "");
+	const [distribution] = api.profiles.distribution.useSuspenseQuery(
+		profile?.userId || ""
+	);
 
 	console.log({ distribution });
 
@@ -108,9 +129,15 @@ function Handle() {
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar {...profile} size={160} />
 				<div className="flex flex-col items-center sm:items-start">
-					<p className="pb-4 text-sm tracking-widest text-muted-foreground">PROFILE</p>
-					<h1 className="pb-2 text-center sm:text-left">{profile.name}</h1>
-					<p className="pb-3 text-center text-muted-foreground">@{profile.handle}</p>
+					<p className="pb-4 text-sm tracking-widest text-muted-foreground">
+						PROFILE
+					</p>
+					<h1 className="pb-2 text-center sm:text-left">
+						{profile.name}
+					</h1>
+					<p className="pb-3 text-center text-muted-foreground">
+						@{profile.handle}
+					</p>
 					<p className="pb-3 text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
@@ -147,7 +174,7 @@ function Handle() {
 					)}
 				</TabsList>
 				<TabsContent value="reviews">
-					<div className="flex w-full sm:max-w-lg flex-col rounded-md border p-6 pt-6">
+					<div className="flex w-full flex-col rounded-md border p-6 pt-6 sm:max-w-lg">
 						<div className="flex h-20 w-full items-end justify-between gap-1">
 							{distribution.map((ratings, index) => (
 								<Link
@@ -157,7 +184,10 @@ function Handle() {
 									}}
 									search={{
 										rating: index + 1,
-										category: category === "all" ? undefined : category,
+										category:
+											category === "all"
+												? undefined
+												: category,
 									}}
 									className="flex h-full flex-1 flex-col-reverse"
 									key={index}
@@ -168,7 +198,8 @@ function Handle() {
 										}}
 										className={cn(
 											"h-full min-h-0 w-full rounded-t bg-[#ffb703] hover:opacity-90",
-											rating === index + 1 && "bg-orange-500"
+											rating === index + 1 &&
+												"bg-orange-500"
 										)}
 									/>
 								</Link>
@@ -255,7 +286,8 @@ function Handle() {
 								<div className="flex flex-col items-start gap-2">
 									<Label>Edit Profile</Label>
 									<p className="text-sm text-muted-foreground">
-										Update your profile information and image
+										Update your profile information and
+										image
 									</p>
 								</div>
 								<EditProfile profile={profile} />
