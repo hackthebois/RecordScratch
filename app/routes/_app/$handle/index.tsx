@@ -1,9 +1,10 @@
 import { EditProfile } from "@/components/EditProfile";
 import FollowerMenu from "@/components/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
-import { Pending } from "@/components/Pending";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
@@ -26,7 +27,8 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
 	component: Handle,
-	pendingComponent: Pending,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
 	validateSearch: (search) => {
 		return z
 			.object({

@@ -1,6 +1,14 @@
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
-const Terms = () => {
+export const Route = createLazyFileRoute("/_app/terms")({
+	component: Terms,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
+});
+
+function Terms() {
 	return (
 		<div className="flex flex-col gap-6">
 			<h1>Terms and conditions of use</h1>
@@ -125,8 +133,4 @@ const Terms = () => {
 			</ol>
 		</div>
 	);
-};
-
-export const Route = createLazyFileRoute("/_app/terms")({
-	component: Terms,
-});
+}

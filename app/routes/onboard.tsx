@@ -1,5 +1,6 @@
-import { Pending } from "@/components/Pending";
 import { UserAvatar } from "@/components/UserAvatar";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { Button } from "@/components/ui/Button";
 import {
 	Form,
@@ -24,7 +25,8 @@ import { useForm } from "react-hook-form";
 
 export const Route = createFileRoute("/onboard")({
 	component: Onboard,
-	pendingComponent: Pending,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
 });
 
 const SlideWrapper = ({

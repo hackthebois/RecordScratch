@@ -1,9 +1,10 @@
 import CommunityReviews from "@/components/CommunityReviews";
 import Metadata from "@/components/Metadata";
-import { Pending } from "@/components/Pending";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
 import SongTable from "@/components/SongTable";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -18,7 +19,8 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_app/albums/$albumId/")({
 	component: Album,
-	pendingComponent: Pending,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
 	validateSearch: (search) => {
 		return z
 			.object({
