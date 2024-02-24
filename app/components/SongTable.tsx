@@ -18,7 +18,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 					<div
 						key={song.id}
 						className={cn(
-							"-mx-4 flex flex-1 items-center justify-between border-b transition-colors sm:mx-0",
+							"-mx-4 flex h-12 flex-1 items-center justify-between border-b transition-colors sm:mx-0",
 							index === songs.length - 1 && "border-none"
 						)}
 					>
@@ -43,7 +43,6 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 							<div className="flex items-center gap-3 pr-3">
 								<RatingInfo
 									resource={{
-										parentId: String(song.album.id),
 										resourceId: String(song.id),
 										category: "SONG",
 									}}
