@@ -1,19 +1,36 @@
 import { api } from "@/trpc/react";
-import { Resource } from "@/types/rating";
+import { Resource, ResourceRating } from "@/types/rating";
 import { cn } from "@/utils/utils";
 import { Star } from "lucide-react";
+import { Skeleton } from "./Skeleton";
 
 export const RatingInfo = ({
+	initialRating,
 	resource,
 	size = "lg",
 }: {
+	initialRating?: ResourceRating | null;
 	resource: {
 		resourceId: Resource["resourceId"];
 		category: Resource["category"];
 	};
 	size?: "lg" | "sm";
 }) => {
-	const [rating] = api.ratings.get.useSuspenseQuery(resource);
+	const { data: rating, isLoading } = api.ratings.get.useQuery(resource, {
+		initialData: initialRating ? initialRating : undefined,
+		enabled: initialRating === undefined,
+	});
+
+	if (isLoading) {
+		return (
+			<Skeleton
+				className={cn(
+					size === "lg" && "h-12 w-24",
+					size === "sm" && "h-10 w-16"
+				)}
+			/>
+		);
+	}
 
 	return (
 		<div className="flex min-h-12 items-center gap-4">

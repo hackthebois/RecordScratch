@@ -6,7 +6,6 @@ import SongTable from "@/components/SongTable";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/PendingComponent";
 import { RatingInfo } from "@/components/ui/RatingInfo";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
@@ -14,7 +13,6 @@ import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Suspense } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/albums/$albumId/")({
@@ -82,19 +80,14 @@ function Album() {
 				>
 					{album.artist?.name}
 				</Link>
-				<Suspense fallback={<Skeleton className="h-12 w-24" />}>
-					<div className="flex items-center gap-4">
-						<RatingInfo resource={resource} />
-						{profile ? (
-							<RatingDialog
-								resource={resource}
-								name={album.title}
-							/>
-						) : (
-							<SignInRateButton />
-						)}
-					</div>
-				</Suspense>
+				<div className="flex items-center gap-4">
+					<RatingInfo resource={resource} />
+					{profile ? (
+						<RatingDialog resource={resource} name={album.title} />
+					) : (
+						<SignInRateButton />
+					)}
+				</div>
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
