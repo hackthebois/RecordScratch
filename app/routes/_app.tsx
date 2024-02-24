@@ -2,6 +2,7 @@ import SearchBar from "@/components/SearchBar";
 import UserButton from "@/components/UserButton";
 import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { Button } from "@/components/ui/Button";
 import {
 	Popover,
@@ -22,6 +23,11 @@ export const Route = createFileRoute("/_app")({
 	notFoundComponent: () => (
 		<LayoutComponent>
 			<p>Not Found</p>
+		</LayoutComponent>
+	),
+	errorComponent: ({ error }) => (
+		<LayoutComponent>
+			<ErrorComponent error={error} />
 		</LayoutComponent>
 	),
 });

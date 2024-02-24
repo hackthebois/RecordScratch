@@ -1,3 +1,5 @@
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import {
 	Card,
 	CardDescription,
@@ -5,6 +7,12 @@ import {
 	CardTitle,
 } from "@/components/ui/Card";
 import { createLazyFileRoute } from "@tanstack/react-router";
+
+export const Route = createLazyFileRoute("/_app/roadmap")({
+	component: Roadmap,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
+});
 
 type RoadmapItem = {
 	title: string;
@@ -86,9 +94,9 @@ const RoadmapSection = ({
 	);
 };
 
-const Roadmap = () => {
+function Roadmap() {
 	return (
-		<div className="-m-4 flex h-[calc(100svh-56px)] flex-1 flex-col overflow-hidden sm:-m-6 sm:h-[calc(100svh-56px)]">
+		<div className="-m-4 flex h-[calc(100svh-56px)] flex-1 flex-col overflow-hidden sm:-m-6">
 			<h1 className="p-4 sm:p-6">Roadmap</h1>
 			<div className="mb-4 flex h-full min-h-0 gap-4 overflow-x-auto px-4 pb-2">
 				<RoadmapSection name="Planned" items={planned} />
@@ -97,8 +105,4 @@ const Roadmap = () => {
 			</div>
 		</div>
 	);
-};
-
-export const Route = createLazyFileRoute("/_app/roadmap")({
-	component: Roadmap,
-});
+}

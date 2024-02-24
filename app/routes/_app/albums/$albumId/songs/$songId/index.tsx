@@ -1,8 +1,9 @@
 import CommunityReviews from "@/components/CommunityReviews";
 import Metadata from "@/components/Metadata";
-import { Pending } from "@/components/Pending";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -17,7 +18,8 @@ import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
-	pendingComponent: Pending,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
 	loader: ({ params: { albumId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({

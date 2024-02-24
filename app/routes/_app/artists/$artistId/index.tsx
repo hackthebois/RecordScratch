@@ -1,8 +1,9 @@
 import Metadata from "@/components/Metadata";
-import { Pending } from "@/components/Pending";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
@@ -14,7 +15,8 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_app/artists/$artistId/")({
 	component: Artist,
-	pendingComponent: Pending,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
 	validateSearch: (search) => {
 		return z
 			.object({
@@ -64,6 +66,7 @@ function Artist() {
 	const navigate = useNavigate({
 		from: Route.fullPath,
 	});
+
 	const { data: artist } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/artist/{id}",

@@ -3,8 +3,9 @@ import {
 	RecentFeedReviews,
 } from "@/components/InfiniteFeedReviews";
 import Metadata from "@/components/Metadata";
-import { Pending } from "@/components/Pending";
 import AlbumList from "@/components/album/AlbumList";
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/PendingComponent";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
@@ -16,7 +17,8 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_app/")({
 	component: Index,
-	pendingComponent: Pending,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
 	validateSearch: (search) => {
 		return z
 			.object({
