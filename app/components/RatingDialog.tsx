@@ -22,22 +22,31 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { api } from "@/trpc/react";
-import { RateForm, RateFormSchema, Resource } from "@/types/rating";
+import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
 import { Form, FormControl, FormField, FormItem } from "./ui/Form";
+import { Skeleton } from "./ui/Skeleton";
 
 export const RatingDialog = ({
+	initialUserRating,
 	resource,
 	name,
 }: {
+	initialUserRating?: Rating | null;
 	resource: Resource;
 	name?: string;
 }) => {
 	const utils = api.useUtils();
-	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
+	const { data: userRating, isLoading } = api.ratings.user.get.useQuery(
+		resource,
+		{
+			initialData: initialUserRating ? initialUserRating : undefined,
+			enabled: initialUserRating === undefined,
+		}
+	);
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
 		onSettled: () => {
 			utils.ratings.user.get.invalidate(resource);
@@ -72,6 +81,10 @@ export const RatingDialog = ({
 	useEffect(() => {
 		form.reset({ ...resource, ...userRating });
 	}, [userRating, form, resource]);
+
+	if (isLoading) {
+		return <Skeleton className="h-12 w-20" />;
+	}
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>

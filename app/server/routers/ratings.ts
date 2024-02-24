@@ -37,9 +37,14 @@ export const ratingsRouter = router({
 				.where(where);
 			return { ...rating[0], resourceId };
 		}),
-	list: publicProcedure
-		.input(ResourceSchema.array())
-		.query(async ({ ctx: { db }, input: resources }) => {
+	getList: publicProcedure
+		.input(
+			z.object({
+				resourceIds: z.string().array(),
+				category: z.enum(["ALBUM", "SONG", "ARTIST"]),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { resourceIds, category } }) => {
 			return await db
 				.select({
 					average: avg(ratings.rating),
@@ -48,9 +53,9 @@ export const ratingsRouter = router({
 				})
 				.from(ratings)
 				.where(
-					inArray(
-						ratings.resourceId,
-						resources.map((r) => r.resourceId)
+					and(
+						inArray(ratings.resourceId, resourceIds),
+						eq(ratings.category, category)
 					)
 				)
 				.groupBy(ratings.resourceId);
@@ -207,18 +212,26 @@ export const ratingsRouter = router({
 				}
 			),
 		getList: protectedProcedure
-			.input(ResourceSchema.array())
-			.query(async ({ ctx: { db, userId }, input: resources }) => {
-				return await db.query.ratings.findMany({
-					where: and(
-						inArray(
-							ratings.resourceId,
-							resources.map((r) => r.resourceId)
+			.input(
+				z.object({
+					resourceIds: z.string().array(),
+					category: z.enum(["ALBUM", "SONG", "ARTIST"]),
+				})
+			)
+			.query(
+				async ({
+					ctx: { db, userId },
+					input: { resourceIds, category },
+				}) => {
+					return await db.query.ratings.findMany({
+						where: and(
+							inArray(ratings.resourceId, resourceIds),
+							eq(ratings.userId, userId),
+							eq(ratings.category, category)
 						),
-						eq(ratings.userId, userId)
-					),
-				});
-			}),
+					});
+				}
+			),
 		recent: publicProcedure
 			.input(
 				PaginatedInput.extend({
