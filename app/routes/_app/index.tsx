@@ -130,7 +130,7 @@ const AlbumOfTheDay = () => {
 			<Link
 				to="/albums/$albumId"
 				params={{
-					albumId: albums[0].albumId,
+					albumId: String(album.id),
 				}}
 				className={buttonVariants({
 					variant: "outline",
