@@ -16,7 +16,7 @@ export const RatingInfo = ({
 	const [rating] = api.ratings.get.useSuspenseQuery(resource);
 
 	return (
-		<div className="flex items-center gap-4">
+		<div className="flex min-h-12 items-center gap-4">
 			{!(size === "sm" && !rating?.average) && (
 				<div className="flex items-center gap-2">
 					<Star

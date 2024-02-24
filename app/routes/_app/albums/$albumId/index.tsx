@@ -44,7 +44,7 @@ function Album() {
 	});
 	const { albumId } = Route.useParams();
 	const { tab = "songs" } = Route.useSearch();
-	const { data: profile } = api.profiles.me.useQuery();
+	const [profile] = api.profiles.me.useSuspenseQuery();
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -82,7 +82,7 @@ function Album() {
 				>
 					{album.artist?.name}
 				</Link>
-				<Suspense fallback={<Skeleton className="h-8 w-24" />}>
+				<Suspense fallback={<Skeleton className="h-12 w-24" />}>
 					<div className="flex items-center gap-4">
 						<RatingInfo resource={resource} />
 						{profile ? (

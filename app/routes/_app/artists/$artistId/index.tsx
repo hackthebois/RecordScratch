@@ -5,6 +5,7 @@ import { ArtistItem } from "@/components/artist/ArtistItem";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/PendingComponent";
 import { RatingInfo } from "@/components/ui/RatingInfo";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
@@ -108,7 +109,7 @@ function Artist() {
 				tags={[`${artist.nb_album} Albums`]}
 				type="ARTIST"
 			>
-				<Suspense fallback={null}>
+				<Suspense fallback={<Skeleton className="h-12 w-24" />}>
 					<RatingInfo
 						resource={{
 							resourceId: String(artist.id),
