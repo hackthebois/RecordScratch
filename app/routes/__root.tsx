@@ -1,11 +1,14 @@
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { TRPCReactProvider } from "@/trpc/react";
+import { env } from "@/env";
+import { TRPCReactProvider, api } from "@/trpc/react";
 import {
 	Outlet,
 	ScrollRestoration,
 	createRootRoute,
+	useRouterState,
 } from "@tanstack/react-router";
-import React, { Suspense } from "react";
+import { PostHogProvider, usePostHog } from "posthog-js/react";
+import React, { Suspense, useEffect } from "react";
 
 const TanStackRouterDevtools =
 	process.env.NODE_ENV === "production"
@@ -23,16 +26,50 @@ export const Route = createRootRoute({
 	component: Root,
 });
 
+const PostHogPageView = () => {
+	const location = useRouterState({ select: (s) => s.location });
+	const posthog = usePostHog();
+
+	useEffect(() => {
+		posthog.capture("$pageview");
+	}, [location.href, posthog]);
+
+	return null;
+};
+
+const PostHogIdentify = () => {
+	const [user] = api.users.me.useSuspenseQuery();
+	const posthog = usePostHog();
+
+	useEffect(() => {
+		if (!user) return;
+		posthog.identify(user.id, {
+			email: user.email,
+		});
+	}, [user, posthog]);
+
+	return null;
+};
+
 function Root() {
 	return (
-		<TRPCReactProvider>
-			<ThemeProvider defaultTheme="dark" storageKey="theme">
-				<ScrollRestoration />
-				<Outlet />
-				<Suspense>
-					<TanStackRouterDevtools />
-				</Suspense>
-			</ThemeProvider>
-		</TRPCReactProvider>
+		<PostHogProvider
+			apiKey={env.VITE_POSTHOG_KEY}
+			options={{
+				api_host: env.VITE_POSTHOG_HOST,
+			}}
+		>
+			<TRPCReactProvider>
+				<ThemeProvider defaultTheme="dark" storageKey="theme">
+					<ScrollRestoration />
+					<Outlet />
+					<Suspense>
+						<PostHogPageView />
+						<PostHogIdentify />
+						<TanStackRouterDevtools />
+					</Suspense>
+				</ThemeProvider>
+			</TRPCReactProvider>
+		</PostHogProvider>
 	);
 }

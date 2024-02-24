@@ -1,6 +1,7 @@
 import { profilesRouter } from "./routers/profiles";
 import { ratingsRouter } from "./routers/ratings";
-import { publicProcedure, router } from "./trpc";
+import { usersRouter } from "./routers/users";
+import { router } from "./trpc";
 
 /**
  * This is the primary router for your server.
@@ -10,9 +11,7 @@ import { publicProcedure, router } from "./trpc";
 const appRouter = router({
 	ratings: ratingsRouter,
 	profiles: profilesRouter,
-	test: publicProcedure.query(async () => {
-		return "Hello World";
-	}),
+	users: usersRouter,
 });
 
 // export type definition of API
