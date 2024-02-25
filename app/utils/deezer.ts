@@ -180,13 +180,13 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	route: TRoute;
 	input: Deezer[TRoute]["input"];
 }): Promise<Deezer[TRoute]["output"]> => {
-	let input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
+	const input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
 
 	let modifiedRoute = `${route}`;
 	if (input && "id" in input) {
 		modifiedRoute = route.replace("{id}", input.id);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		input = {} as any;
+		delete (input as any).id;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
