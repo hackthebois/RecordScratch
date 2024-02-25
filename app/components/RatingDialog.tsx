@@ -43,8 +43,8 @@ export const RatingDialog = ({
 	const { data: userRating, isLoading } = api.ratings.user.get.useQuery(
 		resource,
 		{
-			initialData: initialUserRating ? initialUserRating : undefined,
-			enabled: initialUserRating === undefined,
+			staleTime: Infinity,
+			initialData: initialUserRating,
 		}
 	);
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
