@@ -9,15 +9,36 @@ import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/Skeleton";
 
+const SongRatingDialog = ({ songs, song }: { songs: Track[]; song: Track }) => {
+	const [userRatings] = api.ratings.user.getList.useSuspenseQuery({
+		category: "SONG",
+		resourceIds: songs.map((song) => String(song.id)),
+	});
+
+	const resource: Resource = {
+		parentId: String(song.album.id),
+		resourceId: String(song.id),
+		category: "SONG",
+	};
+
+	return (
+		<RatingDialog
+			initialUserRating={
+				userRatings?.find(
+					(rating) => rating.resourceId === resource.resourceId
+				) ?? null
+			}
+			resource={resource}
+			name={song.title}
+		/>
+	);
+};
+
 const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 	const [profile] = api.profiles.me.useSuspenseQuery();
 	const [ratings] = api.ratings.getList.useSuspenseQuery({
 		resourceIds: songs.map((song) => String(song.id)),
 		category: "SONG",
-	});
-	const [userRatings] = api.ratings.user.getList.useSuspenseQuery({
-		category: "SONG",
-		resourceIds: songs.map((song) => String(song.id)),
 	});
 
 	const resource: Resource = {
@@ -38,16 +59,7 @@ const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 				size="sm"
 			/>
 			{profile ? (
-				<RatingDialog
-					initialUserRating={
-						userRatings?.find(
-							(rating) =>
-								rating.resourceId === resource.resourceId
-						) ?? null
-					}
-					resource={resource}
-					name={song.title}
-				/>
+				<SongRatingDialog songs={songs} song={song} />
 			) : (
 				<SignInRateButton />
 			)}
