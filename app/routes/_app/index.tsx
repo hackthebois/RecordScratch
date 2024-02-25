@@ -154,64 +154,62 @@ function Index() {
 	const { data: profile } = api.profiles.me.useQuery();
 
 	return (
-		<div className="flex w-full flex-col gap-8">
+		<div className="flex flex-col gap-8">
 			<AlbumOfTheDay />
 			{trending && (
-				<div className="flex flex-col">
-					<h2 className="mb-4">Trending</h2>
+				<>
+					<h2>Trending</h2>
 					<AlbumList
 						albums={trending.map(({ resourceId }) => resourceId)}
 					/>
-				</div>
+				</>
 			)}
 			{top && (
-				<div className="flex flex-col">
-					<h2 className="mb-4">Top Rated</h2>
+				<>
+					<h2>Top Rated</h2>
 					<AlbumList
 						albums={top.map(({ resourceId }) => resourceId)}
 					/>
-				</div>
+				</>
 			)}
-			<div>
-				<h2 className="mb-2">Feed</h2>
-				{profile && (
-					<Tabs value={feed} className="w-full">
-						<TabsList>
-							<TabsTrigger
-								value="recent"
-								onClick={() => {
-									navigate({
-										search: {
-											feed: undefined,
-										},
-									});
-								}}
-							>
-								Recent
-							</TabsTrigger>
-							<TabsTrigger
-								value="following"
-								onClick={() => {
-									navigate({
-										search: {
-											feed: "following",
-										},
-									});
-								}}
-							>
-								Following
-							</TabsTrigger>
-						</TabsList>
-						<TabsContent value="recent">
-							<RecentFeedReviews input={{ limit: 20 }} />
-						</TabsContent>
-						<TabsContent value="following">
-							<FollowingFeedReviews input={{ limit: 20 }} />
-						</TabsContent>
-					</Tabs>
-				)}
-				{!profile && <RecentFeedReviews input={{ limit: 20 }} />}
-			</div>
+			<h2 className="-mb-6">Feed</h2>
+			{profile && (
+				<Tabs value={feed} className="w-full">
+					<TabsList>
+						<TabsTrigger
+							value="recent"
+							onClick={() => {
+								navigate({
+									search: {
+										feed: undefined,
+									},
+								});
+							}}
+						>
+							Recent
+						</TabsTrigger>
+						<TabsTrigger
+							value="following"
+							onClick={() => {
+								navigate({
+									search: {
+										feed: "following",
+									},
+								});
+							}}
+						>
+							Following
+						</TabsTrigger>
+					</TabsList>
+					<TabsContent value="recent">
+						<RecentFeedReviews input={{ limit: 20 }} />
+					</TabsContent>
+					<TabsContent value="following">
+						<FollowingFeedReviews input={{ limit: 20 }} />
+					</TabsContent>
+				</Tabs>
+			)}
+			{!profile && <RecentFeedReviews input={{ limit: 20 }} />}
 		</div>
 	);
 }

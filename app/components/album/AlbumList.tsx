@@ -1,6 +1,5 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Album, getQueryOptions } from "@/utils/deezer";
-import { cn } from "@/utils/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import AlbumImage from "./AlbumImage";
@@ -32,19 +31,28 @@ const AlbumItem = ({
 
 	return (
 		<div
-			className={cn(
-				"flex h-full flex-col",
-				size ? `w-[${size}px]` : "w-full"
-			)}
+			className="flex h-full flex-col"
+			style={{
+				width: size,
+			}}
 		>
 			<Link
 				to={"/albums/$albumId"}
 				params={{
 					albumId: String(album.id),
 				}}
-				className="flex w-full cursor-pointer flex-col"
+				className="flex w-full cursor-pointer flex-col overflow-hidden"
 			>
-				<AlbumImage album={album} />
+				<div
+					style={{
+						width: size,
+						height: size,
+						maxWidth: size,
+						maxHeight: size,
+					}}
+				>
+					<AlbumImage album={album} />
+				</div>
 				<p className="truncate pt-1 font-medium">{album.title}</p>
 				{field === "date" && (
 					<p className="text-sm text-muted-foreground">
@@ -78,8 +86,11 @@ const AlbumList = ({
 }) => {
 	if (type === "scroll") {
 		return (
-			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
-				<div className="flex gap-4 px-4 sm:px-8">
+			<ScrollArea
+				orientation="horizontal"
+				className="w-full max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)]"
+			>
+				<div className="flex gap-4">
 					{albums.map((album, index) => (
 						<div className="mb-3">
 							<AlbumItem
