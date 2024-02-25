@@ -129,11 +129,7 @@ function Handle() {
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar
 					{...profile}
-					imageUrl={
-						profile.imageUrl +
-						"?updatedAt=" +
-						profile.updatedAt.getTime()
-					}
+					imageUrl={profile.imageUrl}
 					size={160}
 				/>
 				<div className="flex flex-col items-center sm:items-start">
