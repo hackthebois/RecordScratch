@@ -3,7 +3,7 @@ import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
-import { PendingComponent } from "@/components/router/PendingComponent";
+import { PendingComponent } from "@/components/router/Pending";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";

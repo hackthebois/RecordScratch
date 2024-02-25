@@ -1,5 +1,5 @@
 import { ErrorComponent } from "@/components/router/ErrorComponent";
-import { PendingComponent } from "@/components/router/PendingComponent";
+import { PendingComponent } from "@/components/router/Pending";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_app/privacy-policy")({

@@ -5,7 +5,7 @@ import {
 import Metadata from "@/components/Metadata";
 import AlbumList from "@/components/album/AlbumList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
-import { PendingComponent } from "@/components/router/PendingComponent";
+import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
