@@ -234,61 +234,73 @@ const MusicSearch = ({
 		>
 			{data && (
 				<>
-					<h4>Albums</h4>
-					{data.albums.map((album, index) => (
-						<ResourceItem
-							initialAlbum={album}
-							resource={{
-								parentId: String(album.artist?.id),
-								resourceId: String(album.id),
-								category: "ALBUM",
-							}}
-							onClick={() => {
-								addRecent({
-									id: String(album.id),
-									type: "ALBUM",
-									data: album,
-								});
-								onNavigate();
-							}}
-							key={index}
-						/>
-					))}
-					<h4 className="mt-3">Artists</h4>
-					{data.artists.map((artist, index) => (
-						<ArtistItem
-							onClick={() => {
-								addRecent({
-									id: String(artist.id),
-									type: "ARTIST",
-									data: artist,
-								});
-								onNavigate();
-							}}
-							artistId={String(artist.id)}
-							initialArtist={artist}
-							key={index}
-						/>
-					))}
-					<h4 className="mt-3">Songs</h4>
-					{data.songs.map((song, index) => (
-						<ResourceItem
-							resource={{
-								parentId: String(song.album.id),
-								resourceId: String(song.id),
-								category: "SONG",
-							}}
-							onClick={() => {
-								addRecent({
-									id: String(song.id),
-									type: "SONG",
-									data: song,
-								});
-								onNavigate();
-							}}
-							key={index}
-						/>
-					))}
+					{data.albums.length > 0 && (
+						<>
+							<h4>Albums</h4>
+							{data.albums.map((album, index) => (
+								<ResourceItem
+									initialAlbum={album}
+									resource={{
+										parentId: String(album.artist?.id),
+										resourceId: String(album.id),
+										category: "ALBUM",
+									}}
+									onClick={() => {
+										addRecent({
+											id: String(album.id),
+											type: "ALBUM",
+											data: album,
+										});
+										onNavigate();
+									}}
+									key={index}
+								/>
+							))}
+						</>
+					)}
+					{data.artists.length > 0 && (
+						<>
+							<h4 className="mt-3">Artists</h4>
+							{data.artists.map((artist, index) => (
+								<ArtistItem
+									onClick={() => {
+										addRecent({
+											id: String(artist.id),
+											type: "ARTIST",
+											data: artist,
+										});
+										onNavigate();
+									}}
+									artistId={String(artist.id)}
+									initialArtist={artist}
+									key={index}
+								/>
+							))}
+						</>
+					)}
+					{data.songs.length > 0 && (
+						<>
+							<h4 className="mt-3">Songs</h4>
+							{data.songs.map((song, index) => (
+								<ResourceItem
+									resource={{
+										parentId: String(song.album.id),
+										resourceId: String(song.id),
+										category: "SONG",
+									}}
+									onClick={() => {
+										addRecent({
+											id: String(song.id),
+											type: "SONG",
+											data: song,
+										});
+										onNavigate();
+									}}
+									key={index}
+								/>
+							))}
+						</>
+					)}
 				</>
 			)}
 		</SearchState>
