@@ -87,6 +87,7 @@ function Artist() {
 			route: "/artist/{id}/albums",
 			input: {
 				id: artistId,
+				limit: 1000,
 			},
 		})
 	);

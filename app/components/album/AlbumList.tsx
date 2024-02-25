@@ -1,5 +1,6 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Album, getQueryOptions } from "@/utils/deezer";
+import { cn } from "@/utils/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import AlbumImage from "./AlbumImage";
@@ -8,10 +9,12 @@ const AlbumItem = ({
 	albumId,
 	field,
 	initial,
+	size,
 }: {
 	albumId: string;
 	field: "date" | "artist";
 	initial?: Album;
+	size?: number;
 }) => {
 	const { data: album } = useSuspenseQuery({
 		...getQueryOptions({
@@ -28,18 +31,23 @@ const AlbumItem = ({
 	}
 
 	return (
-		<div className="mb-4 flex w-[144px] flex-col">
+		<div
+			className={cn(
+				"flex h-full flex-col",
+				size ? `w-[${size}px]` : "w-full"
+			)}
+		>
 			<Link
 				to={"/albums/$albumId"}
 				params={{
 					albumId: String(album.id),
 				}}
-				className="cursor-pointer"
+				className="flex w-full cursor-pointer flex-col"
 			>
-				<AlbumImage album={album} size={144} />
-				<p className="mt-1 truncate font-medium">{album.title}</p>
+				<AlbumImage album={album} />
+				<p className="truncate pt-1 font-medium">{album.title}</p>
 				{field === "date" && (
-					<p className="py-1 text-sm text-muted-foreground">
+					<p className="text-sm text-muted-foreground">
 						{album.release_date}
 					</p>
 				)}
@@ -73,25 +81,30 @@ const AlbumList = ({
 			<ScrollArea orientation="horizontal" className="-mx-4 sm:-mx-8">
 				<div className="flex gap-4 px-4 sm:px-8">
 					{albums.map((album, index) => (
-						<AlbumItem
-							key={index}
-							albumId={
-								typeof album === "string"
-									? album
-									: String(album.id)
-							}
-							initial={
-								typeof album === "string" ? undefined : album
-							}
-							field={field}
-						/>
+						<div className="mb-3">
+							<AlbumItem
+								key={index}
+								albumId={
+									typeof album === "string"
+										? album
+										: String(album.id)
+								}
+								initial={
+									typeof album === "string"
+										? undefined
+										: album
+								}
+								size={144}
+								field={field}
+							/>
+						</div>
 					))}
 				</div>
 			</ScrollArea>
 		);
 	} else {
 		return (
-			<div className="flex flex-wrap justify-around gap-4 sm:gap-6">
+			<div className="grid grid-cols-[repeat(auto-fill,minmax(144px,1fr))] gap-3">
 				{albums.map((album, index) => (
 					<AlbumItem
 						key={index}
