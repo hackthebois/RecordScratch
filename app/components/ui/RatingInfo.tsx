@@ -39,7 +39,7 @@ export const RatingInfo = ({
 					<Star
 						color="#ffb703"
 						fill={rating?.average ? "#ffb703" : "none"}
-						size={size === "lg" ? 30 : 18}
+						size={size === "lg" ? 26 : 18}
 					/>
 					<div>
 						{rating?.average && (

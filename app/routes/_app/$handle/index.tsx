@@ -4,7 +4,7 @@ import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
-import { PendingComponent } from "@/components/router/PendingComponent";
+import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,

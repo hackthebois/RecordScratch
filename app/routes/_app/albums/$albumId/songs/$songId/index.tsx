@@ -3,7 +3,7 @@ import Metadata from "@/components/Metadata";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
-import { PendingComponent } from "@/components/router/PendingComponent";
+import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -30,6 +30,7 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 
 function Song() {
 	const { albumId, songId } = Route.useParams();
+	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
@@ -39,8 +40,6 @@ function Song() {
 	const song = album.tracks.data.find(
 		(track) => track.id === Number(songId)
 	)!;
-
-	const [profile] = api.profiles.me.useSuspenseQuery();
 
 	const resource: Resource = {
 		parentId: String(album.id),
