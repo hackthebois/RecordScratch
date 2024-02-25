@@ -1,9 +1,10 @@
 import { eq } from "drizzle-orm";
 import { users } from "../db/schema";
-import { protectedProcedure, router } from "../trpc";
+import { publicProcedure, router } from "../trpc";
 
 export const usersRouter = router({
-	me: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
+	me: publicProcedure.query(async ({ ctx: { db, userId } }) => {
+		if (!userId) return null;
 		return await db.query.users.findFirst({
 			where: eq(users.id, userId),
 		});
