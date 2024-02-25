@@ -2,13 +2,14 @@ import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { api } from "@/trpc/react";
+import { Resource } from "@/types/rating";
 import { Track } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/Skeleton";
 
-const SongRatings = ({ songs, songId }: { songs: Track[]; songId: string }) => {
+const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 	const [profile] = api.profiles.me.useSuspenseQuery();
 	const [ratings] = api.ratings.getList.useSuspenseQuery({
 		resourceIds: songs.map((song) => String(song.id)),
@@ -19,32 +20,33 @@ const SongRatings = ({ songs, songId }: { songs: Track[]; songId: string }) => {
 		resourceIds: songs.map((song) => String(song.id)),
 	});
 
+	const resource: Resource = {
+		parentId: String(song.album.id),
+		resourceId: String(song.id),
+		category: "SONG",
+	};
+
 	return (
 		<div className="flex items-center gap-3">
 			<RatingInfo
 				initialRating={
-					ratings?.find((rating) => rating.resourceId === songId) ??
-					null
+					ratings?.find(
+						(rating) => rating.resourceId === resource.resourceId
+					) ?? null
 				}
-				resource={{
-					resourceId: songId,
-					category: "SONG",
-				}}
+				resource={resource}
 				size="sm"
 			/>
 			{profile ? (
 				<RatingDialog
 					initialUserRating={
 						userRatings?.find(
-							(rating) => rating.resourceId === songId
+							(rating) =>
+								rating.resourceId === resource.resourceId
 						) ?? null
 					}
-					resource={{
-						parentId: "albumId",
-						resourceId: "songId",
-						category: "SONG",
-					}}
-					name="songTitle"
+					resource={resource}
+					name={song.title}
 				/>
 			) : (
 				<SignInRateButton />
@@ -83,10 +85,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 							</div>
 						</Link>
 						<Suspense fallback={<Skeleton className="h-12 w-24" />}>
-							<SongRatings
-								songs={songs}
-								songId={String(song.id)}
-							/>
+							<SongRatings songs={songs} song={song} />
 						</Suspense>
 					</div>
 				);

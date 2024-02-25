@@ -35,7 +35,7 @@ export const ratingsRouter = router({
 				})
 				.from(ratings)
 				.where(where);
-			return { ...rating[0], resourceId };
+			return rating[0].average ? rating[0] : null;
 		}),
 	getList: publicProcedure
 		.input(

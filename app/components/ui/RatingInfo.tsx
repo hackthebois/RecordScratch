@@ -17,8 +17,8 @@ export const RatingInfo = ({
 	size?: "lg" | "sm";
 }) => {
 	const { data: rating, isLoading } = api.ratings.get.useQuery(resource, {
-		initialData: initialRating ? initialRating : undefined,
-		enabled: initialRating === undefined,
+		initialData: initialRating,
+		staleTime: Infinity,
 	});
 
 	if (isLoading) {
