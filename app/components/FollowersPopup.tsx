@@ -26,20 +26,6 @@ const FollowersPopup = ({
 	});
 	const [open, setOpen] = useState(false);
 
-	// gets the profiles in each follower
-	const profileList = profiles?.map(({ profile }, index) => {
-		return (
-			<div key={index} className="py-1 pr-4">
-				<ProfileItem
-					profile={profile}
-					onClick={() => {
-						setOpen(false);
-					}}
-				/>
-			</div>
-		);
-	});
-
 	return (
 		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger asChild>
@@ -54,7 +40,16 @@ const FollowersPopup = ({
 					</DialogTitle>
 				</DialogHeader>
 				<ScrollArea className="flex max-h-[20rem] flex-col gap-4 overflow-visible px-2 md:max-h-[24rem]  lg:max-h-[28rem]">
-					{profileList}
+					{profiles?.map(({ profile }, index) => (
+						<div key={index} className="py-1 pr-4">
+							<ProfileItem
+								profile={profile}
+								onClick={() => {
+									setOpen(false);
+								}}
+							/>
+						</div>
+					))}
 				</ScrollArea>
 			</DialogContent>
 		</Dialog>

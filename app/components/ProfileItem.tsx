@@ -17,7 +17,7 @@ export const ProfileItem = ({
 				handle: String(profile.handle),
 			}}
 			onClick={onClick}
-			className="flex flex-row justify-between gap-4 rounded"
+			className="flex flex-row items-center justify-between gap-4 rounded"
 		>
 			<div className="flex flex-row items-center">
 				<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
