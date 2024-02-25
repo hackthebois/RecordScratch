@@ -183,7 +183,12 @@ export const profilesRouter = router({
 		.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
 			await db
 				.update(profile)
-				.set(newProfile)
+				.set({
+					...newProfile,
+					imageUrl: newProfile.imageUrl
+						? `${newProfile.imageUrl}?updatedAt=${new Date().getTime()}`
+						: null,
+				})
 				.where(eq(profile.userId, userId));
 		}),
 	getSignedURL: protectedProcedure
