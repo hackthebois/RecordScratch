@@ -1,3 +1,4 @@
+import { Head } from "@/components/Head";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import {
@@ -97,6 +98,10 @@ const RoadmapSection = ({
 function Roadmap() {
 	return (
 		<div className="-m-4 flex h-[calc(100svh-56px)] flex-1 flex-col overflow-hidden sm:-m-6">
+			<Head
+				title="Roadmap"
+				description="View the released, in progress and planned features"
+			/>
 			<h1 className="p-4 sm:p-6">Roadmap</h1>
 			<div className="mb-4 flex h-full min-h-0 gap-4 overflow-x-auto px-4 pb-2">
 				<RoadmapSection name="Planned" items={planned} />

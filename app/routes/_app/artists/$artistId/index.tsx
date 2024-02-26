@@ -1,3 +1,4 @@
+import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
@@ -102,6 +103,7 @@ function Artist() {
 
 	return (
 		<div className="flex flex-col gap-6">
+			<Head title={artist.name} />
 			<Metadata
 				title={artist.name}
 				cover={artist.picture_big ?? ""}

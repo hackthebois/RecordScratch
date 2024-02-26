@@ -1,3 +1,4 @@
+import { Head } from "@/components/Head";
 import {
 	FollowingFeedReviews,
 	RecentFeedReviews,
@@ -155,6 +156,10 @@ function Index() {
 
 	return (
 		<div className="flex flex-col gap-8">
+			<Head
+				title="Home"
+				description="View album of the day, trending albums, top rated albums and recent reviews."
+			/>
 			<AlbumOfTheDay />
 			{trending && (
 				<>

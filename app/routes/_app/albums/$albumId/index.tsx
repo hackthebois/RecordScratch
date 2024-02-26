@@ -1,4 +1,5 @@
 import CommunityReviews from "@/components/CommunityReviews";
+import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
@@ -59,6 +60,7 @@ function Album() {
 
 	return (
 		<div className="flex flex-col gap-6">
+			<Head title={album.title} description={album.artist?.name} />
 			<Metadata
 				title={album.title}
 				cover={album.cover_big ?? ""}

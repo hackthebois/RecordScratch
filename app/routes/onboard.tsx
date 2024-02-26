@@ -1,3 +1,4 @@
+import { Head } from "@/components/Head";
 import { UserAvatar } from "@/components/UserAvatar";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -194,6 +195,7 @@ function Onboard() {
 
 	return (
 		<main className="mx-auto flex h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
+			<Head title="Onboard" />
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>
