@@ -9,7 +9,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/Popover";
-import { ScrollArea } from "@/components/ui/ScrollArea";
 import { env } from "@/env";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Disc3, Menu } from "lucide-react";
@@ -100,11 +99,9 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 					</div>
 				</nav>
 			</header>
-			<ScrollArea className="h-[calc(100svh-56px)] ">
-				<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">
-					{children}
-				</main>
-			</ScrollArea>
+			<main className="mx-auto w-full max-w-screen-lg p-4 sm:p-6">
+				{children}
+			</main>
 		</>
 	);
 }
