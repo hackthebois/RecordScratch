@@ -1,3 +1,4 @@
+import { Head } from "@/components/Head";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { createLazyFileRoute } from "@tanstack/react-router";
@@ -11,6 +12,7 @@ export const Route = createLazyFileRoute("/_app/terms")({
 function Terms() {
 	return (
 		<div className="flex flex-col gap-6">
+			<Head title="Terms and conditions" />
 			<h1>Terms and conditions of use</h1>
 			<p>
 				By accessing and using recordscratch.app and any RecordScratch

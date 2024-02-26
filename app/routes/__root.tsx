@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { PostHogProvider, usePostHog } from "posthog-js/react";
 import React, { Suspense, useEffect } from "react";
+import { HelmetProvider } from "react-helmet-async";
 
 const TanStackRouterDevtools =
 	process.env.NODE_ENV === "production"
@@ -60,15 +61,17 @@ function Root() {
 			}}
 		>
 			<TRPCReactProvider>
-				<ThemeProvider defaultTheme="dark" storageKey="theme">
-					<ScrollRestoration />
-					<Outlet />
-					<Suspense>
-						<PostHogPageView />
-						<PostHogIdentify />
-						<TanStackRouterDevtools />
-					</Suspense>
-				</ThemeProvider>
+				<HelmetProvider>
+					<ThemeProvider defaultTheme="dark" storageKey="theme">
+						<ScrollRestoration />
+						<Outlet />
+						<Suspense>
+							<PostHogPageView />
+							<PostHogIdentify />
+							<TanStackRouterDevtools />
+						</Suspense>
+					</ThemeProvider>
+				</HelmetProvider>
 			</TRPCReactProvider>
 		</PostHogProvider>
 	);
