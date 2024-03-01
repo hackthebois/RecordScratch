@@ -1,4 +1,4 @@
-import { miscRouter } from "./routers/misc";
+import { listsRouter } from "./routers/lists";
 import { profilesRouter } from "./routers/profiles";
 import { ratingsRouter } from "./routers/ratings";
 import { usersRouter } from "./routers/users";
@@ -13,7 +13,7 @@ const appRouter = router({
 	ratings: ratingsRouter,
 	profiles: profilesRouter,
 	users: usersRouter,
-	misc: miscRouter,
+	lists: listsRouter,
 });
 
 // export type definition of API

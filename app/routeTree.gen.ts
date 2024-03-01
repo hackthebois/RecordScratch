@@ -16,7 +16,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as OnboardImport } from './routes/onboard'
 import { Route as AppImport } from './routes/_app'
 import { Route as AppIndexImport } from './routes/_app/index'
+import { Route as AppTestIndexImport } from './routes/_app/test/index'
 import { Route as AppHandleIndexImport } from './routes/_app/$handle/index'
+import { Route as AppListsListIdIndexImport } from './routes/_app/lists/$listId/index'
 import { Route as AppArtistsArtistIdIndexImport } from './routes/_app/artists/$artistId/index'
 import { Route as AppAlbumsAlbumIdIndexImport } from './routes/_app/albums/$albumId/index'
 import { Route as AppAlbumsAlbumIdSongsSongIdIndexImport } from './routes/_app/albums/$albumId/songs/$songId/index'
@@ -61,8 +63,18 @@ const AppPrivacyPolicyLazyRoute = AppPrivacyPolicyLazyImport.update({
   import('./routes/_app/privacy-policy.lazy').then((d) => d.Route),
 )
 
+const AppTestIndexRoute = AppTestIndexImport.update({
+  path: '/test/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppHandleIndexRoute = AppHandleIndexImport.update({
   path: '/$handle/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppListsListIdIndexRoute = AppListsListIdIndexImport.update({
+  path: '/lists/$listId/',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -114,12 +126,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHandleIndexImport
       parentRoute: typeof AppImport
     }
+    '/_app/test/': {
+      preLoaderRoute: typeof AppTestIndexImport
+      parentRoute: typeof AppImport
+    }
     '/_app/albums/$albumId/': {
       preLoaderRoute: typeof AppAlbumsAlbumIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/artists/$artistId/': {
       preLoaderRoute: typeof AppArtistsArtistIdIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/lists/$listId/': {
+      preLoaderRoute: typeof AppListsListIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/albums/$albumId/songs/$songId/': {
@@ -138,8 +158,10 @@ export const routeTree = rootRoute.addChildren([
     AppTermsLazyRoute,
     AppIndexRoute,
     AppHandleIndexRoute,
+    AppTestIndexRoute,
     AppAlbumsAlbumIdIndexRoute,
     AppArtistsArtistIdIndexRoute,
+    AppListsListIdIndexRoute,
     AppAlbumsAlbumIdSongsSongIdIndexRoute,
   ]),
   OnboardRoute,
