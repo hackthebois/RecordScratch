@@ -4,6 +4,7 @@ import {
 	mysqlEnum,
 	mysqlTable,
 	primaryKey,
+	smallint,
 	text,
 	timestamp,
 	tinyint,
@@ -122,3 +123,25 @@ export const userFollowRelation = relations(followers, ({ one }) => ({
 		relationName: "following",
 	}),
 }));
+
+export const lists = mysqlTable("lists", {
+	id: varchar("id", { length: 256 }).primaryKey(),
+	userId: varchar("user_id", { length: 256 }).notNull(),
+	name: varchar("name", { length: 50 }).notNull(),
+	description: text("content"),
+	category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+});
+
+export const list_resources = mysqlTable(
+	"list_resources",
+	{
+		listId: varchar("list_id", { length: 256 }).notNull(),
+		resourceId: varchar("resource_id", { length: 256 }).notNull(),
+		position: smallint("position").notNull(),
+	},
+	(table) => ({
+		pk_ratings: primaryKey({
+			columns: [table.listId, table.resourceId],
+		}),
+	})
+);
