@@ -14,11 +14,12 @@ export const listsRouter = router({
 	getList: publicProcedure
 		.input(selectListSchema)
 		.query(async ({ ctx: { db }, input: { id } }) => {
-			return await db
-				.select()
-				.from(lists)
-				.leftJoin(profile, eq(profile.userId, lists.userId))
-				.where(eq(lists.id, id));
+			return (
+				(await db.query.lists.findFirst({
+					where: eq(lists.id, id),
+					with: { profile: true },
+				})) ?? null
+			);
 		}),
 
 	getUserLists: protectedProcedure
