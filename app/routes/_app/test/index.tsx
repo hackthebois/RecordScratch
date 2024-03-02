@@ -11,8 +11,7 @@ export const Route = createFileRoute("/_app/test/")({
 function Index() {
 	const { data: listData, refetch: refetchList } =
 		api.lists.getUserLists.useQuery();
-	const { mutate: createListMutate } =
-		api.lists.resources.createListResource.useMutation();
+	const { mutate: createListMutate } = api.lists.createList.useMutation();
 	const { mutate: deleteListMutate } = api.lists.deleteList.useMutation();
 
 	useEffect(() => {
@@ -27,8 +26,10 @@ function Index() {
 				className="m-2"
 				onClick={() =>
 					createListMutate({
-						listId: "fpvhrk0wnx4qbg5/",
-						resourceId: "55",
+						name: "Test List",
+						category: "ALBUM",
+						description:
+							"This is a test list only used for helping with the development process and integrating in new features",
 					})
 				}
 			>
