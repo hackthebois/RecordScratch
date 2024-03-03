@@ -107,6 +107,18 @@ const DeezerSchema = z.object({
 			}),
 		}),
 	}),
+	"/album/{id}/tracks": z.object({
+		input: z.object({
+			id: z.string(),
+			limit: z.number().optional(),
+		}),
+		output: z.object({
+			data: TrackSchema.omit({
+				album: true,
+			}).array(),
+			total: z.number().optional(),
+		}),
+	}),
 	"/albums": z.object({
 		input: z.object({
 			ids: z.string().array(),

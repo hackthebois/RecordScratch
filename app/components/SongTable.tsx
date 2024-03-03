@@ -5,6 +5,7 @@ import { api } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { Track } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
+import { keepPreviousData } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/Skeleton";
@@ -36,10 +37,19 @@ const SongRatingDialog = ({ songs, song }: { songs: Track[]; song: Track }) => {
 
 const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 	const [profile] = api.profiles.me.useSuspenseQuery();
-	const [ratings] = api.ratings.getList.useSuspenseQuery({
-		resourceIds: songs.map((song) => String(song.id)),
-		category: "SONG",
-	});
+	const { data: ratings, isLoading } = api.ratings.getList.useQuery(
+		{
+			resourceIds: songs.map((song) => String(song.id)),
+			category: "SONG",
+		},
+		{
+			placeholderData: keepPreviousData,
+		}
+	);
+
+	if (isLoading) {
+		return <Skeleton className="h-12 w-24" />;
+	}
 
 	const resource: Resource = {
 		parentId: String(song.album.id),

@@ -12,7 +12,7 @@ import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -51,6 +51,16 @@ function Album() {
 			input: { id: albumId },
 		})
 	);
+
+	const { data: songs } = useQuery({
+		...getQueryOptions({
+			route: "/album/{id}/tracks",
+			input: { id: albumId, limit: 1000 },
+		}),
+		initialData: {
+			data: album?.tracks.data,
+		},
+	});
 
 	const resource: Resource = {
 		parentId: String(album.artist?.id),
@@ -119,7 +129,12 @@ function Album() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="songs">
-					<SongTable songs={album.tracks?.data ?? []} />
+					<SongTable
+						songs={
+							songs?.data.map((song) => ({ ...song, album })) ??
+							[]
+						}
+					/>
 				</TabsContent>
 				<TabsContent value="reviews">
 					<CommunityReviews
