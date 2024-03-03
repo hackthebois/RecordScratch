@@ -31,23 +31,25 @@ type RecentStore = {
 	addRecent: (recent: Recent) => void;
 };
 
-export const useRecents = create<RecentStore>()(
-	persist(
-		(set, get) => ({
-			recents: [],
-			addRecent: (recent: Recent) => {
-				set({
-					recents: [
-						recent,
-						...get()
-							.recents.filter(({ id }) => id !== recent.id)
-							.slice(0, 5),
-					],
-				});
-			},
-		}),
-		{
-			name: "recents",
-		}
-	)
-);
+export const useRecents = (type: "SEARCH" | "LISTADD") => {
+	return create<RecentStore>()(
+		persist(
+			(set, get) => ({
+				recents: [],
+				addRecent: (recent: Recent) => {
+					set({
+						recents: [
+							recent,
+							...get()
+								.recents.filter(({ id }) => id !== recent.id)
+								.slice(0, 5),
+						],
+					});
+				},
+			}),
+			{
+				name: type,
+			}
+		)
+	);
+};

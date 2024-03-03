@@ -12,6 +12,12 @@ import Metadata from "@/components/Metadata";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { z } from "zod";
+import AlbumList from "@/components/album/AlbumList";
+import { ResourceItem } from "@/components/ResourceItem";
+import { Button } from "@/components/ui/Button";
+import SearchBar from "@/components/SearchBar";
+import ListItemAdd from "@/components/lists/ListItemAdd";
+import { ArtistItem } from "@/components/artist/ArtistItem";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -38,6 +44,9 @@ function List() {
 
 	const { data: listData, isLoading } = api.lists.getList.useQuery({
 		id: listId,
+	});
+	const { data: listItems } = api.lists.resources.getListResources.useQuery({
+		listId: listId,
 	});
 
 	if (isLoading) return <PendingComponent />;
@@ -67,22 +76,57 @@ function List() {
 				<h5>{listData.description}</h5>
 			</Metadata>
 			<Tabs value={tab}>
-				<TabsList>
-					<TabsTrigger
-						value="list"
-						onClick={() =>
-							navigate({
-								search: {
-									tab: undefined,
-								},
-							})
-						}
-					>
-						List
-					</TabsTrigger>
-				</TabsList>
+				<div className="flex flex-row">
+					<TabsList>
+						<TabsTrigger
+							value="list"
+							onClick={() =>
+								navigate({
+									search: {
+										tab: undefined,
+									},
+								})
+							}
+						>
+							List
+						</TabsTrigger>
+					</TabsList>
+					<div className="pl-3">
+						<ListItemAdd category={listData.category} />
+					</div>
+				</div>
 				<TabsContent value="list">
-					{/* <SongTable songs={album.tracks?.data ?? []} /> */}
+					{listData.category === "ARTIST" &&
+						listItems?.map((artist, index) => (
+							<div className=" my-3 flex flex-row items-center">
+								<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
+									{index + 1}
+								</p>
+								<ArtistItem
+									artistId={artist.resourceId}
+									key={index}
+								/>
+							</div>
+						))}
+					{(listData.category === "ALBUM" ||
+						listData.category === "SONG") &&
+						listItems?.map((item, index) => {
+							return (
+								<div className=" my-3 flex flex-row items-center">
+									<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
+										{index + 1}
+									</p>
+									<ResourceItem
+										resource={{
+											parentId: "",
+											resourceId: item.resourceId,
+											category: listData.category,
+										}}
+										key={index}
+									/>
+								</div>
+							);
+						})}
 				</TabsContent>
 			</Tabs>
 		</div>
