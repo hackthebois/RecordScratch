@@ -1,5 +1,6 @@
 import { EditProfile } from "@/components/EditProfile";
 import FollowerMenu from "@/components/FollowersMenu";
+import { Head } from "@/components/Head";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -126,6 +127,7 @@ function Handle() {
 
 	return (
 		<div className="flex flex-col gap-6">
+			<Head title={profile.name} description={profile.bio ?? undefined} />
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar
 					{...profile}
