@@ -11,13 +11,20 @@ export const Route = createFileRoute("/_app/test/")({
 function Index() {
 	const { data: listData, refetch: refetchList } =
 		api.lists.getUserLists.useQuery();
-	const { mutate: createListMutate } = api.lists.createList.useMutation();
+	const { mutate: createListMutate } =
+		api.lists.resources.createListResource.useMutation();
 	const { mutate: deleteListMutate } = api.lists.deleteList.useMutation();
 
 	useEffect(() => {
 		// Refetch the list when the component mounts
 		refetchList();
 	}, [refetchList]);
+	// createListMutate({
+	// 	name: "Test List",
+	// 	category: "ALBUM",
+	// 	description:
+	// 		"This is a test list only used for helping with the development process and integrating in new features",
+	// })
 
 	return (
 		<div className="flex flex-row">
@@ -26,10 +33,8 @@ function Index() {
 				className="m-2"
 				onClick={() =>
 					createListMutate({
-						name: "Test List",
-						category: "ALBUM",
-						description:
-							"This is a test list only used for helping with the development process and integrating in new features",
+						resourceId: "8716945",
+						listId: "3dm2yrweto506pl",
 					})
 				}
 			>
