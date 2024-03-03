@@ -64,7 +64,9 @@ function Root() {
 				<HelmetProvider>
 					<ThemeProvider defaultTheme="dark" storageKey="theme">
 						<ScrollRestoration />
-						<Outlet />
+						<div className="flex w-screen flex-col items-center justify-center">
+							<Outlet />
+						</div>
 						<Suspense>
 							<PostHogPageView />
 							<PostHogIdentify />
