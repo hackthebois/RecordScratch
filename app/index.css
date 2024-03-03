@@ -71,11 +71,11 @@
 		@apply border-border;
 	}
 	body {
-		@apply m-0 overflow-x-hidden bg-background text-foreground;
+		@apply flex flex-col bg-background text-foreground;
 	}
-	html {
+	/* html {
 		scrollbar-gutter: stable;
-	}
+	} */
 	h1 {
 		@apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
 	}
