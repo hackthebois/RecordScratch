@@ -11,6 +11,9 @@ export default createApp({
 			"/music/**": {
 				proxy: "https://api.deezer.com/**",
 			},
+			"/ingest/**": {
+				proxy: "https://app.posthog.com/**",
+			},
 		},
 		experimental: {
 			asyncContext: true,
