@@ -39,17 +39,18 @@ const FollowersPopup = ({
 						{type[0].toUpperCase() + type.slice(1)}
 					</DialogTitle>
 				</DialogHeader>
-				<ScrollArea className="flex max-h-[20rem] flex-col gap-4 overflow-visible px-2 md:max-h-[24rem]  lg:max-h-[28rem]">
-					{profiles?.map(({ profile }, index) => (
-						<div key={index} className="py-1 pr-4">
+				<ScrollArea className="flex flex-col gap-3">
+					<div className="flex flex-col gap-3 pb-4">
+						{profiles?.map(({ profile }, index) => (
 							<ProfileItem
+								key={index}
 								profile={profile}
 								onClick={() => {
 									setOpen(false);
 								}}
 							/>
-						</div>
-					))}
+						))}
+					</div>
 				</ScrollArea>
 			</DialogContent>
 		</Dialog>
