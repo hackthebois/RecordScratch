@@ -15,10 +15,9 @@ import { z } from "zod";
 import { ResourceItem } from "@/components/ResourceItem";
 import AddToList from "@/components/lists/AddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
-import { ModifyListItemButton } from "@/components/lists/ModifyListItemButton";
+import { DeleteListItemButton } from "@/components/lists/ModifyListItemButton";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
-import { PlusSquare } from "lucide-react";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -127,10 +126,9 @@ function List() {
 									</p>
 									<ArtistItem artistId={artist.resourceId} />
 								</div>
-								<ModifyListItemButton
+								<DeleteListItemButton
 									resourceId={artist.resourceId}
 									listId={artist.listId}
-									type="DELETE"
 								/>
 							</div>
 						))}
@@ -154,11 +152,9 @@ function List() {
 											}}
 										/>
 									</div>
-									<ModifyListItemButton
-										parentId={item.parentId!}
+									<DeleteListItemButton
 										resourceId={item.resourceId}
 										listId={item.listId}
-										type="DELETE"
 									/>
 								</div>
 							);

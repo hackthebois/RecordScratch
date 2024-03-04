@@ -7,7 +7,7 @@ import { ResourceItem } from "../ResourceItem";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
 import { ArtistItem } from "../artist/ArtistItem";
-import { ModifyListItemButton } from "./ModifyListItemButton";
+import { AddListItemButton } from "./ModifyListItemButton";
 import { ScrollArea } from "../ui/ScrollArea";
 
 export const MusicSearch = ({
@@ -81,11 +81,10 @@ export const MusicSearch = ({
 											key={index}
 										/>
 
-										<ModifyListItemButton
+										<AddListItemButton
 											parentId={String(album.artist?.id)}
 											resourceId={String(album.id)}
 											listId={listId}
-											type="ADD"
 										/>
 									</div>
 								))}
@@ -102,10 +101,9 @@ export const MusicSearch = ({
 											key={index}
 										/>
 
-										<ModifyListItemButton
+										<AddListItemButton
 											resourceId={String(artist.id)}
 											listId={listId}
-											type="ADD"
 										/>
 									</div>
 								))}
@@ -125,11 +123,10 @@ export const MusicSearch = ({
 											key={index}
 										/>
 
-										<ModifyListItemButton
+										<AddListItemButton
 											parentId={String(song.album.id)}
 											resourceId={String(song.id)}
 											listId={listId}
-											type="ADD"
 										/>
 									</div>
 								))}
