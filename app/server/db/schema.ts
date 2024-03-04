@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
 	datetime,
+	int,
 	mysqlEnum,
 	mysqlTable,
 	primaryKey,
@@ -137,7 +138,7 @@ export const list_resources = mysqlTable(
 	{
 		listId: varchar("list_id", { length: 256 }).notNull(),
 		resourceId: varchar("resource_id", { length: 256 }).notNull(),
-		position: smallint("position").notNull(),
+		position: int("position").notNull(),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({

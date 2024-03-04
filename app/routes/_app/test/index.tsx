@@ -1,4 +1,4 @@
-import { ListList } from "@/components/lists/ListList";
+// import { ListList } from "@/components/lists/ListList";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/trpc/react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -28,7 +28,7 @@ function Index() {
 
 	return (
 		<div className="flex flex-row">
-			<div className="m-2">Testing lists router</div>
+			{/* <div className="m-2">Testing lists router</div>
 			<Button
 				className="m-2"
 				onClick={() =>
@@ -69,7 +69,7 @@ function Index() {
 						);
 					})}
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 }

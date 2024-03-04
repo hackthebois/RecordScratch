@@ -12,12 +12,10 @@ import Metadata from "@/components/Metadata";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { z } from "zod";
-import AlbumList from "@/components/album/AlbumList";
 import { ResourceItem } from "@/components/ResourceItem";
-import { Button } from "@/components/ui/Button";
-import SearchBar from "@/components/SearchBar";
-import ListItemAdd from "@/components/lists/ListItemAdd";
+import AddToList from "@/components/lists/AddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
+import { ModifyListItemButton } from "@/components/lists/ModifyListItemButton";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -92,19 +90,32 @@ function List() {
 						</TabsTrigger>
 					</TabsList>
 					<div className="pl-3">
-						<ListItemAdd category={listData.category} />
+						<AddToList
+							category={listData.category}
+							listId={listData.id}
+						/>
 					</div>
 				</div>
 				<TabsContent value="list">
 					{listData.category === "ARTIST" &&
 						listItems?.map((artist, index) => (
-							<div className=" my-3 flex flex-row items-center">
-								<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
-									{index + 1}
-								</p>
-								<ArtistItem
-									artistId={artist.resourceId}
+							<div
+								className="my-3 flex flex-row items-center justify-between"
+								key={index}
+							>
+								<div
+									className=" my-3 flex flex-row items-center"
 									key={index}
+								>
+									<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
+										{index + 1}
+									</p>
+									<ArtistItem artistId={artist.resourceId} />
+								</div>
+								<ModifyListItemButton
+									resourceId={artist.resourceId}
+									listId={artist.listId}
+									type="DELETE"
 								/>
 							</div>
 						))}
@@ -112,17 +123,26 @@ function List() {
 						listData.category === "SONG") &&
 						listItems?.map((item, index) => {
 							return (
-								<div className=" my-3 flex flex-row items-center">
-									<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
-										{index + 1}
-									</p>
-									<ResourceItem
-										resource={{
-											parentId: "",
-											resourceId: item.resourceId,
-											category: listData.category,
-										}}
-										key={index}
+								<div
+									className="my-3 flex flex-row items-center justify-between"
+									key={index}
+								>
+									<div className="flex flex-row items-center">
+										<p className="w-4 pr-5 text-center text-sm text-muted-foreground">
+											{index + 1}
+										</p>
+										<ResourceItem
+											resource={{
+												parentId: "",
+												resourceId: item.resourceId,
+												category: listData.category,
+											}}
+										/>
+									</div>
+									<ModifyListItemButton
+										resourceId={item.resourceId}
+										listId={item.listId}
+										type="DELETE"
 									/>
 								</div>
 							);

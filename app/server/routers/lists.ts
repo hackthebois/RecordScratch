@@ -23,8 +23,12 @@ export const listsRouter = router({
 		}),
 
 	getUserLists: protectedProcedure
-		.input(z.void())
-		.query(async ({ ctx: { db, userId } }) => {
+		.input(
+			z.object({
+				userId: z.string(),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { userId } }) => {
 			return await db
 				.select()
 				.from(lists)
@@ -35,7 +39,6 @@ export const listsRouter = router({
 	createList: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-			console.log("MUTATING");
 			const id = generateId(15);
 			await db.insert(lists).values({ id, userId, ...inputs });
 		}),
@@ -61,7 +64,8 @@ export const listsRouter = router({
 				return await db
 					.select()
 					.from(list_resources)
-					.where(eq(list_resources.listId, listId));
+					.where(eq(list_resources.listId, listId))
+					.orderBy(list_resources.position);
 			}),
 
 		createListResource: protectedProcedure

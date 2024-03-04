@@ -4,6 +4,7 @@ import { Head } from "@/components/Head";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
+import ListList from "@/components/lists/ListList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["settings"]).optional(),
+				tab: z.enum(["settings", "lists"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
 			})
 			.parse(search);
@@ -123,6 +124,10 @@ function Handle() {
 
 	if (!profile) return null;
 
+	const { data: lists } = api.lists.getUserLists.useQuery({
+		userId: profile.userId,
+	});
+
 	let max: number = Math.max(...distribution);
 	max = max === 0 ? 1 : max;
 
@@ -181,6 +186,18 @@ function Handle() {
 							Settings
 						</TabsTrigger>
 					)}
+					<TabsTrigger
+						value="lists"
+						onClick={() =>
+							navigate({
+								search: {
+									tab: "lists",
+								},
+							})
+						}
+					>
+						Lists
+					</TabsTrigger>
 				</TabsList>
 				{/* <TabsContent value="profile" className="flex flex-col gap-4">
 					<h3 className="mt-4">Top Albums</h3>
@@ -325,6 +342,17 @@ function Handle() {
 						</div>
 					</TabsContent>
 				)}
+				<TabsContent value="lists">
+					{lists && (
+						<div>
+							<ListList
+								lists={lists}
+								profilePage={true}
+								type="wrap"
+							/>
+						</div>
+					)}
+				</TabsContent>
 			</Tabs>
 		</div>
 	);

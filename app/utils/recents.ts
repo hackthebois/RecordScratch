@@ -31,7 +31,7 @@ type RecentStore = {
 	addRecent: (recent: Recent) => void;
 };
 
-export const useRecents = (type: "SEARCH" | "LISTADD") => {
+export const useRecents = (type: "SEARCH") => {
 	return create<RecentStore>()(
 		persist(
 			(set, get) => ({
@@ -51,5 +51,5 @@ export const useRecents = (type: "SEARCH" | "LISTADD") => {
 				name: type,
 			}
 		)
-	);
+	)();
 };
