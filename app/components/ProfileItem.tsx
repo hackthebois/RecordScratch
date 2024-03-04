@@ -12,6 +12,7 @@ export const ProfileItem = ({
 	onClick?: () => void;
 }) => {
 	const { data: myProfile } = api.profiles.me.useQuery();
+
 	const showButton = !!myProfile && myProfile.userId !== profile.userId;
 
 	return (

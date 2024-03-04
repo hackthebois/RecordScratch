@@ -42,6 +42,7 @@ function List() {
 	const { tab = "list" } = Route.useSearch();
 	const { listId } = Route.useParams();
 
+	const { data: myProfile } = api.profiles.me.useQuery();
 	const { data: listData, isLoading } = api.lists.getList.useQuery({
 		id: listId,
 	});
@@ -53,6 +54,7 @@ function List() {
 	if (!listData) return <NotFound />;
 
 	const { profile } = listData;
+	const isUser = myProfile?.userId === profile.userId;
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -90,27 +92,31 @@ function List() {
 						>
 							List
 						</TabsTrigger>
-						<TabsTrigger
-							value="settings"
-							onClick={() =>
-								navigate({
-									search: {
-										tab: "settings",
-									},
-								})
-							}
-						>
-							Settings
-						</TabsTrigger>
+						{isUser && (
+							<TabsTrigger
+								value="settings"
+								onClick={() =>
+									navigate({
+										search: {
+											tab: "settings",
+										},
+									})
+								}
+							>
+								Settings
+							</TabsTrigger>
+						)}
 					</TabsList>
 				</div>
 				<TabsContent value="list">
-					<div className="pl-5">
-						<AddToList
-							category={listData.category}
-							listId={listData.id}
-						/>
-					</div>
+					{isUser && (
+						<div className="pl-5">
+							<AddToList
+								category={listData.category}
+								listId={listData.id}
+							/>
+						</div>
+					)}
 					{listData.category === "ARTIST" &&
 						listItems?.map((artist, index) => (
 							<div
@@ -160,28 +166,31 @@ function List() {
 							);
 						})}
 				</TabsContent>
-				<TabsContent value="settings">
-					<div className="flex flex-col gap-8 py-6">
-						<div className="flex items-center justify-between pl-4">
-							<div className="flex flex-col items-start gap-2">
-								<Label>Edit List</Label>
-								<p className="text-sm text-muted-foreground">
-									Update your list information and image
-								</p>
+				{isUser && (
+					<TabsContent value="settings">
+						<div className="flex flex-col gap-8 py-6">
+							<div className="flex items-center justify-between pl-4">
+								<div className="flex flex-col items-start gap-2">
+									<Label>Edit List</Label>
+									<p className="text-sm text-muted-foreground">
+										Update your list information and image
+									</p>
+								</div>
+								<Button>Edit</Button>
 							</div>
-							<Button>Edit</Button>
-						</div>
-						<div className="flex items-center justify-between pl-4">
-							<div className="flex flex-col items-start gap-2">
-								<Label>Delete List</Label>
-								<p className="text-sm text-muted-foreground">
-									Delete your list and all items associated
-								</p>
+							<div className="flex items-center justify-between pl-4">
+								<div className="flex flex-col items-start gap-2">
+									<Label>Delete List</Label>
+									<p className="text-sm text-muted-foreground">
+										Delete your list and all items
+										associated
+									</p>
+								</div>
+								<Button className=" bg-red-200">Delete</Button>
 							</div>
-							<Button className=" bg-red-200">Delete</Button>
 						</div>
-					</div>
-				</TabsContent>
+					</TabsContent>
+				)}
 			</Tabs>
 		</div>
 	);
