@@ -16,6 +16,8 @@ import { ResourceItem } from "@/components/ResourceItem";
 import AddToList from "@/components/lists/AddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
 import { ModifyListItemButton } from "@/components/lists/ModifyListItemButton";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -24,7 +26,7 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 	validateSearch: (search) => {
 		return z
 			.object({
-				tab: z.enum(["list"]).optional(),
+				tab: z.enum(["settings"]).optional(),
 			})
 			.parse(search);
 	},
@@ -75,7 +77,7 @@ function List() {
 			</Metadata>
 			<Tabs value={tab}>
 				<div className="flex flex-row">
-					<TabsList>
+					<TabsList className=" space-x-2">
 						<TabsTrigger
 							value="list"
 							onClick={() =>
@@ -88,15 +90,27 @@ function List() {
 						>
 							List
 						</TabsTrigger>
+						<TabsTrigger
+							value="settings"
+							onClick={() =>
+								navigate({
+									search: {
+										tab: "settings",
+									},
+								})
+							}
+						>
+							Settings
+						</TabsTrigger>
 					</TabsList>
-					<div className="pl-3">
+				</div>
+				<TabsContent value="list">
+					<div className="pl-5">
 						<AddToList
 							category={listData.category}
 							listId={listData.id}
 						/>
 					</div>
-				</div>
-				<TabsContent value="list">
 					{listData.category === "ARTIST" &&
 						listItems?.map((artist, index) => (
 							<div
@@ -147,6 +161,28 @@ function List() {
 								</div>
 							);
 						})}
+				</TabsContent>
+				<TabsContent value="settings">
+					<div className="flex flex-col gap-8 py-6">
+						<div className="flex items-center justify-between pl-4">
+							<div className="flex flex-col items-start gap-2">
+								<Label>Edit List</Label>
+								<p className="text-sm text-muted-foreground">
+									Update your list information and image
+								</p>
+							</div>
+							<Button>Edit</Button>
+						</div>
+						<div className="flex items-center justify-between pl-4">
+							<div className="flex flex-col items-start gap-2">
+								<Label>Delete List</Label>
+								<p className="text-sm text-muted-foreground">
+									Delete your list and all items associated
+								</p>
+							</div>
+							<Button className=" bg-red-200">Delete</Button>
+						</div>
+					</div>
 				</TabsContent>
 			</Tabs>
 		</div>
