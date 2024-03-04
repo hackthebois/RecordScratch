@@ -92,9 +92,8 @@ const AlbumList = ({
 			>
 				<div className="flex gap-4">
 					{albums.map((album, index) => (
-						<div className="mb-3">
+						<div className="mb-3" key={index}>
 							<AlbumItem
-								key={index}
 								albumId={
 									typeof album === "string"
 										? album

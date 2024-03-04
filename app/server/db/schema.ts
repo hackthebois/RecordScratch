@@ -131,14 +131,19 @@ export const lists = mysqlTable("lists", {
 	name: varchar("name", { length: 50 }).notNull(),
 	description: text("description"),
 	category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 });
 
 export const list_resources = mysqlTable(
 	"list_resources",
 	{
+		parentId: varchar("parent_id", { length: 256 }),
 		listId: varchar("list_id", { length: 256 }).notNull(),
 		resourceId: varchar("resource_id", { length: 256 }).notNull(),
 		position: int("position").notNull(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({
