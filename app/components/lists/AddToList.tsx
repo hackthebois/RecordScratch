@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 import { useDebounce } from "@/utils/hooks";
 import { Button } from "../ui/Button";
-import { Search } from "lucide-react";
+import { PlusSquare, Search } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
@@ -82,6 +82,7 @@ export const MusicSearch = ({
 										/>
 
 										<ModifyListItemButton
+											parentId={String(album.artist?.id)}
 											resourceId={String(album.id)}
 											listId={listId}
 											type="ADD"
@@ -94,11 +95,19 @@ export const MusicSearch = ({
 							<>
 								<h4 className="mt-3">Artists</h4>
 								{data.artists.map((artist, index) => (
-									<ArtistItem
-										artistId={String(artist.id)}
-										initialArtist={artist}
-										key={index}
-									/>
+									<div className="flex flex-row justify-between">
+										<ArtistItem
+											artistId={String(artist.id)}
+											initialArtist={artist}
+											key={index}
+										/>
+
+										<ModifyListItemButton
+											resourceId={String(artist.id)}
+											listId={listId}
+											type="ADD"
+										/>
+									</div>
 								))}
 							</>
 						)}
@@ -106,14 +115,23 @@ export const MusicSearch = ({
 							<>
 								<h4 className="mt-3">Songs</h4>
 								{data.songs.map((song, index) => (
-									<ResourceItem
-										resource={{
-											parentId: String(song.album.id),
-											resourceId: String(song.id),
-											category: "SONG",
-										}}
-										key={index}
-									/>
+									<div className="flex flex-row justify-between">
+										<ResourceItem
+											resource={{
+												parentId: String(song.album.id),
+												resourceId: String(song.id),
+												category: "SONG",
+											}}
+											key={index}
+										/>
+
+										<ModifyListItemButton
+											parentId={String(song.album.id)}
+											resourceId={String(song.id)}
+											listId={listId}
+											type="ADD"
+										/>
+									</div>
 								))}
 							</>
 						)}
@@ -147,7 +165,8 @@ export const AddToList = ({
 			open={open}
 		>
 			<DialogTrigger asChild>
-				<Button variant="outline" className="gap-3">
+				<Button className="items-center gap-1 rounded pl-1 pr-2">
+					<PlusSquare className="h-6 w-6" />
 					Add to List
 				</Button>
 			</DialogTrigger>

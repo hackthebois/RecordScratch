@@ -4,6 +4,7 @@ import {
 	insertListResourcesSchema,
 	selectListSchema,
 	selectListResourcesSchema,
+	deleteListResourcesSchema,
 } from "@/types/list";
 import { list_resources, lists, profile } from "../db/schema";
 import { generateId } from "lucia";
@@ -93,7 +94,7 @@ export const listsRouter = router({
 			}),
 
 		deleteListResource: protectedProcedure
-			.input(insertListResourcesSchema)
+			.input(deleteListResourcesSchema)
 			.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
 				const listOwner = !!(await db.query.lists.findFirst({
 					where: and(

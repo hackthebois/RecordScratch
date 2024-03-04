@@ -18,6 +18,7 @@ import { ArtistItem } from "@/components/artist/ArtistItem";
 import { ModifyListItemButton } from "@/components/lists/ModifyListItemButton";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
+import { PlusSquare } from "lucide-react";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -118,7 +119,7 @@ function List() {
 								key={index}
 							>
 								<div
-									className=" my-3 flex flex-row items-center"
+									className="  flex flex-row items-center"
 									key={index}
 								>
 									<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
@@ -147,13 +148,14 @@ function List() {
 										</p>
 										<ResourceItem
 											resource={{
-												parentId: "",
+												parentId: item.parentId!,
 												resourceId: item.resourceId,
 												category: listData.category,
 											}}
 										/>
 									</div>
 									<ModifyListItemButton
+										parentId={item.parentId!}
 										resourceId={item.resourceId}
 										listId={item.listId}
 										type="DELETE"

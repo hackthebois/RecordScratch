@@ -18,15 +18,23 @@ export const selectListSchema = listSchema.pick({
 	id: true,
 });
 
-export const listResourcesSchema = createInsertSchema(list_resources);
+export const listResourcesSchema = createInsertSchema(list_resources, {
+	parentId: z.string().optional(),
+});
 
 export const insertListResourcesSchema = listResourcesSchema.pick({
+	parentId: true,
 	listId: true,
 	resourceId: true,
 });
 
 export const selectListResourcesSchema = listResourcesSchema.pick({
 	listId: true,
+});
+
+export const deleteListResourcesSchema = listResourcesSchema.pick({
+	listId: true,
+	resourceId: true,
 });
 
 export type ListType = z.infer<typeof listSchema>;
