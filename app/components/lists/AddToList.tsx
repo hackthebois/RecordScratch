@@ -162,7 +162,7 @@ export const AddToList = ({
 			open={open}
 		>
 			<DialogTrigger asChild>
-				<Button className="items-center gap-1 rounded pl-1 pr-2">
+				<Button className="items-center gap-1 rounded pb-5 pl-2 pr-3 pt-5">
 					<PlusSquare className="h-6 w-6" />
 					Add to List
 				</Button>

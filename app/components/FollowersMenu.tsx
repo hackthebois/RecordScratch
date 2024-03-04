@@ -40,7 +40,7 @@ const FollowerMenu = ({ profileId }: Props) => {
 					followerCount={followingCount}
 				/>
 			</div>
-			{showButton && <FollowButton profileId={profileId} />}
+			{showButton ? <FollowButton profileId={profileId} /> : null}
 		</div>
 	);
 };

@@ -27,6 +27,12 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/Select";
+import {
+	SelectPortal,
+	SelectValue,
+	SelectViewport,
+} from "@radix-ui/react-select";
 
 export const CreateList = () => {
 	const utils = api.useUtils();
@@ -64,7 +70,7 @@ export const CreateList = () => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button className="items-center gap-1 rounded pl-1 pr-2">
+				<Button className="ml-3 items-center gap-1 rounded pl-1 pr-2">
 					<PlusSquare className="h-6 w-6" />
 					Create List
 				</Button>
@@ -102,17 +108,35 @@ export const CreateList = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Category</FormLabel>
-									<FormControl>
-										<select
+									<FormControl className="w-full rounded-md py-2 pl-2 pr-10 text-muted">
+										<Select
 											{...field}
-											className="w-full rounded-md py-2 pl-2 pr-10 text-muted"
+											onValueChange={field.onChange}
+											value={field.value}
 										>
-											<option value="ALBUM">ALBUM</option>
-											<option value="SONG">SONG</option>
-											<option value="ARTIST">
-												ARTIST
-											</option>
-										</select>
+											<SelectTrigger>
+												<SelectValue
+													placeholder={
+														"Select a Category..."
+													}
+												/>
+											</SelectTrigger>
+											<SelectPortal>
+												<SelectContent>
+													<SelectViewport>
+														<SelectItem value="ALBUM">
+															ALBUMS
+														</SelectItem>
+														<SelectItem value="SONG">
+															SONGS
+														</SelectItem>
+														<SelectItem value="ARTIST">
+															ARTISTS
+														</SelectItem>
+													</SelectViewport>
+												</SelectContent>
+											</SelectPortal>
+										</Select>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
