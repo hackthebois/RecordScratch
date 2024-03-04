@@ -12,6 +12,7 @@ export const insertListSchema = listSchema.pick({
 	description: true,
 	category: true,
 });
+export type InsertList = z.infer<typeof insertListSchema>;
 
 export const selectListSchema = listSchema.pick({
 	id: true,

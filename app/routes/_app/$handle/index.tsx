@@ -4,6 +4,7 @@ import { Head } from "@/components/Head";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
+import { CreateList } from "@/components/lists/CreateList";
 import ListList from "@/components/lists/ListList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -15,6 +16,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Label } from "@/components/ui/Label";
+import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
@@ -43,7 +45,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) throw notFound({ route: "/_app" });
+		if (!profile) return <NotFound />;
 		apiUtils.profiles.distribution.ensureData(profile.userId);
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
@@ -122,7 +124,7 @@ function Handle() {
 		profile?.userId || ""
 	);
 
-	if (!profile) return null;
+	if (!profile) return <NotFound />;
 
 	const { data: lists } = api.lists.getUserLists.useQuery({
 		userId: profile.userId,
@@ -199,23 +201,6 @@ function Handle() {
 						Lists
 					</TabsTrigger>
 				</TabsList>
-				{/* <TabsContent value="profile" className="flex flex-col gap-4">
-					<h3 className="mt-4">Top Albums</h3>
-					<AlbumList
-						albums={[
-							"60322892",
-							"1440807",
-							"542677642",
-							"44730061",
-							"6982611",
-							"107638",
-						]}
-					/>
-					<ArtistList
-						direction="vertical"
-						artists={["1", "2", "3", "4", "5", "6"]}
-					/>
-				</TabsContent> */}
 				<TabsContent value="reviews">
 					<div className="flex w-full flex-col rounded-md border p-6 pt-6 sm:max-w-lg">
 						<div className="flex h-20 w-full items-end justify-between gap-1">
@@ -343,13 +328,16 @@ function Handle() {
 					</TabsContent>
 				)}
 				<TabsContent value="lists">
+					{isUser && <CreateList />}
 					{lists && (
 						<div>
-							<ListList
-								lists={lists}
-								profilePage={true}
-								type="wrap"
-							/>
+							<div className=" pl-3 pt-3">
+								<ListList
+									lists={lists}
+									profilePage={true}
+									type="wrap"
+								/>
+							</div>
 						</div>
 					)}
 				</TabsContent>
