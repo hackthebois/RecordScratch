@@ -14,7 +14,6 @@ import { useState } from "react";
 import { ArtistItem } from "./artist/ArtistItem";
 
 export const SearchState = ({
-	type,
 	isError,
 	isLoading,
 	noResults,
@@ -24,7 +23,6 @@ export const SearchState = ({
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	hide,
 }: {
-	type: "SEARCH" | "LISTADD";
 	isLoading: boolean;
 	isError: boolean;
 	noResults: boolean;
@@ -37,7 +35,7 @@ export const SearchState = ({
 		songs?: boolean;
 	};
 }) => {
-	const { recents, addRecent } = useRecents(type)();
+	const { recents, addRecent } = useRecents("SEARCH");
 
 	if (isError) {
 		return (
@@ -153,7 +151,7 @@ const ProfileSearch = ({
 	query: string;
 	onNavigate: () => void;
 }) => {
-	const { addRecent } = useRecents("SEARCH")();
+	const { addRecent } = useRecents("SEARCH");
 
 	const { data, isLoading, isError } = api.profiles.search.useQuery(query, {
 		gcTime: 0,
@@ -163,7 +161,6 @@ const ProfileSearch = ({
 
 	return (
 		<SearchState
-			type={"SEARCH"}
 			isError={isError}
 			isLoading={isLoading}
 			onNavigate={onNavigate}
@@ -199,7 +196,7 @@ export const MusicSearch = ({
 	query: string;
 	onNavigate: () => void;
 }) => {
-	const { addRecent } = useRecents("SEARCH")();
+	const { addRecent } = useRecents("SEARCH");
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", "search-music", query],
@@ -229,7 +226,6 @@ export const MusicSearch = ({
 
 	return (
 		<SearchState
-			type={"SEARCH"}
 			isError={isError}
 			isLoading={isLoading}
 			onNavigate={onNavigate}

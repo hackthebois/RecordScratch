@@ -4,24 +4,23 @@ import { useDebounce } from "@/utils/hooks";
 import { Button } from "../ui/Button";
 import { Search } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
-import { useRecents } from "@/utils/recents";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
-import { SearchState } from "../SearchBar";
 import { ArtistItem } from "../artist/ArtistItem";
+import { ModifyListItemButton } from "./ModifyListItemButton";
+import { ScrollArea } from "../ui/ScrollArea";
 
 export const MusicSearch = ({
 	query,
-	onNavigate,
 	category,
+	listId,
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
+	listId: string;
 	onNavigate: () => void;
 }) => {
-	const { addRecent } = useRecents("LISTADD")();
-
-	const { data, isLoading, isError } = useQuery({
+	const { data } = useQuery({
 		queryKey: ["search", "search-music", query],
 		queryFn: async () => {
 			let artists = null;
@@ -61,93 +60,76 @@ export const MusicSearch = ({
 	});
 
 	return (
-		<SearchState
-			type={"LISTADD"}
-			isError={isError}
-			isLoading={isLoading}
-			onNavigate={onNavigate}
-			noResults={data?.albums === null && data?.artists === null}
-			hide={{ profiles: true }}
-		>
-			{data && (
-				<>
-					{data.albums && (
-						<>
-							<h4>Albums</h4>
-							{data.albums.map((album, index) => (
-								<ResourceItem
-									initialAlbum={album}
-									resource={{
-										parentId: String(album.artist?.id),
-										resourceId: String(album.id),
-										category: "ALBUM",
-									}}
-									onClick={() => {
-										addRecent({
-											id: String(album.id),
-											type: "ALBUM",
-											data: album,
-										});
-										onNavigate();
-									}}
-									key={index}
-								/>
-							))}
-						</>
-					)}
-					{data.artists && (
-						<>
-							<h4 className="mt-3">Artists</h4>
-							{data.artists.map((artist, index) => (
-								<ArtistItem
-									onClick={() => {
-										addRecent({
-											id: String(artist.id),
-											type: "ARTIST",
-											data: artist,
-										});
-										onNavigate();
-									}}
-									artistId={String(artist.id)}
-									initialArtist={artist}
-									key={index}
-								/>
-							))}
-						</>
-					)}
-					{data.songs && (
-						<>
-							<h4 className="mt-3">Songs</h4>
-							{data.songs.map((song, index) => (
-								<ResourceItem
-									resource={{
-										parentId: String(song.album.id),
-										resourceId: String(song.id),
-										category: "SONG",
-									}}
-									onClick={() => {
-										addRecent({
-											id: String(song.id),
-											type: "SONG",
-											data: song,
-										});
-										onNavigate();
-									}}
-									key={index}
-								/>
-							))}
-						</>
-					)}
-				</>
-			)}
-		</SearchState>
+		<ScrollArea className="flex flex-col gap-3 px-4">
+			<div className="flex flex-col gap-3 pb-4">
+				{data && (
+					<>
+						{data.albums && (
+							<>
+								<h4>Albums</h4>
+								{data.albums.map((album, index) => (
+									<div className="flex flex-row justify-between">
+										<ResourceItem
+											initialAlbum={album}
+											resource={{
+												parentId: String(
+													album.artist?.id
+												),
+												resourceId: String(album.id),
+												category: "ALBUM",
+											}}
+											key={index}
+										/>
+
+										<ModifyListItemButton
+											resourceId={String(album.id)}
+											listId={listId}
+											type="ADD"
+										/>
+									</div>
+								))}
+							</>
+						)}
+						{data.artists && (
+							<>
+								<h4 className="mt-3">Artists</h4>
+								{data.artists.map((artist, index) => (
+									<ArtistItem
+										artistId={String(artist.id)}
+										initialArtist={artist}
+										key={index}
+									/>
+								))}
+							</>
+						)}
+						{data.songs && (
+							<>
+								<h4 className="mt-3">Songs</h4>
+								{data.songs.map((song, index) => (
+									<ResourceItem
+										resource={{
+											parentId: String(song.album.id),
+											resourceId: String(song.id),
+											category: "SONG",
+										}}
+										key={index}
+									/>
+								))}
+							</>
+						)}
+					</>
+				)}
+			</div>
+		</ScrollArea>
 	);
 };
 
-export const ListItemAdd = ({
+export const AddToList = ({
 	category,
+	listId,
 }: {
 	category: "ALBUM" | "SONG" | "ARTIST";
+	listId: string;
 }) => {
 	const [open, setOpen] = useState(false);
 	const [query, setQuery] = useState("");
@@ -166,7 +148,7 @@ export const ListItemAdd = ({
 		>
 			<DialogTrigger asChild>
 				<Button variant="outline" className="gap-3">
-					Add Item
+					Add to List
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="flex h-full w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
@@ -185,6 +167,7 @@ export const ListItemAdd = ({
 				<MusicSearch
 					query={debouncedQuery}
 					category={category}
+					listId={listId}
 					onNavigate={() => {
 						setQuery("");
 						setOpen(false);
@@ -195,4 +178,4 @@ export const ListItemAdd = ({
 	);
 };
 
-export default ListItemAdd;
+export default AddToList;
