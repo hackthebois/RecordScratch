@@ -4,9 +4,11 @@ import { Button } from "../ui/Button";
 export const DeleteListButton = ({
 	listId,
 	userId,
+	onClick,
 }: {
 	listId: string;
 	userId: string;
+	onClick?: () => Promise<void>;
 }) => {
 	const utils = api.useUtils();
 
@@ -21,11 +23,14 @@ export const DeleteListButton = ({
 		<div>
 			<Button
 				className="bg-red-200"
-				onClick={() =>
+				onClick={async () => {
+					if (onClick) {
+						await onClick();
+					}
 					deleteResource({
 						id: listId,
-					})
-				}
+					});
+				}}
 			>
 				Delete
 			</Button>

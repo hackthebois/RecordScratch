@@ -5,6 +5,7 @@ import {
 	selectListSchema,
 	selectListResourcesSchema,
 	deleteListResourcesSchema,
+	updateListSchema,
 } from "@/types/list";
 import { list_resources, lists, profile } from "../db/schema";
 import { generateId } from "lucia";
@@ -23,7 +24,7 @@ export const listsRouter = router({
 			);
 		}),
 
-	getUserLists: protectedProcedure
+	getUserLists: publicProcedure
 		.input(
 			z.object({
 				userId: z.string(),
@@ -43,6 +44,26 @@ export const listsRouter = router({
 			const id = generateId(15);
 			await db.insert(lists).values({ id, userId, ...inputs });
 		}),
+
+	updateList: protectedProcedure
+		.input(updateListSchema)
+		.mutation(
+			async ({
+				ctx: { db, userId },
+				input: { id, name, description },
+			}) => {
+				const listExists: boolean = !!(await db.query.lists.findFirst({
+					where: and(eq(lists.id, id), eq(lists.userId, userId)),
+				}));
+
+				if (listExists)
+					await db
+						.update(lists)
+						.set({ name: name, description: description })
+						.where(and(eq(lists.id, id), eq(lists.userId, userId)));
+				else throw new Error("List Doesn't exist");
+			}
+		),
 
 	deleteList: protectedProcedure
 		.input(selectListSchema)
