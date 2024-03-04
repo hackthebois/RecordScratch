@@ -5,6 +5,6 @@ export default defineMiddleware({
 		setContext(event, "help", { foo: "bar" });
 	},
 	onBeforeResponse: (event) => {
-		console.log(getContext(event, "help"));
+		//console.log(getContext(event, "help"));
 	},
 });

@@ -120,8 +120,6 @@ export const profilesRouter = router({
 				where: eq(profile.userId, profileId),
 			}));
 
-			console.log(`\n\n\n${userExists}\n\n\n`);
-
 			if (!userExists) throw new Error("User Doesn't Exist");
 
 			if (type === "followers") {
