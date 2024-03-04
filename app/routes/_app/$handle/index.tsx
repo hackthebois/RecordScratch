@@ -24,6 +24,7 @@ import {
 	notFound,
 	useNavigate,
 } from "@tanstack/react-router";
+import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
@@ -58,6 +59,7 @@ const SignOutButton = () => {
 	const navigate = useNavigate({
 		from: Route.fullPath,
 	});
+	const posthog = usePostHog();
 	const queryClient = useQueryClient();
 
 	return (
@@ -71,6 +73,7 @@ const SignOutButton = () => {
 							tab: undefined,
 						},
 					});
+					posthog.reset();
 					queryClient.clear();
 				});
 			}}
