@@ -21,12 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-	Link,
-	createFileRoute,
-	notFound,
-	useNavigate,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 

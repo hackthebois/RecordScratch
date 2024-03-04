@@ -18,6 +18,8 @@ import { ArtistItem } from "@/components/artist/ArtistItem";
 import { DeleteListItemButton } from "@/components/lists/ModifyListItemButton";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
+import { DeleteListButton } from "@/components/lists/DeleteListButton";
+import { ModifyList } from "@/components/lists/UpdateList";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -158,10 +160,12 @@ function List() {
 											}}
 										/>
 									</div>
-									<DeleteListItemButton
-										resourceId={item.resourceId}
-										listId={item.listId}
-									/>
+									{isUser && (
+										<DeleteListItemButton
+											resourceId={item.resourceId}
+											listId={item.listId}
+										/>
+									)}
 								</div>
 							);
 						})}
@@ -176,7 +180,11 @@ function List() {
 										Update your list information and image
 									</p>
 								</div>
-								<Button>Edit</Button>
+								<ModifyList
+									id={listData.id}
+									name={listData.name}
+									description={listData.description}
+								/>
 							</div>
 							<div className="flex items-center justify-between pl-4">
 								<div className="flex flex-col items-start gap-2">
@@ -186,7 +194,18 @@ function List() {
 										associated
 									</p>
 								</div>
-								<Button className=" bg-red-200">Delete</Button>
+								<DeleteListButton
+									userId={myProfile?.userId}
+									listId={listData.id}
+									onClick={async () =>
+										await navigate({
+											to: `/${profile.handle}`,
+											search: {
+												tab: "lists",
+											},
+										})
+									}
+								/>
 							</div>
 						</div>
 					</TabsContent>
