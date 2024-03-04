@@ -2,6 +2,7 @@ import { Profile } from "@/types/profile";
 import { Link } from "@tanstack/react-router";
 import { FollowButton } from "./FollowButton";
 import { UserAvatar } from "./UserAvatar";
+import { api } from "@/trpc/react";
 
 export const ProfileItem = ({
 	profile,
@@ -10,6 +11,9 @@ export const ProfileItem = ({
 	profile: Profile;
 	onClick?: () => void;
 }) => {
+	const { data: myProfile } = api.profiles.me.useQuery();
+	const showButton = !!myProfile && myProfile.userId !== profile.userId;
+
 	return (
 		<Link
 			to="/$handle"
@@ -30,7 +34,7 @@ export const ProfileItem = ({
 					</p>
 				</div>
 			</div>
-			<FollowButton profileId={profile.userId} />
+			{showButton && <FollowButton profileId={profile.userId} />}
 		</Link>
 	);
 };

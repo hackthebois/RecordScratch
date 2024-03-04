@@ -155,18 +155,6 @@ function Handle() {
 			</div>
 			<Tabs value={tab}>
 				<TabsList>
-					{/* <TabsTrigger
-						value="profile"
-						onClick={() =>
-							navigate({
-								search: {
-									tab: undefined,
-								},
-							})
-						}
-					>
-						Profile
-					</TabsTrigger> */}
 					<TabsTrigger
 						value="reviews"
 						onClick={() =>
