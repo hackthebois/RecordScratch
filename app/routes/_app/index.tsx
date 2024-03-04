@@ -75,16 +75,12 @@ const albums = [
 		date: new Date(2024, 2, 3),
 	},
 	{
-		albumId: "476178105",
+		albumId: "423868847",
 		date: new Date(2024, 2, 4),
 	},
 	{
-		albumId: "231352",
+		albumId: "549643892",
 		date: new Date(2024, 2, 5),
-	},
-	{
-		albumId: "79786972",
-		date: new Date(2024, 2, 6),
 	},
 ];
 
