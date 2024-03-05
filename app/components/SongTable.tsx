@@ -70,7 +70,14 @@ const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 				size="sm"
 			/>
 			{profile ? (
-				<SongRatingDialog songs={songs} song={song} />
+				<>
+					<SongRatingDialog songs={songs} song={song} />
+					<AddToList
+						parentId={String(song.album.id)}
+						resourceId={String(song.id)}
+						category="SONG"
+					/>
+				</>
 			) : (
 				<SignInRateButton />
 			)}
@@ -109,11 +116,6 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 						</Link>
 						<Suspense fallback={<Skeleton className="h-12 w-24" />}>
 							<SongRatings songs={songs} song={song} />
-							<AddToList
-								parentId={String(song.album.id)}
-								resourceId={String(song.id)}
-								category="SONG"
-							/>
 						</Suspense>
 					</div>
 				);

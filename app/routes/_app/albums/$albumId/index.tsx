@@ -98,15 +98,20 @@ function Album() {
 						<RatingInfo resource={resource} />
 					</div>
 					{profile ? (
-						<RatingDialog resource={resource} name={album.title} />
+						<>
+							<RatingDialog
+								resource={resource}
+								name={album.title}
+							/>
+							<AddToList
+								parentId={String(album.artist?.id)}
+								resourceId={String(album.id)}
+								category="ALBUM"
+							/>
+						</>
 					) : (
 						<SignInRateButton />
 					)}
-					<AddToList
-						parentId={String(album.artist?.id)}
-						resourceId={String(album.id)}
-						category="ALBUM"
-					/>
 				</div>
 			</Metadata>
 			<Tabs value={tab}>

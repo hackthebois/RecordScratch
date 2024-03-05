@@ -111,21 +111,19 @@ function List() {
 				</div>
 				<TabsContent value="list">
 					{isUser && (
-						<div className="pl-5">
-							<SearchAddToList
-								category={listData.category}
-								listId={listData.id}
-							/>
-						</div>
+						<SearchAddToList
+							category={listData.category}
+							listId={listData.id}
+						/>
 					)}
 					{listData.category === "ARTIST" &&
 						listItems?.map((artist, index) => (
 							<div
-								className="my-3 flex flex-row items-center justify-between"
+								className="my-3 flex flex-row items-center justify-between border-b  pb-1"
 								key={index}
 							>
 								<div
-									className="  flex flex-row items-center"
+									className="flex flex-row items-center"
 									key={index}
 								>
 									<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
@@ -144,7 +142,7 @@ function List() {
 						listItems?.map((item, index) => {
 							return (
 								<div
-									className="my-3 flex flex-row items-center justify-between"
+									className="my-3 flex flex-row items-center justify-between border-b pb-1"
 									key={index}
 								>
 									<div className="flex flex-row items-center">

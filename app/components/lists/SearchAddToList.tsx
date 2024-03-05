@@ -188,13 +188,15 @@ export const SearchAddToList = ({
 			open={open}
 		>
 			<DialogTrigger asChild>
-				<Button
-					className="items-center gap-1 rounded pb-5 pl-2 pr-3 pt-5"
-					variant="outline"
-				>
-					<PlusSquare className="h-6 w-6" />
-					Add to List
-				</Button>
+				<div className="pl-5">
+					<Button
+						className="h-16 w-full gap-1 rounded pb-5 pl-5 pr-3 pt-5"
+						variant="outline"
+					>
+						<PlusSquare className="h-6 w-6" />
+						Add to List
+					</Button>
+				</div>
 			</DialogTrigger>
 			<DialogContent className="flex h-full w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
 				<div className="mb-4 flex items-center border-b pr-10">
