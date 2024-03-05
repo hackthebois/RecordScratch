@@ -3,19 +3,52 @@ import { Link } from "@tanstack/react-router";
 import { UserAvatar } from "../UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
 import ListImage from "./ListImage";
+import { api } from "@/trpc/react";
 
 const ListsItem = ({
 	listsItem,
 	size,
-	profilePage = false,
+	showProfile = false,
+	parentId,
+	resourceId,
+	setOpen,
 }: {
 	listsItem: ListsType;
-	profilePage?: boolean;
+	showProfile?: boolean;
 	size?: number;
+	parentId?: string;
+	resourceId?: string;
+	setOpen: (open: boolean) => void;
 }) => {
 	if (!listsItem.lists.id || !listsItem.profile) return null;
 	const list = listsItem.lists;
 	const profile = listsItem.profile;
+
+	const utils = api.useUtils();
+
+	const { mutate } = api.lists.resources.createListResource.useMutation({
+		onSettled: () => {
+			utils.lists.resources.getListResources.invalidate({
+				listId: listsItem.lists.id,
+			});
+		},
+	});
+
+	const ListItemContent = (
+		<>
+			<div
+				style={{
+					width: size,
+					height: size,
+					maxWidth: size,
+					maxHeight: size,
+				}}
+			>
+				<ListImage name={list.name} />
+			</div>
+			<p className="truncate pt-1 font-medium">{list.name}</p>
+		</>
+	);
 
 	return (
 		<div
@@ -24,26 +57,28 @@ const ListsItem = ({
 				width: size,
 			}}
 		>
-			<Link
-				to={"/lists/$listId"}
-				params={{
-					listId: String(list.id),
-				}}
-				className="flex w-full cursor-pointer flex-col overflow-hidden"
-			>
+			{resourceId ? (
 				<div
-					style={{
-						width: size,
-						height: size,
-						maxWidth: size,
-						maxHeight: size,
+					onClick={() => {
+						mutate({ parentId, resourceId, listId: list.id });
+						setOpen(false);
 					}}
+					className="flex w-full cursor-pointer flex-col overflow-hidden"
 				>
-					<ListImage name={list.name} />
+					{ListItemContent}
 				</div>
-				<p className="truncate pt-1 font-medium">{list.name}</p>
-			</Link>
-			{!profilePage && (
+			) : (
+				<Link
+					to={"/lists/$listId"}
+					params={{
+						listId: String(list.id),
+					}}
+					className="flex w-full cursor-pointer flex-col overflow-hidden"
+				>
+					{ListItemContent}
+				</Link>
+			)}
+			{showProfile && (
 				<Link
 					to="/$handle"
 					params={{
@@ -61,12 +96,18 @@ const ListsItem = ({
 
 const ListList = ({
 	lists,
-	profilePage = false,
+	showProfiles = false,
 	type = "scroll",
+	parentId,
+	resourceId,
+	setOpen,
 }: {
 	lists: ListsType[];
-	profilePage?: boolean;
+	showProfiles?: boolean;
 	type?: "wrap" | "scroll";
+	parentId?: string;
+	resourceId?: string;
+	setOpen: (open: boolean) => void;
 }) => {
 	if (type === "scroll") {
 		return (
@@ -80,8 +121,11 @@ const ListList = ({
 							<ListsItem
 								key={index}
 								listsItem={list}
-								profilePage={profilePage}
+								showProfile={showProfiles}
 								size={144}
+								parentId={parentId}
+								resourceId={resourceId}
+								setOpen={setOpen}
 							/>
 						</div>
 					))}
@@ -95,8 +139,11 @@ const ListList = ({
 					<ListsItem
 						key={index}
 						listsItem={list}
-						profilePage={profilePage}
+						showProfile={showProfiles}
 						size={144}
+						parentId={parentId}
+						resourceId={resourceId}
+						setOpen={setOpen}
 					/>
 				))}
 			</div>

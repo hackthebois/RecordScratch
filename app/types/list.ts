@@ -29,6 +29,14 @@ export const selectListSchema = listSchema.pick({
 	id: true,
 });
 
+export const filterUserListsSchema = listSchema
+	.pick({
+		userId: true,
+	})
+	.extend({
+		category: listSchema.shape.category.optional(),
+	});
+
 export const listResourcesSchema = createInsertSchema(list_resources, {
 	parentId: z.string().optional(),
 });
