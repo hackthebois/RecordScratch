@@ -102,7 +102,7 @@ export const ratingsRouter = router({
 						limit: limit + 1,
 						offset: cursor,
 						orderBy: (ratings, { desc }) => [
-							desc(ratings.createdAt),
+							desc(ratings.updatedAt),
 						],
 						with: {
 							profile: true,
@@ -144,7 +144,7 @@ export const ratingsRouter = router({
 						limit: limit + 1,
 						offset: cursor,
 						orderBy: (ratings, { desc }) => [
-							desc(ratings.createdAt),
+							desc(ratings.updatedAt),
 						],
 						with: {
 							profile: true,
@@ -178,7 +178,7 @@ export const ratingsRouter = router({
 						limit: limit + 1,
 						offset: cursor,
 						orderBy: (ratings, { desc }) => [
-							desc(ratings.createdAt),
+							desc(ratings.updatedAt),
 						],
 						with: {
 							profile: true,

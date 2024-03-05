@@ -1,4 +1,5 @@
 import { Review as ReviewType } from "@/types/rating";
+import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
 import { ResourceItem } from "./ResourceItem";
@@ -11,6 +12,7 @@ export const Review = ({
 	content,
 	resourceId,
 	category,
+	updatedAt,
 }: ReviewType) => {
 	return (
 		<div className="flex flex-col gap-4 py-4 text-card-foreground">
@@ -37,10 +39,13 @@ export const Review = ({
 					params={{
 						handle: String(profile.handle),
 					}}
-					className="flex items-center gap-2"
+					className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 				>
 					<UserAvatar {...profile} size={30} />
-					<p className="flex">{profile.name}</p>
+					<p>{profile.name}</p>
+					<p className="text-left text-sm text-muted-foreground">
+						@{profile.handle} • {timeAgo(updatedAt)}
+					</p>
 				</Link>
 				<p className="whitespace-pre-line text-sm">{content}</p>
 			</div>
