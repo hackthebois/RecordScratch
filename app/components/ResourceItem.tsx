@@ -67,8 +67,13 @@ export const ResourceItem = ({
 
 	return (
 		<Link
-			onClick={onClick}
-			{...link}
+			onClick={(event) => {
+				if (onClick) {
+					event.preventDefault();
+					onClick();
+				}
+			}}
+			{...(onClick ? {} : link)}
 			className="flex flex-row items-center gap-4 rounded"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">

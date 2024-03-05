@@ -13,7 +13,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { z } from "zod";
 import { ResourceItem } from "@/components/ResourceItem";
-import AddToList from "@/components/lists/SearchAddToList";
+import SearchAddToList from "@/components/lists/SearchAddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
 import { DeleteListItemButton } from "@/components/lists/ModifyListItemButton";
 import { Label } from "@/components/ui/Label";
@@ -112,7 +112,7 @@ function List() {
 				<TabsContent value="list">
 					{isUser && (
 						<div className="pl-5">
-							<AddToList
+							<SearchAddToList
 								category={listData.category}
 								listId={listData.id}
 							/>
