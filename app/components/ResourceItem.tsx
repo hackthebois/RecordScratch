@@ -72,7 +72,7 @@ export const ResourceItem = ({
 			className="flex flex-row items-center gap-4 rounded"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">
-				<AlbumImage album={album} size={64} />
+				<AlbumImage album={album} />
 			</div>
 			<div className="min-w-0 flex-1">
 				<p className="truncate font-medium">{name}</p>

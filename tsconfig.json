@@ -15,7 +15,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["app/*"]
-		}
+		},
+		"skipLibCheck": true
 	},
 	"include": ["**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]
