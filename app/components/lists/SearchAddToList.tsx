@@ -110,7 +110,7 @@ export const MusicSearch = ({
 							<>
 								<h4 className="mt-3">Artists</h4>
 								{data.artists.map((artist, index) => (
-									<div className="flex flex-row justify-between">
+									<div className="flex flex-col gap-3">
 										<ArtistItem
 											artistId={String(artist.id)}
 											initialArtist={artist}
@@ -134,7 +134,7 @@ export const MusicSearch = ({
 							<>
 								<h4 className="mt-3">Songs</h4>
 								{data.songs.map((song, index) => (
-									<div className="flex flex-row justify-between">
+									<div className="flex flex-col gap-3">
 										<ResourceItem
 											resource={{
 												parentId: String(song.album.id),

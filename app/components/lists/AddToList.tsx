@@ -34,6 +34,9 @@ export const AddToList = ({
 
 	if (!lists) return null;
 
+	const list = api.useUtils().lists.resources.getListResources;
+	const { mutate } = api.lists.resources.createListResource.useMutation({});
+
 	let type: string = "";
 	if (category === "SONG") type = "Song";
 	if (category === "ALBUM") type = "Album";
@@ -64,6 +67,15 @@ export const AddToList = ({
 					type="scroll"
 					parentId={parentId}
 					resourceId={resourceId}
+					onClick={(listId: string) => {
+						mutate({
+							resourceId: resourceId,
+							parentId: parentId,
+							listId,
+						});
+						list.invalidate({ listId });
+						setOpen(false);
+					}}
 					setOpen={setOpen}
 				/>
 				<DialogFooter></DialogFooter>
