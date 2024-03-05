@@ -9,16 +9,19 @@ import { deezer } from "@/utils/deezer";
 import { ArtistItem } from "../artist/ArtistItem";
 import { AddListItemButton } from "./ModifyListItemButton";
 import { ScrollArea } from "../ui/ScrollArea";
+import { api } from "@/trpc/react";
 
 export const MusicSearch = ({
 	query,
 	category,
 	listId,
+	setOpen,
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
 	listId: string;
 	onNavigate: () => void;
+	setOpen: (open: boolean) => void;
 }) => {
 	const { data } = useQuery({
 		queryKey: ["search", "search-music", query],
@@ -59,6 +62,9 @@ export const MusicSearch = ({
 		enabled: query.length > 0,
 	});
 
+	const list = api.useUtils().lists.resources.getListResources;
+	const { mutate } = api.lists.resources.createListResource.useMutation({});
+
 	return (
 		<ScrollArea className="flex flex-col gap-3 px-4">
 			<div className="flex flex-col gap-3 pb-4">
@@ -68,7 +74,10 @@ export const MusicSearch = ({
 							<>
 								<h4>Albums</h4>
 								{data.albums.map((album, index) => (
-									<div className="flex flex-row justify-between">
+									<div
+										className="flex flex-col gap-3"
+										key={String(album.id)}
+									>
 										<ResourceItem
 											initialAlbum={album}
 											resource={{
@@ -79,12 +88,19 @@ export const MusicSearch = ({
 												category: "ALBUM",
 											}}
 											key={index}
-										/>
-
-										<AddListItemButton
-											parentId={String(album.artist?.id)}
-											resourceId={String(album.id)}
-											listId={listId}
+											onClick={() => {
+												mutate({
+													resourceId: String(
+														album.id
+													),
+													parentId: String(
+														album.artist?.id
+													),
+													listId,
+												});
+												list.invalidate({ listId });
+												setOpen(false);
+											}}
 										/>
 									</div>
 								))}
@@ -99,11 +115,16 @@ export const MusicSearch = ({
 											artistId={String(artist.id)}
 											initialArtist={artist}
 											key={index}
-										/>
-
-										<AddListItemButton
-											resourceId={String(artist.id)}
-											listId={listId}
+											onClick={() => {
+												mutate({
+													resourceId: String(
+														artist.id
+													),
+													listId,
+												});
+												list.invalidate({ listId });
+												setOpen(false);
+											}}
 										/>
 									</div>
 								))}
@@ -121,12 +142,17 @@ export const MusicSearch = ({
 												category: "SONG",
 											}}
 											key={index}
-										/>
-
-										<AddListItemButton
-											parentId={String(song.album.id)}
-											resourceId={String(song.id)}
-											listId={listId}
+											onClick={() => {
+												mutate({
+													resourceId: String(song.id),
+													parentId: String(
+														song.album.id
+													),
+													listId,
+												});
+												list.invalidate({ listId });
+												setOpen(false);
+											}}
 										/>
 									</div>
 								))}
@@ -139,7 +165,7 @@ export const MusicSearch = ({
 	);
 };
 
-export const AddToList = ({
+export const SearchAddToList = ({
 	category,
 	listId,
 }: {
@@ -162,7 +188,10 @@ export const AddToList = ({
 			open={open}
 		>
 			<DialogTrigger asChild>
-				<Button className="items-center gap-1 rounded pb-5 pl-2 pr-3 pt-5">
+				<Button
+					className="items-center gap-1 rounded pb-5 pl-2 pr-3 pt-5"
+					variant="outline"
+				>
 					<PlusSquare className="h-6 w-6" />
 					Add to List
 				</Button>
@@ -188,10 +217,11 @@ export const AddToList = ({
 						setQuery("");
 						setOpen(false);
 					}}
+					setOpen={setOpen}
 				/>
 			</DialogContent>
 		</Dialog>
 	);
 };
 
-export default AddToList;
+export default SearchAddToList;
