@@ -9,30 +9,19 @@ const ListsItem = ({
 	listsItem,
 	size,
 	showProfile = false,
-	parentId,
-	resourceId,
-	setOpen,
+	onClick,
 }: {
 	listsItem: ListsType;
 	showProfile?: boolean;
 	size?: number;
 	parentId?: string;
 	resourceId?: string;
-	setOpen: (open: boolean) => void;
+	// eslint-disable-next-line no-unused-vars
+	onClick?: (listId: string) => void;
 }) => {
 	if (!listsItem.lists.id || !listsItem.profile) return null;
 	const list = listsItem.lists;
 	const profile = listsItem.profile;
-
-	const utils = api.useUtils();
-
-	const { mutate } = api.lists.resources.createListResource.useMutation({
-		onSettled: () => {
-			utils.lists.resources.getListResources.invalidate({
-				listId: listsItem.lists.id,
-			});
-		},
-	});
 
 	const ListItemContent = (
 		<>
@@ -50,6 +39,13 @@ const ListsItem = ({
 		</>
 	);
 
+	const link = {
+		to: "/lists/$listId",
+		params: {
+			listId: String(list.id),
+		},
+	};
+
 	return (
 		<div
 			className="flex h-full flex-col"
@@ -57,27 +53,20 @@ const ListsItem = ({
 				width: size,
 			}}
 		>
-			{resourceId ? (
-				<div
-					onClick={() => {
-						mutate({ parentId, resourceId, listId: list.id });
-						setOpen(false);
-					}}
-					className="flex w-full cursor-pointer flex-col overflow-hidden"
-				>
-					{ListItemContent}
-				</div>
-			) : (
+			{
 				<Link
-					to={"/lists/$listId"}
-					params={{
-						listId: String(list.id),
+					onClick={(event) => {
+						if (onClick) {
+							event.preventDefault();
+							onClick(list.id);
+						}
 					}}
+					{...(onClick ? {} : link)}
 					className="flex w-full cursor-pointer flex-col overflow-hidden"
 				>
 					{ListItemContent}
 				</Link>
-			)}
+			}
 			{showProfile && (
 				<Link
 					to="/$handle"
@@ -98,16 +87,13 @@ const ListList = ({
 	lists,
 	showProfiles = false,
 	type = "scroll",
-	parentId,
-	resourceId,
-	setOpen,
+	onClick,
 }: {
 	lists: ListsType[];
 	showProfiles?: boolean;
 	type?: "wrap" | "scroll";
-	parentId?: string;
-	resourceId?: string;
-	setOpen: (open: boolean) => void;
+	// eslint-disable-next-line no-unused-vars
+	onClick?: (listId: string) => void;
 }) => {
 	if (type === "scroll") {
 		return (
@@ -123,9 +109,7 @@ const ListList = ({
 								listsItem={list}
 								showProfile={showProfiles}
 								size={144}
-								parentId={parentId}
-								resourceId={resourceId}
-								setOpen={setOpen}
+								onClick={onClick}
 							/>
 						</div>
 					))}
@@ -141,9 +125,7 @@ const ListList = ({
 						listsItem={list}
 						showProfile={showProfiles}
 						size={144}
-						parentId={parentId}
-						resourceId={resourceId}
-						setOpen={setOpen}
+						onClick={onClick}
 					/>
 				))}
 			</div>
