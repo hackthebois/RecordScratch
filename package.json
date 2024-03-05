@@ -38,6 +38,7 @@
     "arctic": "^1.2.0",
     "class-variance-authority": "^0.7.0",
     "cookies": "^0.9.1",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.4.4",
     "drizzle-kit": "^0.20.14",
     "drizzle-orm": "^0.29.3",
