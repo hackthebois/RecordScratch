@@ -32,10 +32,8 @@ export const AddToList = ({
 		category,
 	});
 
-	if (!lists) return null;
-
 	const list = api.useUtils().lists.resources.getListResources;
-	const { mutate } = api.lists.resources.createListResource.useMutation({});
+	const { mutate } = api.lists.resources.createListResource.useMutation();
 
 	let type: string = "";
 	if (category === "SONG") type = "Song";
@@ -65,18 +63,15 @@ export const AddToList = ({
 				<ListList
 					lists={lists}
 					type="scroll"
-					parentId={parentId}
-					resourceId={resourceId}
 					onClick={(listId: string) => {
 						mutate({
-							resourceId: resourceId,
-							parentId: parentId,
+							resourceId,
+							parentId,
 							listId,
 						});
 						list.invalidate({ listId });
 						setOpen(false);
 					}}
-					setOpen={setOpen}
 				/>
 				<DialogFooter></DialogFooter>
 			</DialogContent>

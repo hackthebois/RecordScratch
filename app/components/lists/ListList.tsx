@@ -89,7 +89,7 @@ const ListList = ({
 	type = "scroll",
 	onClick,
 }: {
-	lists: ListsType[];
+	lists: ListsType[] | undefined;
 	showProfiles?: boolean;
 	type?: "wrap" | "scroll";
 	// eslint-disable-next-line no-unused-vars
@@ -102,32 +102,34 @@ const ListList = ({
 				className="w-full max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)]"
 			>
 				<div className="flex gap-4">
-					{lists.map((list, index) => (
-						<div className="mb-3">
-							<ListsItem
-								key={index}
-								listsItem={list}
-								showProfile={showProfiles}
-								size={144}
-								onClick={onClick}
-							/>
-						</div>
-					))}
+					{lists &&
+						lists.map((list, index) => (
+							<div className="mb-3">
+								<ListsItem
+									key={index}
+									listsItem={list}
+									showProfile={showProfiles}
+									size={144}
+									onClick={onClick}
+								/>
+							</div>
+						))}
 				</div>
 			</ScrollArea>
 		);
 	} else {
 		return (
 			<div className="grid grid-cols-[repeat(auto-fill,minmax(144px,1fr))] gap-3">
-				{lists.map((list, index) => (
-					<ListsItem
-						key={index}
-						listsItem={list}
-						showProfile={showProfiles}
-						size={144}
-						onClick={onClick}
-					/>
-				))}
+				{lists &&
+					lists.map((list, index) => (
+						<ListsItem
+							key={index}
+							listsItem={list}
+							showProfile={showProfiles}
+							size={144}
+							onClick={onClick}
+						/>
+					))}
 			</div>
 		);
 	}
