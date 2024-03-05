@@ -7,7 +7,6 @@ import { ResourceItem } from "../ResourceItem";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
 import { ArtistItem } from "../artist/ArtistItem";
-import { AddListItemButton } from "./ModifyListItemButton";
 import { ScrollArea } from "../ui/ScrollArea";
 import { api } from "@/trpc/react";
 
@@ -21,6 +20,7 @@ export const MusicSearch = ({
 	category: "ALBUM" | "SONG" | "ARTIST";
 	listId: string;
 	onNavigate: () => void;
+	// eslint-disable-next-line no-unused-vars
 	setOpen: (open: boolean) => void;
 }) => {
 	const { data } = useQuery({
