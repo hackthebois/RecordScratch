@@ -209,7 +209,10 @@ function Handle() {
 										handle: handle,
 									}}
 									search={{
-										rating: index + 1,
+										rating:
+											rating === index + 1
+												? undefined
+												: index + 1,
 										category:
 											category === "all"
 												? undefined
