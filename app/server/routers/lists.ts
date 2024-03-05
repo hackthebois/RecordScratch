@@ -6,11 +6,11 @@ import {
 	selectListResourcesSchema,
 	deleteListResourcesSchema,
 	updateListSchema,
+	filterUserListsSchema,
 } from "@/types/list";
 import { list_resources, lists, profile } from "../db/schema";
 import { generateId } from "lucia";
 import { and, desc, eq } from "drizzle-orm/sql";
-import { z } from "zod";
 
 export const listsRouter = router({
 	getList: publicProcedure
@@ -25,17 +25,21 @@ export const listsRouter = router({
 		}),
 
 	getUserLists: publicProcedure
-		.input(
-			z.object({
-				userId: z.string(),
-			})
-		)
-		.query(async ({ ctx: { db }, input: { userId } }) => {
+		.input(filterUserListsSchema)
+		.query(async ({ ctx: { db }, input: { userId, category } }) => {
+			let whereClause;
+			if (category)
+				whereClause = and(
+					eq(lists.userId, userId),
+					eq(lists.category, category)
+				);
+			else whereClause = and(eq(lists.userId, userId));
+
 			return await db
 				.select()
 				.from(lists)
 				.leftJoin(profile, eq(profile.userId, lists.userId))
-				.where(eq(lists.userId, userId));
+				.where(whereClause);
 		}),
 
 	createList: protectedProcedure
