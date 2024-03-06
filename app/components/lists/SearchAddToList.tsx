@@ -63,7 +63,15 @@ export const MusicSearch = ({
 	});
 
 	const list = api.useUtils().lists.resources.getListResources;
-	const { mutate } = api.lists.resources.createListResource.useMutation({});
+	const { mutate } = api.lists.resources.createListResource.useMutation({
+		onSettled: (_data, _error, variables) => {
+			if (variables) {
+				list.invalidate({
+					listId: variables.listId,
+				});
+			}
+		},
+	});
 
 	return (
 		<ScrollArea className="flex flex-col gap-3 px-4">
@@ -98,7 +106,6 @@ export const MusicSearch = ({
 													),
 													listId,
 												});
-												list.invalidate({ listId });
 												setOpen(false);
 											}}
 										/>

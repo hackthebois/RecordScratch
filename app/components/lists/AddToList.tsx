@@ -33,7 +33,15 @@ export const AddToList = ({
 	});
 
 	const list = api.useUtils().lists.resources.getListResources;
-	const { mutate } = api.lists.resources.createListResource.useMutation();
+	const { mutate } = api.lists.resources.createListResource.useMutation({
+		onSettled: (_data, _error, variables) => {
+			if (variables) {
+				list.invalidate({
+					listId: variables.listId,
+				});
+			}
+		},
+	});
 
 	let type: string = "";
 	if (category === "SONG") type = "Song";
@@ -69,7 +77,6 @@ export const AddToList = ({
 							parentId,
 							listId,
 						});
-						list.invalidate({ listId });
 						setOpen(false);
 					}}
 				/>

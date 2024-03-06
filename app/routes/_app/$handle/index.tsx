@@ -329,7 +329,7 @@ function Handle() {
 							<div className=" pl-3 pt-3">
 								<ListList
 									lists={lists}
-									profilePage={true}
+									showProfiles={true}
 									type="wrap"
 								/>
 							</div>
