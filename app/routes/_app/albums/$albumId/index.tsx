@@ -58,7 +58,7 @@ function Album() {
 			input: { id: albumId, limit: 1000 },
 		}),
 		initialData: {
-			data: album?.tracks.data,
+			data: album?.tracks?.data,
 		},
 	});
 
