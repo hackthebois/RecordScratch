@@ -101,7 +101,7 @@ const AlbumOfTheDay = () => {
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
-			input: { id: albumOfTheDay.albumId },
+			input: { id: albumToday!.albumId },
 		})
 	);
 
