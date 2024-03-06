@@ -46,6 +46,7 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 				route: "/artist/{id}/albums",
 				input: {
 					id: artistId,
+					limit: 1000,
 				},
 			})
 		);
