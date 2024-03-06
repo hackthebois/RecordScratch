@@ -1,4 +1,10 @@
+import dayjs from "dayjs";
+import isToday from "dayjs/plugin/isToday";
+import isYesterday from "dayjs/plugin/isYesterday";
 import { publicProcedure, router } from "../trpc";
+
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
 
 const albums = [
 	{
@@ -159,30 +165,18 @@ const albums = [
 	},
 ];
 
-const isCurrentDay = (date: Date) => {
-	const currentDate = new Date();
-	// Check if the current date matches the day to show
-	return (
-		currentDate.getDate() === date.getDate() &&
-		currentDate.getMonth() === date.getMonth() &&
-		currentDate.getFullYear() === date.getFullYear()
-	);
-};
-
 export const miscRouter = router({
 	albumOfTheDay: publicProcedure.query(() => {
 		const albumOfTheDay = albums.find((album) => {
-			if (isCurrentDay(album.date) && album.albumId !== "") {
+			if (dayjs(album.date).isToday() && album.albumId !== "") {
 				return true;
 			}
 		});
 		if (albumOfTheDay) return albumOfTheDay;
 
 		// If there is no album of the day, return yesterday's album
-		const yesterday = new Date();
-		yesterday.setDate(yesterday.getDate() - 1);
 		const yesterdaysAlbum = albums.find((album) => {
-			if (album.date.getDate() === yesterday.getDate()) {
+			if (dayjs(album.date).isYesterday() && album.albumId !== "") {
 				return true;
 			}
 		});
