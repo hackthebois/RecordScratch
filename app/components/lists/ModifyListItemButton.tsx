@@ -1,6 +1,6 @@
 import { api } from "@/trpc/react";
 import { Button } from "../ui/Button";
-import { Trash2, Trash } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 export const DeleteListItemButton = (inputs: {
 	resourceId: string;
