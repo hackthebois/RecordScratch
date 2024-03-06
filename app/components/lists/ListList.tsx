@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { UserAvatar } from "../UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
 import ListImage from "./ListImage";
-import { api } from "@/trpc/react";
 
 const ListsItem = ({
 	listsItem,
