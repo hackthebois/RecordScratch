@@ -115,29 +115,25 @@ function Index() {
 			{profile && (
 				<Tabs value={feed} className="w-full">
 					<TabsList>
-						<TabsTrigger
-							value="recent"
-							onClick={() => {
-								navigate({
-									search: {
-										feed: undefined,
-									},
-								});
-							}}
-						>
-							Recent
+						<TabsTrigger value="recent" asChild>
+							<Link
+								to={Route.fullPath}
+								search={{
+									feed: undefined,
+								}}
+							>
+								Recent
+							</Link>
 						</TabsTrigger>
-						<TabsTrigger
-							value="following"
-							onClick={() => {
-								navigate({
-									search: {
-										feed: "following",
-									},
-								});
-							}}
-						>
-							Following
+						<TabsTrigger value="following" asChild>
+							<Link
+								to={Route.fullPath}
+								search={{
+									feed: "following",
+								}}
+							>
+								Following
+							</Link>
 						</TabsTrigger>
 					</TabsList>
 					<TabsContent value="recent">
