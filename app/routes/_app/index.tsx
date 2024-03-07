@@ -13,7 +13,7 @@ import { api, apiUtils } from "@/trpc/react";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/")({
@@ -80,9 +80,6 @@ const AlbumOfTheDay = () => {
 };
 
 function Index() {
-	const navigate = useNavigate({
-		from: Route.fullPath,
-	});
 	const { feed = "recent" } = Route.useSearch();
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();

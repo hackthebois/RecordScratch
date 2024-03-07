@@ -283,8 +283,8 @@ function Handle() {
 							profileId: profile.userId,
 							rating,
 							category: category === "all" ? undefined : category,
+							limit: 20,
 						}}
-						pageLimit={20}
 					/>
 				</TabsContent>
 				{isUser && (
