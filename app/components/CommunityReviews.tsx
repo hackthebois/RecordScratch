@@ -54,6 +54,7 @@ const CommunityReviews = ({
 					</div>
 				))}
 			</div>
+			{!data && <div className="h-screen" />}
 			{hasNextPage && (
 				<div
 					ref={ref}

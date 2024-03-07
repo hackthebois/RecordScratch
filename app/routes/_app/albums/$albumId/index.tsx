@@ -13,7 +13,7 @@ import { Resource } from "@/types/rating";
 import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/albums/$albumId/")({
@@ -38,9 +38,6 @@ export const Route = createFileRoute("/_app/albums/$albumId/")({
 });
 
 function Album() {
-	const navigate = useNavigate({
-		from: Route.fullPath,
-	});
 	const { albumId } = Route.useParams();
 	const { tab = "songs" } = Route.useSearch();
 	const [profile] = api.profiles.me.useSuspenseQuery();

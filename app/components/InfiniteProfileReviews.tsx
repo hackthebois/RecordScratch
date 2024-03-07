@@ -6,10 +6,8 @@ import { useInView } from "react-intersection-observer";
 import { Review } from "./Review";
 
 export const InfiniteProfileReviews = ({
-	pageLimit,
 	input,
 }: {
-	pageLimit: number;
 	input: RouterInputs["ratings"]["user"]["recent"];
 }) => {
 	const { ref, inView } = useInView();
@@ -17,7 +15,6 @@ export const InfiniteProfileReviews = ({
 	const { data, fetchNextPage, hasNextPage } =
 		api.ratings.user.recent.useInfiniteQuery(
 			{
-				limit: pageLimit,
 				...input,
 			},
 			{
