@@ -31,17 +31,16 @@ export const InfiniteProfileReviews = ({
 		}
 	}, [inView, fetchNextPage]);
 
+	const reviews = data?.pages.flatMap((page) => page.items);
+
 	return (
 		<>
 			<div>
-				{data?.pages.map((page, index) => (
-					<div key={index}>
-						{page.items.map((review, index) => (
-							<Review key={index} {...review} />
-						))}
-					</div>
+				{reviews?.map((review, index) => (
+					<Review key={index} {...review} />
 				))}
 			</div>
+			{!data && <div className="h-screen" />}
 			{hasNextPage && (
 				<div
 					ref={ref}

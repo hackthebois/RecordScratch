@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/Label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
-import { useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import {
 	Link,
 	createFileRoute,
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) throw notFound({ route: "/_app" });
-		apiUtils.profiles.distribution.ensureData(profile.userId);
+		apiUtils.profiles.distribution.ensureData({ userId: profile.userId });
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "followers",
@@ -113,18 +113,18 @@ function Handle() {
 	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
 	const { data: myProfile } = api.profiles.me.useQuery();
 
-	const navigate = useNavigate({
-		from: Route.fullPath,
-	});
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-	const [distribution] = api.profiles.distribution.useSuspenseQuery(
-		profile?.userId || ""
+	const { data: distribution } = api.profiles.distribution.useQuery(
+		{
+			userId: profile?.userId || "",
+			category: category === "all" ? undefined : category,
+		},
+		{
+			placeholderData: keepPreviousData,
+		}
 	);
 
 	if (!profile) return null;
-
-	let max: number = Math.max(...distribution);
-	max = max === 0 ? 1 : max;
 
 	const isUser = myProfile?.userId === profile.userId;
 
@@ -155,30 +155,26 @@ function Handle() {
 			</div>
 			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger
-						value="reviews"
-						onClick={() =>
-							navigate({
-								search: {
-									tab: undefined,
-								},
-							})
-						}
-					>
-						Reviews
+					<TabsTrigger value="reviews" asChild>
+						<Link
+							params={{ handle }}
+							search={{
+								tab: undefined,
+							}}
+						>
+							Reviews
+						</Link>
 					</TabsTrigger>
 					{isUser && (
-						<TabsTrigger
-							value="settings"
-							onClick={() =>
-								navigate({
-									search: {
-										tab: "settings",
-									},
-								})
-							}
-						>
-							Settings
+						<TabsTrigger value="settings" asChild>
+							<Link
+								params={{ handle }}
+								search={{
+									tab: "settings",
+								}}
+							>
+								Settings
+							</Link>
 						</TabsTrigger>
 					)}
 				</TabsList>
@@ -200,9 +196,9 @@ function Handle() {
 					/>
 				</TabsContent> */}
 				<TabsContent value="reviews">
-					<div className="flex w-full flex-col rounded-md border p-6 pt-6 sm:max-w-lg">
+					<div className="flex w-full flex-col rounded-md border p-4 pt-6 sm:max-w-lg">
 						<div className="flex h-20 w-full items-end justify-between gap-1">
-							{distribution.map((ratings, index) => (
+							{distribution?.map((ratings, index) => (
 								<Link
 									to="/$handle"
 									params={{
@@ -223,7 +219,7 @@ function Handle() {
 								>
 									<div
 										style={{
-											height: `${(ratings / max) * 100}%`,
+											height: `${(ratings / (Math.max(...distribution) === 0 ? 1 : Math.max(...distribution))) * 100}%`,
 										}}
 										className={cn(
 											"h-full min-h-0 w-full rounded-t bg-[#ffb703] hover:opacity-90",
@@ -235,7 +231,7 @@ function Handle() {
 							))}
 						</div>
 						<div className="flex w-full items-end gap-1 pt-1">
-							{distribution.map((_, index) => (
+							{distribution?.map((_, index) => (
 								<p
 									key={index + 1}
 									className="flex-1 text-center text-sm text-muted-foreground"
@@ -244,50 +240,44 @@ function Handle() {
 								</p>
 							))}
 						</div>
-					</div>
-					<Tabs value={category} className="mt-2">
-						<TabsList>
-							<TabsTrigger
-								value="all"
-								onClick={() =>
-									navigate({
-										search: (prev) => ({
+						<Tabs value={category} className="mt-2">
+							<TabsList>
+								<TabsTrigger value="all" asChild>
+									<Link
+										params={{ handle }}
+										search={(prev) => ({
 											...prev,
 											category: undefined,
-										}),
-									})
-								}
-							>
-								All
-							</TabsTrigger>
-							<TabsTrigger
-								value="ALBUM"
-								onClick={() =>
-									navigate({
-										search: (prev) => ({
+										})}
+									>
+										All
+									</Link>
+								</TabsTrigger>
+								<TabsTrigger value="ALBUM" asChild>
+									<Link
+										params={{ handle }}
+										search={(prev) => ({
 											...prev,
 											category: "ALBUM",
-										}),
-									})
-								}
-							>
-								Album
-							</TabsTrigger>
-							<TabsTrigger
-								value="SONG"
-								onClick={() =>
-									navigate({
-										search: (prev) => ({
+										})}
+									>
+										Album
+									</Link>
+								</TabsTrigger>
+								<TabsTrigger value="SONG" asChild>
+									<Link
+										params={{ handle }}
+										search={(prev) => ({
 											...prev,
 											category: "SONG",
-										}),
-									})
-								}
-							>
-								Song
-							</TabsTrigger>
-						</TabsList>
-					</Tabs>
+										})}
+									>
+										Song
+									</Link>
+								</TabsTrigger>
+							</TabsList>
+						</Tabs>
+					</div>
 					<InfiniteProfileReviews
 						input={{
 							profileId: profile.userId,

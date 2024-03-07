@@ -5,6 +5,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { and, count, eq, like, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
+import { RatingSchema } from "@/types/rating";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({
@@ -42,15 +43,27 @@ export const profilesRouter = router({
 		}));
 	}),
 	distribution: publicProcedure
-		.input(z.string())
-		.query(async ({ ctx: { db }, input: userId }) => {
+		.input(
+			z.object({
+				userId: z.string(),
+				category: RatingSchema.shape.category.optional(),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { userId, category } }) => {
+			let where;
+			if (category)
+				where = and(
+					eq(ratings.userId, userId),
+					eq(ratings.category, category)
+				);
+			else where = eq(ratings.userId, userId);
 			const userRatings = await db
 				.select({
 					rating: ratings.rating,
 					rating_count: count(ratings.rating),
 				})
 				.from(ratings)
-				.where(eq(ratings.userId, userId))
+				.where(where)
 				.groupBy(ratings.rating)
 				.orderBy(ratings.rating);
 

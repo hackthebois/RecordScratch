@@ -103,29 +103,25 @@ function Album() {
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger
-						value="songs"
-						onClick={() =>
-							navigate({
-								search: {
-									tab: undefined,
-								},
-							})
-						}
-					>
-						Songs
+					<TabsTrigger value="songs">
+						<Link
+							params={{ albumId }}
+							search={{
+								tab: undefined,
+							}}
+						>
+							Songs
+						</Link>
 					</TabsTrigger>
-					<TabsTrigger
-						value="reviews"
-						onClick={() =>
-							navigate({
-								search: {
-									tab: "reviews",
-								},
-							})
-						}
-					>
-						Reviews
+					<TabsTrigger value="reviews">
+						<Link
+							params={{ albumId }}
+							search={{
+								tab: "reviews",
+							}}
+						>
+							Reviews
+						</Link>
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="songs">
