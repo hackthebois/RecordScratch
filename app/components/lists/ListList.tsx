@@ -2,7 +2,8 @@ import { ListsType } from "@/types/list";
 import { Link } from "@tanstack/react-router";
 import { UserAvatar } from "../UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
-import _ListImage from "./ListImage";
+import { api } from "@/trpc/react";
+import ListImage from "./ListImage";
 
 const ListsItem = ({
 	listsItem,
@@ -21,9 +22,13 @@ const ListsItem = ({
 	if (!listsItem.lists.id || !listsItem.profile) return null;
 	const list = listsItem.lists;
 	const profile = listsItem.profile;
+	const { data: listItems } =
+		api.lists.resources.getTopFourResources.useQuery({
+			listId: list.id,
+		});
 
 	const ListItemContent = (
-		<>
+		<div className="flex flex-col justify-center">
 			<div
 				style={{
 					width: size,
@@ -31,11 +36,12 @@ const ListsItem = ({
 					maxWidth: size,
 					maxHeight: size,
 				}}
+				className="flex items-center justify-center"
 			>
-				<_ListImage name={list.name} />
+				<ListImage listItems={listItems} category={list.category} />
 			</div>
-			<p className="truncate pt-1 font-medium">{list.name}</p>
-		</>
+			<p className="truncate pl-1 pt-1 font-medium">{list.name}</p>
+		</div>
 	);
 
 	const link = {
@@ -47,7 +53,7 @@ const ListsItem = ({
 
 	return (
 		<div
-			className="flex h-full flex-col"
+			className="flex h-full flex-col gap-96"
 			style={{
 				width: size,
 			}}
@@ -61,7 +67,7 @@ const ListsItem = ({
 						}
 					}}
 					{...(onClick ? {} : link)}
-					className="flex w-full cursor-pointer flex-col overflow-hidden"
+					className="flex w-full cursor-pointer flex-col"
 				>
 					{ListItemContent}
 				</Link>
@@ -108,7 +114,7 @@ const ListList = ({
 									key={index}
 									listsItem={list}
 									showProfile={showProfiles}
-									size={144}
+									size={100}
 									onClick={onClick}
 								/>
 							</div>
@@ -118,14 +124,14 @@ const ListList = ({
 		);
 	} else {
 		return (
-			<div className="grid grid-cols-[repeat(auto-fill,minmax(144px,1fr))] gap-3">
+			<div className="flex flex-wrap gap-3">
 				{lists &&
 					lists.map((list, index) => (
 						<ListsItem
 							key={index}
 							listsItem={list}
 							showProfile={showProfiles}
-							size={144}
+							size={200}
 							onClick={onClick}
 						/>
 					))}

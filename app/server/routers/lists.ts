@@ -84,6 +84,16 @@ export const listsRouter = router({
 		}),
 
 	resources: router({
+		getTopFourResources: publicProcedure
+			.input(selectListResourcesSchema)
+			.query(async ({ ctx: { db }, input: { listId } }) => {
+				return await db
+					.select()
+					.from(list_resources)
+					.where(eq(list_resources.listId, listId))
+					.orderBy(list_resources.position)
+					.limit(4);
+			}),
 		getListResources: publicProcedure
 			.input(selectListResourcesSchema)
 			.query(async ({ ctx: { db }, input: { listId } }) => {

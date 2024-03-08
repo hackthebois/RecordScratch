@@ -19,7 +19,7 @@ import { DeleteListItemButton } from "@/components/lists/ModifyListItemButton";
 import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
-import { ListImage } from "@/components/lists/ListImage";
+import ListImage from "@/components/lists/ListImage";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,

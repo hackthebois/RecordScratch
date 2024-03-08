@@ -25,14 +25,22 @@ export const ArtistItem = ({
 		initialData: initialArtist,
 	});
 	const artistImage = artist.picture_medium;
+	const link = {
+		to: "/artists/$artistId",
+		params: {
+			artistId: String(artist.id),
+		},
+	};
 
 	return (
 		<Link
-			to="/artists/$artistId"
-			params={{
-				artistId: String(artist.id),
+			onClick={(event) => {
+				if (onClick) {
+					event.preventDefault();
+					onClick();
+				}
 			}}
-			onClick={onClick}
+			{...(onClick ? {} : link)}
 			className={cn(
 				"flex w-full min-w-0 items-center gap-4 rounded",
 				direction === "vertical" ? "flex-col" : "flex-row"

@@ -3,24 +3,7 @@ import { Deezer, getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { List } from "lucide-react";
 
-const _ListImage = ({ name, image }: { name: string; image?: string }) => {
-	return (
-		<div className="w-full overflow-hidden rounded-md">
-			<img
-				src={
-					image ??
-					"https://e-cdns-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg"
-				}
-				alt={`${name} cover`}
-				className="aspect-square h-auto w-auto overflow-hidden rounded-md object-cover transition-all hover:scale-105"
-			/>
-		</div>
-	);
-};
-
-export default _ListImage;
-
-export const ListSquare = ({
+const ListSquare = ({
 	image,
 	imageSize,
 	section,
@@ -106,7 +89,7 @@ const GetItemImage = ({
 	);
 };
 
-export const ListImage = ({
+const ListImage = ({
 	listItems,
 	category,
 }: {
@@ -116,7 +99,7 @@ export const ListImage = ({
 	if (!listItems || !listItems.length)
 		return (
 			<div className="flex h-48 w-48 items-center justify-center rounded-md bg-muted">
-				<List />
+				<List size={48} />
 			</div>
 		);
 	else if (listItems.length < 4)
@@ -160,3 +143,5 @@ export const ListImage = ({
 		</div>
 	);
 };
+
+export default ListImage;
