@@ -1,9 +1,9 @@
-import { DrizzleMySQLAdapter } from "@lucia-auth/adapter-drizzle";
+import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { Lucia } from "lucia";
 import { db } from "../db";
 import { sessions, users } from "../db/schema";
 
-const adapter = new DrizzleMySQLAdapter(db, sessions, users);
+const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {

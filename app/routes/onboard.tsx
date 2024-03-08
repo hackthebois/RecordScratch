@@ -187,14 +187,14 @@ function Onboard() {
 
 	if (form.formState.isSubmitting || form.formState.isSubmitSuccessful) {
 		return (
-			<main className="mx-auto flex h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
+			<main className="mx-auto flex max-h-[100svh] min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 				<Disc3 size={50} className="animate-spin" />
 			</main>
 		);
 	}
 
 	return (
-		<main className="mx-auto flex h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
+		<main className="mx-auto flex max-h-[100svh] min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 			<Head title="Onboard" />
 			<Form {...form}>
 				<form>

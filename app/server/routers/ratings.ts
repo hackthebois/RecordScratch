@@ -315,7 +315,8 @@ export const ratingsRouter = router({
 							userId,
 							parentId,
 						})
-						.onDuplicateKeyUpdate({
+						.onConflictDoUpdate({
+							target: [ratings.resourceId, ratings.userId],
 							set: {
 								rating,
 								resourceId,
@@ -333,7 +334,8 @@ export const ratingsRouter = router({
 			await db
 				.insert(ratings)
 				.values({ ...input, userId })
-				.onDuplicateKeyUpdate({
+				.onConflictDoUpdate({
+					target: [ratings.resourceId, ratings.userId],
 					set: { ...input, userId },
 				});
 		}),
