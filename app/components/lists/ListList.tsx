@@ -2,7 +2,7 @@ import { ListsType } from "@/types/list";
 import { Link } from "@tanstack/react-router";
 import { UserAvatar } from "../UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
-import ListImage from "./ListImage";
+import _ListImage from "./ListImage";
 
 const ListsItem = ({
 	listsItem,
@@ -32,7 +32,7 @@ const ListsItem = ({
 					maxHeight: size,
 				}}
 			>
-				<ListImage name={list.name} />
+				<_ListImage name={list.name} />
 			</div>
 			<p className="truncate pt-1 font-medium">{list.name}</p>
 		</>

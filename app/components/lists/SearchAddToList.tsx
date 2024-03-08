@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 import { useDebounce } from "@/utils/hooks";
 import { Button } from "../ui/Button";
-import { PlusSquare, Search } from "lucide-react";
+import { ListPlus, PlusSquare, Search } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
@@ -195,15 +195,13 @@ export const SearchAddToList = ({
 			open={open}
 		>
 			<DialogTrigger asChild>
-				<div className="pl-5">
-					<Button
-						className="h-16 w-full gap-1 rounded pb-5 pl-5 pr-3 pt-5"
-						variant="outline"
-					>
-						<PlusSquare className="h-6 w-6" />
-						Add to List
-					</Button>
-				</div>
+				<Button
+					className="h-16 w-full gap-1 rounded pb-5 pl-5 pr-3 pt-5"
+					variant="outline"
+				>
+					<ListPlus className="h-6 w-6" />
+					Add to List
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="flex h-full w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
 				<div className="mb-4 flex items-center border-b pr-10">

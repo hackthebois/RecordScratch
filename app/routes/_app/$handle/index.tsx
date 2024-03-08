@@ -323,18 +323,18 @@ function Handle() {
 					</TabsContent>
 				)}
 				<TabsContent value="lists">
-					{isUser && <CreateList />}
-					{lists && (
-						<div>
-							<div className=" pl-3 pt-3">
-								<ListList
-									lists={lists}
-									showProfiles={true}
-									type="wrap"
-								/>
-							</div>
-						</div>
-					)}
+					<div className="flex justify-center">
+						{isUser && <CreateList />}
+					</div>
+					<div className="ml-3 mt-2">
+						{lists && (
+							<ListList
+								lists={lists}
+								showProfiles={false}
+								type="wrap"
+							/>
+						)}
+					</div>
 				</TabsContent>
 			</Tabs>
 		</div>
