@@ -70,7 +70,7 @@ export const AddToList = ({
 				</DialogHeader>
 				<ListList
 					lists={lists}
-					type="scroll"
+					type="wrap"
 					onClick={(listId: string) => {
 						mutate({
 							resourceId,
