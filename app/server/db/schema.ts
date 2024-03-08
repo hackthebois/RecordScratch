@@ -1,37 +1,28 @@
 import { relations } from "drizzle-orm";
 import {
-	datetime,
-	mysqlEnum,
-	mysqlTable,
+	pgEnum,
+	pgTable,
 	primaryKey,
+	smallint,
 	text,
 	timestamp,
-	tinyint,
-	varchar,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
 
-export const users = mysqlTable("users", {
-	id: varchar("id", {
-		length: 255,
-	}).primaryKey(),
-	email: varchar("email", {
-		length: 100,
-	})
-		.unique()
-		.notNull(),
-	googleId: varchar("google_id", {
-		length: 255,
-	}).unique(),
+export const users = pgTable("users", {
+	id: text("id").primaryKey(),
+	email: text("email").unique().notNull(),
+	googleId: text("google_id").unique(),
 });
 
-export const sessions = mysqlTable("sessions", {
-	id: varchar("id", {
-		length: 255,
-	}).primaryKey(),
-	userId: varchar("user_id", {
-		length: 255,
+export const sessions = pgTable("sessions", {
+	id: text("id").primaryKey(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => users.id),
+	expiresAt: timestamp("expires_at", {
+		withTimezone: true,
+		mode: "date",
 	}).notNull(),
-	expiresAt: datetime("expires_at").notNull(),
 });
 
 export const sessionRelations = relations(sessions, ({ one }) => ({
@@ -42,14 +33,17 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
 	}),
 }));
 
-export const profile = mysqlTable("profile", {
-	userId: varchar("user_id", { length: 256 }).notNull().primaryKey(),
-	name: varchar("name", { length: 50 }).notNull(),
-	handle: varchar("handle", { length: 20 }).notNull().unique(),
-	imageUrl: varchar("image_url", { length: 256 }),
-	bio: varchar("bio", { length: 200 }),
+export const profile = pgTable("profile", {
+	userId: text("user_id")
+		.notNull()
+		.primaryKey()
+		.references(() => users.id),
+	name: text("name").notNull(),
+	handle: text("handle").notNull().unique(),
+	imageUrl: text("image_url"),
+	bio: text("bio"),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const profileRelations = relations(profile, ({ one, many }) => ({
@@ -69,17 +63,21 @@ export const profileRelations = relations(profile, ({ one, many }) => ({
 	}),
 }));
 
-export const ratings = mysqlTable(
+export const categoryEnum = pgEnum("category", ["ALBUM", "SONG", "ARTIST"]);
+
+export const ratings = pgTable(
 	"ratings",
 	{
-		parentId: varchar("parent_id", { length: 256 }).notNull(),
-		resourceId: varchar("resource_id", { length: 256 }).notNull(),
-		userId: varchar("user_id", { length: 256 }).notNull(),
-		rating: tinyint("rating").notNull(),
+		parentId: text("parent_id").notNull(),
+		resourceId: text("resource_id").notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id),
+		rating: smallint("rating").notNull(),
 		content: text("content"),
-		category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+		category: categoryEnum("category").notNull(),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({
@@ -96,11 +94,15 @@ export const ratingsRelations = relations(ratings, ({ one }) => ({
 	}),
 }));
 
-export const followers = mysqlTable(
+export const followers = pgTable(
 	"followers",
 	{
-		userId: varchar("user_id", { length: 256 }).notNull(),
-		followingId: varchar("following_id", { length: 256 }).notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id),
+		followingId: text("following_id")
+			.notNull()
+			.references(() => users.id),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({
