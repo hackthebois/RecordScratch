@@ -40,6 +40,7 @@ export const filterUserListsSchema = listSchema
 export const listResourcesSchema = createInsertSchema(list_resources, {
 	parentId: z.string().optional(),
 });
+export type ListItem = z.infer<typeof listResourcesSchema>;
 
 export const insertListResourcesSchema = listResourcesSchema.pick({
 	parentId: true,
@@ -59,3 +60,6 @@ export const deleteListResourcesSchema = listResourcesSchema.pick({
 export type ListType = z.infer<typeof listSchema>;
 
 export type ListsType = { profile: Profile | null; lists: ListType };
+
+const categorySchema = listSchema.pick({ category: true });
+export type Category = z.infer<typeof categorySchema>["category"];

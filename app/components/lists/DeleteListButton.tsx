@@ -22,7 +22,7 @@ export const DeleteListButton = ({
 	return (
 		<div>
 			<Button
-				className="bg-red-200"
+				variant="destructive"
 				onClick={async () => {
 					if (onClick) {
 						await onClick();

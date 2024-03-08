@@ -70,7 +70,10 @@ export const CreateList = () => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button className="ml-3 items-center gap-1 rounded pl-1 pr-2">
+				<Button
+					className=" mb-2 ml-3 w-full items-center gap-1 rounded p-6"
+					variant="outline"
+				>
 					<PlusSquare className="h-6 w-6" />
 					Create List
 				</Button>

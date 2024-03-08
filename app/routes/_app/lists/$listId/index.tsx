@@ -19,6 +19,7 @@ import { DeleteListItemButton } from "@/components/lists/ModifyListItemButton";
 import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
+import { ListImage } from "@/components/lists/ListImage";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -32,9 +33,6 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 			.parse(search);
 	},
 });
-
-const undefinedImage =
-	"https://e-cdns-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg";
 
 function List() {
 	const navigate = useNavigate({
@@ -57,14 +55,29 @@ function List() {
 	const { profile } = listData;
 	const isUser = myProfile?.userId === profile.userId;
 
+	const ListCategory =
+		listData.category === "ALBUM"
+			? "ALBUM LIST"
+			: listData.category === "SONG"
+				? "SONG LIST"
+				: listData.category === "ARTIST"
+					? "ARTIST LIST"
+					: "";
+
 	return (
 		<div className="flex flex-col gap-6">
 			<Head title={listData.name} description={undefined} />
 			<Metadata
 				title={listData.name}
-				cover={undefinedImage}
 				tags={[]}
-				type={listData.category}
+				type={ListCategory}
+				ownImage={true}
+				Image={
+					<ListImage
+						listItems={listItems}
+						category={listData.category}
+					/>
+				}
 			>
 				<Link
 					to="/$handle"
@@ -119,7 +132,7 @@ function List() {
 					{listData.category === "ARTIST" &&
 						listItems?.map((artist, index) => (
 							<div
-								className="my-3 flex flex-row items-center justify-between border-b  pb-1"
+								className="my-3 flex flex-row items-center justify-between border-b pb-1"
 								key={index}
 							>
 								<div
