@@ -124,7 +124,7 @@ const ListList = ({
 		);
 	} else {
 		return (
-			<div className="flex flex-wrap gap-3">
+			<div className="flex flex-row flex-wrap gap-3">
 				{lists &&
 					lists.map((list, index) => (
 						<ListsItem
