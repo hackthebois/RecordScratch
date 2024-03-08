@@ -326,7 +326,7 @@ function Handle() {
 					<div className="flex justify-center">
 						{isUser && <CreateList />}
 					</div>
-					<div className="ml-3 mt-2">
+					<div className="mt-2">
 						{lists && (
 							<ListList
 								lists={lists}
