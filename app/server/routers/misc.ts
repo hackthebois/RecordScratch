@@ -1,4 +1,4 @@
-import { isToday, isYesterday } from "@/utils/date";
+import dayjs from "dayjs";
 import { publicProcedure, router } from "../trpc";
 
 const albums = [
@@ -163,7 +163,10 @@ const albums = [
 export const miscRouter = router({
 	albumOfTheDay: publicProcedure.query(() => {
 		const albumOfTheDay = albums.find((album) => {
-			if (isToday(album.date) && album.albumId !== "") {
+			if (
+				dayjs(album.date).tz("America/Toronto").isToday() &&
+				album.albumId !== ""
+			) {
 				return true;
 			}
 		});
@@ -171,7 +174,10 @@ export const miscRouter = router({
 
 		// If there is no album of the day, return yesterday's album
 		const yesterdaysAlbum = albums.find((album) => {
-			if (isYesterday(album.date) && album.albumId !== "") {
+			if (
+				dayjs(album.date).tz("America/Toronto").isYesterday() &&
+				album.albumId !== ""
+			) {
 				return true;
 			}
 		});
