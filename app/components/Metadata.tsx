@@ -29,7 +29,7 @@ const Metadata = ({
 						className="h-[200px] w-[200px] self-center rounded-xl sm:self-start"
 					/>
 				) : (
-					Image
+					<div className=" self-center">{Image}</div>
 				)}
 				<div className="flex flex-col items-center gap-4 sm:items-start">
 					<p className="-mb-2 text-sm tracking-widest text-muted-foreground">

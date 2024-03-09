@@ -64,23 +64,23 @@ const albums = [
 	},
 	{
 		albumId: "93038342",
-		date: new Date(2024, 2, 1),
+		date: new Date(2024, 2, 13),
 	},
 	{
 		albumId: "107638",
-		date: new Date(2024, 2, 2),
+		date: new Date(2024, 2, 12),
 	},
 	{
 		albumId: "384314",
-		date: new Date(2024, 2, 7),
+		date: new Date(2024, 2, 11),
 	},
 	{
 		albumId: "423868847",
-		date: new Date(2024, 3, 5),
+		date: new Date(2024, 2, 10),
 	},
 	{
 		albumId: "549643892",
-		date: new Date(2024, 2, 6),
+		date: new Date(2024, 2, 9),
 	},
 ];
 
@@ -95,7 +95,6 @@ const isCurrentDay = (date: Date) => {
 };
 
 const AlbumOfTheDay = () => {
-	console.log(new Date());
 	const albumToday = albums.find((album) => isCurrentDay(album.date));
 
 	const { data: album } = useSuspenseQuery(

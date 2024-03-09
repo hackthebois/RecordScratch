@@ -13,7 +13,7 @@ const ListsItem = ({
 }: {
 	listsItem: ListsType;
 	showProfile?: boolean;
-	size?: number;
+	size: number;
 	parentId?: string;
 	resourceId?: string;
 	// eslint-disable-next-line no-unused-vars
@@ -38,7 +38,11 @@ const ListsItem = ({
 				}}
 				className="flex items-center justify-center"
 			>
-				<ListImage listItems={listItems} category={list.category} />
+				<ListImage
+					listItems={listItems}
+					category={list.category}
+					size={size}
+				/>
 			</div>
 			<p className="truncate pl-1 pt-1 font-medium">{list.name}</p>
 		</div>
@@ -97,21 +101,18 @@ const ListList = ({
 	lists: ListsType[] | undefined;
 	showProfiles?: boolean;
 	type?: "wrap" | "scroll";
+	orientation?: "vertical" | "horizontal";
 	// eslint-disable-next-line no-unused-vars
 	onClick?: (listId: string) => void;
 }) => {
 	if (type === "scroll") {
 		return (
-			<ScrollArea
-				orientation="horizontal"
-				className="w-full max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)]"
-			>
-				<div className="flex gap-4">
+			<ScrollArea className="w-full max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)]">
+				<div className="flex max-h-60 flex-wrap gap-4 sm:max-h-72 md:max-h-72 lg:max-h-72 xl:max-h-72">
 					{lists &&
 						lists.map((list, index) => (
-							<div className="mb-3">
+							<div className="mb-3" key={index}>
 								<ListsItem
-									key={index}
 									listsItem={list}
 									showProfile={showProfiles}
 									size={100}
@@ -124,14 +125,14 @@ const ListList = ({
 		);
 	} else {
 		return (
-			<div className="flex flex-row flex-wrap gap-3">
+			<div className="flex flex-row flex-wrap gap-3 pl-8">
 				{lists &&
 					lists.map((list, index) => (
 						<ListsItem
 							key={index}
 							listsItem={list}
 							showProfile={showProfiles}
-							size={200}
+							size={144}
 							onClick={onClick}
 						/>
 					))}
