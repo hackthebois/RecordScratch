@@ -19,6 +19,16 @@ export const timeAgo = (date: Date): string => {
 	return dayjs(date).fromNow();
 };
 
+export const isToday = (date: Date, tz: string): boolean => {
+	if (tz) return dayjs(date).tz(tz).isToday();
+	return dayjs(date).isToday();
+};
+
+export const isYesterday = (date: Date, tz: string): boolean => {
+	if (tz) return dayjs(date).tz(tz).isYesterday();
+	return dayjs(date).isYesterday();
+};
+
 export const formatMs = (milliseconds: number): string => {
 	const duration = dayjs.duration(milliseconds);
 	const minutes = duration.minutes();
