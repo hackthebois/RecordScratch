@@ -12,7 +12,7 @@ const ListSquare = ({
 	imageSize: number;
 	section: number;
 }) => {
-	const imageSizeClass = `w-${imageSize}`;
+	const imageSizeClass = `w-${imageSize / 4}`;
 	const roundedClass =
 		section === 0
 			? "rounded-tl"
@@ -32,7 +32,13 @@ const ListSquare = ({
 				"https://e-cdns-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg"
 			}
 			alt={`${image} cover`}
-			className={`${imageSizeClass} ${roundedClass}`}
+			className={`${roundedClass}`}
+			style={{
+				width: imageSize,
+				height: imageSize,
+				maxWidth: imageSize,
+				maxHeight: imageSize,
+			}}
 		/>
 	);
 };
@@ -92,14 +98,24 @@ const GetItemImage = ({
 const ListImage = ({
 	listItems,
 	category,
+	size,
 }: {
 	listItems?: ListItem[];
 	category: Category;
+	size: number;
 }) => {
 	if (!listItems || !listItems.length)
 		return (
-			<div className="flex h-48 w-48 items-center justify-center rounded-md bg-muted">
-				<List size={48} />
+			<div
+				className={`flex items-center justify-center rounded-md bg-muted`}
+				style={{
+					width: size,
+					height: size,
+					maxWidth: size,
+					maxHeight: size,
+				}}
+			>
+				<List size={size / 3} />
 			</div>
 		);
 	else if (listItems.length < 4)
@@ -107,38 +123,46 @@ const ListImage = ({
 			<GetItemImage
 				resourceId={listItems[0].resourceId}
 				category={category}
-				imageSize={48}
 				section={4}
+				imageSize={size}
 			/>
 		);
 	return (
-		<div className="flex w-48 flex-wrap rounded-b rounded-l rounded-r rounded-t">
+		<div
+			className={`flex w-full flex-wrap`}
+			style={{
+				width: size,
+				height: size,
+				maxWidth: size,
+				maxHeight: size,
+			}}
+		>
 			<GetItemImage
 				resourceId={listItems[0].resourceId}
 				category={category}
-				imageSize={24}
 				section={0}
+				imageSize={size / 2}
 			/>
 
 			<GetItemImage
 				resourceId={listItems[1].resourceId}
 				category={category}
-				imageSize={24}
 				section={1}
+				imageSize={size / 2}
 			/>
 
 			<GetItemImage
 				resourceId={listItems[2].resourceId}
 				category={category}
-				imageSize={24}
 				section={2}
+				imageSize={size / 2}
 			/>
 
 			<GetItemImage
 				resourceId={listItems[3].resourceId}
 				category={category}
-				imageSize={24}
 				section={3}
+				imageSize={size / 2}
 			/>
 		</div>
 	);

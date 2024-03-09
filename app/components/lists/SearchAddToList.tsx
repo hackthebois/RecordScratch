@@ -203,7 +203,7 @@ export const SearchAddToList = ({
 					Add to List
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="flex h-full w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
+			<DialogContent className="flex h-1/2 w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
 				<div className="mb-4 flex items-center border-b pr-10">
 					<Search size={20} className="ml-4 text-muted-foreground" />
 					<input

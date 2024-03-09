@@ -76,6 +76,7 @@ function List() {
 					<ListImage
 						listItems={listItems}
 						category={listData.category}
+						size={200}
 					/>
 				}
 			>
@@ -187,7 +188,7 @@ function List() {
 								<div className="flex flex-col items-start gap-2">
 									<Label>Edit List</Label>
 									<p className="text-sm text-muted-foreground">
-										Update your list information and image
+										Update your list information
 									</p>
 								</div>
 								<ModifyList
@@ -200,7 +201,7 @@ function List() {
 								<div className="flex flex-col items-start gap-2">
 									<Label>Delete List</Label>
 									<p className="text-sm text-muted-foreground">
-										Delete your list and all items
+										Delete your list and all list items
 										associated
 									</p>
 								</div>
