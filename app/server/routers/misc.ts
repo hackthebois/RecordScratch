@@ -174,7 +174,10 @@ export const miscRouter = router({
 
 		// If there is no album of the day, return yesterday's album
 		const yesterdaysAlbum = albums.find((album) => {
-			if (isYesterday("America/Toronto") && album.albumId !== "") {
+			if (
+				isYesterday(album.date, "America/Toronto") &&
+				album.albumId !== ""
+			) {
 				return true;
 			}
 		});
