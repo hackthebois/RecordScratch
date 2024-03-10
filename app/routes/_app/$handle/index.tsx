@@ -240,8 +240,8 @@ function Handle() {
 								</p>
 							))}
 						</div>
-						<Tabs value={category} className="mt-2">
-							<TabsList>
+						<Tabs value={category} className="mt-2 w-full">
+							<TabsList className="sm:w-full">
 								<TabsTrigger value="all" asChild>
 									<Link
 										params={{ handle }}
