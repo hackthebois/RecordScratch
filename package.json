@@ -49,6 +49,7 @@
     "mysql2": "^3.9.1",
     "oslo": "^1.1.2",
     "posthog-js": "^1.108.3",
+    "posthog-node": "^3.6.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.4",
