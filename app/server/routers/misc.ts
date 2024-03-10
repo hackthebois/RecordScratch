@@ -1,5 +1,4 @@
 import { isToday, isYesterday } from "@/utils/date";
-import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 
 const albums: {
@@ -165,27 +164,21 @@ const albums: {
 ];
 
 export const miscRouter = router({
-	albumOfTheDay: publicProcedure
-		.input(
-			z.object({
-				tz: z.string().optional(),
-			})
-		)
-		.query(({ input: { tz } }) => {
-			const timezone = tz || "America/Toronto";
-			const albumOfTheDay = albums.find((album) => {
-				if (isToday(album.date, timezone) && album.albumId !== "") {
-					return true;
-				}
-			});
-			if (albumOfTheDay) return albumOfTheDay;
+	albumOfTheDay: publicProcedure.query(() => {
+		const timezone = "America/Toronto";
+		const albumOfTheDay = albums.find((album) => {
+			if (isToday(album.date, timezone) && album.albumId !== "") {
+				return true;
+			}
+		});
+		if (albumOfTheDay) return albumOfTheDay;
 
-			// If there is no album of the day, return yesterday's album
-			const yesterdaysAlbum = albums.find((album) => {
-				if (isYesterday(album.date, timezone) && album.albumId !== "") {
-					return true;
-				}
-			});
-			return yesterdaysAlbum ? yesterdaysAlbum : albums[0];
-		}),
+		// If there is no album of the day, return yesterday's album
+		const yesterdaysAlbum = albums.find((album) => {
+			if (isYesterday(album.date, timezone) && album.albumId !== "") {
+				return true;
+			}
+		});
+		return yesterdaysAlbum ? yesterdaysAlbum : albums[0];
+	}),
 });
