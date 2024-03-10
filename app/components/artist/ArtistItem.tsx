@@ -9,11 +9,13 @@ export const ArtistItem = ({
 	artistId,
 	onClick,
 	direction = "horizontal",
+	showLink = true,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
 	onClick?: () => void;
 	direction?: "horizontal" | "vertical";
+	showLink?: boolean;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -34,13 +36,12 @@ export const ArtistItem = ({
 
 	return (
 		<Link
-			onClick={(event) => {
+			onClick={() => {
 				if (onClick) {
-					event.preventDefault();
 					onClick();
 				}
 			}}
-			{...(onClick ? {} : link)}
+			{...(showLink ? link : {})}
 			className={cn(
 				"flex w-full min-w-0 items-center gap-4 rounded",
 				direction === "vertical" ? "flex-col" : "flex-row"

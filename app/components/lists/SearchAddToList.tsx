@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 import { useDebounce } from "@/utils/hooks";
 import { Button } from "../ui/Button";
-import { ListPlus, PlusSquare, Search } from "lucide-react";
+import { ListPlus, Search } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
@@ -84,9 +84,10 @@ export const MusicSearch = ({
 								{data.albums.map((album, index) => (
 									<div
 										className="flex flex-col gap-3"
-										key={String(album.id)}
+										key={index}
 									>
 										<ResourceItem
+											showLink={false}
 											initialAlbum={album}
 											resource={{
 												parentId: String(
@@ -95,7 +96,6 @@ export const MusicSearch = ({
 												resourceId: String(album.id),
 												category: "ALBUM",
 											}}
-											key={index}
 											onClick={() => {
 												mutate({
 													resourceId: String(
@@ -117,11 +117,14 @@ export const MusicSearch = ({
 							<>
 								<h4 className="mt-3">Artists</h4>
 								{data.artists.map((artist, index) => (
-									<div className="flex flex-col gap-3">
+									<div
+										className="flex flex-col gap-3"
+										key={index}
+									>
 										<ArtistItem
+											showLink={false}
 											artistId={String(artist.id)}
 											initialArtist={artist}
-											key={index}
 											onClick={() => {
 												mutate({
 													resourceId: String(
@@ -141,14 +144,17 @@ export const MusicSearch = ({
 							<>
 								<h4 className="mt-3">Songs</h4>
 								{data.songs.map((song, index) => (
-									<div className="flex flex-col gap-3">
+									<div
+										className="flex flex-col gap-3"
+										key={index}
+									>
 										<ResourceItem
+											showLink={false}
 											resource={{
 												parentId: String(song.album.id),
 												resourceId: String(song.id),
 												category: "SONG",
 											}}
-											key={index}
 											onClick={() => {
 												mutate({
 													resourceId: String(song.id),
