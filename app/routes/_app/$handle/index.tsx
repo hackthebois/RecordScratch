@@ -248,7 +248,8 @@ function Handle() {
 								value="all"
 								onClick={() =>
 									navigate({
-										search: (prev) => ({
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any
+										search: (prev: any) => ({
 											...prev,
 											category: undefined,
 										}),
@@ -261,7 +262,8 @@ function Handle() {
 								value="ALBUM"
 								onClick={() =>
 									navigate({
-										search: (prev) => ({
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any
+										search: (prev: any) => ({
 											...prev,
 											category: "ALBUM",
 										}),
@@ -274,7 +276,8 @@ function Handle() {
 								value="SONG"
 								onClick={() =>
 									navigate({
-										search: (prev) => ({
+										// eslint-disable-next-line @typescript-eslint/no-explicit-any
+										search: (prev: any) => ({
 											...prev,
 											category: "SONG",
 										}),
