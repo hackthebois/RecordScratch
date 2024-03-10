@@ -12,6 +12,7 @@ import {
 import ListList from "./ListList";
 import { api } from "@/trpc/react";
 import { MoreHorizontal } from "lucide-react";
+import { Skeleton } from "../ui/Skeleton";
 
 export const AddToList = ({
 	parentId,
@@ -27,7 +28,7 @@ export const AddToList = ({
 
 	if (!myProfile) return null;
 
-	const { data: lists } = api.lists.getUserLists.useQuery({
+	const { data: lists, isLoading } = api.lists.getUserLists.useQuery({
 		userId: myProfile.userId,
 		category,
 	});

@@ -2,6 +2,7 @@ import { Category, ListItem } from "@/types/list";
 import { Deezer, getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { List } from "lucide-react";
+import { Suspense } from "react";
 
 const ListSquare = ({
 	image,
@@ -12,7 +13,6 @@ const ListSquare = ({
 	imageSize: number;
 	section: number;
 }) => {
-	const imageSizeClass = `w-${imageSize / 4}`;
 	const roundedClass =
 		section === 0
 			? "rounded-tl"
@@ -104,32 +104,9 @@ const ListImage = ({
 	category: Category;
 	size: number;
 }) => {
-	if (!listItems || !listItems.length)
-		return (
-			<div
-				className={`flex items-center justify-center rounded-md bg-muted`}
-				style={{
-					width: size,
-					height: size,
-					maxWidth: size,
-					maxHeight: size,
-				}}
-			>
-				<List size={size / 3} />
-			</div>
-		);
-	else if (listItems.length < 4)
-		return (
-			<GetItemImage
-				resourceId={listItems[0].resourceId}
-				category={category}
-				section={4}
-				imageSize={size}
-			/>
-		);
-	return (
+	const noImage = (
 		<div
-			className={`flex w-full flex-wrap`}
+			className={`flex items-center justify-center rounded-md bg-muted`}
 			style={{
 				width: size,
 				height: size,
@@ -137,34 +114,62 @@ const ListImage = ({
 				maxHeight: size,
 			}}
 		>
-			<GetItemImage
-				resourceId={listItems[0].resourceId}
-				category={category}
-				section={0}
-				imageSize={size / 2}
-			/>
-
-			<GetItemImage
-				resourceId={listItems[1].resourceId}
-				category={category}
-				section={1}
-				imageSize={size / 2}
-			/>
-
-			<GetItemImage
-				resourceId={listItems[2].resourceId}
-				category={category}
-				section={2}
-				imageSize={size / 2}
-			/>
-
-			<GetItemImage
-				resourceId={listItems[3].resourceId}
-				category={category}
-				section={3}
-				imageSize={size / 2}
-			/>
+			<List size={size / 3} />
 		</div>
+	);
+
+	if (!listItems || !listItems.length) return noImage;
+	else if (listItems.length < 4)
+		return (
+			<Suspense fallback={noImage}>
+				<GetItemImage
+					resourceId={listItems[0].resourceId}
+					category={category}
+					section={4}
+					imageSize={size}
+				/>
+			</Suspense>
+		);
+	return (
+		<Suspense fallback={noImage}>
+			<div
+				className={`flex w-full flex-wrap`}
+				style={{
+					width: size,
+					height: size,
+					maxWidth: size,
+					maxHeight: size,
+				}}
+			>
+				<GetItemImage
+					resourceId={listItems[0].resourceId}
+					category={category}
+					section={0}
+					imageSize={size / 2}
+				/>
+
+				<GetItemImage
+					resourceId={listItems[1].resourceId}
+					category={category}
+					section={1}
+					imageSize={size / 2}
+				/>
+
+				<GetItemImage
+					resourceId={listItems[2].resourceId}
+					category={category}
+					section={2}
+					imageSize={size / 2}
+				/>
+
+				<GetItemImage
+					resourceId={listItems[3].resourceId}
+					category={category}
+					section={3}
+					imageSize={size / 2}
+				/>
+			</div>
+		</Suspense>
 	);
 };
 

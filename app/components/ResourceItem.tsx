@@ -10,11 +10,13 @@ export const ResourceItem = ({
 	resource,
 	showType,
 	onClick,
+	showLink = true,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
 	showType?: boolean;
 	onClick?: () => void;
+	showLink?: boolean;
 }) => {
 	const navigate = useNavigate();
 	const { data: album } = useQuery({
@@ -64,16 +66,14 @@ export const ResourceItem = ({
 						albumId: resource.resourceId,
 					},
 				};
-
 	return (
 		<Link
-			onClick={(event) => {
+			onClick={() => {
 				if (onClick) {
-					event.preventDefault();
 					onClick();
 				}
 			}}
-			{...(onClick ? {} : link)}
+			{...(showLink ? link : {})}
 			className="flex flex-row items-center gap-4 rounded"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">
@@ -84,16 +84,13 @@ export const ResourceItem = ({
 				<div className="flex gap-1">
 					<button
 						key={album.artist?.id}
-						onClick={(e) => {
-							e.preventDefault();
-							if (onClick) onClick();
-							else
-								navigate({
-									to: "/artists/$artistId",
-									params: {
-										artistId: String(album.artist?.id),
-									},
-								});
+						onClick={() => {
+							navigate({
+								to: "/artists/$artistId",
+								params: {
+									artistId: String(album.artist?.id),
+								},
+							});
 						}}
 						className="truncate py-1 text-sm text-muted-foreground hover:underline"
 					>
