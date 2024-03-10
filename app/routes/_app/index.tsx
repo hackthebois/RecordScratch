@@ -14,6 +14,7 @@ import { formatMs } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import dayjs from "dayjs";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/")({
@@ -34,7 +35,9 @@ export const Route = createFileRoute("/_app/")({
 });
 
 const AlbumOfTheDay = () => {
-	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
+	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery({
+		tz: dayjs.tz.guess(),
+	});
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
