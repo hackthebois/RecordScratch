@@ -23,10 +23,8 @@ export const isYesterday = (date: Date, tz: string): boolean => {
 	return dayjs(date).tz(tz).isSame(yesterday, "day");
 };
 
-export const formatMs = (milliseconds: number): string => {
-	const duration = dayjs.duration(milliseconds);
-	const minutes = duration.minutes();
-	const seconds = duration.seconds();
+export const formatDuration = (seconds: number): string => {
+	const minutes = Math.floor(seconds / 60);
 
 	if (minutes > 0) {
 		return `${minutes}m ${seconds % 60}s`;
