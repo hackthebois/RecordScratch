@@ -53,7 +53,7 @@ export const CreateList = () => {
 
 	useEffect(() => {
 		form.reset({
-			name: "",
+			name: undefined,
 			category: undefined,
 			description: "",
 		});

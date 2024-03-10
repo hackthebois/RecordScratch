@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Profile } from "./profile";
 
 export const listSchema = createInsertSchema(lists, {
-	name: z.string().max(50),
+	name: z.string().max(50).min(1).trim(),
 });
 
 export const insertListSchema = listSchema.pick({

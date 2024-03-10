@@ -20,11 +20,10 @@ const FollowerMenu = ({ profileId }: Props) => {
 		type: "following",
 	});
 
-	const showButton = profile && profile?.userId !== profileId;
+	const showButton = !!profile && profile?.userId !== profileId;
 
 	return (
 		<div className="flex flex-row items-center justify-center gap-6 sm:justify-start">
-			{profile && profile?.userId !== profileId ? "TRUE" : "FALSE"}
 			<div className="flex flex-col items-center gap-1">
 				<p className="text-sm font-medium">Followers</p>
 				<FollowersPopup
