@@ -9,10 +9,8 @@ dayjs.extend(DurationPlugin);
 dayjs.extend(TimezonePlugin);
 dayjs.extend(utc);
 
-dayjs.tz.setDefault(dayjs.tz.guess());
-
 export const timeAgo = (date: Date): string => {
-	return dayjs(date).fromNow();
+	return dayjs(date).tz(dayjs.tz.guess()).fromNow();
 };
 
 export const isToday = (date: Date, tz: string): boolean => {
