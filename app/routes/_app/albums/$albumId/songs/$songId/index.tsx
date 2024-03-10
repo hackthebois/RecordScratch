@@ -10,7 +10,7 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
-import { formatMs } from "@/utils/date";
+import { formatDuration } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -58,7 +58,7 @@ function Song() {
 				tags={[
 					album.release_date,
 					song.explicit_lyrics ? "Explicit" : undefined,
-					formatMs(song.duration * 1000),
+					formatDuration(song.duration),
 				]}
 			>
 				<Link

@@ -10,7 +10,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
-import { formatMs } from "@/utils/date";
+import { formatDuration } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -49,7 +49,7 @@ const AlbumOfTheDay = () => {
 			tags={[
 				album.release_date,
 				album.duration
-					? `${formatMs(album.duration * 1000)}`
+					? `${formatDuration(album.duration)}`
 					: undefined,
 				...(album.genres?.data.map((genre) => genre.name) ?? []),
 			]}
