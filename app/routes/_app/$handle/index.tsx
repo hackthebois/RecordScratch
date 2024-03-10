@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) throw notFound({ route: "/_app" });
+		if (!profile) throw notFound();
 		apiUtils.profiles.distribution.ensureData({ userId: profile.userId });
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
@@ -157,7 +157,7 @@ function Handle() {
 				<TabsList>
 					<TabsTrigger value="reviews" asChild>
 						<Link
-							params={{ handle }}
+							from={Route.fullPath}
 							search={{
 								tab: undefined,
 							}}
@@ -168,7 +168,7 @@ function Handle() {
 					{isUser && (
 						<TabsTrigger value="settings" asChild>
 							<Link
-								params={{ handle }}
+								from={Route.fullPath}
 								search={{
 									tab: "settings",
 								}}
@@ -200,10 +200,7 @@ function Handle() {
 						<div className="flex h-20 w-full items-end justify-between gap-1">
 							{distribution?.map((ratings, index) => (
 								<Link
-									to="/$handle"
-									params={{
-										handle: handle,
-									}}
+									from={Route.fullPath}
 									search={{
 										rating:
 											rating === index + 1
@@ -244,7 +241,7 @@ function Handle() {
 							<TabsList className="sm:w-full">
 								<TabsTrigger value="all" asChild>
 									<Link
-										params={{ handle }}
+										from={Route.fullPath}
 										search={(prev) => ({
 											...prev,
 											category: undefined,
@@ -255,7 +252,7 @@ function Handle() {
 								</TabsTrigger>
 								<TabsTrigger value="ALBUM" asChild>
 									<Link
-										params={{ handle }}
+										from={Route.fullPath}
 										search={(prev) => ({
 											...prev,
 											category: "ALBUM",
@@ -266,7 +263,7 @@ function Handle() {
 								</TabsTrigger>
 								<TabsTrigger value="SONG" asChild>
 									<Link
-										params={{ handle }}
+										from={Route.fullPath}
 										search={(prev) => ({
 											...prev,
 											category: "SONG",

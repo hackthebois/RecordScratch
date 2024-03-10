@@ -22,6 +22,12 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	loader: ({ params: { albumId } }) => {
 		queryClient.ensureQueryData(
 			getQueryOptions({
+				route: "/album/{id}/tracks",
+				input: { id: albumId, limit: 1000 },
+			})
+		);
+		queryClient.ensureQueryData(
+			getQueryOptions({
 				route: "/album/{id}",
 				input: { id: albumId },
 			})
@@ -38,9 +44,13 @@ function Song() {
 			input: { id: albumId },
 		})
 	);
-	const song = album.tracks.data.find(
-		(track) => track.id === Number(songId)
-	)!;
+	const { data: tracks } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/album/{id}/tracks",
+			input: { id: albumId, limit: 1000 },
+		})
+	);
+	const song = tracks.data.find((track) => track.id === Number(songId))!;
 
 	const resource: Resource = {
 		parentId: String(album.id),

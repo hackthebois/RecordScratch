@@ -55,7 +55,7 @@ function Album() {
 			input: { id: albumId, limit: 1000 },
 		}),
 		initialData: {
-			data: album?.tracks?.data,
+			data: album?.tracks?.data ?? [],
 		},
 	});
 
@@ -102,7 +102,7 @@ function Album() {
 				<TabsList>
 					<TabsTrigger value="songs">
 						<Link
-							params={{ albumId }}
+							from={Route.fullPath}
 							search={{
 								tab: undefined,
 							}}
@@ -112,7 +112,7 @@ function Album() {
 					</TabsTrigger>
 					<TabsTrigger value="reviews">
 						<Link
-							params={{ albumId }}
+							from={Route.fullPath}
 							search={{
 								tab: "reviews",
 							}}

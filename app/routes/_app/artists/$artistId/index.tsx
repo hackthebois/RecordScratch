@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/artists/$artistId/")({
@@ -64,9 +64,6 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 function Artist() {
 	const { artistId } = Route.useParams();
 	const { tab = "top-songs" } = Route.useSearch();
-	const navigate = useNavigate({
-		from: Route.fullPath,
-	});
 
 	const { data: artist } = useSuspenseQuery(
 		getQueryOptions({
@@ -122,7 +119,7 @@ function Artist() {
 				<TabsList>
 					<TabsTrigger value="top-songs" asChild>
 						<Link
-							params={{ artistId }}
+							from={Route.fullPath}
 							search={{
 								tab: undefined,
 							}}
@@ -132,7 +129,7 @@ function Artist() {
 					</TabsTrigger>
 					<TabsTrigger value="related" asChild>
 						<Link
-							params={{ artistId }}
+							from={Route.fullPath}
 							search={{
 								tab: "related",
 							}}
@@ -142,7 +139,7 @@ function Artist() {
 					</TabsTrigger>
 					<TabsTrigger value="discography" asChild>
 						<Link
-							params={{ artistId }}
+							from={Route.fullPath}
 							search={{
 								tab: "discography",
 							}}
