@@ -124,7 +124,7 @@ function Album() {
 				<TabsContent value="songs">
 					<SongTable
 						songs={
-							songs?.data.map((song) => ({ ...song, album })) ??
+							songs?.data?.map((song) => ({ ...song, album })) ??
 							[]
 						}
 					/>
