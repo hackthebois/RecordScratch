@@ -93,21 +93,23 @@ function List() {
 				<h5>{listData.description}</h5>
 			</Metadata>
 			<Tabs value={tab}>
-				<div className="flex flex-row">
-					<TabsList className=" space-x-2">
-						<TabsTrigger
-							value="list"
-							onClick={() =>
-								navigate({
-									search: {
-										tab: undefined,
-									},
-								})
+				{isUser && (
+					<div className="flex flex-row">
+						<TabsList className=" space-x-2">
+							{
+								<TabsTrigger
+									value="list"
+									onClick={() =>
+										navigate({
+											search: {
+												tab: undefined,
+											},
+										})
+									}
+								>
+									List
+								</TabsTrigger>
 							}
-						>
-							List
-						</TabsTrigger>
-						{isUser && (
 							<TabsTrigger
 								value="settings"
 								onClick={() =>
@@ -120,9 +122,9 @@ function List() {
 							>
 								Settings
 							</TabsTrigger>
-						)}
-					</TabsList>
-				</div>
+						</TabsList>
+					</div>
+				)}
 				<TabsContent value="list">
 					{isUser && (
 						<SearchAddToList
@@ -145,10 +147,12 @@ function List() {
 									</p>
 									<ArtistItem artistId={artist.resourceId} />
 								</div>
-								<DeleteListItemButton
-									resourceId={artist.resourceId}
-									listId={artist.listId}
-								/>
+								{isUser && (
+									<DeleteListItemButton
+										resourceId={artist.resourceId}
+										listId={artist.listId}
+									/>
+								)}
 							</div>
 						))}
 					{(listData.category === "ALBUM" ||
@@ -210,7 +214,10 @@ function List() {
 									listId={listData.id}
 									onClick={async () =>
 										await navigate({
-											to: `/${profile.handle}`,
+											to: `/$handle`,
+											params: {
+												handle: profile.handle,
+											},
 											search: {
 												tab: "lists",
 											},
