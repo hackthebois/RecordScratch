@@ -171,6 +171,16 @@ function Handle() {
 							Reviews
 						</Link>
 					</TabsTrigger>
+					<TabsTrigger value="lists" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								tab: "lists",
+							}}
+						>
+							Lists
+						</Link>
+					</TabsTrigger>
 					{isUser && (
 						<TabsTrigger value="settings" asChild>
 							<Link
@@ -183,16 +193,6 @@ function Handle() {
 							</Link>
 						</TabsTrigger>
 					)}
-					<TabsTrigger value="lists" asChild>
-						<Link
-							from={Route.fullPath}
-							search={{
-								tab: "lists",
-							}}
-						>
-							Lists
-						</Link>
-					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
 					<div className="flex w-full flex-col rounded-md border p-4 pt-6 sm:max-w-lg">

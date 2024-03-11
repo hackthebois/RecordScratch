@@ -7,23 +7,21 @@ import { ResourceItem } from "../ResourceItem";
 import { useQuery } from "@tanstack/react-query";
 import { deezer } from "@/utils/deezer";
 import { ArtistItem } from "../artist/ArtistItem";
-import { ScrollArea } from "../ui/ScrollArea";
 import { api } from "@/trpc/react";
+import { SearchState } from "../SearchBar";
 
 export const MusicSearch = ({
 	query,
 	category,
 	listId,
-	setOpen,
+	onNavigate,
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
 	listId: string;
 	onNavigate: () => void;
-	// eslint-disable-next-line no-unused-vars
-	setOpen: (open: boolean) => void;
 }) => {
-	const { data } = useQuery({
+	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", "search-music", query],
 		queryFn: async () => {
 			let artists = null;
@@ -74,7 +72,15 @@ export const MusicSearch = ({
 	});
 
 	return (
-		<ScrollArea className="flex flex-col gap-3 px-4">
+		<SearchState
+			isError={isError}
+			isLoading={isLoading}
+			onNavigate={onNavigate}
+			noResults={
+				data?.albums?.length === 0 && data?.artists?.length === 0
+			}
+			hide={{ profiles: true }}
+		>
 			<div className="flex flex-col gap-3 pb-4">
 				{data && (
 					<>
@@ -106,7 +112,7 @@ export const MusicSearch = ({
 													),
 													listId,
 												});
-												setOpen(false);
+												onNavigate();
 											}}
 										/>
 									</div>
@@ -133,7 +139,7 @@ export const MusicSearch = ({
 													listId,
 												});
 												list.invalidate({ listId });
-												setOpen(false);
+												onNavigate();
 											}}
 										/>
 									</div>
@@ -164,7 +170,7 @@ export const MusicSearch = ({
 													listId,
 												});
 												list.invalidate({ listId });
-												setOpen(false);
+												onNavigate();
 											}}
 										/>
 									</div>
@@ -174,7 +180,7 @@ export const MusicSearch = ({
 					</>
 				)}
 			</div>
-		</ScrollArea>
+		</SearchState>
 	);
 };
 
@@ -202,7 +208,7 @@ export const SearchAddToList = ({
 		>
 			<DialogTrigger asChild>
 				<Button
-					className="h-16 w-full gap-1 rounded pb-5 pl-5 pr-3 pt-5"
+					className="h-10 gap-1 rounded pb-5 pr-3 pt-5"
 					variant="outline"
 				>
 					<ListPlus className="h-6 w-6" />
@@ -230,7 +236,6 @@ export const SearchAddToList = ({
 						setQuery("");
 						setOpen(false);
 					}}
-					setOpen={setOpen}
 				/>
 			</DialogContent>
 		</Dialog>

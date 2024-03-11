@@ -12,7 +12,6 @@ import {
 import ListList from "./ListList";
 import { api } from "@/trpc/react";
 import { MoreHorizontal } from "lucide-react";
-import { Skeleton } from "../ui/Skeleton";
 
 export const AddToList = ({
 	parentId,
@@ -28,7 +27,7 @@ export const AddToList = ({
 
 	if (!myProfile) return null;
 
-	const { data: lists, isLoading } = api.lists.getUserLists.useQuery({
+	const { data: lists } = api.lists.getUserLists.useQuery({
 		userId: myProfile.userId,
 		category,
 	});
@@ -53,7 +52,7 @@ export const AddToList = ({
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button
-					className="ml-3 size-9 items-center gap-1 rounded"
+					className="size-9 items-center gap-1 rounded"
 					variant="outline"
 					size="icon"
 				>

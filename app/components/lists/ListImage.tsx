@@ -76,11 +76,11 @@ const GetItemImage = ({
 	const getImageUrl = (category: Category, data: any) => {
 		switch (category) {
 			case "SONG":
-				return data.album?.cover;
+				return data.album?.cover_big;
 			case "ALBUM":
-				return data.cover;
+				return data.cover_big;
 			case "ARTIST":
-				return data.picture;
+				return data.picture_big;
 			default:
 				return undefined;
 		}

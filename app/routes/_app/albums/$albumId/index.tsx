@@ -95,7 +95,7 @@ function Album() {
 						<RatingInfo resource={resource} />
 					</div>
 					{profile ? (
-						<>
+						<div className="flex gap-3">
 							<RatingDialog
 								resource={resource}
 								name={album.title}
@@ -105,7 +105,7 @@ function Album() {
 								resourceId={String(album.id)}
 								category="ALBUM"
 							/>
-						</>
+						</div>
 					) : (
 						<SignInRateButton />
 					)}
