@@ -3,6 +3,7 @@ import Metadata from "@/components/Metadata";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
+import { AddToList } from "@/components/lists/AddToList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { RatingInfo } from "@/components/ui/RatingInfo";
@@ -108,12 +109,19 @@ function Artist() {
 				tags={[`${artist.nb_album} Albums`]}
 				type="ARTIST"
 			>
-				<RatingInfo
-					resource={{
-						resourceId: String(artist.id),
-						category: "ARTIST",
-					}}
-				/>
+				<div className="flex flex-row">
+					<RatingInfo
+						resource={{
+							resourceId: String(artist.id),
+							category: "ARTIST",
+						}}
+					/>
+
+					<AddToList
+						resourceId={String(artist.id)}
+						category="ARTIST"
+					/>
+				</div>
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>

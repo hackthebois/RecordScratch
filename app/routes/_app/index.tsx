@@ -33,12 +33,74 @@ export const Route = createFileRoute("/_app/")({
 	},
 });
 
+const albums = [
+	{
+		albumId: "44730061",
+		date: new Date(2024, 1, 23),
+	},
+	{
+		albumId: "542677642",
+		date: new Date(2024, 1, 24),
+	},
+	{
+		albumId: "117320",
+		date: new Date(2024, 1, 25),
+	},
+	{
+		albumId: "6982611",
+		date: new Date(2024, 1, 26),
+	},
+	{
+		albumId: "423868847",
+		date: new Date(2024, 1, 27),
+	},
+	{
+		albumId: "60322892",
+		date: new Date(2024, 1, 28),
+	},
+	{
+		albumId: "1440807",
+		date: new Date(2024, 1, 29),
+	},
+	{
+		albumId: "93038342",
+		date: new Date(2024, 2, 13),
+	},
+	{
+		albumId: "107638",
+		date: new Date(2024, 2, 12),
+	},
+	{
+		albumId: "384314",
+		date: new Date(2024, 2, 11),
+	},
+	{
+		albumId: "423868847",
+		date: new Date(2024, 2, 10),
+	},
+	{
+		albumId: "549643892",
+		date: new Date(2024, 2, 9),
+	},
+];
+
+const isCurrentDay = (date: Date) => {
+	const currentDate = new Date();
+	// Check if the current date matches the day to show
+	return (
+		currentDate.getDate() === date.getDate() &&
+		currentDate.getMonth() === date.getMonth() &&
+		currentDate.getFullYear() === date.getFullYear()
+	);
+};
+
 const AlbumOfTheDay = () => {
-	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
+	const albumToday = albums.find((album) => isCurrentDay(album.date));
+
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
-			input: { id: albumOfTheDay.albumId },
+			input: { id: albumToday!.albumId },
 		})
 	);
 

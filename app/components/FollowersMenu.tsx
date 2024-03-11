@@ -20,7 +20,7 @@ const FollowerMenu = ({ profileId }: Props) => {
 		type: "following",
 	});
 
-	const showButton = profile && profile?.userId !== profileId;
+	const showButton = !!profile && profile?.userId !== profileId;
 
 	return (
 		<div className="flex flex-row items-center justify-center gap-6 sm:justify-start">
@@ -40,7 +40,7 @@ const FollowerMenu = ({ profileId }: Props) => {
 					followerCount={followingCount}
 				/>
 			</div>
-			{showButton && <FollowButton profileId={profileId} />}
+			{showButton ? <FollowButton profileId={profileId} /> : null}
 		</div>
 	);
 };

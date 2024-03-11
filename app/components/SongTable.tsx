@@ -9,6 +9,7 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/Skeleton";
+import { AddToList } from "./lists/AddToList";
 
 const SongRatingDialog = ({ songs, song }: { songs: Track[]; song: Track }) => {
 	const [userRatings] = api.ratings.user.getList.useSuspenseQuery({
@@ -69,7 +70,14 @@ const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 				size="sm"
 			/>
 			{profile ? (
-				<SongRatingDialog songs={songs} song={song} />
+				<>
+					<SongRatingDialog songs={songs} song={song} />
+					<AddToList
+						parentId={String(song.album.id)}
+						resourceId={String(song.id)}
+						category="SONG"
+					/>
+				</>
 			) : (
 				<SignInRateButton />
 			)}

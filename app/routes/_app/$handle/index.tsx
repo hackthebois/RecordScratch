@@ -4,6 +4,8 @@ import { Head } from "@/components/Head";
 import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
 import { UserAvatar } from "@/components/UserAvatar";
+import { CreateList } from "@/components/lists/CreateList";
+import ListList from "@/components/lists/ListList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -14,16 +16,12 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Label } from "@/components/ui/Label";
+import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import {
-	Link,
-	createFileRoute,
-	notFound,
-	useNavigate,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 
@@ -35,15 +33,19 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["settings"]).optional(),
+				tab: z.enum(["settings", "lists"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
 			})
 			.parse(search);
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) throw notFound();
-		apiUtils.profiles.distribution.ensureData({ userId: profile.userId });
+		if (!profile) return <NotFound />;
+		// apiUtils.profiles.distribution.ensureData({
+		// 	userId: profile.userId,
+		// 	category: undefined,
+		// });
+
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "followers",
@@ -124,7 +126,11 @@ function Handle() {
 		}
 	);
 
-	if (!profile) return null;
+	if (!profile) return <NotFound />;
+
+	const { data: lists } = api.lists.getUserLists.useQuery({
+		userId: profile.userId,
+	});
 
 	const isUser = myProfile?.userId === profile.userId;
 
@@ -177,24 +183,19 @@ function Handle() {
 							</Link>
 						</TabsTrigger>
 					)}
+					<TabsTrigger
+						value="lists"
+						onClick={() =>
+							navigator({
+								search: {
+									tab: "lists",
+								},
+							})
+						}
+					>
+						Lists
+					</TabsTrigger>
 				</TabsList>
-				{/* <TabsContent value="profile" className="flex flex-col gap-4">
-					<h3 className="mt-4">Top Albums</h3>
-					<AlbumList
-						albums={[
-							"60322892",
-							"1440807",
-							"542677642",
-							"44730061",
-							"6982611",
-							"107638",
-						]}
-					/>
-					<ArtistList
-						direction="vertical"
-						artists={["1", "2", "3", "4", "5", "6"]}
-					/>
-				</TabsContent> */}
 				<TabsContent value="reviews">
 					<div className="flex w-full flex-col rounded-md border p-4 pt-6 sm:max-w-lg">
 						<div className="flex h-20 w-full items-end justify-between gap-1">
@@ -312,6 +313,20 @@ function Handle() {
 						</div>
 					</TabsContent>
 				)}
+				<TabsContent value="lists">
+					<div className="flex justify-center">
+						{isUser && <CreateList />}
+					</div>
+					<div className="mt-2">
+						{lists && (
+							<ListList
+								lists={lists}
+								showProfiles={false}
+								type="wrap"
+							/>
+						)}
+					</div>
+				</TabsContent>
 			</Tabs>
 		</div>
 	);
