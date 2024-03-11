@@ -175,7 +175,7 @@ function List() {
 									className="my-3 flex flex-row items-center justify-between border-b pb-1"
 									key={index}
 								>
-									<div className="flex flex-row items-center">
+									<div className="flex w-4/5 flex-row items-center overflow-hidden">
 										<p className="w-4 pr-5 text-center text-sm text-muted-foreground">
 											{index + 1}
 										</p>
@@ -241,28 +241,29 @@ function List() {
 												forever
 											</AlertDialogDescription>
 										</AlertDialogHeader>
-										<AlertDialogFooter>
+										<AlertDialogFooter className="flex flex-row items-center justify-center  gap-4 sm:justify-end">
 											<AlertDialogCancel>
 												Cancel
 											</AlertDialogCancel>
-
-											<DeleteListButton
-												userId={myProfile?.userId}
-												listId={listData.id}
-												onClick={() =>
-													navigate({
-														to: `/$handle`,
-														params: {
-															handle: String(
-																profile.handle
-															),
-														},
-														search: {
-															tab: "lists",
-														},
-													})
-												}
-											/>
+											<div className=" mt-2 sm:mt-0 ">
+												<DeleteListButton
+													userId={myProfile?.userId}
+													listId={listData.id}
+													onClick={() =>
+														navigate({
+															to: `/$handle`,
+															params: {
+																handle: String(
+																	profile.handle
+																),
+															},
+															search: {
+																tab: "lists",
+															},
+														})
+													}
+												/>
+											</div>
 										</AlertDialogFooter>
 									</AlertDialogContent>
 								</AlertDialog>

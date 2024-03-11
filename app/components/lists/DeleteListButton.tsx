@@ -20,20 +20,18 @@ export const DeleteListButton = ({
 	}).mutate;
 
 	return (
-		<div>
-			<Button
-				variant="destructive"
-				onClick={() => {
-					if (onClick) {
-						onClick();
-					}
-					deleteResource({
-						id: listId,
-					});
-				}}
-			>
-				Delete
-			</Button>
-		</div>
+		<Button
+			variant="destructive"
+			onClick={() => {
+				if (onClick) {
+					onClick();
+				}
+				deleteResource({
+					id: listId,
+				});
+			}}
+		>
+			Delete
+		</Button>
 	);
 };
