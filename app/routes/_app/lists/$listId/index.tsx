@@ -179,17 +179,19 @@ function List() {
 									}`}
 									key={index}
 								>
-									<div className="flex flex-row items-center">
+									<div className="flex w-4/5 flex-row items-center overflow-hidden">
 										<p className="w-4 pr-5 text-center text-sm text-muted-foreground">
 											{index + 1}
 										</p>
-										<ResourceItem
-											resource={{
-												parentId: item.parentId!,
-												resourceId: item.resourceId,
-												category: listData.category,
-											}}
-										/>
+										<div className="overflow-hidden">
+											<ResourceItem
+												resource={{
+													parentId: item.parentId!,
+													resourceId: item.resourceId,
+													category: listData.category,
+												}}
+											/>
+										</div>
 									</div>
 									{isUser && (
 										<DeleteListItemButton
