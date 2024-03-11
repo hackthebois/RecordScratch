@@ -311,11 +311,11 @@ function Handle() {
 						</div>
 					</TabsContent>
 				)}
-				<TabsContent value="lists">
+				<TabsContent value="lists" className="flex flex-col">
 					<div className="flex justify-center">
 						{isUser && <CreateList />}
 					</div>
-					<div className="mt-2">
+					<div className="mt-2 self-center sm:self-auto">
 						{lists && (
 							<ListList
 								lists={lists}

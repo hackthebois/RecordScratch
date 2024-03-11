@@ -55,7 +55,7 @@ export const CreateList = () => {
 			category: undefined,
 			description: "",
 		});
-	}, []);
+	}, [form]);
 
 	const onSubmit = async ({ name, category, description }: InsertList) => {
 		createList({
