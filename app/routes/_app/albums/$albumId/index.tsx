@@ -4,6 +4,7 @@ import Metadata from "@/components/Metadata";
 import { RatingDialog } from "@/components/RatingDialog";
 import { SignInRateButton } from "@/components/SignInRateButton";
 import SongTable from "@/components/SongTable";
+import { AddToList } from "@/components/lists/AddToList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { RatingInfo } from "@/components/ui/RatingInfo";
@@ -89,10 +90,22 @@ function Album() {
 				>
 					{album.artist?.name}
 				</Link>
-				<div className="flex items-center gap-4">
-					<RatingInfo resource={resource} />
+				<div className="flex items-center">
+					<div className="mr-4">
+						<RatingInfo resource={resource} />
+					</div>
 					{profile ? (
-						<RatingDialog resource={resource} name={album.title} />
+						<>
+							<RatingDialog
+								resource={resource}
+								name={album.title}
+							/>
+							<AddToList
+								parentId={String(album.artist?.id)}
+								resourceId={String(album.id)}
+								category="ALBUM"
+							/>
+						</>
 					) : (
 						<SignInRateButton />
 					)}
