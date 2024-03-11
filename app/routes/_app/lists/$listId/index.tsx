@@ -8,7 +8,6 @@ import {
 import { api } from "@/trpc/react";
 import { Head } from "@/components/Head";
 import { NotFound } from "@/components/ui/NotFound";
-import Metadata from "@/components/Metadata";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { z } from "zod";
@@ -22,7 +21,6 @@ import { ModifyList } from "@/components/lists/UpdateList";
 import ListImage from "@/components/lists/ListImage";
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
@@ -32,6 +30,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/AlertDialog";
 import { Button } from "@/components/ui/Button";
+import ListMetadata from "@/components/lists/listMetaData";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -77,18 +76,16 @@ function List() {
 					: "";
 
 	return (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-1">
 			<Head title={listData.name} description={undefined} />
-			<Metadata
+			<ListMetadata
 				title={listData.name}
-				tags={[]}
 				type={ListCategory}
-				ownImage={true}
 				Image={
 					<ListImage
 						listItems={listItems}
 						category={listData.category}
-						size={200}
+						size={125}
 					/>
 				}
 			>
@@ -99,11 +96,10 @@ function List() {
 					}}
 					className="flex items-center gap-2"
 				>
-					<UserAvatar {...profile} size={30} />
+					<UserAvatar {...profile} size={20} />
 					<p className="flex">{profile.name}</p>
 				</Link>
-				<h5>{listData.description}</h5>
-			</Metadata>
+			</ListMetadata>
 			<Tabs value={tab}>
 				{isUser && (
 					<div className="flex flex-row">
@@ -147,7 +143,11 @@ function List() {
 					{listData.category === "ARTIST" &&
 						listItems?.map((artist, index) => (
 							<div
-								className="my-3 flex flex-row items-center justify-between border-b pb-1"
+								className={`flex flex-row items-center justify-between pb-2 pt-2 ${
+									index !== listItems.length - 1
+										? "border-b"
+										: ""
+								}`}
 								key={index}
 							>
 								<div
@@ -172,10 +172,14 @@ function List() {
 						listItems?.map((item, index) => {
 							return (
 								<div
-									className="my-3 flex flex-row items-center justify-between border-b pb-1"
+									className={`flex flex-row items-center justify-between pb-2 pt-2 ${
+										index !== listItems.length - 1
+											? "border-b"
+											: ""
+									}`}
 									key={index}
 								>
-									<div className="flex w-4/5 flex-row items-center overflow-hidden">
+									<div className="flex flex-row items-center">
 										<p className="w-4 pr-5 text-center text-sm text-muted-foreground">
 											{index + 1}
 										</p>
@@ -225,7 +229,7 @@ function List() {
 									<AlertDialogTrigger asChild>
 										<Button
 											variant="destructive"
-											className="mt-2"
+											className="mt-2 h-10"
 											size="sm"
 										>
 											Delete List
@@ -241,29 +245,28 @@ function List() {
 												forever
 											</AlertDialogDescription>
 										</AlertDialogHeader>
-										<AlertDialogFooter className="flex flex-row items-center justify-center  gap-4 sm:justify-end">
+										<AlertDialogFooter>
 											<AlertDialogCancel>
 												Cancel
 											</AlertDialogCancel>
-											<div className=" mt-2 sm:mt-0 ">
-												<DeleteListButton
-													userId={myProfile?.userId}
-													listId={listData.id}
-													onClick={() =>
-														navigate({
-															to: `/$handle`,
-															params: {
-																handle: String(
-																	profile.handle
-																),
-															},
-															search: {
-																tab: "lists",
-															},
-														})
-													}
-												/>
-											</div>
+
+											<DeleteListButton
+												userId={myProfile?.userId}
+												listId={listData.id}
+												onClick={() =>
+													navigate({
+														to: `/$handle`,
+														params: {
+															handle: String(
+																profile.handle
+															),
+														},
+														search: {
+															tab: "lists",
+														},
+													})
+												}
+											/>
 										</AlertDialogFooter>
 									</AlertDialogContent>
 								</AlertDialog>

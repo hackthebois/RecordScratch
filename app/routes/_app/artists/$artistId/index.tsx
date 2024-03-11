@@ -109,7 +109,7 @@ function Artist() {
 				tags={[`${artist.nb_album} Albums`]}
 				type="ARTIST"
 			>
-				<div className="flex flex-row">
+				<div className="flex flex-row items-center justify-center gap-3">
 					<RatingInfo
 						resource={{
 							resourceId: String(artist.id),
