@@ -108,7 +108,7 @@ const ListList = ({
 	if (type === "scroll") {
 		return (
 			<ScrollArea className="w-full max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)]">
-				<div className="flex max-h-60 flex-wrap gap-4 self-center sm:max-h-72 md:max-h-72 lg:max-h-72 xl:max-h-72">
+				<div className="flex max-h-60 flex-wrap gap-4 sm:max-h-72 md:max-h-72 lg:max-h-72 xl:max-h-72">
 					{lists &&
 						lists.map((list, index) => (
 							<div className="mb-3" key={index}>
@@ -125,7 +125,7 @@ const ListList = ({
 		);
 	} else {
 		return (
-			<div className="flex flex-row flex-wrap gap-3 self-center">
+			<div className="flex flex-row flex-wrap gap-3">
 				{lists &&
 					lists.map((list, index) => (
 						<ListsItem
