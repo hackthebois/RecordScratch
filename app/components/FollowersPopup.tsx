@@ -33,7 +33,7 @@ const FollowersPopup = ({
 					{followerCount}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="max-w-[20rem] sm:max-w-[24rem]  md:max-w-[24rem] lg:max-w-[24rem]">
+			<DialogContent className="max-w-[24rem] sm:max-w-[28rem]  md:max-w-[28rem] lg:max-w-[28rem]">
 				<DialogHeader className="items-center">
 					<DialogTitle>
 						{type[0].toUpperCase() + type.slice(1)}
@@ -41,42 +41,6 @@ const FollowersPopup = ({
 				</DialogHeader>
 				<ScrollArea className="flex max-h-96 flex-col gap-3">
 					<div className="flex flex-col gap-3 pb-4">
-						{profiles?.map(({ profile }, index) => (
-							<ProfileItem
-								key={index}
-								profile={profile}
-								onClick={() => {
-									setOpen(false);
-								}}
-							/>
-						))}
-						{profiles?.map(({ profile }, index) => (
-							<ProfileItem
-								key={index}
-								profile={profile}
-								onClick={() => {
-									setOpen(false);
-								}}
-							/>
-						))}
-						{profiles?.map(({ profile }, index) => (
-							<ProfileItem
-								key={index}
-								profile={profile}
-								onClick={() => {
-									setOpen(false);
-								}}
-							/>
-						))}
-						{profiles?.map(({ profile }, index) => (
-							<ProfileItem
-								key={index}
-								profile={profile}
-								onClick={() => {
-									setOpen(false);
-								}}
-							/>
-						))}
 						{profiles?.map(({ profile }, index) => (
 							<ProfileItem
 								key={index}
