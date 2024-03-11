@@ -183,17 +183,15 @@ function Handle() {
 							</Link>
 						</TabsTrigger>
 					)}
-					<TabsTrigger
-						value="lists"
-						onClick={() =>
-							navigator({
-								search: {
-									tab: "lists",
-								},
-							})
-						}
-					>
-						Lists
+					<TabsTrigger value="lists" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								tab: "lists",
+							}}
+						>
+							Lists
+						</Link>
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
