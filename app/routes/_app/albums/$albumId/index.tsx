@@ -113,7 +113,7 @@ function Album() {
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger value="songs">
+					<TabsTrigger value="songs" asChild>
 						<Link
 							from={Route.fullPath}
 							search={{
@@ -123,7 +123,7 @@ function Album() {
 							Songs
 						</Link>
 					</TabsTrigger>
-					<TabsTrigger value="reviews">
+					<TabsTrigger value="reviews" asChild>
 						<Link
 							from={Route.fullPath}
 							search={{
