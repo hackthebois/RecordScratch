@@ -8,7 +8,7 @@ export const DeleteListButton = ({
 }: {
 	listId: string;
 	userId: string;
-	onClick?: () => Promise<void>;
+	onClick?: () => unknown;
 }) => {
 	const utils = api.useUtils();
 
@@ -23,9 +23,9 @@ export const DeleteListButton = ({
 		<div>
 			<Button
 				variant="destructive"
-				onClick={async () => {
+				onClick={() => {
 					if (onClick) {
-						await onClick();
+						onClick();
 					}
 					deleteResource({
 						id: listId,
