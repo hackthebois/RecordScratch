@@ -20,6 +20,18 @@ import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
 import ListImage from "@/components/lists/ListImage";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/AlertDialog";
+import { Button } from "@/components/ui/Button";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -209,21 +221,51 @@ function List() {
 										associated
 									</p>
 								</div>
-								<DeleteListButton
-									userId={myProfile?.userId}
-									listId={listData.id}
-									onClick={async () =>
-										await navigate({
-											to: `/$handle`,
-											params: {
-												handle: profile.handle,
-											},
-											search: {
-												tab: "lists",
-											},
-										})
-									}
-								/>
+								<AlertDialog>
+									<AlertDialogTrigger asChild>
+										<Button
+											variant="destructive"
+											className="mt-2"
+											size="sm"
+										>
+											Delete List
+										</Button>
+									</AlertDialogTrigger>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
+												Delete you List?
+											</AlertDialogTitle>
+											<AlertDialogDescription>
+												This will remove your list
+												forever
+											</AlertDialogDescription>
+										</AlertDialogHeader>
+										<AlertDialogFooter>
+											<AlertDialogCancel>
+												Cancel
+											</AlertDialogCancel>
+
+											<DeleteListButton
+												userId={myProfile?.userId}
+												listId={listData.id}
+												onClick={() =>
+													navigate({
+														to: `/$handle`,
+														params: {
+															handle: String(
+																profile.handle
+															),
+														},
+														search: {
+															tab: "lists",
+														},
+													})
+												}
+											/>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
 							</div>
 						</div>
 					</TabsContent>
