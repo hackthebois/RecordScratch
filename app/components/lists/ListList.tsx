@@ -44,7 +44,9 @@ const ListsItem = ({
 					size={size}
 				/>
 			</div>
-			<p className="truncate pl-1 pt-1 font-medium">{list.name}</p>
+			<p className="truncate pl-1 pt-1 text-center text-sm font-medium">
+				{list.name}
+			</p>
 		</div>
 	);
 
@@ -97,11 +99,13 @@ const ListList = ({
 	showProfiles = false,
 	type = "scroll",
 	onClick,
+	size = 185,
 }: {
 	lists: ListsType[] | undefined;
 	showProfiles?: boolean;
 	type?: "wrap" | "scroll";
 	orientation?: "vertical" | "horizontal";
+	size?: number;
 	// eslint-disable-next-line no-unused-vars
 	onClick?: (listId: string) => void;
 }) => {
@@ -115,7 +119,7 @@ const ListList = ({
 								<ListsItem
 									listsItem={list}
 									showProfile={showProfiles}
-									size={100}
+									size={size}
 									onClick={onClick}
 								/>
 							</div>
@@ -132,7 +136,7 @@ const ListList = ({
 							key={index}
 							listsItem={list}
 							showProfile={showProfiles}
-							size={144}
+							size={size}
 							onClick={onClick}
 						/>
 					))}

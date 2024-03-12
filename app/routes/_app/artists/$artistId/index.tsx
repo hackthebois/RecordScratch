@@ -159,14 +159,14 @@ function Artist() {
 						<div className="my-6 flex flex-row gap-5">
 							{artists.data.map((artist) => (
 								<div
-									className="w-1/5 overflow-x-hidden pl-2"
+									className="h-36 w-1/5 overflow-hidden pl-2"
 									key={artist.id}
 								>
 									<ArtistItem
 										artistId={String(artist.id)}
 										initialArtist={artist}
 										direction="vertical"
-										textCss="text-wrap text-center text-sm"
+										textCss="text-wrap text-center text-sm -mt-2"
 									/>
 								</div>
 							))}

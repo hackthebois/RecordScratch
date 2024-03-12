@@ -79,6 +79,7 @@ export const AddToList = ({
 						});
 						setOpen(false);
 					}}
+					size={170}
 				/>
 				<DialogFooter></DialogFooter>
 			</DialogContent>
