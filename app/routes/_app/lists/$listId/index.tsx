@@ -5,7 +5,7 @@ import {
 	createFileRoute,
 	useNavigate,
 } from "@tanstack/react-router";
-import { api } from "@/trpc/react";
+import { api, apiUtils } from "@/trpc/react";
 import { Head } from "@/components/Head";
 import { NotFound } from "@/components/ui/NotFound";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -43,6 +43,14 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 			})
 			.parse(search);
 	},
+	loader: async ({ params: { listId } }) => {
+		const list = await apiUtils.lists.getList.ensureData({ id: listId });
+		if (!list) return <NotFound />;
+
+		apiUtils.lists.resources.getListResources.ensureData({
+			listId,
+		});
+	},
 });
 
 function List() {
@@ -57,7 +65,7 @@ function List() {
 		id: listId,
 	});
 	const { data: listItems } = api.lists.resources.getListResources.useQuery({
-		listId: listId,
+		listId,
 	});
 
 	if (isLoading) return <PendingComponent />;
@@ -100,10 +108,10 @@ function List() {
 					<p className="flex">{profile.name}</p>
 				</Link>
 			</ListMetadata>
-			<Tabs value={tab}>
+			<Tabs value={tab} className="my-2">
 				{isUser && (
 					<div className="flex flex-row">
-						<TabsList className=" space-x-2">
+						<TabsList className="space-x-2">
 							{
 								<TabsTrigger
 									value="list"
