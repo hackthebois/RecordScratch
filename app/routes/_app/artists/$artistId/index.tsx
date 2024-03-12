@@ -7,6 +7,7 @@ import { AddToList } from "@/components/lists/AddToList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { RatingInfo } from "@/components/ui/RatingInfo";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
@@ -99,7 +100,6 @@ function Artist() {
 			},
 		})
 	);
-
 	return (
 		<div className="flex flex-col gap-6">
 			<Head title={artist.name} />
@@ -135,16 +135,6 @@ function Artist() {
 							Top Songs
 						</Link>
 					</TabsTrigger>
-					<TabsTrigger value="related" asChild>
-						<Link
-							from={Route.fullPath}
-							search={{
-								tab: "related",
-							}}
-						>
-							Related
-						</Link>
-					</TabsTrigger>
 					<TabsTrigger value="discography" asChild>
 						<Link
 							from={Route.fullPath}
@@ -157,16 +147,31 @@ function Artist() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="top-songs">
-					<SongTable songs={top.data} />
-				</TabsContent>
-				<TabsContent value="related" className="flex flex-col gap-4">
-					{artists.data.map((artist) => (
-						<ArtistItem
-							artistId={String(artist.id)}
-							initialArtist={artist}
-							key={artist.id}
-						/>
-					))}
+					<div>
+						<SongTable songs={top.data} />
+					</div>
+					<h3 className="mt-6 border-b">Related Artists</h3>
+					<ScrollArea
+						orientation="horizontal"
+						className="flex flex-row gap-4"
+						key={artistId}
+					>
+						<div className="my-6 flex flex-row gap-5">
+							{artists.data.map((artist) => (
+								<div
+									className="w-1/5 overflow-x-hidden pl-2"
+									key={artist.id}
+								>
+									<ArtistItem
+										artistId={String(artist.id)}
+										initialArtist={artist}
+										direction="vertical"
+										textCss="text-wrap text-center text-sm"
+									/>
+								</div>
+							))}
+						</div>
+					</ScrollArea>
 				</TabsContent>
 				<TabsContent value="discography">
 					<AlbumList albums={albums.data} type="wrap" field="date" />
