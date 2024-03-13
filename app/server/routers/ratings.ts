@@ -271,7 +271,7 @@ export const ratingsRouter = router({
 					else where = eq(ratings.userId, profileId);
 
 					const items = await db.query.ratings.findMany({
-						limit,
+						limit: limit + 1,
 						offset: cursor,
 						orderBy: desc(ratings.updatedAt),
 						where,
