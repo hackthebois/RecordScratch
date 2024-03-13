@@ -1,7 +1,7 @@
-import { UserAvatar } from "@/components/UserAvatar";
 import { api } from "@/trpc/react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { buttonVariants } from "./ui/Button";
+import { buttonVariants } from "../ui/Button";
+import { UserAvatar } from "./UserAvatar";
 
 export const UserButton = () => {
 	const navigate = useNavigate();

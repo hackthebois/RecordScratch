@@ -8,7 +8,6 @@ import {
 import { api, apiUtils } from "@/trpc/react";
 import { Head } from "@/components/Head";
 import { NotFound } from "@/components/ui/NotFound";
-import { UserAvatar } from "@/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { z } from "zod";
 import { ResourceItem } from "@/components/ResourceItem";
@@ -19,6 +18,8 @@ import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
 import ListImage from "@/components/lists/ListImage";
+import { Reorder } from "framer-motion";
+
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -31,6 +32,8 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Button } from "@/components/ui/Button";
 import ListMetadata from "@/components/lists/listMetaData";
+import { useState } from "react";
+import { UserAvatar } from "@/components/user/UserAvatar";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -44,12 +47,15 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 			.parse(search);
 	},
 	loader: async ({ params: { listId } }) => {
-		const list = await apiUtils.lists.getList.ensureData({ id: listId });
-		if (!list) return <NotFound />;
+		const listData = await apiUtils.lists.get.ensureData({
+			id: listId,
+		});
+		if (!listData) return <NotFound />;
 
-		apiUtils.lists.resources.getListResources.ensureData({
+		apiUtils.lists.resources.get.ensureData({
 			listId,
 		});
+		apiUtils.profiles.me.ensureData();
 	},
 });
 
@@ -60,35 +66,26 @@ function List() {
 	const { tab = "list" } = Route.useSearch();
 	const { listId } = Route.useParams();
 
-	const { data: myProfile } = api.profiles.me.useQuery();
-	const { data: listData, isLoading } = api.lists.getList.useQuery({
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
+	const [listData] = api.lists.get.useSuspenseQuery({
 		id: listId,
 	});
-	const { data: listItems } = api.lists.resources.getListResources.useQuery({
+	const [listItems] = api.lists.resources.get.useSuspenseQuery({
 		listId,
 	});
+	const [itemsOrder, setItemsOrder] = useState(listItems);
 
-	if (isLoading) return <PendingComponent />;
 	if (!listData) return <NotFound />;
 
-	const { profile } = listData;
+	const profile = listData?.profile;
 	const isUser = myProfile?.userId === profile.userId;
-
-	const ListCategory =
-		listData.category === "ALBUM"
-			? "ALBUM LIST"
-			: listData.category === "SONG"
-				? "SONG LIST"
-				: listData.category === "ARTIST"
-					? "ARTIST LIST"
-					: "";
 
 	return (
 		<div className="flex flex-col gap-1">
 			<Head title={listData.name} description={undefined} />
 			<ListMetadata
 				title={listData.name}
-				type={ListCategory}
+				type={`${listData.category} list`}
 				Image={
 					<ListImage
 						listItems={listItems}
@@ -104,39 +101,31 @@ function List() {
 					}}
 					className="flex items-center gap-2"
 				>
-					<UserAvatar {...profile} size={20} />
-					<p className="flex">{profile.name}</p>
+					<UserAvatar {...profile} size={40} />
+					<p className="flex text-lg">{profile.name}</p>
 				</Link>
 			</ListMetadata>
-			<Tabs value={tab} className="my-2">
+			<Tabs value={tab} className="sm:mt-4">
 				{isUser && (
-					<div className="flex flex-row">
+					<div className="mb-4 flex flex-row">
 						<TabsList className="space-x-2">
-							{
-								<TabsTrigger
-									value="list"
-									onClick={() =>
-										navigate({
-											search: {
-												tab: undefined,
-											},
-										})
-									}
+							<TabsTrigger value="list" asChild>
+								<Link
+									from={Route.fullPath}
+									search={{
+										tab: undefined,
+									}}
 								>
 									List
-								</TabsTrigger>
-							}
-							<TabsTrigger
-								value="settings"
-								onClick={() =>
-									navigate({
-										search: {
-											tab: "settings",
-										},
-									})
-								}
-							>
-								Settings
+								</Link>
+							</TabsTrigger>
+							<TabsTrigger value="settings" asChild>
+								<Link
+									from={Route.fullPath}
+									search={{ tab: "settings" }}
+								>
+									Settings
+								</Link>
 							</TabsTrigger>
 						</TabsList>
 					</div>
@@ -148,33 +137,43 @@ function List() {
 							listId={listData.id}
 						/>
 					)}
-					{listData.category === "ARTIST" &&
-						listItems?.map((artist, index) => (
-							<div
-								className={`flex flex-row items-center justify-between pb-2 pt-2 ${
-									index !== listItems.length - 1
-										? "border-b"
-										: ""
-								}`}
-								key={index}
-							>
-								<div
-									className="flex flex-row items-center"
-									key={index}
+					{listData.category === "ARTIST" && itemsOrder && (
+						<Reorder.Group
+							values={itemsOrder}
+							onReorder={setItemsOrder}
+						>
+							{itemsOrder?.map((artist, index) => (
+								<Reorder.Item
+									key={artist.resourceId}
+									value={artist}
+									id={artist.resourceId}
 								>
-									<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
-										{index + 1}
-									</p>
-									<ArtistItem artistId={artist.resourceId} />
-								</div>
-								{isUser && (
-									<DeleteListItemButton
-										resourceId={artist.resourceId}
-										listId={artist.listId}
-									/>
-								)}
-							</div>
-						))}
+									<div
+										className={`flex flex-row items-center justify-between pb-2 pt-2 ${
+											index !== itemsOrder.length - 1
+												? "border-b"
+												: ""
+										}`}
+									>
+										<div className="flex flex-row items-center">
+											<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
+												{index + 1}
+											</p>
+											<ArtistItem
+												artistId={artist.resourceId}
+											/>
+										</div>
+										{isUser && (
+											<DeleteListItemButton
+												resourceId={artist.resourceId}
+												listId={artist.listId}
+											/>
+										)}
+									</div>
+								</Reorder.Item>
+							))}
+						</Reorder.Group>
+					)}
 					{(listData.category === "ALBUM" ||
 						listData.category === "SONG") &&
 						listItems?.map((item, index) => {

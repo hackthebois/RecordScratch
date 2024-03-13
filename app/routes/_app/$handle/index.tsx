@@ -1,11 +1,10 @@
-import { EditProfile } from "@/components/EditProfile";
-import FollowerMenu from "@/components/FollowersMenu";
 import { Head } from "@/components/Head";
-import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
-import { UserAvatar } from "@/components/UserAvatar";
+import FollowerMenu from "@/components/followers/FollowersMenu";
+import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
 import ListList from "@/components/lists/ListList";
+import { EditProfile } from "@/components/profile/EditProfile";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +17,7 @@ import {
 import { Label } from "@/components/ui/Label";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
@@ -53,6 +53,10 @@ export const Route = createFileRoute("/_app/$handle/")({
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "following",
+		});
+
+		apiUtils.lists.getUser.ensureData({
+			userId: profile.userId,
 		});
 	},
 });
@@ -128,7 +132,7 @@ function Handle() {
 
 	if (!profile) return <NotFound />;
 
-	const { data: lists } = api.lists.getUserLists.useQuery({
+	const [lists] = api.lists.getUser.useSuspenseQuery({
 		userId: profile.userId,
 	});
 
@@ -312,7 +316,7 @@ function Handle() {
 					</TabsContent>
 				)}
 				<TabsContent value="lists" className="flex flex-col">
-					<div className="flex justify-center">
+					<div className="flex items-start self-center sm:self-start">
 						{isUser && <CreateList />}
 					</div>
 					<div className="mt-2">

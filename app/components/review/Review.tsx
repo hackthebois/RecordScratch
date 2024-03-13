@@ -2,8 +2,8 @@ import { Review as ReviewType } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
-import { ResourceItem } from "./ResourceItem";
-import { UserAvatar } from "./UserAvatar";
+import { ResourceItem } from "../ResourceItem";
+import { UserAvatar } from "../user/UserAvatar";
 
 export const Review = ({
 	parentId,
