@@ -8,13 +8,13 @@ export const DeleteListItemButton = (inputs: {
 }) => {
 	const utils = api.useUtils();
 
-	const deleteResource = api.lists.resources.deleteListResource.useMutation({
+	const { mutate: deleteResource } = api.lists.resources.delete.useMutation({
 		onSettled: () => {
-			utils.lists.resources.getListResources.invalidate({
+			utils.lists.resources.get.invalidate({
 				listId: inputs.listId,
 			});
 		},
-	}).mutate;
+	});
 	return (
 		<Button
 			className="size-9"

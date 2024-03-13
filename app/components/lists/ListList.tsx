@@ -1,8 +1,7 @@
 import { ListsType } from "@/types/list";
 import { Link } from "@tanstack/react-router";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "../user/UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
-import { api } from "@/trpc/react";
 import ListImage from "./ListImage";
 
 const ListsItem = ({
@@ -14,18 +13,13 @@ const ListsItem = ({
 	listsItem: ListsType;
 	showProfile?: boolean;
 	size: number;
-	parentId?: string;
-	resourceId?: string;
 	// eslint-disable-next-line no-unused-vars
 	onClick?: (listId: string) => void;
 }) => {
 	if (!listsItem.lists.id || !listsItem.profile) return null;
 	const list = listsItem.lists;
 	const profile = listsItem.profile;
-	const { data: listItems } =
-		api.lists.resources.getTopFourResources.useQuery({
-			listId: list.id,
-		});
+	const listResources = listsItem.list_resources;
 
 	const ListItemContent = (
 		<div className="flex flex-col justify-center">
@@ -39,7 +33,7 @@ const ListsItem = ({
 				className="flex items-center justify-center"
 			>
 				<ListImage
-					listItems={listItems}
+					listItems={listResources}
 					category={list.category}
 					size={size}
 				/>

@@ -2,7 +2,7 @@ import { Artist, getQueryOptions } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "../user/UserAvatar";
 
 export const ArtistItem = ({
 	initialArtist,

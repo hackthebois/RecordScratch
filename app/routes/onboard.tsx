@@ -1,5 +1,4 @@
 import { Head } from "@/components/Head";
-import { UserAvatar } from "@/components/UserAvatar";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -13,6 +12,7 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import { api } from "@/trpc/react";
 import type { Onboard } from "@/types/profile";
 import { OnboardSchema, handleRegex } from "@/types/profile";

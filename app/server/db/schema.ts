@@ -134,7 +134,7 @@ export const lists = mysqlTable("lists", {
 	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 });
 
-export const list_resources = mysqlTable(
+export const listResources = mysqlTable(
 	"list_resources",
 	{
 		parentId: varchar("parent_id", { length: 256 }),
@@ -150,6 +150,17 @@ export const list_resources = mysqlTable(
 		}),
 	})
 );
+
+export const listResourceRelation = relations(lists, ({ many }) => ({
+	resources: many(listResources),
+}));
+
+export const resourceListRelation = relations(listResources, ({ one }) => ({
+	list: one(lists, {
+		fields: [listResources.listId],
+		references: [lists.id],
+	}),
+}));
 
 export const listUserRelation = relations(lists, ({ one }) => ({
 	profile: one(profile, {
