@@ -65,12 +65,10 @@ export const deleteListResourcesSchema = listResourcesSchema.pick({
 
 export type ListType = z.infer<typeof listSchema>;
 
-export type ListsType = {
+export type ListsType = ListType & {
 	profile: Profile | null;
-	lists: ListType;
-	list_resources: ListItem[];
+	resources: ListItem[];
 };
-
 const categorySchema = listSchema.pick({ category: true });
 export type Category = z.infer<typeof categorySchema>["category"];
 

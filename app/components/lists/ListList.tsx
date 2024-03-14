@@ -16,10 +16,9 @@ const ListsItem = ({
 	// eslint-disable-next-line no-unused-vars
 	onClick?: (listId: string) => void;
 }) => {
-	if (!listsItem.lists.id || !listsItem.profile) return null;
-	const list = listsItem.lists;
+	if (!listsItem.id || !listsItem.profile) return null;
 	const profile = listsItem.profile;
-	const listResources = listsItem.list_resources;
+	const listResources = listsItem.resources;
 
 	const ListItemContent = (
 		<div className="flex flex-col justify-center">
@@ -34,12 +33,12 @@ const ListsItem = ({
 			>
 				<ListImage
 					listItems={listResources}
-					category={list.category}
+					category={listsItem.category}
 					size={size}
 				/>
 			</div>
 			<p className="truncate pl-1 pt-1 text-center text-sm font-medium">
-				{list.name}
+				{listsItem.name}
 			</p>
 		</div>
 	);
@@ -47,7 +46,7 @@ const ListsItem = ({
 	const link = {
 		to: "/lists/$listId",
 		params: {
-			listId: String(list.id),
+			listId: String(listsItem.id),
 		},
 	};
 
@@ -63,7 +62,7 @@ const ListsItem = ({
 					onClick={(event) => {
 						if (onClick) {
 							event.preventDefault();
-							onClick(list.id);
+							onClick(listsItem.id);
 						}
 					}}
 					{...(onClick ? {} : link)}
