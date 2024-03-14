@@ -7,15 +7,10 @@ import {
 	deleteListResourcesSchema,
 	updateListSchema,
 	filterUserListsSchema,
-	ListType,
-	ListItem,
-	GroupedDataSchema,
 } from "@/types/list";
-import { listResources, lists, profile } from "../db/schema";
+import { listResources, lists } from "../db/schema";
 import { generateId } from "lucia";
 import { and, desc, eq } from "drizzle-orm/sql";
-import { Profile } from "@/types/profile";
-import { z } from "zod";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -40,30 +35,15 @@ export const listsRouter = router({
 				);
 			else whereClause = and(eq(lists.userId, userId));
 
-			const userLists = await db
-				.select()
-				.from(lists)
-				.leftJoin(profile, eq(profile.userId, lists.userId))
-				.where(whereClause);
-
-			// Fetch the top four resources for each list
-			const listsWithResources = await Promise.all(
-				userLists.map(async (list) => {
-					const resources = await db
-						.select()
-						.from(listResources)
-						.where(eq(listResources.listId, list.lists.id))
-						.orderBy(listResources.position)
-						.limit(4);
-
-					return {
-						...list,
-						list_resources: resources,
-					};
-				})
-			);
-
-			return listsWithResources;
+			return await db.query.lists.findMany({
+				with: {
+					resources: {
+						limit: 4,
+					},
+					profile: true,
+				},
+				where: whereClause,
+			});
 		}),
 
 	create: protectedProcedure

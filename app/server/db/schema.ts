@@ -125,7 +125,7 @@ export const userFollowRelation = relations(followers, ({ one }) => ({
 }));
 
 export const lists = mysqlTable("lists", {
-	id: varchar("id", { length: 256 }).primaryKey(),
+	id: varchar("id", { length: 256 }).primaryKey().notNull(),
 	userId: varchar("user_id", { length: 256 }).notNull(),
 	name: varchar("name", { length: 50 }).notNull(),
 	description: text("description"),
@@ -133,6 +133,14 @@ export const lists = mysqlTable("lists", {
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 });
+
+export const listRelation = relations(lists, ({ one, many }) => ({
+	profile: one(profile, {
+		fields: [lists.userId],
+		references: [profile.userId],
+	}),
+	resources: many(listResources),
+}));
 
 export const listResources = mysqlTable(
 	"list_resources",
@@ -151,21 +159,9 @@ export const listResources = mysqlTable(
 	})
 );
 
-export const listResourceRelation = relations(lists, ({ many }) => ({
-	resources: many(listResources),
-}));
-
-export const resourceListRelation = relations(listResources, ({ one }) => ({
+export const listResourcesRelations = relations(listResources, ({ one }) => ({
 	list: one(lists, {
 		fields: [listResources.listId],
 		references: [lists.id],
-	}),
-}));
-
-export const listUserRelation = relations(lists, ({ one }) => ({
-	profile: one(profile, {
-		fields: [lists.userId],
-		references: [profile.userId],
-		relationName: "profile",
 	}),
 }));
