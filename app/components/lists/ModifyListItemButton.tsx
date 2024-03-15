@@ -23,7 +23,7 @@ export const DeleteListItemButton = (inputs: {
 					...inputs,
 				})
 			}
-			variant="outline"
+			variant="destructive"
 			size="icon"
 		>
 			<Trash2 size={18} />

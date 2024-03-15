@@ -128,7 +128,6 @@ const ListImage = ({
 			<List size={size / 3} />
 		</div>
 	);
-	console.log(listItems?.length);
 
 	if (!listItems || !listItems.length) return noImage;
 	else if (listItems.length < 4)

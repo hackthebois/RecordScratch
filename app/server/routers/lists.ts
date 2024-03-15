@@ -7,6 +7,7 @@ import {
 	deleteListResourcesSchema,
 	updateListSchema,
 	filterUserListsSchema,
+	listOfResourcesSchema,
 } from "@/types/list";
 import { listResources, lists } from "../db/schema";
 import { generateId } from "lucia";
@@ -88,15 +89,19 @@ export const listsRouter = router({
 		}),
 
 	resources: router({
-		getTopFourResources: publicProcedure
-			.input(selectListResourcesSchema)
-			.query(async ({ ctx: { db }, input: { listId } }) => {
-				return await db
-					.select()
-					.from(listResources)
-					.where(eq(listResources.listId, listId))
-					.orderBy(listResources.position)
-					.limit(4);
+		updatePositions: publicProcedure
+			.input(listOfResourcesSchema)
+			.mutation(async ({ ctx: { db }, input }) => {
+				await db.transaction(async () => {
+					input.map(async (item, index) => {
+						await db
+							.update(listResources)
+							.set({ position: index + 1 })
+							.where(
+								eq(listResources.resourceId, item.resourceId)
+							);
+					});
+				});
 			}),
 		get: publicProcedure
 			.input(selectListResourcesSchema)
