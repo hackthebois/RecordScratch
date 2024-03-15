@@ -32,8 +32,10 @@ import {
 } from "@/components/ui/AlertDialog";
 import { Button } from "@/components/ui/Button";
 import ListMetadata from "@/components/lists/listMetaData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { ListItem } from "@/types/list";
+import { Pencil, Ban } from "lucide-react";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -59,6 +61,41 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 	},
 });
 
+const EditButton = ({
+	editMode,
+	onSave,
+	onCancel,
+}: {
+	editMode: boolean;
+	onSave: () => void;
+	onCancel: () => void;
+}) => {
+	return (
+		<div className="flex flex-row gap-2">
+			<Button
+				className="h-10 w-28 gap-1 rounded pb-5 pr-3 pt-5"
+				onClick={onSave}
+				variant={editMode ? "default" : "outline"}
+				size="icon"
+			>
+				<Pencil size={18} />
+				{editMode ? "Save List" : "Edit List"}
+			</Button>
+			{editMode && (
+				<Button
+					className="h-10 w-28 gap-1 rounded pb-5 pr-3 pt-5"
+					onClick={onCancel}
+					variant="outline"
+					size="icon"
+				>
+					<Ban size={18} />
+					Cancel
+				</Button>
+			)}
+		</div>
+	);
+};
+
 function List() {
 	const navigate = useNavigate({
 		from: Route.fullPath,
@@ -73,7 +110,21 @@ function List() {
 	const [listItems] = api.lists.resources.get.useSuspenseQuery({
 		listId,
 	});
-	const [itemsOrder, setItemsOrder] = useState(listItems);
+	const utils = api.useUtils();
+	const { mutate: updatePositions } =
+		api.lists.resources.updatePositions.useMutation({
+			onSettled: () => {
+				utils.lists.resources.get.invalidate({
+					listId,
+				});
+			},
+		});
+	const [itemsOrder, setItemsOrder] = useState<ListItem[]>(listItems);
+	const [editMode, setEditMode] = useState(false);
+
+	useEffect(() => {
+		setItemsOrder(listItems);
+	}, [listItems]);
 
 	if (!listData) return <NotFound />;
 
@@ -132,83 +183,77 @@ function List() {
 				)}
 				<TabsContent value="list">
 					{isUser && (
-						<SearchAddToList
-							category={listData.category}
-							listId={listData.id}
-						/>
+						<div className="flex flex-row gap-2">
+							<SearchAddToList
+								category={listData.category}
+								listId={listData.id}
+							/>
+							<EditButton
+								editMode={editMode}
+								onSave={() => {
+									if (editMode) {
+										updatePositions(itemsOrder);
+									}
+									setEditMode(!editMode);
+								}}
+								onCancel={() => {
+									setItemsOrder(listItems);
+									setEditMode(!editMode);
+								}}
+							/>
+						</div>
 					)}
-					{listData.category === "ARTIST" && itemsOrder && (
-						<Reorder.Group
-							values={itemsOrder}
-							onReorder={setItemsOrder}
-						>
-							{itemsOrder?.map((artist, index) => (
-								<Reorder.Item
-									key={artist.resourceId}
-									value={artist}
-									id={artist.resourceId}
-								>
-									<div
-										className={`flex flex-row items-center justify-between pb-2 pt-2 ${
-											index !== itemsOrder.length - 1
-												? "border-b"
-												: ""
-										}`}
-									>
-										<div className="flex flex-row items-center">
-											<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
-												{index + 1}
-											</p>
-											<ArtistItem
-												artistId={artist.resourceId}
-											/>
-										</div>
-										{isUser && (
-											<DeleteListItemButton
-												resourceId={artist.resourceId}
-												listId={artist.listId}
-											/>
-										)}
-									</div>
-								</Reorder.Item>
-							))}
-						</Reorder.Group>
-					)}
-					{(listData.category === "ALBUM" ||
-						listData.category === "SONG") &&
-						listItems?.map((item, index) => {
-							return (
+					<Reorder.Group
+						values={itemsOrder}
+						onReorder={setItemsOrder}
+					>
+						{itemsOrder?.map((item, index) => (
+							<Reorder.Item
+								key={item.resourceId}
+								value={item}
+								id={item.resourceId}
+								dragListener={editMode}
+							>
 								<div
 									className={`flex flex-row items-center justify-between pb-2 pt-2 ${
-										index !== listItems.length - 1
+										index !== itemsOrder.length - 1
 											? "border-b"
 											: ""
 									}`}
-									key={index}
 								>
-									<div className="flex w-4/5 flex-row items-center overflow-hidden">
-										<p className="w-4 pr-5 text-center text-sm text-muted-foreground">
+									<div className="flex flex-row items-center">
+										<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
 											{index + 1}
 										</p>
 										<div className="overflow-hidden">
-											<ResourceItem
-												resource={{
-													parentId: item.parentId!,
-													resourceId: item.resourceId,
-													category: listData.category,
-												}}
-											/>
+											{listData.category === "ARTIST" ? (
+												<ArtistItem
+													artistId={item.resourceId}
+												/>
+											) : (
+												<ResourceItem
+													resource={{
+														parentId:
+															item.parentId!,
+														resourceId:
+															item.resourceId,
+														category:
+															listData.category,
+													}}
+												/>
+											)}
 										</div>
 									</div>
-									{isUser && (
+									{isUser && editMode && (
 										<DeleteListItemButton
 											resourceId={item.resourceId}
 											listId={item.listId}
 										/>
 									)}
 								</div>
-							);
-						})}
+							</Reorder.Item>
+						))}
+					</Reorder.Group>
 				</TabsContent>
 				{isUser && (
 					<TabsContent value="settings">
