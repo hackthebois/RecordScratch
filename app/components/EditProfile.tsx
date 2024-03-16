@@ -261,10 +261,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 							)}
 						/>
 						<DialogFooter>
-							<Button
-								type="submit"
-								disabled={!form.formState.isDirty}
-							>
+							<Button type="submit" className="w-full">
 								Update
 							</Button>
 						</DialogFooter>
