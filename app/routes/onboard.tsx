@@ -289,6 +289,7 @@ function Onboard() {
 							id="image"
 							ref={imageRef}
 							type="file"
+							accept="image/*"
 							onChange={(e) => {
 								if (e.target.files) {
 									form.setValue("image", e.target.files[0], {
