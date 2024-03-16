@@ -172,49 +172,33 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 					>
 						<div className="flex items-center gap-4">
 							<UserAvatar size={80} imageUrl={imageUrl ?? null} />
-							<Input
-								className="hidden"
-								id="image"
-								ref={imageRef}
-								type="file"
-								accept="image/png, image/jpeg, image/jpg"
-								onChange={(e) => {
-									if (e.target.files) {
-										form.setValue(
-											"image",
-											e.target.files[0],
-											{
-												shouldDirty: true,
-												shouldValidate: true,
-											}
-										);
-									}
-								}}
+							<FormField
+								control={form.control}
+								name="image"
+								render={({
+									field: { value, onChange, ...fieldProps },
+								}) => (
+									<FormItem>
+										<FormLabel>Profile Image</FormLabel>
+										<FormControl>
+											<Input
+												className="text-white"
+												type="file"
+												{...fieldProps}
+												accept="image/png, image/jpeg, image/jpg"
+												onChange={(event) =>
+													onChange(
+														event.target.files &&
+															event.target
+																.files[0]
+													)
+												}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
 							/>
-							{image ? (
-								<Button
-									variant="outline"
-									onClick={(e) => {
-										e.preventDefault();
-										form.setValue("image", undefined);
-										setImageUrl(
-											defaultImageUrl ?? undefined
-										);
-									}}
-								>
-									Clear Image
-								</Button>
-							) : (
-								<Button
-									variant="outline"
-									onClick={(e) => {
-										e.preventDefault();
-										imageRef.current?.click();
-									}}
-								>
-									Edit Profile Image
-								</Button>
-							)}
 						</div>
 						<FormMessage>
 							{form.formState.errors.image?.message}
