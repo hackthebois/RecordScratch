@@ -177,7 +177,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								id="image"
 								ref={imageRef}
 								type="file"
-								accept="image/*"
+								accept="image/png, image/jpeg"
 								onChange={(e) => {
 									if (e.target.files) {
 										form.setValue(
