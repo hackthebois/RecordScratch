@@ -64,20 +64,7 @@ export type CreateProfile = z.infer<typeof CreateProfileSchema>;
 
 export const ProfilePhotoSchema = z
 	.custom<File>((v) => v instanceof File)
-	.superRefine((v, ctx) => {
-		if (v.size > 5 * 1024 * 1024) {
-			return ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: "Image must be less than 5MB",
-			});
-		}
-		if (!v.type.startsWith("image")) {
-			return ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: "File must be an image",
-			});
-		}
-	});
+	.refine((file) => file?.size <= 5 * 1024 * 1024, `Max image size is 5MB.`);
 
 export const OnboardSchema = CreateProfileSchema.omit({
 	imageUrl: true,

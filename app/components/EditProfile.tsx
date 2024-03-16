@@ -91,10 +91,10 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const { image, handle } = form.watch();
 
 	useEffect(() => {
-		if (image && image instanceof File) {
+		if (image && !form.formState.errors.image && image instanceof File) {
 			setImageUrl(URL.createObjectURL(image));
 		}
-	}, [image]);
+	}, [image, form]);
 
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = api.profiles.handleExists.useQuery(
@@ -177,7 +177,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 								id="image"
 								ref={imageRef}
 								type="file"
-								accept="image/png, image/jpeg"
+								accept="image/png, image/jpeg, image/jpg"
 								onChange={(e) => {
 									if (e.target.files) {
 										form.setValue(
