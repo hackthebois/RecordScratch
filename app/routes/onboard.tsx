@@ -293,9 +293,9 @@ function Onboard() {
 								<FormItem>
 									<FormControl>
 										<Input
-											className="text-white"
 											type="file"
 											{...fieldProps}
+											className="m-auto text-center"
 											accept="image/png, image/jpeg, image/jpg"
 											onChange={(event) =>
 												onChange(
@@ -309,9 +309,6 @@ function Onboard() {
 								</FormItem>
 							)}
 						/>
-						<FormMessage>
-							{form.formState.errors.image?.message}
-						</FormMessage>
 					</SlideWrapper>
 				</form>
 			</Form>

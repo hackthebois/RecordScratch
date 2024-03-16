@@ -182,7 +182,6 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 										<FormLabel>Profile Image</FormLabel>
 										<FormControl>
 											<Input
-												className="text-white"
 												type="file"
 												{...fieldProps}
 												accept="image/png, image/jpeg, image/jpg"
