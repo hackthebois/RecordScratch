@@ -181,7 +181,7 @@ function Onboard() {
 		} else if (pageIndex === 3) {
 			return true;
 		} else {
-			return false;
+			return true;
 		}
 	};
 
@@ -280,50 +280,35 @@ function Onboard() {
 						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
-							className="mt-8"
+							className="my-8"
 							size={160}
 							imageUrl={imageUrl ?? null}
 						/>
-						<Input
-							className="hidden"
-							id="image"
-							ref={imageRef}
-							type="file"
-							accept="image/png, image/jpeg, image/jpg"
-							onChange={(e) => {
-								if (e.target.files) {
-									form.setValue("image", e.target.files[0], {
-										shouldDirty: true,
-										shouldValidate: true,
-									});
-								}
-							}}
+						<FormField
+							control={form.control}
+							name="image"
+							render={({
+								field: { value, onChange, ...fieldProps },
+							}) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											className="text-white"
+											type="file"
+											{...fieldProps}
+											accept="image/png, image/jpeg, image/jpg"
+											onChange={(event) =>
+												onChange(
+													event.target.files &&
+														event.target.files[0]
+												)
+											}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-						{image ? (
-							<Button
-								variant="outline"
-								className="mt-4"
-								onClick={(e) => {
-									e.preventDefault();
-									form.setValue("image", undefined);
-									form.clearErrors("image");
-									setImageUrl(undefined);
-								}}
-							>
-								Clear Image
-							</Button>
-						) : (
-							<Button
-								variant="ghost"
-								className="mt-4"
-								onClick={(e) => {
-									e.preventDefault();
-									imageRef.current?.click();
-								}}
-							>
-								Add Profile Image
-							</Button>
-						)}
 						<FormMessage>
 							{form.formState.errors.image?.message}
 						</FormMessage>
