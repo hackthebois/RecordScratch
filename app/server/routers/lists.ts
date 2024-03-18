@@ -89,20 +89,6 @@ export const listsRouter = router({
 		}),
 
 	resources: router({
-		updatePositions: publicProcedure
-			.input(listOfResourcesSchema)
-			.mutation(async ({ ctx: { db }, input }) => {
-				await db.transaction(async () => {
-					input.map(async (item, index) => {
-						await db
-							.update(listResources)
-							.set({ position: index + 1 })
-							.where(
-								eq(listResources.resourceId, item.resourceId)
-							);
-					});
-				});
-			}),
 		get: publicProcedure
 			.input(selectListResourcesSchema)
 			.query(async ({ ctx: { db }, input: { listId } }) => {
@@ -157,5 +143,69 @@ export const listsRouter = router({
 						);
 				} else throw new Error("cannot delete from list if not owner");
 			}),
+
+		updatePositions: protectedProcedure
+			.input(listOfResourcesSchema)
+			.mutation(
+				async ({
+					ctx: { db, userId },
+					input: { listId, resources },
+				}) => {
+					const listOwner = !!(await db.query.lists.findFirst({
+						where: and(
+							eq(lists.userId, userId),
+							eq(lists.id, listId)
+						),
+					}));
+					if (listOwner)
+						await db.transaction(async () => {
+							await Promise.all(
+								resources.map((item, index) => {
+									return db
+										.update(listResources)
+										.set({ position: index + 1 })
+										.where(
+											eq(
+												listResources.resourceId,
+												item.resourceId
+											)
+										);
+								})
+							);
+						});
+				}
+			),
+
+		multipleDelete: protectedProcedure
+			.input(listOfResourcesSchema)
+			.mutation(
+				async ({
+					ctx: { db, userId },
+					input: { listId, resources },
+				}) => {
+					const listOwner = !!(await db.query.lists.findFirst({
+						where: and(
+							eq(lists.userId, userId),
+							eq(lists.id, listId)
+						),
+					}));
+
+					if (listOwner)
+						await db.transaction(async () => {
+							await Promise.all(
+								resources.map((item) => {
+									return db
+										.delete(listResources)
+										.where(
+											eq(
+												listResources.resourceId,
+												item.resourceId
+											)
+										);
+								})
+							);
+						});
+				}
+			),
 	}),
 });
