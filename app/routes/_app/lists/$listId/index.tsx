@@ -13,7 +13,10 @@ import { z } from "zod";
 import { ResourceItem } from "@/components/ResourceItem";
 import SearchAddToList from "@/components/lists/SearchAddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
-import { DeleteListItemButton } from "@/components/lists/ModifyListItemButton";
+import {
+	DeleteButton,
+	DeleteListItemButton,
+} from "@/components/lists/ModifyListItemButton";
 import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
@@ -119,11 +122,23 @@ function List() {
 				});
 			},
 		});
+	const { mutate: deletePositions } =
+		api.lists.resources.multipleDelete.useMutation({
+			onSettled: () => {
+				utils.lists.resources.get.invalidate({
+					listId,
+				});
+			},
+		});
 	const [itemsOrder, setItemsOrder] = useState<ListItem[]>(listItems);
 	const [editMode, setEditMode] = useState(false);
+	const [deletedItems, setDeletedItems] = useState<ListItem[]>([]);
+	const [isChanged, setIsChanged] = useState(false);
 
 	useEffect(() => {
 		setItemsOrder(listItems);
+		setEditMode(false);
+		setIsChanged(false);
 	}, [listItems]);
 
 	if (!listData) return <NotFound />;
@@ -188,24 +203,37 @@ function List() {
 								category={listData.category}
 								listId={listData.id}
 							/>
+							{isChanged ? "CHANGED" : "NO CHANGES"}
 							<EditButton
 								editMode={editMode}
 								onSave={() => {
-									if (editMode) {
-										updatePositions(itemsOrder);
+									if (isChanged) {
+										updatePositions({
+											listId,
+											resources: itemsOrder,
+										});
+										deletePositions({
+											listId,
+											resources: deletedItems,
+										});
 									}
 									setEditMode(!editMode);
 								}}
 								onCancel={() => {
 									setItemsOrder(listItems);
 									setEditMode(!editMode);
+									setIsChanged(false);
+									setDeletedItems([]);
 								}}
 							/>
 						</div>
 					)}
 					<Reorder.Group
 						values={itemsOrder}
-						onReorder={setItemsOrder}
+						onReorder={(props) => {
+							setItemsOrder(props);
+							setIsChanged(true);
+						}}
 					>
 						{itemsOrder?.map((item, index) => (
 							<Reorder.Item
@@ -244,12 +272,26 @@ function List() {
 											)}
 										</div>
 									</div>
-									{isUser && editMode && (
-										<DeleteListItemButton
-											resourceId={item.resourceId}
-											listId={item.listId}
-										/>
-									)}
+									<DeleteButton
+										isVisible={isUser && editMode}
+										position={index}
+										onClick={(position) => {
+											setDeletedItems([
+												...deletedItems,
+												itemsOrder[position],
+											]);
+											setItemsOrder([
+												...itemsOrder.slice(
+													0,
+													position
+												),
+												...itemsOrder.slice(
+													position + 1
+												),
+											]);
+											setIsChanged(true);
+										}}
+									/>
 								</div>
 							</Reorder.Item>
 						))}

@@ -165,3 +165,22 @@ export const listResourcesRelations = relations(listResources, ({ one }) => ({
 		references: [lists.id],
 	}),
 }));
+
+export const tableSchemas = {
+	users,
+	sessions,
+	profile,
+	ratings,
+	followers,
+	lists,
+	listResources,
+};
+
+export const relationSchemas = {
+	sessionRelations,
+	profileRelations,
+	ratingsRelations,
+	userFollowRelation,
+	listRelation,
+	listResourcesRelations,
+};

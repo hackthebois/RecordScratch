@@ -58,7 +58,10 @@ export const selectListResourcesSchema = listResourcesSchema.pick({
 	listId: true,
 });
 
-export const listOfResourcesSchema = z.array(listResourcesSchema);
+export const listOfResourcesSchema = z.object({
+	listId: z.string(),
+	resources: z.array(listResourcesSchema),
+});
 
 export const deleteListResourcesSchema = listResourcesSchema.pick({
 	listId: true,
