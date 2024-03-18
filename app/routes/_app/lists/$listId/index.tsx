@@ -167,6 +167,7 @@ function List() {
 						size={125}
 					/>
 				}
+				lastUpdatedTime={listData.updatedAt.getDay().toString()}
 			>
 				<Link
 					to="/$handle"
