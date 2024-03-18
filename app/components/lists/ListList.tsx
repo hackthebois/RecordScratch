@@ -92,7 +92,7 @@ const ListList = ({
 	showProfiles = false,
 	type = "scroll",
 	onClick,
-	size = 185,
+	size = 165,
 }: {
 	lists: ListsType[] | undefined;
 	showProfiles?: boolean;
@@ -122,7 +122,7 @@ const ListList = ({
 		);
 	} else {
 		return (
-			<div className="flex flex-row flex-wrap gap-3">
+			<div className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
 				{lists &&
 					lists.map((list, index) => (
 						<ListsItem

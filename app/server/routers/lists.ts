@@ -45,6 +45,7 @@ export const listsRouter = router({
 					profile: true,
 				},
 				where: whereClause,
+				orderBy: [desc(lists.updatedAt)],
 			});
 		}),
 
@@ -121,6 +122,11 @@ export const listsRouter = router({
 					await db
 						.insert(listResources)
 						.values({ ...inputs, position: lastPosition + 1 });
+
+					await db
+						.update(lists)
+						.set({ updatedAt: new Date() })
+						.where(eq(lists.id, inputs.listId));
 				} else throw new Error("cannot add to list if not owner");
 			}),
 
@@ -158,8 +164,12 @@ export const listsRouter = router({
 							eq(lists.id, listId)
 						),
 					}));
-					if (listOwner)
-						await db.transaction(async () => {
+					if (listOwner) await Promise;
+					await db.transaction(async () => {
+						await db
+							.update(lists)
+							.set({ updatedAt: new Date() })
+							.where(eq(lists.id, listId)),
 							await Promise.all(
 								resources.map((item, index) => {
 									return db
@@ -173,7 +183,7 @@ export const listsRouter = router({
 										);
 								})
 							);
-						});
+					});
 				}
 			),
 
@@ -193,6 +203,10 @@ export const listsRouter = router({
 
 					if (listOwner)
 						await db.transaction(async () => {
+							await db
+								.update(lists)
+								.set({ updatedAt: new Date() })
+								.where(eq(lists.id, listId));
 							await Promise.all(
 								resources.map((item) => {
 									return db

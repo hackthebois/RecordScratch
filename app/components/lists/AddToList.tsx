@@ -12,6 +12,7 @@ import {
 import ListList from "./ListList";
 import { api } from "@/trpc/react";
 import { MoreHorizontal } from "lucide-react";
+import { CreateList } from "./CreateList";
 
 export const AddToList = ({
 	parentId,
@@ -63,19 +64,23 @@ export const AddToList = ({
 						Add this {category.toLowerCase()} to one of your Lists
 					</DialogDescription>
 				</DialogHeader>
-				<ListList
-					lists={lists}
-					type="scroll"
-					onClick={(listId: string) => {
-						mutate({
-							resourceId,
-							parentId,
-							listId,
-						});
-						setOpen(false);
-					}}
-					size={170}
-				/>
+				{!lists?.length ? (
+					<CreateList size={165} category={category} />
+				) : (
+					<ListList
+						lists={lists}
+						type="scroll"
+						onClick={(listId: string) => {
+							mutate({
+								resourceId,
+								parentId,
+								listId,
+							});
+							setOpen(false);
+						}}
+						size={165}
+					/>
+				)}
 				<DialogFooter></DialogFooter>
 			</DialogContent>
 		</Dialog>

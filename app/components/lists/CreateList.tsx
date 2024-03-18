@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
-import { InsertList, insertListSchema } from "@/types/list";
+import { Category, InsertList, insertListSchema } from "@/types/list";
 import { PlusSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,7 +28,13 @@ import { api } from "@/trpc/react";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/Select";
 import { SelectValue } from "@radix-ui/react-select";
 
-export const CreateList = () => {
+export const CreateList = ({
+	category,
+	size,
+}: {
+	category?: Category;
+	size?: number;
+}) => {
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 
@@ -40,7 +46,7 @@ export const CreateList = () => {
 
 	const { mutate: createList } = api.lists.create.useMutation({
 		onSuccess: () => {
-			utils.lists.getUsers.invalidate({ userId: profile!.userId });
+			utils.lists.getUser.invalidate({ userId: profile!.userId });
 			setOpen(false);
 		},
 	});
@@ -48,7 +54,7 @@ export const CreateList = () => {
 	useEffect(() => {
 		form.reset({
 			name: undefined,
-			category: undefined,
+			category: category,
 			description: "",
 		});
 	}, [form]);
@@ -67,6 +73,12 @@ export const CreateList = () => {
 				<Button
 					className="h-10 gap-1 rounded pb-5 pt-5"
 					variant="outline"
+					style={{
+						width: size,
+						height: size,
+						maxWidth: size,
+						maxHeight: size,
+					}}
 				>
 					<PlusSquare className="h-6 w-6" />
 					Create List
