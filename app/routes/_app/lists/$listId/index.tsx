@@ -113,12 +113,16 @@ function List() {
 	const [listItems] = api.lists.resources.get.useSuspenseQuery({
 		listId,
 	});
+
 	const utils = api.useUtils();
 	const { mutate: updatePositions } =
 		api.lists.resources.updatePositions.useMutation({
 			onSettled: () => {
 				utils.lists.resources.get.invalidate({
 					listId,
+				});
+				utils.lists.getUser.invalidate({
+					userId: listData?.profile.userId,
 				});
 			},
 		});
@@ -127,6 +131,9 @@ function List() {
 			onSettled: () => {
 				utils.lists.resources.get.invalidate({
 					listId,
+				});
+				utils.lists.getUser.invalidate({
+					userId: listData?.profile.userId,
 				});
 			},
 		});
@@ -139,11 +146,12 @@ function List() {
 		setItemsOrder(listItems);
 		setEditMode(false);
 		setIsChanged(false);
+		setDeletedItems([]);
 	}, [listItems]);
 
 	if (!listData) return <NotFound />;
 
-	const profile = listData?.profile;
+	const profile = listData.profile;
 	const isUser = myProfile?.userId === profile.userId;
 
 	return (
@@ -167,7 +175,7 @@ function List() {
 					}}
 					className="flex items-center gap-2"
 				>
-					<UserAvatar {...profile} size={40} />
+					<UserAvatar {...profile} size={30} />
 					<p className="flex text-lg">{profile.name}</p>
 				</Link>
 			</ListMetadata>
@@ -203,7 +211,6 @@ function List() {
 								category={listData.category}
 								listId={listData.id}
 							/>
-							{isChanged ? "CHANGED" : "NO CHANGES"}
 							<EditButton
 								editMode={editMode}
 								onSave={() => {
