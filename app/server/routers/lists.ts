@@ -11,7 +11,7 @@ import {
 } from "@/types/list";
 import { listResources, lists } from "../db/schema";
 import { generateId } from "lucia";
-import { and, desc, eq } from "drizzle-orm/sql";
+import { and, asc, desc, eq } from "drizzle-orm/sql";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -40,6 +40,7 @@ export const listsRouter = router({
 				with: {
 					resources: {
 						limit: 4,
+						orderBy: [asc(listResources.position)],
 					},
 					profile: true,
 				},
