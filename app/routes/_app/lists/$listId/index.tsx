@@ -2,6 +2,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import {
 	ErrorComponent,
 	Link,
+	UseNavigateResult,
 	createFileRoute,
 	useNavigate,
 } from "@tanstack/react-router";
@@ -13,7 +14,6 @@ import { z } from "zod";
 import { ResourceItem } from "@/components/ResourceItem";
 import SearchAddToList from "@/components/lists/SearchAddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
-import { DeleteButton } from "@/components/lists/DeleteResource";
 import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
@@ -34,8 +34,9 @@ import { Button } from "@/components/ui/Button";
 import ListMetadata from "@/components/lists/listMetaData";
 import { useEffect, useState } from "react";
 import { UserAvatar } from "@/components/user/UserAvatar";
-import { ListItem } from "@/types/list";
-import { Pencil, Ban } from "lucide-react";
+import { ListItem, ListType } from "@/types/list";
+import { Profile } from "@/types/profile";
+import { DeleteButton, EditButton } from "@/components/lists/ModifyResource";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -61,37 +62,78 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 	},
 });
 
-const EditButton = ({
-	editMode,
-	onSave,
-	onCancel,
+const ListSettings = ({
+	listData,
+	myProfile,
+	navigate,
 }: {
-	editMode: boolean;
-	onSave: () => void;
-	onCancel: () => void;
+	listData: ListType;
+	myProfile: Profile;
+	navigate: UseNavigateResult<"/lists/$listId">;
 }) => {
 	return (
-		<div className="flex flex-row gap-2">
-			<Button
-				className="h-10 w-28 gap-1 rounded pb-5 pr-3 pt-5"
-				onClick={onSave}
-				variant={editMode ? "default" : "outline"}
-				size="icon"
-			>
-				<Pencil size={18} />
-				{editMode ? "Save List" : "Edit List"}
-			</Button>
-			{editMode && (
-				<Button
-					className="h-10 w-28 gap-1 rounded pb-5 pr-3 pt-5"
-					onClick={onCancel}
-					variant="outline"
-					size="icon"
-				>
-					<Ban size={18} />
-					Cancel
-				</Button>
-			)}
+		<div className="flex flex-col gap-8 py-6">
+			<div className="flex items-center justify-between pl-4">
+				<div className="flex flex-col items-start gap-2">
+					<Label>Edit List</Label>
+					<p className="text-sm text-muted-foreground">
+						Update your list information
+					</p>
+				</div>
+				<ModifyList
+					id={listData.id}
+					name={listData.name}
+					description={listData.description ?? ""}
+				/>
+			</div>
+			<div className="flex items-center justify-between pl-4">
+				<div className="flex flex-col items-start gap-2">
+					<Label>Delete List</Label>
+					<p className="text-sm text-muted-foreground">
+						Delete your list and all list items associated
+					</p>
+				</div>
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
+						<Button
+							variant="destructive"
+							className="mt-2 h-10"
+							size="sm"
+						>
+							Delete List
+						</Button>
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle>
+								Delete you List?
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								This will remove your list forever
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+
+							<DeleteListButton
+								userId={myProfile.userId}
+								listId={listData.id}
+								onClick={() =>
+									navigate({
+										to: `/$handle`,
+										params: {
+											handle: String(myProfile.handle),
+										},
+										search: {
+											tab: "lists",
+										},
+									})
+								}
+							/>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			</div>
 		</div>
 	);
 };
@@ -111,29 +153,21 @@ function List() {
 		listId,
 	});
 
+	const invalidate = async () => {
+		await utils.lists.resources.get.invalidate({
+			listId,
+		});
+		await utils.lists.getUser.invalidate({
+			userId: listData?.profile.userId,
+		});
+	};
+
 	const utils = api.useUtils();
-	const { mutate: updatePositions } =
-		api.lists.resources.updatePositions.useMutation({
-			onSettled: () => {
-				utils.lists.resources.get.invalidate({
-					listId,
-				});
-				utils.lists.getUser.invalidate({
-					userId: listData?.profile.userId,
-				});
-			},
-		});
-	const { mutate: deletePositions } =
-		api.lists.resources.multipleDelete.useMutation({
-			onSettled: () => {
-				utils.lists.resources.get.invalidate({
-					listId,
-				});
-				utils.lists.getUser.invalidate({
-					userId: listData?.profile.userId,
-				});
-			},
-		});
+	const { mutateAsync: updatePositions } =
+		api.lists.resources.updatePositions.useMutation();
+	const { mutateAsync: deletePositions } =
+		api.lists.resources.multipleDelete.useMutation();
+
 	const [itemsOrder, setItemsOrder] = useState<ListItem[]>(listItems);
 	const [editMode, setEditMode] = useState(false);
 	const [deletedItems, setDeletedItems] = useState<ListItem[]>([]);
@@ -145,6 +179,30 @@ function List() {
 		setIsChanged(false);
 		setDeletedItems([]);
 	}, [listItems]);
+
+	const handleSave = async () => {
+		if (isChanged) {
+			await updatePositions({
+				listId,
+				resources: itemsOrder,
+			});
+			if (deletedItems.length) {
+				await deletePositions({
+					listId,
+					resources: deletedItems,
+				});
+			}
+			await invalidate();
+		}
+		setEditMode((prevEditMode) => !prevEditMode);
+	};
+
+	const handleCancel = () => {
+		setItemsOrder(listItems);
+		setEditMode((prevEditMode) => !prevEditMode);
+		setIsChanged(false);
+		setDeletedItems([]);
+	};
 
 	if (!listData) return <NotFound />;
 
@@ -211,25 +269,8 @@ function List() {
 							/>
 							<EditButton
 								editMode={editMode}
-								onSave={() => {
-									if (isChanged) {
-										updatePositions({
-											listId,
-											resources: itemsOrder,
-										});
-										deletePositions({
-											listId,
-											resources: deletedItems,
-										});
-									}
-									setEditMode(!editMode);
-								}}
-								onCancel={() => {
-									setItemsOrder(listItems);
-									setEditMode(!editMode);
-									setIsChanged(false);
-									setDeletedItems([]);
-								}}
+								onSave={handleSave}
+								onCancel={handleCancel}
 							/>
 						</div>
 					)}
@@ -304,75 +345,11 @@ function List() {
 				</TabsContent>
 				{isUser && (
 					<TabsContent value="settings">
-						<div className="flex flex-col gap-8 py-6">
-							<div className="flex items-center justify-between pl-4">
-								<div className="flex flex-col items-start gap-2">
-									<Label>Edit List</Label>
-									<p className="text-sm text-muted-foreground">
-										Update your list information
-									</p>
-								</div>
-								<ModifyList
-									id={listData.id}
-									name={listData.name}
-									description={listData.description}
-								/>
-							</div>
-							<div className="flex items-center justify-between pl-4">
-								<div className="flex flex-col items-start gap-2">
-									<Label>Delete List</Label>
-									<p className="text-sm text-muted-foreground">
-										Delete your list and all list items
-										associated
-									</p>
-								</div>
-								<AlertDialog>
-									<AlertDialogTrigger asChild>
-										<Button
-											variant="destructive"
-											className="mt-2 h-10"
-											size="sm"
-										>
-											Delete List
-										</Button>
-									</AlertDialogTrigger>
-									<AlertDialogContent>
-										<AlertDialogHeader>
-											<AlertDialogTitle>
-												Delete you List?
-											</AlertDialogTitle>
-											<AlertDialogDescription>
-												This will remove your list
-												forever
-											</AlertDialogDescription>
-										</AlertDialogHeader>
-										<AlertDialogFooter>
-											<AlertDialogCancel>
-												Cancel
-											</AlertDialogCancel>
-
-											<DeleteListButton
-												userId={myProfile?.userId}
-												listId={listData.id}
-												onClick={() =>
-													navigate({
-														to: `/$handle`,
-														params: {
-															handle: String(
-																profile.handle
-															),
-														},
-														search: {
-															tab: "lists",
-														},
-													})
-												}
-											/>
-										</AlertDialogFooter>
-									</AlertDialogContent>
-								</AlertDialog>
-							</div>
-						</div>
+						<ListSettings
+							listData={listData}
+							myProfile={myProfile}
+							navigate={navigate}
+						/>
 					</TabsContent>
 				)}
 			</Tabs>
