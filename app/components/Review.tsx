@@ -1,11 +1,60 @@
+import { api } from "@/trpc/react";
 import { Review as ReviewType } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
-import { Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
+import { Suspense } from "react";
 import { ResourceItem } from "./ResourceItem";
 import { UserAvatar } from "./UserAvatar";
+import { Button } from "./ui/Button";
+import { Skeleton } from "./ui/Skeleton";
+
+const Likes = (props: { resourceId: string; authorId: string }) => {
+	const utils = api.useUtils();
+	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
+	const [like] = api.likes.get.useSuspenseQuery(props);
+
+	const { mutate: likeMutation } = api.likes.like.useMutation({
+		onSuccess: () => {
+			utils.likes.get.invalidate(props);
+			utils.likes.getLikes.invalidate(props);
+		},
+	});
+
+	const { mutate: unlikeMutation } = api.likes.unlike.useMutation({
+		onSuccess: () => {
+			utils.likes.get.invalidate(props);
+			utils.likes.getLikes.invalidate(props);
+		},
+	});
+
+	return (
+		<Button
+			className="gap-2 text-muted-foreground"
+			variant="outline"
+			size="sm"
+			onClick={() => {
+				if (like) {
+					unlikeMutation(props);
+				} else {
+					likeMutation(props);
+				}
+			}}
+		>
+			<Heart
+				size={20}
+				style={{
+					fill: like ? "#ff4d4f" : "none",
+					stroke: like ? "#ff4d4f" : "currentColor",
+				}}
+			/>
+			<p>{likes}</p>
+		</Button>
+	);
+};
 
 export const Review = ({
+	userId,
 	parentId,
 	rating,
 	profile,
@@ -15,12 +64,12 @@ export const Review = ({
 	updatedAt,
 }: ReviewType) => {
 	return (
-		<div className="flex flex-col gap-4 py-4 text-card-foreground">
+		<div className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
 			/>
-			<div className="flex flex-1 flex-col gap-3">
+			<div className="flex flex-1 flex-col items-start gap-3">
 				<div className="flex items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
 						<Star
@@ -48,6 +97,20 @@ export const Review = ({
 					</p>
 				</Link>
 				<p className="whitespace-pre-line text-sm">{content}</p>
+				<Suspense
+					fallback={
+						<Button
+							variant="outline"
+							size="sm"
+							className="gap-2 text-muted-foreground"
+						>
+							<Heart size={20} />
+							<Skeleton className="h-6 w-8" />
+						</Button>
+					}
+				>
+					<Likes resourceId={resourceId} authorId={userId} />
+				</Suspense>
 			</div>
 		</div>
 	);
