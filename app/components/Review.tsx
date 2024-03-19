@@ -1,15 +1,34 @@
 import { api } from "@/trpc/react";
+import { SelectLike } from "@/types/likes";
 import { Review as ReviewType } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
 import { Heart, Star } from "lucide-react";
 import { Suspense } from "react";
 import { ResourceItem } from "./ResourceItem";
+import { SignInWrapper } from "./SignInWrapper";
 import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/Button";
 import { Skeleton } from "./ui/Skeleton";
 
-const Likes = (props: { resourceId: string; authorId: string }) => {
+const PublicLikeButton = (props: SelectLike) => {
+	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
+
+	return (
+		<SignInWrapper>
+			<Button
+				className="gap-2 text-muted-foreground"
+				variant="outline"
+				size="sm"
+			>
+				<Heart size={20} />
+				<p>{likes}</p>
+			</Button>
+		</SignInWrapper>
+	);
+};
+
+const LikeButton = (props: SelectLike) => {
 	const utils = api.useUtils();
 	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
 	const [like] = api.likes.get.useSuspenseQuery(props);
@@ -69,6 +88,7 @@ export const Review = ({
 	category,
 	updatedAt,
 }: ReviewType) => {
+	const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
 		<div className="mb-3 flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
 			<ResourceItem
@@ -115,7 +135,14 @@ export const Review = ({
 						</Button>
 					}
 				>
-					<Likes resourceId={resourceId} authorId={userId} />
+					{profileExists ? (
+						<LikeButton resourceId={resourceId} authorId={userId} />
+					) : (
+						<PublicLikeButton
+							resourceId={resourceId}
+							authorId={userId}
+						/>
+					)}
 				</Suspense>
 			</div>
 		</div>
