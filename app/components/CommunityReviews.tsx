@@ -3,9 +3,9 @@ import { Resource } from "@/types/rating";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Review } from "./Review";
-import { ReviewDialog } from "./ReviewDialog";
-import { SignInReviewButton } from "./SignInReviewButton";
+import { Review } from "./review/Review";
+import { ReviewDialog } from "./review/ReviewDialog";
+import { SignInReviewButton } from "./signIn/SignInReviewButton";
 
 const CommunityReviews = ({
 	pageLimit,

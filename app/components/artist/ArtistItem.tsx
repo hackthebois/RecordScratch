@@ -2,7 +2,7 @@ import { Artist, getQueryOptions } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "../user/UserAvatar";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -10,12 +10,14 @@ export const ArtistItem = ({
 	onClick,
 	direction = "horizontal",
 	showLink = true,
+	textCss = "truncate",
 }: {
 	initialArtist?: Artist;
 	artistId: string;
 	onClick?: () => void;
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
+	textCss?: string;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -57,7 +59,9 @@ export const ArtistItem = ({
 					<div className="h-full w-full bg-muted"></div>
 				)}
 			</div>
-			<p className="flex flex-1 truncate font-medium">{artist.name}</p>
+			<p className={cn("flex flex-1 font-medium", textCss)}>
+				{artist.name}
+			</p>
 		</Link>
 	);
 };

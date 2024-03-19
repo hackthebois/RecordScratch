@@ -60,8 +60,8 @@ export const MusicSearch = ({
 		enabled: query.length > 0,
 	});
 
-	const list = api.useUtils().lists.resources.getListResources;
-	const { mutate } = api.lists.resources.createListResource.useMutation({
+	const list = api.useUtils().lists.resources.get;
+	const { mutate } = api.lists.resources.create.useMutation({
 		onSettled: (_data, _error, variables) => {
 			if (variables) {
 				list.invalidate({
@@ -211,7 +211,7 @@ export const SearchAddToList = ({
 					className="h-10 gap-1 rounded pb-5 pr-3 pt-5"
 					variant="outline"
 				>
-					<ListPlus className="h-6 w-6" />
+					<ListPlus size={18} />
 					Add to List
 				</Button>
 			</DialogTrigger>

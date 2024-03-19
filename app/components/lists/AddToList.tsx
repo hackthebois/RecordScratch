@@ -12,6 +12,7 @@ import {
 import ListList from "./ListList";
 import { api } from "@/trpc/react";
 import { MoreHorizontal } from "lucide-react";
+import { CreateList } from "./CreateList";
 
 export const AddToList = ({
 	parentId,
@@ -27,13 +28,13 @@ export const AddToList = ({
 
 	if (!myProfile) return null;
 
-	const { data: lists } = api.lists.getUserLists.useQuery({
+	const { data: lists } = api.lists.getUser.useQuery({
 		userId: myProfile.userId,
 		category,
 	});
 
-	const list = api.useUtils().lists.resources.getListResources;
-	const { mutate } = api.lists.resources.createListResource.useMutation({
+	const list = api.useUtils().lists.resources.get;
+	const { mutate } = api.lists.resources.create.useMutation({
 		onSettled: (_data, _error, variables) => {
 			if (variables) {
 				list.invalidate({
@@ -42,11 +43,6 @@ export const AddToList = ({
 			}
 		},
 	});
-
-	let type: string = "";
-	if (category === "SONG") type = "Song";
-	if (category === "ALBUM") type = "Album";
-	if (category === "ARTIST") type = "Artist";
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -62,24 +58,29 @@ export const AddToList = ({
 			<DialogContent className="w-full sm:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle className="text-2xl">
-						Add {type} to a List
+						Add {category.toLowerCase()} to a List
 					</DialogTitle>
 					<DialogDescription>
-						Add this {type} to one of your Lists
+						Add this {category.toLowerCase()} to one of your Lists
 					</DialogDescription>
 				</DialogHeader>
-				<ListList
-					lists={lists}
-					type="scroll"
-					onClick={(listId: string) => {
-						mutate({
-							resourceId,
-							parentId,
-							listId,
-						});
-						setOpen(false);
-					}}
-				/>
+				{!lists?.length ? (
+					<CreateList size={165} category={category} />
+				) : (
+					<ListList
+						lists={lists}
+						type="scroll"
+						onClick={(listId: string) => {
+							mutate({
+								resourceId,
+								parentId,
+								listId,
+							});
+							setOpen(false);
+						}}
+						size={160}
+					/>
+				)}
 				<DialogFooter></DialogFooter>
 			</DialogContent>
 		</Dialog>

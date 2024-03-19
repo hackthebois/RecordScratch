@@ -1,6 +1,11 @@
 import { Client } from "@planetscale/database";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
-import * as schema from "./schema";
+import { tableSchemas, relationSchemas } from "./schema";
+
+const schema = {
+	...tableSchemas,
+	...relationSchemas,
+};
 
 // create the connection
 const connection = new Client({

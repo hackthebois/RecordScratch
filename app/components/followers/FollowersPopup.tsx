@@ -1,15 +1,15 @@
 import { api } from "@/trpc/react";
 import { useState } from "react";
-import { ProfileItem } from "./ProfileItem";
-import { Button } from "./ui/Button";
+import { ProfileItem } from "../profile/ProfileItem";
+import { Button } from "../ui/Button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "./ui/Dialog";
-import { ScrollArea } from "./ui/ScrollArea";
+} from "../ui/Dialog";
+import { ScrollArea } from "../ui/ScrollArea";
 
 const FollowersPopup = ({
 	followerCount,

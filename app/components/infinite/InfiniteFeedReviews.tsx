@@ -3,7 +3,7 @@ import { RouterInputs } from "@/trpc/shared";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Review } from "./Review";
+import { Review } from "../review/Review";
 
 export const RecentFeedReviews = ({
 	input,
