@@ -14,23 +14,19 @@ export const insertListSchema = listSchema.pick({
 });
 export type InsertList = z.infer<typeof insertListSchema>;
 
-export const updateListSchema = listSchema
-	.pick({
-		id: true,
-		name: true,
-		description: true,
-	})
-	.extend({
-		id: z.string(),
-	});
+export const updateListSchema = listSchema.pick({
+	id: true,
+	name: true,
+	description: true,
+});
 export const updateFormSchema = listSchema.pick({
 	name: true,
 	description: true,
 });
 export type UpdateList = z.infer<typeof updateFormSchema>;
 
-export const selectListSchema = z.object({
-	id: z.string(),
+export const selectListSchema = listSchema.pick({
+	id: true,
 });
 
 export const filterUserListsSchema = listSchema
