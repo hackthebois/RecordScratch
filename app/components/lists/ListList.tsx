@@ -1,8 +1,8 @@
+import { api } from "@/trpc/react";
 import { ListsType } from "@/types/list";
 import { Link } from "@tanstack/react-router";
 import { UserAvatar } from "../UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
-import { api } from "@/trpc/react";
 import ListImage from "./ListImage";
 
 const ListsItem = ({
