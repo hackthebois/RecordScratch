@@ -150,7 +150,8 @@ function Artist() {
 					<div>
 						<SongTable songs={top.data} />
 					</div>
-					<h3 className="mt-6 border-b">Related Artists</h3>
+					<h3 className="mb-3 mt-6">Related Artists</h3>
+					<hr />
 					<ScrollArea
 						orientation="horizontal"
 						className="flex flex-row gap-4"
