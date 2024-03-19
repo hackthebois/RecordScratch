@@ -45,13 +45,13 @@ const CommunityReviews = ({
 					<SignInReviewButton />
 				)}
 			</div>
-			<div>
-				{data?.pages.map((page, index) => (
-					<div key={index}>
+			<div className="flex flex-col gap-3">
+				{data?.pages.map((page) => (
+					<>
 						{page.items.map((review, index) => (
 							<Review key={index} {...review} />
 						))}
-					</div>
+					</>
 				))}
 			</div>
 			{!data && <div className="h-screen" />}

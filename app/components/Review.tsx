@@ -90,7 +90,7 @@ export const Review = ({
 }: ReviewType) => {
 	const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
-		<div className="mb-3 flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
+		<div className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
