@@ -1,6 +1,6 @@
 import { Profile } from "@/types/profile";
 import { User } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 
 export const UserAvatar = ({
 	imageUrl,

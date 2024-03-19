@@ -1,7 +1,7 @@
 import { Profile } from "@/types/profile";
 import { Link } from "@tanstack/react-router";
-import { FollowButton } from "./FollowButton";
-import { UserAvatar } from "./UserAvatar";
+import { FollowButton } from "../followers/FollowButton";
+import { UserAvatar } from "../user/UserAvatar";
 import { api } from "@/trpc/react";
 
 export const ProfileItem = ({

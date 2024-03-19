@@ -1,10 +1,10 @@
 import CommunityReviews from "@/components/CommunityReviews";
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
-import { RatingDialog } from "@/components/RatingDialog";
-import { SignInRateButton } from "@/components/SignInRateButton";
+import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
+import { SignInRateButton } from "@/components/signIn/SignInRateButton";
 import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
