@@ -1,12 +1,7 @@
 import { likes } from "@/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
+import { SelectLikeSchema } from "@/types/likes";
 import { and, count, eq } from "drizzle-orm";
-import { z } from "zod";
-
-export const SelectLikeSchema = z.object({
-	resourceId: z.string(),
-	authorId: z.string(),
-});
 
 export const likesRouter = router({
 	getLikes: publicProcedure
