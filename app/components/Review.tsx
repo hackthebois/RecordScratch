@@ -14,19 +14,24 @@ const Likes = (props: { resourceId: string; authorId: string }) => {
 	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
 	const [like] = api.likes.get.useSuspenseQuery(props);
 
-	const { mutate: likeMutation } = api.likes.like.useMutation({
-		onSuccess: () => {
-			utils.likes.get.invalidate(props);
-			utils.likes.getLikes.invalidate(props);
-		},
-	});
+	const { mutate: likeMutation, isPending: isLiking } =
+		api.likes.like.useMutation({
+			onSettled: async () => {
+				await utils.likes.get.invalidate(props);
+				await utils.likes.getLikes.invalidate(props);
+			},
+		});
 
-	const { mutate: unlikeMutation } = api.likes.unlike.useMutation({
-		onSuccess: () => {
-			utils.likes.get.invalidate(props);
-			utils.likes.getLikes.invalidate(props);
-		},
-	});
+	const { mutate: unlikeMutation, isPending: isUnLiking } =
+		api.likes.unlike.useMutation({
+			onSettled: async () => {
+				await utils.likes.get.invalidate(props);
+				await utils.likes.getLikes.invalidate(props);
+			},
+		});
+
+	const liked = isLiking ? true : isUnLiking ? false : like;
+	const likesCount = isLiking ? likes + 1 : isUnLiking ? likes - 1 : likes;
 
 	return (
 		<Button
@@ -34,6 +39,7 @@ const Likes = (props: { resourceId: string; authorId: string }) => {
 			variant="outline"
 			size="sm"
 			onClick={() => {
+				if (isLiking || isUnLiking) return;
 				if (like) {
 					unlikeMutation(props);
 				} else {
@@ -44,11 +50,11 @@ const Likes = (props: { resourceId: string; authorId: string }) => {
 			<Heart
 				size={20}
 				style={{
-					fill: like ? "#ff4d4f" : "none",
-					stroke: like ? "#ff4d4f" : "currentColor",
+					fill: liked ? "#ff4d4f" : "none",
+					stroke: liked ? "#ff4d4f" : "currentColor",
 				}}
 			/>
-			<p>{likes}</p>
+			<p>{likesCount}</p>
 		</Button>
 	);
 };
@@ -64,7 +70,7 @@ export const Review = ({
 	updatedAt,
 }: ReviewType) => {
 	return (
-		<div className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
+		<div className="mb-3 flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
