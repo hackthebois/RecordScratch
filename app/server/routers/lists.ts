@@ -7,7 +7,6 @@ import {
 	selectListResourcesSchema,
 	selectListSchema,
 	updateListSchema,
-	filterUserListsSchema,
 	listOfResourcesSchema,
 } from "@/types/list";
 import { listResources, lists } from "../db/schema";

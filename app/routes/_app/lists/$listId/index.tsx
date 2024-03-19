@@ -183,6 +183,7 @@ function List() {
 	}, [listItems]);
 
 	const handleSave = async () => {
+		setEditMode((prevEditMode) => !prevEditMode);
 		if (isChanged) {
 			await updatePositions({
 				listId,
@@ -196,7 +197,6 @@ function List() {
 			}
 			await invalidate();
 		}
-		setEditMode((prevEditMode) => !prevEditMode);
 	};
 
 	const handleCancel = () => {
