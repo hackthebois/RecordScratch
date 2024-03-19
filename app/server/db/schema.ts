@@ -168,25 +168,6 @@ export const listResourcesRelations = relations(listResources, ({ one }) => ({
 	}),
 }));
 
-export const tableSchemas = {
-	users,
-	sessions,
-	profile,
-	ratings,
-	followers,
-	lists,
-	listResources,
-};
-
-export const relationSchemas = {
-	sessionRelations,
-	profileRelations,
-	ratingsRelations,
-	userFollowRelation,
-	listRelation,
-	listResourcesRelations,
-};
-
 export const likes = mysqlTable("likes", {
 	id: varchar("id", { length: 256 })
 		.primaryKey()
@@ -204,3 +185,24 @@ export const likesRelations = relations(likes, ({ one }) => ({
 		references: [ratings.resourceId, ratings.userId],
 	}),
 }));
+
+export const tableSchemas = {
+	users,
+	sessions,
+	profile,
+	ratings,
+	followers,
+	lists,
+	listResources,
+	likes,
+};
+
+export const relationSchemas = {
+	sessionRelations,
+	profileRelations,
+	ratingsRelations,
+	userFollowRelation,
+	listRelation,
+	listResourcesRelations,
+	likesRelations,
+};
