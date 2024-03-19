@@ -13,10 +13,7 @@ import { z } from "zod";
 import { ResourceItem } from "@/components/ResourceItem";
 import SearchAddToList from "@/components/lists/SearchAddToList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
-import {
-	DeleteButton,
-	DeleteListItemButton,
-} from "@/components/lists/ModifyListItemButton";
+import { DeleteButton } from "@/components/lists/DeleteResource";
 import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
