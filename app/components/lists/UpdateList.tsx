@@ -45,7 +45,7 @@ export const ModifyList = ({
 
 	const { mutate: updateList } = api.lists.update.useMutation({
 		onSuccess: () => {
-			utils.lists.getUsers.invalidate({ userId: profile!.userId });
+			utils.lists.getUser.invalidate({ userId: profile!.userId });
 			utils.lists.get.invalidate({ id });
 			setOpen(false);
 		},

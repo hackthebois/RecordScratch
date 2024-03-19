@@ -14,7 +14,7 @@ export const DeleteListButton = ({
 
 	const deleteResource = api.lists.delete.useMutation({
 		onSettled: () => {
-			utils.lists.getUsers.invalidate({ userId });
+			utils.lists.getUser.invalidate({ userId });
 			utils.lists.get.invalidate({ id: listId });
 		},
 	}).mutate;
