@@ -1,6 +1,6 @@
-import { UserAvatar } from "@/components/UserAvatar";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { Profile } from "@/types/profile";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
