@@ -1,6 +1,5 @@
 import SearchBar from "@/components/SearchBar";
 import SignedIn from "@/components/SignedIn";
-import UserButton from "@/components/UserButton";
 import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
@@ -10,6 +9,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/Popover";
+import UserButton from "@/components/user/UserButton";
 import { env } from "@/env";
 import { api } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";

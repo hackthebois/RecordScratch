@@ -1,6 +1,6 @@
-import CommunityReviews from "@/components/CommunityReviews";
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
+import { InfiniteCommunityReviews } from "@/components/infinite/InfiniteCommunityReviews";
 import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -108,7 +108,7 @@ function Song() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
-					<CommunityReviews
+					<InfiniteCommunityReviews
 						resource={resource}
 						pageLimit={20}
 						name={song.title}

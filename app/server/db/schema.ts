@@ -224,6 +224,7 @@ export const tableSchemas = {
 	lists,
 	listResources,
 	likes,
+	notifications,
 };
 
 export const relationSchemas = {
@@ -234,4 +235,5 @@ export const relationSchemas = {
 	listRelation,
 	listResourcesRelations,
 	likesRelations,
+	notificationRelations,
 };

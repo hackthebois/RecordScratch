@@ -1,7 +1,7 @@
-import CommunityReviews from "@/components/CommunityReviews";
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import SongTable from "@/components/SongTable";
+import { InfiniteCommunityReviews } from "@/components/infinite/InfiniteCommunityReviews";
 import { AddToList } from "@/components/lists/AddToList";
 import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
@@ -143,7 +143,7 @@ function Album() {
 					/>
 				</TabsContent>
 				<TabsContent value="reviews">
-					<CommunityReviews
+					<InfiniteCommunityReviews
 						resource={resource}
 						pageLimit={20}
 						name={album.title}
