@@ -1,16 +1,15 @@
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import {
-	insertListSchema,
-	insertListResourcesSchema,
-	selectListSchema,
-	selectListResourcesSchema,
 	deleteListResourcesSchema,
-	updateListSchema,
 	filterUserListsSchema,
+	insertListResourcesSchema,
+	insertListSchema,
+	selectListResourcesSchema,
+	selectListSchema,
+	updateListSchema,
 } from "@/types/list";
-import { list_resources, lists, profile } from "../db/schema";
-import { generateId } from "lucia";
 import { and, desc, eq } from "drizzle-orm/sql";
+import { list_resources, lists, profile } from "../db/schema";
 
 export const listsRouter = router({
 	getList: publicProcedure
@@ -45,8 +44,7 @@ export const listsRouter = router({
 	createList: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-			const id = generateId(15);
-			await db.insert(lists).values({ id, userId, ...inputs });
+			await db.insert(lists).values({ userId, ...inputs });
 		}),
 
 	updateList: protectedProcedure
