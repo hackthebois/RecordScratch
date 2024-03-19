@@ -32,7 +32,7 @@ export const InfiniteProfileReviews = ({
 
 	return (
 		<>
-			<div>
+			<div className="flex flex-col gap-3 pt-3">
 				{reviews?.map((review, index) => (
 					<Review key={index} {...review} />
 				))}
