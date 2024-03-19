@@ -12,10 +12,10 @@ export const DeleteListButton = ({
 }) => {
 	const utils = api.useUtils();
 
-	const deleteResource = api.lists.deleteList.useMutation({
+	const deleteResource = api.lists.delete.useMutation({
 		onSettled: () => {
-			utils.lists.getUserLists.invalidate({ userId });
-			utils.lists.getList.invalidate({ id: listId });
+			utils.lists.getUser.invalidate({ userId });
+			utils.lists.get.invalidate({ id: listId });
 		},
 	}).mutate;
 

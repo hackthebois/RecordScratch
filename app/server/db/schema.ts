@@ -128,7 +128,7 @@ export const userFollowRelation = relations(followers, ({ one }) => ({
 }));
 
 export const lists = mysqlTable("lists", {
-	id: varchar("id", { length: 256 }).primaryKey(),
+	id: varchar("id", { length: 256 }).primaryKey().notNull(),
 	userId: varchar("user_id", { length: 256 }).notNull(),
 	name: varchar("name", { length: 50 }).notNull(),
 	description: text("description"),
@@ -137,7 +137,15 @@ export const lists = mysqlTable("lists", {
 	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 });
 
-export const list_resources = mysqlTable(
+export const listRelation = relations(lists, ({ one, many }) => ({
+	profile: one(profile, {
+		fields: [lists.userId],
+		references: [profile.userId],
+	}),
+	resources: many(listResources),
+}));
+
+export const listResources = mysqlTable(
 	"list_resources",
 	{
 		parentId: varchar("parent_id", { length: 256 }),
@@ -154,11 +162,10 @@ export const list_resources = mysqlTable(
 	})
 );
 
-export const listUserRelation = relations(lists, ({ one }) => ({
-	profile: one(profile, {
-		fields: [lists.userId],
-		references: [profile.userId],
-		relationName: "profile",
+export const listResourcesRelations = relations(listResources, ({ one }) => ({
+	list: one(lists, {
+		fields: [listResources.listId],
+		references: [lists.id],
 	}),
 }));
 
@@ -207,3 +214,24 @@ export const notificationRelations = relations(notifications, ({ one }) => ({
 		references: [ratings.resourceId],
 	}),
 }));
+
+export const tableSchemas = {
+	users,
+	sessions,
+	profile,
+	ratings,
+	followers,
+	lists,
+	listResources,
+	likes,
+};
+
+export const relationSchemas = {
+	sessionRelations,
+	profileRelations,
+	ratingsRelations,
+	userFollowRelation,
+	listRelation,
+	listResourcesRelations,
+	likesRelations,
+};

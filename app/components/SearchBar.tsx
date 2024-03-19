@@ -1,4 +1,3 @@
-import { ProfileItem } from "@/components/ProfileItem";
 import { ResourceItem } from "@/components/ResourceItem";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
@@ -12,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { ArtistItem } from "./artist/ArtistItem";
+import { ProfileItem } from "./profile/ProfileItem";
 
 export const SearchState = ({
 	isError,

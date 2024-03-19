@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { UserAvatar } from "@/components/UserAvatar";
 import {
 	Form,
 	FormControl,
@@ -33,6 +32,7 @@ import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
 import { useNavigate } from "@tanstack/react-router";
+import { UserAvatar } from "../user/UserAvatar";
 
 export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const {
