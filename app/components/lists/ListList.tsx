@@ -24,7 +24,7 @@ const ListsItem = ({
 	const profile = listsItem.profile;
 	const { data: listItems } =
 		api.lists.resources.getTopFourResources.useQuery({
-			listId: list.id!,
+			listId: list.id,
 		});
 
 	const ListItemContent = (
@@ -67,7 +67,7 @@ const ListsItem = ({
 					onClick={(event) => {
 						if (onClick) {
 							event.preventDefault();
-							onClick(list.id!);
+							onClick(list.id);
 						}
 					}}
 					{...(onClick ? {} : link)}

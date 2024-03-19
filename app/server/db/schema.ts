@@ -127,10 +127,7 @@ export const userFollowRelation = relations(followers, ({ one }) => ({
 }));
 
 export const lists = mysqlTable("lists", {
-	id: varchar("id", { length: 256 })
-		.primaryKey()
-		.notNull()
-		.$default(() => generateId(15)),
+	id: varchar("id", { length: 256 }).primaryKey(),
 	userId: varchar("user_id", { length: 256 }).notNull(),
 	name: varchar("name", { length: 50 }).notNull(),
 	description: text("description"),

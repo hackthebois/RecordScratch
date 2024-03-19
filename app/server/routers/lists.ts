@@ -9,6 +9,7 @@ import {
 	updateListSchema,
 } from "@/types/list";
 import { and, desc, eq } from "drizzle-orm/sql";
+import { generateId } from "lucia";
 import { list_resources, lists, profile } from "../db/schema";
 
 export const listsRouter = router({
@@ -44,7 +45,9 @@ export const listsRouter = router({
 	createList: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-			await db.insert(lists).values({ userId, ...inputs });
+			await db
+				.insert(lists)
+				.values({ id: generateId(15), userId, ...inputs });
 		}),
 
 	updateList: protectedProcedure
