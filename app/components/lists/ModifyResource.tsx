@@ -37,7 +37,7 @@ export const EditButton = ({
 	return (
 		<div className="flex flex-row gap-2">
 			<Button
-				className="h-10 w-28 gap-1 rounded pb-5 pr-3 pt-5"
+				className="h-10 w-24 gap-1 rounded pb-5 pr-1 pt-5"
 				onClick={onSave}
 				variant={editMode ? "default" : "outline"}
 				size="icon"
@@ -47,7 +47,7 @@ export const EditButton = ({
 			</Button>
 			{editMode && (
 				<Button
-					className="h-10 w-28 gap-1 rounded pb-5 pr-3 pt-5"
+					className="h-10 w-24 gap-1 rounded pb-5 pr-1 pt-5"
 					onClick={onCancel}
 					variant="outline"
 					size="icon"
