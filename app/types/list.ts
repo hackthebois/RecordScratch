@@ -68,7 +68,9 @@ export const deleteListResourcesSchema = listResourcesSchema.pick({
 	resourceId: true,
 });
 
-export type ListType = z.infer<typeof listSchema>;
+export type ListType = z.infer<typeof listSchema> & {
+	profile: Profile | null;
+};
 
 export type ListsType = ListType & {
 	profile: Profile | null;
