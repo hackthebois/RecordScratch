@@ -2,6 +2,7 @@ import { likes } from "@/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import { SelectLikeSchema } from "@/types/likes";
 import { and, count, eq } from "drizzle-orm";
+import { createNotification } from "../notifications";
 
 export const likesRouter = router({
 	getLikes: publicProcedure
@@ -22,12 +23,24 @@ export const likesRouter = router({
 		}),
 	like: protectedProcedure
 		.input(SelectLikeSchema)
-		.mutation(async ({ ctx: { db, userId }, input }) => {
-			await db.insert(likes).values({
-				userId,
-				...input,
-			});
-		}),
+		.mutation(
+			async ({
+				ctx: { db, userId },
+				input: { authorId, resourceId },
+			}) => {
+				await db.insert(likes).values({
+					userId,
+					authorId,
+					resourceId,
+				});
+				await createNotification({
+					fromId: userId,
+					userId: authorId,
+					type: "LIKE",
+					resourceId,
+				});
+			}
+		),
 	unlike: protectedProcedure
 		.input(SelectLikeSchema)
 		.mutation(

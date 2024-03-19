@@ -1,17 +1,19 @@
 import SearchBar from "@/components/SearchBar";
+import SignedIn from "@/components/SignedIn";
 import UserButton from "@/components/UserButton";
 import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/Popover";
 import { env } from "@/env";
+import { api } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
-import { Disc3, Menu } from "lucide-react";
+import { Bell, Disc3, Menu } from "lucide-react";
 import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app")({
@@ -32,6 +34,28 @@ export const Route = createFileRoute("/_app")({
 	),
 });
 
+const NotificationBell = () => {
+	const [unseen] = api.notifications.getUnseen.useSuspenseQuery();
+
+	return (
+		<Link
+			to="/notifications"
+			className={buttonVariants({
+				variant: "outline",
+				size: "icon",
+				className: "relative",
+			})}
+		>
+			<Bell size={20} />
+			{unseen > 0 && (
+				<div className="absolute right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border-[2px] border-background bg-[#fb8500] px-0.5">
+					<p className="text-[10px]">{unseen > 9 ? "9+" : unseen}</p>
+				</div>
+			)}
+		</Link>
+	);
+};
+
 function LayoutComponent({ children }: { children: React.ReactNode }) {
 	return (
 		<>
@@ -50,6 +74,11 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 						<SearchBar />
 					</div>
 					<div className="flex items-center gap-3">
+						<Suspense fallback={null}>
+							<SignedIn>
+								<NotificationBell />
+							</SignedIn>
+						</Suspense>
 						<Suspense fallback={null}>
 							<UserButton />
 						</Suspense>

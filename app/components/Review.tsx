@@ -1,6 +1,6 @@
 import { api } from "@/trpc/react";
 import { SelectLike } from "@/types/likes";
-import { Review as ReviewType } from "@/types/rating";
+import { ReviewType } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
 import { Heart, Star } from "lucide-react";
