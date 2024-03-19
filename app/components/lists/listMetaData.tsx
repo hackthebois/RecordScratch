@@ -23,7 +23,7 @@ const ListMetadata = ({
 					<h3 className="mb-2 text-center sm:text-left">{title}</h3>
 					{children}
 					<p className="mt-2 text-base text-muted">
-						Updated {lastUpdatedTime}d ago
+						Updated {lastUpdatedTime}
 					</p>
 				</div>
 			</div>

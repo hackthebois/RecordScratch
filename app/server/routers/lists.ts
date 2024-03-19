@@ -110,7 +110,12 @@ export const listsRouter = router({
 						eq(lists.id, inputs.listId)
 					),
 				}));
-				if (listOwner) {
+				const resourceExists =
+					!!(await db.query.listResources.findFirst({
+						where: eq(listResources.resourceId, inputs.resourceId),
+					}));
+
+				if (listOwner && !resourceExists) {
 					const lastPosition =
 						(
 							await db.query.listResources.findFirst({

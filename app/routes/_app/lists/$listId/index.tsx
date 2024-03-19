@@ -37,6 +37,8 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { ListItem, ListType } from "@/types/list";
 import { Profile } from "@/types/profile";
 import { DeleteButton, EditButton } from "@/components/lists/ModifyResource";
+import { AlignJustify } from "lucide-react";
+import { formatDuration, timeAgo } from "@/utils/date";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -222,7 +224,7 @@ function List() {
 						size={125}
 					/>
 				}
-				lastUpdatedTime={listData.updatedAt.getDay().toString()}
+				lastUpdatedTime={timeAgo(listData.updatedAt)}
 			>
 				<Link
 					to="/$handle"
@@ -299,7 +301,7 @@ function List() {
 										<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
 											{index + 1}
 										</p>
-										<div className="overflow-hidden">
+										<div className="max-w-56 overflow-hidden sm:max-w-96 ">
 											{listData.category === "ARTIST" ? (
 												<ArtistItem
 													artistId={item.resourceId}
@@ -318,26 +320,30 @@ function List() {
 											)}
 										</div>
 									</div>
-									<DeleteButton
-										isVisible={isUser && editMode}
-										position={index}
-										onClick={(position) => {
-											setDeletedItems([
-												...deletedItems,
-												itemsOrder[position],
-											]);
-											setItemsOrder([
-												...itemsOrder.slice(
-													0,
-													position
-												),
-												...itemsOrder.slice(
-													position + 1
-												),
-											]);
-											setIsChanged(true);
-										}}
-									/>
+									<div className="flex flex-row items-center justify-center gap-5">
+										{editMode && <AlignJustify size={30} />}
+
+										<DeleteButton
+											isVisible={isUser && editMode}
+											position={index}
+											onClick={(position) => {
+												setDeletedItems([
+													...deletedItems,
+													itemsOrder[position],
+												]);
+												setItemsOrder([
+													...itemsOrder.slice(
+														0,
+														position
+													),
+													...itemsOrder.slice(
+														position + 1
+													),
+												]);
+												setIsChanged(true);
+											}}
+										/>
+									</div>
 								</div>
 							</Reorder.Item>
 						))}
