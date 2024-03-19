@@ -13,18 +13,29 @@ const ListSquare = ({
 	imageSize: number;
 	section: number;
 }) => {
-	const roundedClass =
-		section === 0
-			? "rounded-tl"
-			: section === 1
-				? "rounded-tr"
-				: section === 2
-					? "rounded-bl"
-					: section === 3
-						? "rounded-br"
-						: section === 4
-							? "rounded-md"
-							: "";
+	let roundedClass;
+	switch (section) {
+		case (section = 0): {
+			roundedClass = "rounded-tl";
+			break;
+		}
+		case (section = 1): {
+			roundedClass = "rounded-tr";
+			break;
+		}
+		case (section = 2): {
+			roundedClass = "rounded-bl";
+			break;
+		}
+		case (section = 3): {
+			roundedClass = "rounded-br";
+			break;
+		}
+		default: {
+			roundedClass = "rounded-md";
+			break;
+		}
+	}
 	return (
 		<img
 			src={
@@ -100,7 +111,7 @@ const ListImage = ({
 	category,
 	size,
 }: {
-	listItems?: ListItem[];
+	listItems?: ListItem[] | null;
 	category: Category;
 	size: number;
 }) => {

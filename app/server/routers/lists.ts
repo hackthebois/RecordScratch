@@ -7,13 +7,14 @@ import {
 	selectListResourcesSchema,
 	selectListSchema,
 	updateListSchema,
+	listOfResourcesSchema,
 } from "@/types/list";
-import { and, desc, eq } from "drizzle-orm/sql";
+import { listResources, lists } from "../db/schema";
 import { generateId } from "lucia";
-import { list_resources, lists, profile } from "../db/schema";
+import { and, asc, desc, eq } from "drizzle-orm/sql";
 
 export const listsRouter = router({
-	getList: publicProcedure
+	get: publicProcedure
 		.input(selectListSchema)
 		.query(async ({ ctx: { db }, input: { id } }) => {
 			return (
@@ -24,7 +25,7 @@ export const listsRouter = router({
 			);
 		}),
 
-	getUserLists: publicProcedure
+	getUser: publicProcedure
 		.input(filterUserListsSchema)
 		.query(async ({ ctx: { db }, input: { userId, category } }) => {
 			let whereClause;
@@ -35,14 +36,20 @@ export const listsRouter = router({
 				);
 			else whereClause = and(eq(lists.userId, userId));
 
-			return await db
-				.select()
-				.from(lists)
-				.leftJoin(profile, eq(profile.userId, lists.userId))
-				.where(whereClause);
+			return await db.query.lists.findMany({
+				with: {
+					resources: {
+						limit: 4,
+						orderBy: [asc(listResources.position)],
+					},
+					profile: true,
+				},
+				where: whereClause,
+				orderBy: [desc(lists.updatedAt)],
+			});
 		}),
 
-	createList: protectedProcedure
+	create: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
 			await db
@@ -50,7 +57,7 @@ export const listsRouter = router({
 				.values({ id: generateId(15), userId, ...inputs });
 		}),
 
-	updateList: protectedProcedure
+	update: protectedProcedure
 		.input(updateListSchema)
 		.mutation(
 			async ({
@@ -70,7 +77,7 @@ export const listsRouter = router({
 			}
 		),
 
-	deleteList: protectedProcedure
+	delete: protectedProcedure
 		.input(selectListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: { id } }) => {
 			const listExists: boolean = !!(await db.query.lists.findFirst({
@@ -85,27 +92,17 @@ export const listsRouter = router({
 		}),
 
 	resources: router({
-		getTopFourResources: publicProcedure
+		get: publicProcedure
 			.input(selectListResourcesSchema)
 			.query(async ({ ctx: { db }, input: { listId } }) => {
 				return await db
 					.select()
-					.from(list_resources)
-					.where(eq(list_resources.listId, listId))
-					.orderBy(list_resources.position)
-					.limit(4);
-			}),
-		getListResources: publicProcedure
-			.input(selectListResourcesSchema)
-			.query(async ({ ctx: { db }, input: { listId } }) => {
-				return await db
-					.select()
-					.from(list_resources)
-					.where(eq(list_resources.listId, listId))
-					.orderBy(list_resources.position);
+					.from(listResources)
+					.where(eq(listResources.listId, listId))
+					.orderBy(listResources.position);
 			}),
 
-		createListResource: protectedProcedure
+		create: protectedProcedure
 			.input(insertListResourcesSchema)
 			.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
 				const listOwner = !!(await db.query.lists.findFirst({
@@ -114,22 +111,32 @@ export const listsRouter = router({
 						eq(lists.id, inputs.listId)
 					),
 				}));
-				if (listOwner) {
+				const resourceExists =
+					!!(await db.query.listResources.findFirst({
+						where: eq(listResources.resourceId, inputs.resourceId),
+					}));
+
+				if (listOwner && !resourceExists) {
 					const lastPosition =
 						(
-							await db.query.list_resources.findFirst({
-								where: eq(list_resources.listId, inputs.listId),
-								orderBy: [desc(list_resources.position)],
+							await db.query.listResources.findFirst({
+								where: eq(listResources.listId, inputs.listId),
+								orderBy: [desc(listResources.position)],
 							})
 						)?.position ?? 0;
 
 					await db
-						.insert(list_resources)
+						.insert(listResources)
 						.values({ ...inputs, position: lastPosition + 1 });
+
+					await db
+						.update(lists)
+						.set({ updatedAt: new Date() })
+						.where(eq(lists.id, inputs.listId));
 				} else throw new Error("cannot add to list if not owner");
 			}),
 
-		deleteListResource: protectedProcedure
+		delete: protectedProcedure
 			.input(deleteListResourcesSchema)
 			.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
 				const listOwner = !!(await db.query.lists.findFirst({
@@ -140,14 +147,86 @@ export const listsRouter = router({
 				}));
 				if (listOwner) {
 					await db
-						.delete(list_resources)
+						.delete(listResources)
 						.where(
 							and(
-								eq(list_resources.listId, inputs.listId),
-								eq(list_resources.resourceId, inputs.resourceId)
+								eq(listResources.listId, inputs.listId),
+								eq(listResources.resourceId, inputs.resourceId)
 							)
 						);
 				} else throw new Error("cannot delete from list if not owner");
 			}),
+
+		updatePositions: protectedProcedure
+			.input(listOfResourcesSchema)
+			.mutation(
+				async ({
+					ctx: { db, userId },
+					input: { listId, resources },
+				}) => {
+					const listOwner = !!(await db.query.lists.findFirst({
+						where: and(
+							eq(lists.userId, userId),
+							eq(lists.id, listId)
+						),
+					}));
+					if (listOwner) await Promise;
+					await db.transaction(async () => {
+						await db
+							.update(lists)
+							.set({ updatedAt: new Date() })
+							.where(eq(lists.id, listId)),
+							await Promise.all(
+								resources.map((item, index) => {
+									return db
+										.update(listResources)
+										.set({ position: index + 1 })
+										.where(
+											eq(
+												listResources.resourceId,
+												item.resourceId
+											)
+										);
+								})
+							);
+					});
+				}
+			),
+
+		multipleDelete: protectedProcedure
+			.input(listOfResourcesSchema)
+			.mutation(
+				async ({
+					ctx: { db, userId },
+					input: { listId, resources },
+				}) => {
+					const listOwner = !!(await db.query.lists.findFirst({
+						where: and(
+							eq(lists.userId, userId),
+							eq(lists.id, listId)
+						),
+					}));
+
+					if (listOwner)
+						await db.transaction(async () => {
+							await db
+								.update(lists)
+								.set({ updatedAt: new Date() })
+								.where(eq(lists.id, listId));
+							await Promise.all(
+								resources.map((item) => {
+									return db
+										.delete(listResources)
+										.where(
+											eq(
+												listResources.resourceId,
+												item.resourceId
+											)
+										);
+								})
+							);
+						});
+				}
+			),
 	}),
 });

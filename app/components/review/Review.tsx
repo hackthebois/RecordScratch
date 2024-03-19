@@ -5,11 +5,11 @@ import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
 import { Heart, Star } from "lucide-react";
 import { Suspense } from "react";
-import { ResourceItem } from "./ResourceItem";
-import { SignInWrapper } from "./SignInWrapper";
-import { UserAvatar } from "./UserAvatar";
-import { Button } from "./ui/Button";
-import { Skeleton } from "./ui/Skeleton";
+import { SignInWrapper } from "../signIn/SignInWrapper";
+import { Button } from "../ui/Button";
+import { ResourceItem } from "../ResourceItem";
+import { Skeleton } from "../ui/Skeleton";
+import { UserAvatar } from "../user/UserAvatar";
 
 const PublicLikeButton = (props: SelectLike) => {
 	const [likes] = api.likes.getLikes.useSuspenseQuery(props);

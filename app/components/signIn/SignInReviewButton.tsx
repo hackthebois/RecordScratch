@@ -1,6 +1,6 @@
-import { SignInWrapper } from "@/components/SignInWrapper";
 import { Button } from "@/components/ui/Button";
 import { Text } from "lucide-react";
+import { SignInWrapper } from "./SignInWrapper";
 
 export const SignInReviewButton = () => {
 	return (

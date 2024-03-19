@@ -27,8 +27,8 @@ import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RatingInput } from "./RatingInput";
-import { Form, FormControl, FormField, FormItem } from "./ui/Form";
-import { Skeleton } from "./ui/Skeleton";
+import { Form, FormControl, FormField, FormItem } from "../ui/Form";
+import { Skeleton } from "../ui/Skeleton";
 
 export const RatingDialog = ({
 	initialUserRating,

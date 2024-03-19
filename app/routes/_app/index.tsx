@@ -1,10 +1,10 @@
 import { Head } from "@/components/Head";
+import Metadata from "@/components/Metadata";
+import AlbumList from "@/components/album/AlbumList";
 import {
 	FollowingFeedReviews,
 	RecentFeedReviews,
-} from "@/components/InfiniteFeedReviews";
-import Metadata from "@/components/Metadata";
-import AlbumList from "@/components/album/AlbumList";
+} from "@/components/infinite/InfiniteFeedReviews";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";

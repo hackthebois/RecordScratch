@@ -1,7 +1,7 @@
 import { api } from "@/trpc/react";
 import { ListsType } from "@/types/list";
 import { Link } from "@tanstack/react-router";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "../user/UserAvatar";
 import { ScrollArea } from "../ui/ScrollArea";
 import ListImage from "./ListImage";
 
@@ -14,18 +14,12 @@ const ListsItem = ({
 	listsItem: ListsType;
 	showProfile?: boolean;
 	size: number;
-	parentId?: string;
-	resourceId?: string;
 	// eslint-disable-next-line no-unused-vars
 	onClick?: (listId: string) => void;
 }) => {
-	if (!listsItem.lists.id || !listsItem.profile) return null;
-	const list = listsItem.lists;
+	if (!listsItem.id || !listsItem.profile) return null;
 	const profile = listsItem.profile;
-	const { data: listItems } =
-		api.lists.resources.getTopFourResources.useQuery({
-			listId: list.id,
-		});
+	const listResources = listsItem.resources;
 
 	const ListItemContent = (
 		<div className="flex flex-col justify-center">
@@ -39,19 +33,21 @@ const ListsItem = ({
 				className="flex items-center justify-center"
 			>
 				<ListImage
-					listItems={listItems}
-					category={list.category}
+					listItems={listResources}
+					category={listsItem.category}
 					size={size}
 				/>
 			</div>
-			<p className="truncate pl-1 pt-1 font-medium">{list.name}</p>
+			<p className="truncate pl-1 pt-1 text-center text-sm font-medium">
+				{listsItem.name}
+			</p>
 		</div>
 	);
 
 	const link = {
 		to: "/lists/$listId",
 		params: {
-			listId: String(list.id),
+			listId: String(listsItem.id),
 		},
 	};
 
@@ -67,7 +63,7 @@ const ListsItem = ({
 					onClick={(event) => {
 						if (onClick) {
 							event.preventDefault();
-							onClick(list.id);
+							onClick(listsItem.id);
 						}
 					}}
 					{...(onClick ? {} : link)}
@@ -97,11 +93,13 @@ const ListList = ({
 	showProfiles = false,
 	type = "scroll",
 	onClick,
+	size = 165,
 }: {
 	lists: ListsType[] | undefined;
 	showProfiles?: boolean;
 	type?: "wrap" | "scroll";
 	orientation?: "vertical" | "horizontal";
+	size?: number;
 	// eslint-disable-next-line no-unused-vars
 	onClick?: (listId: string) => void;
 }) => {
@@ -115,7 +113,7 @@ const ListList = ({
 								<ListsItem
 									listsItem={list}
 									showProfile={showProfiles}
-									size={100}
+									size={size}
 									onClick={onClick}
 								/>
 							</div>
@@ -125,14 +123,14 @@ const ListList = ({
 		);
 	} else {
 		return (
-			<div className="flex flex-row flex-wrap gap-3">
+			<div className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
 				{lists &&
 					lists.map((list, index) => (
 						<ListsItem
 							key={index}
 							listsItem={list}
 							showProfile={showProfiles}
-							size={144}
+							size={size}
 							onClick={onClick}
 						/>
 					))}
