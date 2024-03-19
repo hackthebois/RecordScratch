@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { RatingSchema } from "@/types/rating";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { createNotification } from "../notifications";
 
 const s3 = new S3Client({
 	region: process.env.AWS_BUCKET_REGION!,
@@ -250,6 +251,13 @@ export const profilesRouter = router({
 
 			if (followExists) throw new Error("User Already Follows");
 			else await db.insert(followers).values({ userId, followingId });
+
+			await createNotification({
+				fromId: userId,
+				userId: followingId,
+				type: "FOLLOW",
+				resourceId: null,
+			});
 		}),
 	unFollow: protectedProcedure
 		.input(z.string())

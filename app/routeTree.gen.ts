@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as OnboardImport } from './routes/onboard'
 import { Route as AppImport } from './routes/_app'
 import { Route as AppIndexImport } from './routes/_app/index'
+import { Route as AppNotificationsImport } from './routes/_app/notifications'
 import { Route as AppHandleIndexImport } from './routes/_app/$handle/index'
 import { Route as AppListsListIdIndexImport } from './routes/_app/lists/$listId/index'
 import { Route as AppArtistsArtistIdIndexImport } from './routes/_app/artists/$artistId/index'
@@ -62,6 +63,11 @@ const AppPrivacyPolicyLazyRoute = AppPrivacyPolicyLazyImport.update({
   import('./routes/_app/privacy-policy.lazy').then((d) => d.Route),
 )
 
+const AppNotificationsRoute = AppNotificationsImport.update({
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppHandleIndexRoute = AppHandleIndexImport.update({
   path: '/$handle/',
   getParentRoute: () => AppRoute,
@@ -99,6 +105,10 @@ declare module '@tanstack/react-router' {
     '/onboard': {
       preLoaderRoute: typeof OnboardImport
       parentRoute: typeof rootRoute
+    }
+    '/_app/notifications': {
+      preLoaderRoute: typeof AppNotificationsImport
+      parentRoute: typeof AppImport
     }
     '/_app/privacy-policy': {
       preLoaderRoute: typeof AppPrivacyPolicyLazyImport
@@ -143,6 +153,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   AppRoute.addChildren([
+    AppNotificationsRoute,
     AppPrivacyPolicyLazyRoute,
     AppRoadmapLazyRoute,
     AppTermsLazyRoute,
