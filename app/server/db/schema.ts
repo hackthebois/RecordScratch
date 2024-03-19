@@ -10,6 +10,7 @@ import {
 	tinyint,
 	varchar,
 } from "drizzle-orm/mysql-core";
+import { generateId } from "lucia";
 
 export const users = mysqlTable("users", {
 	id: varchar("id", {
@@ -89,12 +90,13 @@ export const ratings = mysqlTable(
 	})
 );
 
-export const ratingsRelations = relations(ratings, ({ one }) => ({
+export const ratingsRelations = relations(ratings, ({ one, many }) => ({
 	profile: one(profile, {
 		fields: [ratings.userId],
 		references: [profile.userId],
 		relationName: "profile",
 	}),
+	likes: many(likes),
 }));
 
 export const followers = mysqlTable(
@@ -156,5 +158,23 @@ export const listUserRelation = relations(lists, ({ one }) => ({
 		fields: [lists.userId],
 		references: [profile.userId],
 		relationName: "profile",
+	}),
+}));
+
+export const likes = mysqlTable("likes", {
+	id: varchar("id", { length: 256 })
+		.primaryKey()
+		.$default(() => generateId(15)),
+	userId: varchar("user_id", { length: 256 }).notNull(),
+	resourceId: varchar("resource_id", { length: 256 }).notNull(),
+	authorId: varchar("author_id", { length: 256 }).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const likesRelations = relations(likes, ({ one }) => ({
+	rating: one(ratings, {
+		fields: [likes.resourceId, likes.authorId],
+		references: [ratings.resourceId, ratings.userId],
 	}),
 }));

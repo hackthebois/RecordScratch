@@ -343,7 +343,7 @@ const SearchBar = () => {
 					/>
 				</div>
 				<Tabs value={tab} onValueChange={setTab} className="p-4">
-					<TabsList className="w-full">
+					<TabsList className="w-full sm:w-full">
 						<TabsTrigger value="music" className="flex-1">
 							Music
 						</TabsTrigger>
