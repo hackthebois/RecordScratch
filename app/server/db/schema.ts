@@ -46,8 +46,12 @@ export const profile = pgTable("profile", {
 	handle: text("handle").notNull().unique(),
 	imageUrl: text("image_url"),
 	bio: text("bio"),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	createdAt: timestamp("created_at")
+		.notNull()
+		.$default(() => new Date()),
+	updatedAt: timestamp("updated_at")
+		.notNull()
+		.$default(() => new Date()),
 });
 
 export const profileRelations = relations(profile, ({ one, many }) => ({
@@ -80,8 +84,12 @@ export const ratings = pgTable(
 		rating: smallint("rating").notNull(),
 		content: text("content"),
 		category: categoryEnum("category").notNull(),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		createdAt: timestamp("created_at")
+			.notNull()
+			.$default(() => new Date()),
+		updatedAt: timestamp("updated_at")
+			.notNull()
+			.$default(() => new Date()),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({
@@ -136,8 +144,12 @@ export const lists = pgTable("lists", {
 	name: text("name").notNull(),
 	description: text("description"),
 	category: categoryEnum("category").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	createdAt: timestamp("created_at")
+		.notNull()
+		.$default(() => new Date()),
+	updatedAt: timestamp("updated_at")
+		.notNull()
+		.$default(() => new Date()),
 });
 
 export const listRelation = relations(lists, ({ one, many }) => ({
@@ -155,8 +167,12 @@ export const listResources = pgTable(
 		listId: text("list_id").notNull(),
 		resourceId: text("resource_id").notNull(),
 		position: integer("position").notNull(),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		createdAt: timestamp("created_at")
+			.notNull()
+			.$default(() => new Date()),
+		updatedAt: timestamp("updated_at")
+			.notNull()
+			.$default(() => new Date()),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({
@@ -179,8 +195,12 @@ export const likes = pgTable("likes", {
 	userId: text("user_id").notNull(),
 	resourceId: text("resource_id").notNull(),
 	authorId: text("author_id").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	createdAt: timestamp("created_at")
+		.notNull()
+		.$default(() => new Date()),
+	updatedAt: timestamp("updated_at")
+		.notNull()
+		.$default(() => new Date()),
 });
 
 export const likesRelations = relations(likes, ({ one }) => ({
@@ -203,8 +223,12 @@ export const notifications = pgTable(
 		fromId: text("from_id").notNull(),
 		type: typeEnum("type").notNull(),
 		seen: boolean("seen").default(false).notNull(),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().notNull(),
+		createdAt: timestamp("created_at")
+			.notNull()
+			.$default(() => new Date()),
+		updatedAt: timestamp("updated_at")
+			.notNull()
+			.$default(() => new Date()),
 	}
 	// (table) => ({
 	// 	unq: unique().on(
