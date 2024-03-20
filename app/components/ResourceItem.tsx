@@ -11,12 +11,14 @@ export const ResourceItem = ({
 	showType,
 	onClick,
 	showLink = true,
+	draggable = true,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
 	showType?: boolean;
 	onClick?: () => void;
 	showLink?: boolean;
+	draggable?: boolean;
 }) => {
 	const navigate = useNavigate();
 	const { data: album } = useQuery({
@@ -74,7 +76,8 @@ export const ResourceItem = ({
 				}
 			}}
 			{...(showLink ? link : {})}
-			className="flex flex-row items-center gap-4 rounded"
+			className="link-no-drag flex flex-row items-center gap-4 rounded"
+			draggable={draggable}
 		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">
 				<AlbumImage album={album} />

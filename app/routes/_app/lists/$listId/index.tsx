@@ -305,6 +305,8 @@ function List() {
 											{listData.category === "ARTIST" ? (
 												<ArtistItem
 													artistId={item.resourceId}
+													showLink={!editMode}
+													draggable={false}
 												/>
 											) : (
 												<ResourceItem
@@ -316,6 +318,8 @@ function List() {
 														category:
 															listData.category,
 													}}
+													showLink={!editMode}
+													draggable={false}
 												/>
 											)}
 										</div>
