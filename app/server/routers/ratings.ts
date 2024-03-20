@@ -317,7 +317,8 @@ export const ratingsRouter = router({
 						userId,
 						parentId,
 					})
-					.onDuplicateKeyUpdate({
+					.onConflictDoUpdate({
+						target: [ratings.resourceId, ratings.userId],
 						set: {
 							rating,
 							resourceId,
