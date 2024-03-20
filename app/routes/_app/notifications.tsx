@@ -4,7 +4,7 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { Profile } from "@/types/profile";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
-import { Heart, User } from "lucide-react";
+import { BellOff, Heart, User } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/_app/notifications")({
@@ -26,7 +26,7 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 			params={{
 				handle: user.handle,
 			}}
-			className="hover:bg-hover flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition"
+			className="flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition hover:bg-hover"
 		>
 			<User size={32} className="text-sky-500" />
 			<div className="flex w-full flex-col gap-2">
@@ -102,6 +102,14 @@ function Notifications() {
 
 	return (
 		<div className="flex flex-col gap-3">
+			{notifications.length === 0 && (
+				<div className="my-[20vh] flex w-full flex-col items-center justify-center gap-6">
+					<BellOff size={64} className="text-muted-foreground" />
+					<p className="text-muted-foreground">
+						No notifications yet
+					</p>
+				</div>
+			)}
 			{notifications.map((notification) => (
 				<div key={notification.id}>
 					{notification.type === "FOLLOW" && (
