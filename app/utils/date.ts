@@ -1,36 +1,30 @@
 import dayjs from "dayjs";
 import DurationPlugin from "dayjs/plugin/duration";
-import isTodayPlugin from "dayjs/plugin/isToday";
-import isYesterdayPlugin from "dayjs/plugin/isYesterday";
 import RelativeTimePlugin from "dayjs/plugin/relativeTime";
 import TimezonePlugin from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
 dayjs.extend(RelativeTimePlugin);
 dayjs.extend(DurationPlugin);
-dayjs.extend(isTodayPlugin);
-dayjs.extend(isYesterdayPlugin);
 dayjs.extend(TimezonePlugin);
 dayjs.extend(utc);
 
-dayjs.tz.setDefault(dayjs.tz.guess());
-
 export const timeAgo = (date: Date): string => {
-	return dayjs(date).fromNow();
+	return dayjs(date).tz(dayjs.tz.guess()).fromNow();
 };
 
-export const isToday = (date: Date): boolean => {
-	return dayjs(date).isToday();
+export const isToday = (date: Date, tz: string): boolean => {
+	const now = dayjs().tz(tz);
+	return dayjs(date).tz(tz).isSame(now, "day");
 };
 
-export const isYesterday = (date: Date): boolean => {
-	return dayjs(date).isYesterday();
+export const isYesterday = (date: Date, tz: string): boolean => {
+	const yesterday = dayjs().tz(tz).subtract(1, "day");
+	return dayjs(date).tz(tz).isSame(yesterday, "day");
 };
 
-export const formatMs = (milliseconds: number): string => {
-	const duration = dayjs.duration(milliseconds);
-	const minutes = duration.minutes();
-	const seconds = duration.seconds();
+export const formatDuration = (seconds: number): string => {
+	const minutes = Math.floor(seconds / 60);
 
 	if (minutes > 0) {
 		return `${minutes}m ${seconds % 60}s`;

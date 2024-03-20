@@ -1,4 +1,3 @@
-import { ProfileItem } from "@/components/ProfileItem";
 import { ResourceItem } from "@/components/ResourceItem";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
@@ -12,8 +11,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { ArtistItem } from "./artist/ArtistItem";
+import { ProfileItem } from "./profile/ProfileItem";
 
-const SearchState = ({
+export const SearchState = ({
 	isError,
 	isLoading,
 	noResults,
@@ -35,7 +35,7 @@ const SearchState = ({
 		songs?: boolean;
 	};
 }) => {
-	const { recents, addRecent } = useRecents();
+	const { recents, addRecent } = useRecents("SEARCH");
 
 	if (isError) {
 		return (
@@ -151,7 +151,7 @@ const ProfileSearch = ({
 	query: string;
 	onNavigate: () => void;
 }) => {
-	const { addRecent } = useRecents();
+	const { addRecent } = useRecents("SEARCH");
 
 	const { data, isLoading, isError } = api.profiles.search.useQuery(query, {
 		gcTime: 0,
@@ -189,14 +189,14 @@ const ProfileSearch = ({
 	);
 };
 
-const MusicSearch = ({
+export const MusicSearch = ({
 	query,
 	onNavigate,
 }: {
 	query: string;
 	onNavigate: () => void;
 }) => {
-	const { addRecent } = useRecents();
+	const { addRecent } = useRecents("SEARCH");
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", "search-music", query],
@@ -343,7 +343,7 @@ const SearchBar = () => {
 					/>
 				</div>
 				<Tabs value={tab} onValueChange={setTab} className="p-4">
-					<TabsList className="w-full">
+					<TabsList className="w-full sm:w-full">
 						<TabsTrigger value="music" className="flex-1">
 							Music
 						</TabsTrigger>

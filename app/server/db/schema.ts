@@ -1,11 +1,16 @@
 import { relations } from "drizzle-orm";
 import {
-	pgEnum,
-	pgTable,
+	boolean,
+	int,
+	mysqlEnum,
+	mysqlTable,
 	primaryKey,
 	smallint,
 	text,
 	timestamp,
+	varchar
+} from "drizzle-orm/mysql-core";
+import { generateId } from "lucia";
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -86,12 +91,13 @@ export const ratings = pgTable(
 	})
 );
 
-export const ratingsRelations = relations(ratings, ({ one }) => ({
+export const ratingsRelations = relations(ratings, ({ one, many }) => ({
 	profile: one(profile, {
 		fields: [ratings.userId],
 		references: [profile.userId],
 		relationName: "profile",
 	}),
+	likes: many(likes),
 }));
 
 export const followers = pgTable(
@@ -124,3 +130,125 @@ export const userFollowRelation = relations(followers, ({ one }) => ({
 		relationName: "following",
 	}),
 }));
+
+export const lists = mysqlTable("lists", {
+	id: varchar("id", { length: 256 }).primaryKey().notNull(),
+	userId: varchar("user_id", { length: 256 }).notNull(),
+	name: varchar("name", { length: 50 }).notNull(),
+	description: text("description"),
+	category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const listRelation = relations(lists, ({ one, many }) => ({
+	profile: one(profile, {
+		fields: [lists.userId],
+		references: [profile.userId],
+	}),
+	resources: many(listResources),
+}));
+
+export const listResources = mysqlTable(
+	"list_resources",
+	{
+		parentId: varchar("parent_id", { length: 256 }),
+		listId: varchar("list_id", { length: 256 }).notNull(),
+		resourceId: varchar("resource_id", { length: 256 }).notNull(),
+		position: int("position").notNull(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	},
+	(table) => ({
+		pk_ratings: primaryKey({
+			columns: [table.listId, table.resourceId],
+		}),
+	})
+);
+
+export const listResourcesRelations = relations(listResources, ({ one }) => ({
+	list: one(lists, {
+		fields: [listResources.listId],
+		references: [lists.id],
+	}),
+}));
+
+export const likes = mysqlTable("likes", {
+	id: varchar("id", { length: 256 })
+		.primaryKey()
+		.$default(() => generateId(15)),
+	userId: varchar("user_id", { length: 256 }).notNull(),
+	resourceId: varchar("resource_id", { length: 256 }).notNull(),
+	authorId: varchar("author_id", { length: 256 }).notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export const likesRelations = relations(likes, ({ one }) => ({
+	rating: one(ratings, {
+		fields: [likes.resourceId, likes.authorId],
+		references: [ratings.resourceId, ratings.userId],
+	}),
+}));
+
+export const notifications = mysqlTable(
+	"notifications",
+	{
+		id: varchar("id", { length: 15 })
+			.primaryKey()
+			.$default(() => generateId(15)),
+		userId: varchar("user_id", { length: 15 }).notNull(),
+		resourceId: varchar("resource_id", { length: 100 }),
+		fromId: varchar("from_id", { length: 15 }).notNull(),
+		type: mysqlEnum("type", ["LIKE", "FOLLOW"]).notNull(),
+		seen: boolean("seen").default(false).notNull(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	}
+	// (table) => ({
+	// 	unq: unique().on(
+	// 		table.userId,
+	// 		table.resourceId,
+	// 		table.fromId,
+	// 		table.type
+	// 	),
+	// })
+);
+
+export const notificationRelations = relations(notifications, ({ one }) => ({
+	profile: one(profile, {
+		fields: [notifications.fromId],
+		references: [profile.userId],
+	}),
+	from: one(profile, {
+		fields: [notifications.fromId],
+		references: [profile.userId],
+	}),
+	rating: one(ratings, {
+		fields: [notifications.resourceId],
+		references: [ratings.resourceId],
+	}),
+}));
+
+export const tableSchemas = {
+	users,
+	sessions,
+	profile,
+	ratings,
+	followers,
+	lists,
+	listResources,
+	likes,
+	notifications,
+};
+
+export const relationSchemas = {
+	sessionRelations,
+	profileRelations,
+	ratingsRelations,
+	userFollowRelation,
+	listRelation,
+	listResourcesRelations,
+	likesRelations,
+	notificationRelations,
+};

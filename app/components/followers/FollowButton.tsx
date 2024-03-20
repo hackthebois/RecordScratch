@@ -49,7 +49,7 @@ export const FollowButton = ({ profileId }: { profileId: string }) => {
 		},
 	});
 
-	if (!profile!.userId! || profile!.userId! === profileId) return null;
+	if (!!profile && profile!.userId! === profileId) return null;
 
 	if (isLoading) return <Skeleton className="h-10 w-20" />;
 
@@ -57,6 +57,7 @@ export const FollowButton = ({ profileId }: { profileId: string }) => {
 		<>
 			{isFollowing ? (
 				<Button
+					className="mr-4"
 					variant="secondary"
 					onClick={(e) => {
 						e.stopPropagation();
@@ -69,6 +70,7 @@ export const FollowButton = ({ profileId }: { profileId: string }) => {
 				</Button>
 			) : (
 				<Button
+					className="mr-4"
 					type="submit"
 					onClick={(e) => {
 						e.stopPropagation();

@@ -3,7 +3,7 @@ import { RouterInputs } from "@/trpc/shared";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Review } from "./Review";
+import { Review } from "../review/Review";
 
 export const InfiniteProfileReviews = ({
 	input,
@@ -32,7 +32,7 @@ export const InfiniteProfileReviews = ({
 
 	return (
 		<>
-			<div>
+			<div className="flex flex-col gap-3 pt-3">
 				{reviews?.map((review, index) => (
 					<Review key={index} {...review} />
 				))}

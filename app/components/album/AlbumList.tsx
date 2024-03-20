@@ -94,7 +94,6 @@ const AlbumList = ({
 					{albums.map((album, index) => (
 						<div className="mb-3" key={index}>
 							<AlbumItem
-								key={index}
 								albumId={
 									typeof album === "string"
 										? album

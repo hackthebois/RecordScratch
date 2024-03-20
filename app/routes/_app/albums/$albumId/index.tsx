@@ -1,16 +1,17 @@
-import CommunityReviews from "@/components/CommunityReviews";
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
-import { RatingDialog } from "@/components/RatingDialog";
-import { SignInRateButton } from "@/components/SignInRateButton";
 import SongTable from "@/components/SongTable";
+import { InfiniteCommunityReviews } from "@/components/infinite/InfiniteCommunityReviews";
+import { AddToList } from "@/components/lists/AddToList";
+import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
+import { SignInRateButton } from "@/components/signIn/SignInRateButton";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
-import { formatMs } from "@/utils/date";
+import { formatDuration } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -55,7 +56,7 @@ function Album() {
 			input: { id: albumId, limit: 1000 },
 		}),
 		initialData: {
-			data: album?.tracks?.data,
+			data: album?.tracks?.data ?? [],
 		},
 	});
 
@@ -74,7 +75,7 @@ function Album() {
 				tags={[
 					album.release_date,
 					album.duration
-						? `${formatMs(album.duration * 1000)}`
+						? `${formatDuration(album.duration)}`
 						: undefined,
 					...(album.genres?.data.map((genre) => genre.name) ?? []),
 				]}
@@ -89,10 +90,22 @@ function Album() {
 				>
 					{album.artist?.name}
 				</Link>
-				<div className="flex items-center gap-4">
-					<RatingInfo resource={resource} />
+				<div className="flex items-center">
+					<div className="mr-4">
+						<RatingInfo resource={resource} />
+					</div>
 					{profile ? (
-						<RatingDialog resource={resource} name={album.title} />
+						<div className="flex gap-3">
+							<RatingDialog
+								resource={resource}
+								name={album.title}
+							/>
+							<AddToList
+								parentId={String(album.artist?.id)}
+								resourceId={String(album.id)}
+								category="ALBUM"
+							/>
+						</div>
 					) : (
 						<SignInRateButton />
 					)}
@@ -100,9 +113,9 @@ function Album() {
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
-					<TabsTrigger value="songs">
+					<TabsTrigger value="songs" asChild>
 						<Link
-							params={{ albumId }}
+							from={Route.fullPath}
 							search={{
 								tab: undefined,
 							}}
@@ -110,9 +123,9 @@ function Album() {
 							Songs
 						</Link>
 					</TabsTrigger>
-					<TabsTrigger value="reviews">
+					<TabsTrigger value="reviews" asChild>
 						<Link
-							params={{ albumId }}
+							from={Route.fullPath}
 							search={{
 								tab: "reviews",
 							}}
@@ -124,13 +137,13 @@ function Album() {
 				<TabsContent value="songs">
 					<SongTable
 						songs={
-							songs?.data.map((song) => ({ ...song, album })) ??
+							songs?.data?.map((song) => ({ ...song, album })) ??
 							[]
 						}
 					/>
 				</TabsContent>
 				<TabsContent value="reviews">
-					<CommunityReviews
+					<InfiniteCommunityReviews
 						resource={resource}
 						pageLimit={20}
 						name={album.title}

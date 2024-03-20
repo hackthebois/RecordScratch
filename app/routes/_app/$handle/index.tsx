@@ -1,9 +1,10 @@
-import { EditProfile } from "@/components/EditProfile";
-import FollowerMenu from "@/components/FollowersMenu";
 import { Head } from "@/components/Head";
-import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import { useTheme } from "@/components/ThemeProvider";
-import { UserAvatar } from "@/components/UserAvatar";
+import FollowerMenu from "@/components/followers/FollowersMenu";
+import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
+import { CreateList } from "@/components/lists/CreateList";
+import ListList from "@/components/lists/ListList";
+import { EditProfile } from "@/components/profile/EditProfile";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -14,16 +15,13 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Label } from "@/components/ui/Label";
+import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import {
-	Link,
-	createFileRoute,
-	notFound,
-	useNavigate,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 
@@ -35,15 +33,19 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["settings"]).optional(),
+				tab: z.enum(["settings", "lists"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
 			})
 			.parse(search);
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) throw notFound({ route: "/_app" });
-		apiUtils.profiles.distribution.ensureData({ userId: profile.userId });
+		if (!profile) return <NotFound />;
+		// apiUtils.profiles.distribution.ensureData({
+		// 	userId: profile.userId,
+		// 	category: undefined,
+		// });
+
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "followers",
@@ -51,6 +53,10 @@ export const Route = createFileRoute("/_app/$handle/")({
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "following",
+		});
+
+		apiUtils.lists.getUser.ensureData({
+			userId: profile.userId,
 		});
 	},
 });
@@ -124,7 +130,11 @@ function Handle() {
 		}
 	);
 
-	if (!profile) return null;
+	if (!profile) return <NotFound />;
+
+	const [lists] = api.lists.getUser.useSuspenseQuery({
+		userId: profile.userId,
+	});
 
 	const isUser = myProfile?.userId === profile.userId;
 
@@ -157,7 +167,7 @@ function Handle() {
 				<TabsList>
 					<TabsTrigger value="reviews" asChild>
 						<Link
-							params={{ handle }}
+							from={Route.fullPath}
 							search={{
 								tab: undefined,
 							}}
@@ -165,10 +175,20 @@ function Handle() {
 							Reviews
 						</Link>
 					</TabsTrigger>
+					<TabsTrigger value="lists" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								tab: "lists",
+							}}
+						>
+							Lists
+						</Link>
+					</TabsTrigger>
 					{isUser && (
 						<TabsTrigger value="settings" asChild>
 							<Link
-								params={{ handle }}
+								from={Route.fullPath}
 								search={{
 									tab: "settings",
 								}}
@@ -178,32 +198,12 @@ function Handle() {
 						</TabsTrigger>
 					)}
 				</TabsList>
-				{/* <TabsContent value="profile" className="flex flex-col gap-4">
-					<h3 className="mt-4">Top Albums</h3>
-					<AlbumList
-						albums={[
-							"60322892",
-							"1440807",
-							"542677642",
-							"44730061",
-							"6982611",
-							"107638",
-						]}
-					/>
-					<ArtistList
-						direction="vertical"
-						artists={["1", "2", "3", "4", "5", "6"]}
-					/>
-				</TabsContent> */}
 				<TabsContent value="reviews">
 					<div className="flex w-full flex-col rounded-md border p-4 pt-6 sm:max-w-lg">
 						<div className="flex h-20 w-full items-end justify-between gap-1">
 							{distribution?.map((ratings, index) => (
 								<Link
-									to="/$handle"
-									params={{
-										handle: handle,
-									}}
+									from={Route.fullPath}
 									search={{
 										rating:
 											rating === index + 1
@@ -240,11 +240,11 @@ function Handle() {
 								</p>
 							))}
 						</div>
-						<Tabs value={category} className="mt-2">
-							<TabsList>
+						<Tabs value={category} className="mt-2 w-full">
+							<TabsList className="sm:w-full">
 								<TabsTrigger value="all" asChild>
 									<Link
-										params={{ handle }}
+										from={Route.fullPath}
 										search={(prev) => ({
 											...prev,
 											category: undefined,
@@ -255,7 +255,7 @@ function Handle() {
 								</TabsTrigger>
 								<TabsTrigger value="ALBUM" asChild>
 									<Link
-										params={{ handle }}
+										from={Route.fullPath}
 										search={(prev) => ({
 											...prev,
 											category: "ALBUM",
@@ -266,7 +266,7 @@ function Handle() {
 								</TabsTrigger>
 								<TabsTrigger value="SONG" asChild>
 									<Link
-										params={{ handle }}
+										from={Route.fullPath}
 										search={(prev) => ({
 											...prev,
 											category: "SONG",
@@ -315,6 +315,20 @@ function Handle() {
 						</div>
 					</TabsContent>
 				)}
+				<TabsContent value="lists" className="flex flex-col">
+					<div className="flex items-start self-center sm:self-start">
+						{isUser && <CreateList />}
+					</div>
+					<div className="mt-2">
+						{lists && (
+							<ListList
+								lists={lists}
+								showProfiles={false}
+								type="wrap"
+							/>
+						)}
+					</div>
+				</TabsContent>
 			</Tabs>
 		</div>
 	);

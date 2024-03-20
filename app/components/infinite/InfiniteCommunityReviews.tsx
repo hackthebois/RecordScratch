@@ -3,11 +3,11 @@ import { Resource } from "@/types/rating";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Review } from "./Review";
-import { ReviewDialog } from "./ReviewDialog";
-import { SignInReviewButton } from "./SignInReviewButton";
+import { Review } from "../review/Review";
+import { ReviewDialog } from "../review/ReviewDialog";
+import { SignInReviewButton } from "../signIn/SignInReviewButton";
 
-const CommunityReviews = ({
+export const InfiniteCommunityReviews = ({
 	pageLimit,
 	resource,
 	name,
@@ -45,9 +45,9 @@ const CommunityReviews = ({
 					<SignInReviewButton />
 				)}
 			</div>
-			<div>
+			<div className="flex flex-col gap-3">
 				{data?.pages.map((page, index) => (
-					<div key={index}>
+					<div key={index} className="flex flex-col gap-3">
 						{page.items.map((review, index) => (
 							<Review key={index} {...review} />
 						))}
@@ -66,5 +66,3 @@ const CommunityReviews = ({
 		</div>
 	);
 };
-
-export default CommunityReviews;
