@@ -4,9 +4,11 @@ dotenv.config();
 
 export default {
 	schema: "./app/server/db/schema.ts",
-	driver: "mysql2",
+	driver: "pg",
 	out: "./app/server/db/migrations",
 	dbCredentials: {
-		uri: process.env.DATABASE_URL!,
+		connectionString: process.env.NEON_DATABASE_URL!,
 	},
+	verbose: true,
+	strict: true,
 } satisfies Config;

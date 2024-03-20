@@ -1,6 +1,6 @@
-import { Client } from "@planetscale/database";
-import { drizzle } from "drizzle-orm/planetscale-serverless";
-import { tableSchemas, relationSchemas } from "./schema";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import { relationSchemas, tableSchemas } from "./schema";
 
 const schema = {
 	...tableSchemas,
@@ -8,8 +8,6 @@ const schema = {
 };
 
 // create the connection
-const connection = new Client({
-	url: process.env.DATABASE_URL,
-});
+const sql = neon(process.env.NEON_DATABASE_URL!);
 
-export const db = drizzle(connection, { schema });
+export const db = drizzle(sql, { schema });
