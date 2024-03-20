@@ -8,6 +8,7 @@ import { z } from "zod";
 import { RatingSchema } from "@/types/rating";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createNotification } from "../notifications";
+import { posthog } from "../posthog";
 
 const s3 = new S3Client({
 	region: process.env.AWS_BUCKET_REGION!,
@@ -187,10 +188,9 @@ export const profilesRouter = router({
 		}),
 	create: protectedProcedure
 		.input(CreateProfileSchema)
-		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
-			posthog.capture({
+		.mutation(async ({ ctx: { db, userId }, input }) => {
+			posthog("profile_created", {
 				distinctId: userId,
-				event: "profile_created",
 				properties: input,
 			});
 			await db.insert(profile).values({ ...input, userId });

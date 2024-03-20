@@ -7,6 +7,7 @@ import {
 } from "@/types/rating";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull } from "drizzle-orm";
 import { z } from "zod";
+import { posthog } from "../posthog";
 
 const PaginatedInput = z.object({
 	cursor: z.number().min(1).max(100).optional(),
@@ -290,11 +291,10 @@ export const ratingsRouter = router({
 	}),
 	rate: protectedProcedure
 		.input(RateFormSchema)
-		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
+		.mutation(async ({ ctx: { db, userId }, input }) => {
 			const { rating, resourceId, parentId, category } = input;
-			posthog.capture({
+			posthog("rate", {
 				distinctId: userId,
-				event: "rate",
 				properties: input,
 			});
 			if (rating === null) {
@@ -331,10 +331,9 @@ export const ratingsRouter = router({
 		}),
 	review: protectedProcedure
 		.input(ReviewFormSchema)
-		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
-			posthog.capture({
+		.mutation(async ({ ctx: { db, userId }, input }) => {
+			posthog("review", {
 				distinctId: userId,
-				event: "review",
 				properties: input,
 			});
 			await db
