@@ -2,7 +2,7 @@ import { followers, profile, ratings } from "@/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { and, count, eq, like, or, sql } from "drizzle-orm";
+import { and, count, eq, ilike, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { RatingSchema } from "@/types/rating";
@@ -301,8 +301,8 @@ export const profilesRouter = router({
 		.query(async ({ ctx: { db }, input: query }) => {
 			return await db.query.profile.findMany({
 				where: or(
-					like(profile.handle, `%${query}%`),
-					like(profile.name, `%${query}%`)
+					ilike(profile.handle, `%${query}%`),
+					ilike(profile.name, `%${query}%`)
 				),
 			});
 		}),
