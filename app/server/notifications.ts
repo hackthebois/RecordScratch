@@ -4,17 +4,18 @@ import { notifications } from "./db/schema";
 
 export const createNotification = async (notification: CreateNotification) => {
 	// Future: use queue, send push notifications, etc
-	console.log("createNotification", notification);
-	await db.insert(notifications).values(notification);
-	// .onConflictDoUpdate({
-	// 	target: [
-	// 		notifications.userId,
-	// 		notifications.resourceId,
-	// 		notifications.type,
-	// 		notifications.fromId,
-	// 	],
-	// 	set: {
-	// 		updatedAt: new Date(),
-	// 	},
-	// });
+	await db
+		.insert(notifications)
+		.values(notification)
+		.onConflictDoUpdate({
+			target: [
+				notifications.userId,
+				notifications.resourceId,
+				notifications.type,
+				notifications.fromId,
+			],
+			set: {
+				updatedAt: new Date(),
+			},
+		});
 };
