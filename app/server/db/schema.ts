@@ -250,8 +250,8 @@ export const notificationRelations = relations(notifications, ({ one }) => ({
 		references: [profile.userId],
 	}),
 	rating: one(ratings, {
-		fields: [notifications.resourceId],
-		references: [ratings.resourceId],
+		fields: [notifications.resourceId, notifications.userId],
+		references: [ratings.resourceId, ratings.userId],
 	}),
 }));
 
