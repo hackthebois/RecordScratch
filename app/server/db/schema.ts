@@ -187,18 +187,29 @@ export const likesRelations = relations(likes, ({ one }) => ({
 	}),
 }));
 
-export const notifications = mysqlTable("notifications", {
-	id: varchar("id", { length: 256 })
-		.primaryKey()
-		.$default(() => generateId(15)),
-	userId: varchar("user_id", { length: 256 }).notNull(),
-	resourceId: varchar("resource_id", { length: 256 }),
-	fromId: varchar("from_id", { length: 256 }).notNull(),
-	type: mysqlEnum("type", ["LIKE", "FOLLOW"]).notNull(),
-	seen: boolean("seen").default(false).notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
-});
+export const notifications = mysqlTable(
+	"notifications",
+	{
+		id: varchar("id", { length: 15 })
+			.primaryKey()
+			.$default(() => generateId(15)),
+		userId: varchar("user_id", { length: 15 }).notNull(),
+		resourceId: varchar("resource_id", { length: 100 }),
+		fromId: varchar("from_id", { length: 15 }).notNull(),
+		type: mysqlEnum("type", ["LIKE", "FOLLOW"]).notNull(),
+		seen: boolean("seen").default(false).notNull(),
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	}
+	// (table) => ({
+	// 	unq: unique().on(
+	// 		table.userId,
+	// 		table.resourceId,
+	// 		table.fromId,
+	// 		table.type
+	// 	),
+	// })
+);
 
 export const notificationRelations = relations(notifications, ({ one }) => ({
 	profile: one(profile, {
