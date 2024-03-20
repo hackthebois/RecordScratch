@@ -11,7 +11,6 @@ export const ArtistItem = ({
 	direction = "horizontal",
 	showLink = true,
 	textCss = "truncate",
-	draggable = true,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -19,7 +18,6 @@ export const ArtistItem = ({
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
 	textCss?: string;
-	draggable?: boolean;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -50,7 +48,6 @@ export const ArtistItem = ({
 				"flex w-full min-w-0 items-center gap-4 rounded",
 				direction === "vertical" ? "flex-col" : "flex-row"
 			)}
-			draggable={draggable}
 		>
 			<div className="relative overflow-hidden rounded-full">
 				{artistImage ? (
