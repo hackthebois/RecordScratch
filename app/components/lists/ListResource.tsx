@@ -70,7 +70,11 @@ export const ListResource = ({
 					<div className="flex flex-row items-center justify-center gap-5">
 						<div
 							className="reorder-handle"
-							onPointerDown={(event) => dragControls.start(event)}
+							onPointerDown={(event) => {
+								// For pointer devices
+								dragControls.start(event);
+							}}
+							style={{ touchAction: "none" }}
 						>
 							<AlignJustify size={30} />
 						</div>
