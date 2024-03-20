@@ -1,5 +1,3 @@
-import { RatingDialog } from "@/components/RatingDialog";
-import { SignInRateButton } from "@/components/SignInRateButton";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { api } from "@/trpc/react";
 import { Resource } from "@/types/rating";
@@ -9,6 +7,9 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Skeleton } from "./ui/Skeleton";
+import { AddToList } from "./lists/AddToList";
+import { SignInRateButton } from "./signIn/SignInRateButton";
+import { RatingDialog } from "./rating/RatingDialog";
 
 const SongRatingDialog = ({ songs, song }: { songs: Track[]; song: Track }) => {
 	const [userRatings] = api.ratings.user.getList.useSuspenseQuery({
@@ -69,7 +70,14 @@ const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 				size="sm"
 			/>
 			{profile ? (
-				<SongRatingDialog songs={songs} song={song} />
+				<>
+					<SongRatingDialog songs={songs} song={song} />
+					<AddToList
+						parentId={String(song.album.id)}
+						resourceId={String(song.id)}
+						category="SONG"
+					/>
+				</>
 			) : (
 				<SignInRateButton />
 			)}

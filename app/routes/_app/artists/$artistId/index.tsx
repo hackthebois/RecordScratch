@@ -3,14 +3,16 @@ import Metadata from "@/components/Metadata";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
+import { AddToList } from "@/components/lists/AddToList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { RatingInfo } from "@/components/ui/RatingInfo";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/artists/$artistId/")({
@@ -64,9 +66,6 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 function Artist() {
 	const { artistId } = Route.useParams();
 	const { tab = "top-songs" } = Route.useSearch();
-	const navigate = useNavigate({
-		from: Route.fullPath,
-	});
 
 	const { data: artist } = useSuspenseQuery(
 		getQueryOptions({
@@ -101,7 +100,6 @@ function Artist() {
 			},
 		})
 	);
-
 	return (
 		<div className="flex flex-col gap-6">
 			<Head title={artist.name} />
@@ -111,18 +109,25 @@ function Artist() {
 				tags={[`${artist.nb_album} Albums`]}
 				type="ARTIST"
 			>
-				<RatingInfo
-					resource={{
-						resourceId: String(artist.id),
-						category: "ARTIST",
-					}}
-				/>
+				<div className="flex flex-row items-center justify-center gap-3">
+					<RatingInfo
+						resource={{
+							resourceId: String(artist.id),
+							category: "ARTIST",
+						}}
+					/>
+
+					<AddToList
+						resourceId={String(artist.id)}
+						category="ARTIST"
+					/>
+				</div>
 			</Metadata>
 			<Tabs value={tab}>
 				<TabsList>
 					<TabsTrigger value="top-songs" asChild>
 						<Link
-							params={{ artistId }}
+							from={Route.fullPath}
 							search={{
 								tab: undefined,
 							}}
@@ -130,19 +135,9 @@ function Artist() {
 							Top Songs
 						</Link>
 					</TabsTrigger>
-					<TabsTrigger value="related" asChild>
-						<Link
-							params={{ artistId }}
-							search={{
-								tab: "related",
-							}}
-						>
-							Related
-						</Link>
-					</TabsTrigger>
 					<TabsTrigger value="discography" asChild>
 						<Link
-							params={{ artistId }}
+							from={Route.fullPath}
 							search={{
 								tab: "discography",
 							}}
@@ -152,16 +147,32 @@ function Artist() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="top-songs">
-					<SongTable songs={top.data} />
-				</TabsContent>
-				<TabsContent value="related" className="flex flex-col gap-4">
-					{artists.data.map((artist) => (
-						<ArtistItem
-							artistId={String(artist.id)}
-							initialArtist={artist}
-							key={artist.id}
-						/>
-					))}
+					<div>
+						<SongTable songs={top.data} />
+					</div>
+					<h3 className="mb-3 mt-6">Related Artists</h3>
+					<hr />
+					<ScrollArea
+						orientation="horizontal"
+						className="flex flex-row gap-4"
+						key={artistId}
+					>
+						<div className="my-6 flex flex-row gap-5">
+							{artists.data.map((artist) => (
+								<div
+									className="h-36 w-1/5 overflow-hidden pl-2"
+									key={artist.id}
+								>
+									<ArtistItem
+										artistId={String(artist.id)}
+										initialArtist={artist}
+										direction="vertical"
+										textCss="text-wrap text-center text-sm -mt-2"
+									/>
+								</div>
+							))}
+						</div>
+					</ScrollArea>
 				</TabsContent>
 				<TabsContent value="discography">
 					<AlbumList albums={albums.data} type="wrap" field="date" />

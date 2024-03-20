@@ -47,6 +47,6 @@ export const CategorySchema = RatingSchema.pick({
 });
 export type CategoryType = z.infer<typeof CategorySchema>;
 
-export type Review = Rating & {
+export type ReviewType = Rating & {
 	profile: Profile;
 };

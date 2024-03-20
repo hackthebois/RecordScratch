@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/Button";
 import {
 	Dialog,
@@ -12,7 +10,6 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { UserAvatar } from "@/components/UserAvatar";
 import {
 	Form,
 	FormControl,
@@ -35,6 +32,7 @@ import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
 import { useNavigate } from "@tanstack/react-router";
+import { UserAvatar } from "../user/UserAvatar";
 
 export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const {
@@ -93,10 +91,10 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 	const { image, handle } = form.watch();
 
 	useEffect(() => {
-		if (image && image instanceof File) {
+		if (image && !form.formState.errors.image && image instanceof File) {
 			setImageUrl(URL.createObjectURL(image));
 		}
-	}, [image]);
+	}, [image, form]);
 
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = api.profiles.handleExists.useQuery(
@@ -174,48 +172,32 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 					>
 						<div className="flex items-center gap-4">
 							<UserAvatar size={80} imageUrl={imageUrl ?? null} />
-							<Input
-								className="hidden"
-								id="image"
-								ref={imageRef}
-								type="file"
-								onChange={(e) => {
-									if (e.target.files) {
-										form.setValue(
-											"image",
-											e.target.files[0],
-											{
-												shouldDirty: true,
-												shouldValidate: true,
-											}
-										);
-									}
-								}}
+							<FormField
+								control={form.control}
+								name="image"
+								render={({
+									field: { value, onChange, ...fieldProps },
+								}) => (
+									<FormItem>
+										<FormLabel>Profile Image</FormLabel>
+										<FormControl>
+											<Input
+												type="file"
+												{...fieldProps}
+												accept="image/png, image/jpeg, image/jpg"
+												onChange={(event) =>
+													onChange(
+														event.target.files &&
+															event.target
+																.files[0]
+													)
+												}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
 							/>
-							{image ? (
-								<Button
-									variant="outline"
-									onClick={(e) => {
-										e.preventDefault();
-										form.setValue("image", undefined);
-										setImageUrl(
-											defaultImageUrl ?? undefined
-										);
-									}}
-								>
-									Clear Image
-								</Button>
-							) : (
-								<Button
-									variant="outline"
-									onClick={(e) => {
-										e.preventDefault();
-										imageRef.current?.click();
-									}}
-								>
-									Edit Profile Image
-								</Button>
-							)}
 						</div>
 						<FormMessage>
 							{form.formState.errors.image?.message}
@@ -278,10 +260,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 							)}
 						/>
 						<DialogFooter>
-							<Button
-								type="submit"
-								disabled={!form.formState.isDirty}
-							>
+							<Button type="submit" className="w-full">
 								Update
 							</Button>
 						</DialogFooter>

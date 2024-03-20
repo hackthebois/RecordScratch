@@ -1,0 +1,120 @@
+import { ErrorComponent } from "@/components/router/ErrorComponent";
+import { PendingComponent } from "@/components/router/Pending";
+import { UserAvatar } from "@/components/user/UserAvatar";
+import { api, apiUtils } from "@/trpc/react";
+import { Profile } from "@/types/profile";
+import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import { Heart, User } from "lucide-react";
+import { useEffect } from "react";
+
+export const Route = createFileRoute("/_app/notifications")({
+	component: Notifications,
+	pendingComponent: PendingComponent,
+	errorComponent: ErrorComponent,
+	loader: () => {
+		const profile = apiUtils.profiles.me.ensureData();
+		if (!profile) notFound();
+
+		apiUtils.notifications.get.ensureData();
+	},
+});
+
+const FollowNotification = ({ user }: { user: Profile }) => {
+	return (
+		<Link
+			to="/$handle"
+			params={{
+				handle: user.handle,
+			}}
+			className="hover:bg-hover flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition"
+		>
+			<User size={32} className="text-sky-500" />
+			<div className="flex w-full flex-col gap-2">
+				<div className="flex gap-3">
+					<Link
+						to="/$handle"
+						params={{
+							handle: user.handle,
+						}}
+					>
+						<UserAvatar {...user} size={30} />
+					</Link>
+					<p>
+						<span className="font-bold">{user.handle}</span>{" "}
+						followed you
+					</p>
+				</div>
+			</div>
+		</Link>
+	);
+};
+
+const LikeNotification = ({
+	user,
+	content,
+}: {
+	user: Profile;
+	content?: string | null;
+}) => {
+	// TODO: link to the review (need review pages first)
+	return (
+		<div className="flex items-center gap-4 rounded-lg border p-4">
+			<Heart size={28} color="#ff4d4f" />
+			<div className="flex w-full flex-col gap-2">
+				<div className="flex gap-3">
+					<Link
+						to="/$handle"
+						params={{
+							handle: user.handle,
+						}}
+					>
+						<UserAvatar {...user} size={30} />
+					</Link>
+					<p>
+						<span className="font-bold">{user.handle}</span> liked
+						your {content ? "review" : "rating"}
+					</p>
+				</div>
+				{content && (
+					<p className="text-muted-foreground">
+						{content.length > 100
+							? content.slice(0, 100) + "..."
+							: content}
+					</p>
+				)}
+			</div>
+		</div>
+	);
+};
+
+function Notifications() {
+	const [notifications] = api.notifications.get.useSuspenseQuery();
+
+	const { mutate } = api.notifications.markAllSeen.useMutation({
+		onSettled: () => {
+			apiUtils.notifications.getUnseen.invalidate();
+		},
+	});
+
+	useEffect(() => {
+		mutate();
+	}, [mutate]);
+
+	return (
+		<div className="flex flex-col gap-3">
+			{notifications.map((notification) => (
+				<div key={notification.id}>
+					{notification.type === "FOLLOW" && (
+						<FollowNotification user={notification.from} />
+					)}
+					{notification.type === "LIKE" && (
+						<LikeNotification
+							user={notification.from}
+							content={notification.rating?.content}
+						/>
+					)}
+				</div>
+			))}
+		</div>
+	);
+}

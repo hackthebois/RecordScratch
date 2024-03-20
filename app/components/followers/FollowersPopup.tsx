@@ -1,15 +1,15 @@
 import { api } from "@/trpc/react";
 import { useState } from "react";
-import { ProfileItem } from "./ProfileItem";
-import { Button } from "./ui/Button";
+import { ProfileItem } from "../profile/ProfileItem";
+import { Button } from "../ui/Button";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "./ui/Dialog";
-import { ScrollArea } from "./ui/ScrollArea";
+} from "../ui/Dialog";
+import { ScrollArea } from "../ui/ScrollArea";
 
 const FollowersPopup = ({
 	followerCount,
@@ -33,13 +33,13 @@ const FollowersPopup = ({
 					{followerCount}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="max-w-[20rem] sm:max-w-[24rem]  md:max-w-[28rem] lg:max-w-[28rem]">
+			<DialogContent className="max-w-[24rem] sm:max-w-[28rem]  md:max-w-[28rem] lg:max-w-[28rem]">
 				<DialogHeader className="items-center">
 					<DialogTitle>
 						{type[0].toUpperCase() + type.slice(1)}
 					</DialogTitle>
 				</DialogHeader>
-				<ScrollArea className="flex flex-col gap-3">
+				<ScrollArea className="flex max-h-96 flex-col gap-3">
 					<div className="flex flex-col gap-3 pb-4">
 						{profiles?.map(({ profile }, index) => (
 							<ProfileItem

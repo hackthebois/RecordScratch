@@ -1,5 +1,4 @@
 import { Head } from "@/components/Head";
-import { UserAvatar } from "@/components/UserAvatar";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -13,6 +12,7 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Tag } from "@/components/ui/Tag";
 import { Textarea } from "@/components/ui/Textarea";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import { api } from "@/trpc/react";
 import type { Onboard } from "@/types/profile";
 import { OnboardSchema, handleRegex } from "@/types/profile";
@@ -21,7 +21,7 @@ import { cn } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AtSign, Disc3 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export const Route = createFileRoute("/onboard")({
@@ -70,25 +70,21 @@ function Onboard() {
 		},
 	});
 	const { name, image, handle, bio } = form.watch();
-	const imageRef = useRef<HTMLInputElement>(null);
-	const { data: profile, isSuccess } = api.profiles.me.useQuery();
+	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
-	useEffect(() => {
-		if (profile !== null && isSuccess) {
-			navigate({
-				to: "/",
-			});
-		}
-	}, [profile, isSuccess, navigate]);
+	if (!needsOnboarding) {
+		navigate({
+			to: "/",
+		});
+	}
 
-	const { mutate: createProfile } = api.profiles.create.useMutation({
-		onSuccess: () => {
-			utils.profiles.me.invalidate();
-			navigate({
-				to: "/",
-			});
-		},
-	});
+	const { mutate: createProfile, isPending } =
+		api.profiles.create.useMutation({
+			onSuccess: () => {
+				utils.profiles.me.invalidate();
+				utils.profiles.needsOnboarding.invalidate();
+			},
+		});
 	const { mutateAsync: getSignedURL } =
 		api.profiles.getSignedURL.useMutation();
 
@@ -181,20 +177,20 @@ function Onboard() {
 		} else if (pageIndex === 3) {
 			return true;
 		} else {
-			return false;
+			return true;
 		}
 	};
 
-	if (form.formState.isSubmitting || form.formState.isSubmitSuccessful) {
+	if (isPending) {
 		return (
-			<main className="mx-auto flex max-h-[100svh] min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
+			<main className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 				<Disc3 size={50} className="animate-spin" />
 			</main>
 		);
 	}
 
 	return (
-		<main className="mx-auto flex max-h-[100svh] min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
+		<main className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 			<Head title="Onboard" />
 			<Form {...form}>
 				<form>
@@ -280,52 +276,35 @@ function Onboard() {
 						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
-							className="mt-8"
+							className="my-8"
 							size={160}
 							imageUrl={imageUrl ?? null}
 						/>
-						<Input
-							className="hidden"
-							id="image"
-							ref={imageRef}
-							type="file"
-							onChange={(e) => {
-								if (e.target.files) {
-									form.setValue("image", e.target.files[0], {
-										shouldDirty: true,
-										shouldValidate: true,
-									});
-								}
-							}}
+						<FormField
+							control={form.control}
+							name="image"
+							render={({
+								field: { value, onChange, ...fieldProps },
+							}) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											type="file"
+											{...fieldProps}
+											className="m-auto text-center"
+											accept="image/png, image/jpeg, image/jpg"
+											onChange={(event) =>
+												onChange(
+													event.target.files &&
+														event.target.files[0]
+												)
+											}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-						{image ? (
-							<Button
-								variant="outline"
-								className="mt-4"
-								onClick={(e) => {
-									e.preventDefault();
-									form.setValue("image", undefined);
-									form.clearErrors("image");
-									setImageUrl(undefined);
-								}}
-							>
-								Clear Image
-							</Button>
-						) : (
-							<Button
-								variant="ghost"
-								className="mt-4"
-								onClick={(e) => {
-									e.preventDefault();
-									imageRef.current?.click();
-								}}
-							>
-								Add Profile Image
-							</Button>
-						)}
-						<FormMessage>
-							{form.formState.errors.image?.message}
-						</FormMessage>
 					</SlideWrapper>
 				</form>
 			</Form>

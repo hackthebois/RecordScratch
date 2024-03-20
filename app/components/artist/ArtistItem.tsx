@@ -2,18 +2,22 @@ import { Artist, getQueryOptions } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "../user/UserAvatar";
 
 export const ArtistItem = ({
 	initialArtist,
 	artistId,
 	onClick,
 	direction = "horizontal",
+	showLink = true,
+	textCss = "truncate",
 }: {
 	initialArtist?: Artist;
 	artistId: string;
 	onClick?: () => void;
 	direction?: "horizontal" | "vertical";
+	showLink?: boolean;
+	textCss?: string;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -25,14 +29,21 @@ export const ArtistItem = ({
 		initialData: initialArtist,
 	});
 	const artistImage = artist.picture_medium;
+	const link = {
+		to: "/artists/$artistId",
+		params: {
+			artistId: String(artist.id),
+		},
+	};
 
 	return (
 		<Link
-			to="/artists/$artistId"
-			params={{
-				artistId: String(artist.id),
+			onClick={() => {
+				if (onClick) {
+					onClick();
+				}
 			}}
-			onClick={onClick}
+			{...(showLink ? link : {})}
 			className={cn(
 				"flex w-full min-w-0 items-center gap-4 rounded",
 				direction === "vertical" ? "flex-col" : "flex-row"
@@ -48,7 +59,9 @@ export const ArtistItem = ({
 					<div className="h-full w-full bg-muted"></div>
 				)}
 			</div>
-			<p className="flex flex-1 truncate font-medium">{artist.name}</p>
+			<p className={cn("flex flex-1 font-medium", textCss)}>
+				{artist.name}
+			</p>
 		</Link>
 	);
 };

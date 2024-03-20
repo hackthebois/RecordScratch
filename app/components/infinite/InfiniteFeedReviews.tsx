@@ -3,7 +3,7 @@ import { RouterInputs } from "@/trpc/shared";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Review } from "./Review";
+import { Review } from "../review/Review";
 
 export const RecentFeedReviews = ({
 	input,
@@ -30,9 +30,9 @@ export const RecentFeedReviews = ({
 
 	return (
 		<>
-			<div>
+			<div className="flex flex-col gap-3">
 				{data?.pages.map((page, index) => (
-					<div key={index}>
+					<div key={index} className="flex flex-col gap-3">
 						{page.items.map((review, index) => (
 							<Review key={index} {...review} />
 						))}
@@ -77,13 +77,13 @@ export const FollowingFeedReviews = ({
 
 	return (
 		<>
-			<div>
-				{data?.pages.map((page, index) => (
-					<div key={index}>
+			<div className="flex flex-col gap-3">
+				{data?.pages.map((page) => (
+					<>
 						{page.items.map((review, index) => (
 							<Review key={index} {...review} />
 						))}
-					</div>
+					</>
 				))}
 			</div>
 			{hasNextPage && (

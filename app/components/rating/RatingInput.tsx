@@ -6,6 +6,7 @@ export const RatingInput = ({
 	onChange,
 }: {
 	value: number | null;
+	// eslint-disable-next-line no-unused-vars
 	onChange: (rating: number | null) => void;
 }) => {
 	const [hoverRating, setHoverRating] = useState<number | null>(null);

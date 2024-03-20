@@ -10,14 +10,20 @@ import {
 } from "@/components/ui/Dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RatingInput } from "@/components/RatingInput";
 import { api } from "@/trpc/react";
 import { Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
 import { Text } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/Form";
-import { Textarea } from "./ui/Textarea";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
+} from "../ui/Form";
+import { Textarea } from "../ui/Textarea";
+import { RatingInput } from "../rating/RatingInput";
 
 export const ReviewDialog = ({
 	resource,

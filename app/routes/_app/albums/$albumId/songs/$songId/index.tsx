@@ -1,16 +1,16 @@
-import CommunityReviews from "@/components/CommunityReviews";
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
-import { RatingDialog } from "@/components/RatingDialog";
-import { SignInRateButton } from "@/components/SignInRateButton";
+import { InfiniteCommunityReviews } from "@/components/infinite/InfiniteCommunityReviews";
+import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
+import { SignInRateButton } from "@/components/signIn/SignInRateButton";
 import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@/types/rating";
-import { formatMs } from "@/utils/date";
+import { formatDuration } from "@/utils/date";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -20,6 +20,12 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
 	loader: ({ params: { albumId } }) => {
+		queryClient.ensureQueryData(
+			getQueryOptions({
+				route: "/album/{id}/tracks",
+				input: { id: albumId, limit: 1000 },
+			})
+		);
 		queryClient.ensureQueryData(
 			getQueryOptions({
 				route: "/album/{id}",
@@ -38,9 +44,13 @@ function Song() {
 			input: { id: albumId },
 		})
 	);
-	const song = album.tracks.data.find(
-		(track) => track.id === Number(songId)
-	)!;
+	const { data: tracks } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/album/{id}/tracks",
+			input: { id: albumId, limit: 1000 },
+		})
+	);
+	const song = tracks.data.find((track) => track.id === Number(songId))!;
 
 	const resource: Resource = {
 		parentId: String(album.id),
@@ -58,7 +68,7 @@ function Song() {
 				tags={[
 					album.release_date,
 					song.explicit_lyrics ? "Explicit" : undefined,
-					formatMs(song.duration * 1000),
+					formatDuration(song.duration),
 				]}
 			>
 				<Link
@@ -98,7 +108,7 @@ function Song() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="reviews">
-					<CommunityReviews
+					<InfiniteCommunityReviews
 						resource={resource}
 						pageLimit={20}
 						name={song.title}
