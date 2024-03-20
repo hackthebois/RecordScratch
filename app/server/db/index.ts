@@ -1,4 +1,5 @@
-import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 import { relationSchemas, tableSchemas } from "./schema";
 
 const schema = {

@@ -1,17 +1,16 @@
 import { relations } from "drizzle-orm";
 import {
 	boolean,
-	int,
-	mysqlEnum,
-	mysqlTable,
+	integer,
+	pgEnum,
+	pgTable,
 	primaryKey,
 	smallint,
 	text,
 	timestamp,
-	varchar
-} from "drizzle-orm/mysql-core";
-import { generateId } from "lucia";
 } from "drizzle-orm/pg-core";
+
+import { generateId } from "lucia";
 
 export const users = pgTable("users", {
 	id: text("id").primaryKey(),
@@ -131,14 +130,14 @@ export const userFollowRelation = relations(followers, ({ one }) => ({
 	}),
 }));
 
-export const lists = mysqlTable("lists", {
-	id: varchar("id", { length: 256 }).primaryKey().notNull(),
-	userId: varchar("user_id", { length: 256 }).notNull(),
-	name: varchar("name", { length: 50 }).notNull(),
+export const lists = pgTable("lists", {
+	id: text("id").primaryKey().notNull(),
+	userId: text("user_id").notNull(),
+	name: text("name").notNull(),
 	description: text("description"),
-	category: mysqlEnum("category", ["ALBUM", "SONG", "ARTIST"]).notNull(),
+	category: categoryEnum("category").notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const listRelation = relations(lists, ({ one, many }) => ({
@@ -149,15 +148,15 @@ export const listRelation = relations(lists, ({ one, many }) => ({
 	resources: many(listResources),
 }));
 
-export const listResources = mysqlTable(
+export const listResources = pgTable(
 	"list_resources",
 	{
-		parentId: varchar("parent_id", { length: 256 }),
-		listId: varchar("list_id", { length: 256 }).notNull(),
-		resourceId: varchar("resource_id", { length: 256 }).notNull(),
-		position: int("position").notNull(),
+		parentId: text("parent_id"),
+		listId: text("list_id").notNull(),
+		resourceId: text("resource_id").notNull(),
+		position: integer("position").notNull(),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
 	},
 	(table) => ({
 		pk_ratings: primaryKey({
@@ -173,15 +172,15 @@ export const listResourcesRelations = relations(listResources, ({ one }) => ({
 	}),
 }));
 
-export const likes = mysqlTable("likes", {
-	id: varchar("id", { length: 256 })
+export const likes = pgTable("likes", {
+	id: text("id")
 		.primaryKey()
 		.$default(() => generateId(15)),
-	userId: varchar("user_id", { length: 256 }).notNull(),
-	resourceId: varchar("resource_id", { length: 256 }).notNull(),
-	authorId: varchar("author_id", { length: 256 }).notNull(),
+	userId: text("user_id").notNull(),
+	resourceId: text("resource_id").notNull(),
+	authorId: text("author_id").notNull(),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const likesRelations = relations(likes, ({ one }) => ({
@@ -191,19 +190,21 @@ export const likesRelations = relations(likes, ({ one }) => ({
 	}),
 }));
 
-export const notifications = mysqlTable(
+export const typeEnum = pgEnum("type", ["LIKE", "FOLLOW"]);
+
+export const notifications = pgTable(
 	"notifications",
 	{
-		id: varchar("id", { length: 15 })
+		id: text("id")
 			.primaryKey()
 			.$default(() => generateId(15)),
-		userId: varchar("user_id", { length: 15 }).notNull(),
-		resourceId: varchar("resource_id", { length: 100 }),
-		fromId: varchar("from_id", { length: 15 }).notNull(),
-		type: mysqlEnum("type", ["LIKE", "FOLLOW"]).notNull(),
+		userId: text("user_id").notNull(),
+		resourceId: text("resource_id"),
+		fromId: text("from_id").notNull(),
+		type: typeEnum("type").notNull(),
 		seen: boolean("seen").default(false).notNull(),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+		updatedAt: timestamp("updated_at").defaultNow().notNull(),
 	}
 	// (table) => ({
 	// 	unq: unique().on(
