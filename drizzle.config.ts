@@ -7,7 +7,7 @@ export default {
 	driver: "pg",
 	out: "./app/server/db/migrations",
 	dbCredentials: {
-		connectionString: process.env.NEON_DATABASE_URL!,
+		connectionString: process.env.DATABASE_URL!,
 	},
 	verbose: true,
 	strict: true,
