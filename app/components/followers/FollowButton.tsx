@@ -1,21 +1,26 @@
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { api } from "@/trpc/react";
+import { Suspense } from "react";
+import SignedIn from "../SignedIn";
+import { Skeleton } from "../ui/Skeleton";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
+	return (
+		<Suspense fallback={<Skeleton className="h-8 w-20" />}>
+			<SignedIn>
+				<FollowButtonInner profileId={profileId} />
+			</SignedIn>
+		</Suspense>
+	);
+};
+
+export const FollowButtonInner = ({ profileId }: { profileId: string }) => {
 	const utils = api.useUtils();
-	const { data: profile } = api.profiles.me.useQuery();
+	const [profile] = api.profiles.get.useSuspenseQuery(profileId);
+	const [isFollowing] = api.profiles.isFollowing.useSuspenseQuery(profileId);
 
-	const {
-		data: isFollowing,
-		isLoading,
-		refetch,
-	} = api.profiles.isFollowing.useQuery(profileId, {
-		enabled: !!profile?.userId,
-	});
-
-	const revalidate = () => {
-		utils.profiles.isFollowing.invalidate(profileId);
+	const revalidate = async () => {
+		await utils.profiles.isFollowing.invalidate(profileId);
 
 		// Invalidate profiles followers
 		utils.profiles.followCount.invalidate({
@@ -38,50 +43,34 @@ export const FollowButton = ({ profileId }: { profileId: string }) => {
 		});
 	};
 
-	const followUser = api.profiles.follow.useMutation({
-		onSettled: () => {
-			revalidate();
-		},
-	});
-	const unFollowUser = api.profiles.unFollow.useMutation({
-		onSettled: () => {
-			revalidate();
-		},
-	});
+	const { mutate: followUser, isPending: isFollow } =
+		api.profiles.follow.useMutation({
+			onSettled: async () => {
+				await revalidate();
+			},
+		});
+	const { mutate: unFollowUser, isPending: isUnFollow } =
+		api.profiles.unFollow.useMutation({
+			onSettled: async () => {
+				await revalidate();
+			},
+		});
 
-	if (!!profile && profile!.userId! === profileId) return null;
-
-	if (isLoading) return <Skeleton className="h-10 w-20" />;
+	const following = isFollow ? true : isUnFollow ? false : isFollowing;
 
 	return (
-		<>
-			{isFollowing ? (
-				<Button
-					className="mr-4"
-					variant="secondary"
-					onClick={(e) => {
-						e.stopPropagation();
-						e.preventDefault();
-						unFollowUser.mutate(profileId);
-						refetch();
-					}}
-				>
-					Unfollow
-				</Button>
-			) : (
-				<Button
-					className="mr-4"
-					type="submit"
-					onClick={(e) => {
-						e.stopPropagation();
-						e.preventDefault();
-						followUser.mutate(profileId);
-						refetch();
-					}}
-				>
-					Follow
-				</Button>
-			)}
-		</>
+		<Button
+			className="mr-4"
+			variant="outline"
+			onClick={(e) => {
+				e.stopPropagation();
+				e.preventDefault();
+				if (isFollow || isUnFollow) return;
+				if (following) unFollowUser(profileId);
+				else followUser(profileId);
+			}}
+		>
+			{following ? "Unfollow" : "Follow"}
+		</Button>
 	);
 };
