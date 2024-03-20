@@ -1,4 +1,4 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { notifications } from "../db/schema";
 import { protectedProcedure, router } from "../trpc";
 
@@ -10,6 +10,7 @@ export const notificationsRouter = router({
 				from: true,
 				rating: true,
 			},
+			orderBy: [desc(notifications.createdAt)],
 		});
 	}),
 	getUnseen: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
