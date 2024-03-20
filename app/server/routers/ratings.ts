@@ -293,10 +293,6 @@ export const ratingsRouter = router({
 		.input(RateFormSchema)
 		.mutation(async ({ ctx: { db, userId }, input }) => {
 			const { rating, resourceId, parentId, category } = input;
-			posthog("rate", {
-				distinctId: userId,
-				properties: input,
-			});
 			if (rating === null) {
 				await db
 					.delete(ratings)
@@ -328,14 +324,14 @@ export const ratingsRouter = router({
 						},
 					});
 			}
+			posthog("rate", {
+				distinctId: userId,
+				properties: input,
+			});
 		}),
 	review: protectedProcedure
 		.input(ReviewFormSchema)
 		.mutation(async ({ ctx: { db, userId }, input }) => {
-			posthog("review", {
-				distinctId: userId,
-				properties: input,
-			});
 			await db
 				.insert(ratings)
 				.values({ ...input, userId })
@@ -343,5 +339,9 @@ export const ratingsRouter = router({
 					target: [ratings.resourceId, ratings.userId],
 					set: { ...input, userId },
 				});
+			posthog("review", {
+				distinctId: userId,
+				properties: input,
+			});
 		}),
 });
