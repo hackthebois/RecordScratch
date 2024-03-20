@@ -113,7 +113,10 @@ export const listsRouter = router({
 				}));
 				const resourceExists =
 					!!(await db.query.listResources.findFirst({
-						where: eq(listResources.resourceId, inputs.resourceId),
+						where: and(
+							eq(listResources.resourceId, inputs.resourceId),
+							eq(listResources.listId, inputs.listId)
+						),
 					}));
 
 				if (listOwner && !resourceExists) {
@@ -133,7 +136,7 @@ export const listsRouter = router({
 						.update(lists)
 						.set({ updatedAt: new Date() })
 						.where(eq(lists.id, inputs.listId));
-				} else throw new Error("cannot add to list if not owner");
+				}
 			}),
 
 		delete: protectedProcedure
