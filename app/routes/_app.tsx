@@ -13,7 +13,7 @@ import UserButton from "@/components/user/UserButton";
 import { env } from "@/env";
 import { api } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
-import { Bell, Disc3, Menu } from "lucide-react";
+import { Bell, Disc3, Dot, Menu } from "lucide-react";
 import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app")({
@@ -88,9 +88,8 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 									<Menu size={22} />
 								</Button>
 							</PopoverTrigger>
-							<PopoverContent align="end">
-								<div className="flex flex-col gap-2 text-sm font-semibold">
-									<Link to="/roadmap">Roadmap</Link>
+							<PopoverContent align="end" className="w-68">
+								<div className="flex flex-col items-center gap-2 text-sm font-semibold">
 									<div className="flex gap-2">
 										<a
 											href={env.VITE_DISCORD_URL}
@@ -109,13 +108,21 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 									</div>
 								</div>
 								<hr className="my-2" />
-								<div className="flex items-center gap-2">
+								<div className="flex items-center justify-between">
+									<Link
+										to="/roadmap"
+										className="text-sm text-muted-foreground"
+									>
+										Roadmap
+									</Link>
+									<Dot />
 									<Link
 										to="/terms"
 										className="text-sm text-muted-foreground"
 									>
 										Terms
 									</Link>
+									<Dot />
 									<Link
 										to="/privacy-policy"
 										className="text-sm text-muted-foreground"

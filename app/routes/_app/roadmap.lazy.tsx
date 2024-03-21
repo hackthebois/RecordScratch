@@ -22,21 +22,47 @@ type RoadmapItem = {
 
 const now: RoadmapItem[] = [
 	{
-		title: "Following",
+		title: "Likes",
 		description:
-			"Follow your friends and see their recent activity. View your followers and following lists.",
+			"Drop a like on your favourite reviews to show your support for others.",
+	},
+	{
+		title: "Notifications",
+		description:
+			"New integrated notifications to update you on new followers and those who have liked your reviews.",
 	},
 ];
 
 const planned: RoadmapItem[] = [
 	{
-		title: "Lists",
-		description: "Create lists of songs, albums and artists.",
+		title: "List Reviews",
+		description: "Allow for other users to rate and review your lists.",
+	},
+
+	{
+		title: "Review Sharing",
+		description:
+			"Allow for the option to share your reviews with others outside of recordscratch.",
+	},
+	{
+		title: "Badges",
+		description:
+			"New badge system that will be displayed on user profiles. These badges will detail certain accomplishments like reaching a certain amount of reviews/likes/followers and etc.",
+	},
+	{
+		title: "Polls and Mini Games",
+		description:
+			"We plan on adding user polling and interactive mini games that users can engage in",
 	},
 	{
 		title: "Recommendations",
 		description:
 			"Based on your ratings, we'll recommend new music and personalized reviews.",
+	},
+	{
+		title: "Playable Music",
+		description:
+			"Allow for the option to play certain songs/albums on spotify and apple music directly.",
 	},
 ];
 
@@ -63,6 +89,15 @@ const released: RoadmapItem[] = [
 		title: "Music Information",
 		description:
 			"View detailed information about songs, albums, and artists.",
+	},
+	{
+		title: "Lists",
+		description: "Create lists of songs, albums and artists.",
+	},
+	{
+		title: "Following",
+		description:
+			"Follow your friends and see their recent activity. View your followers and following lists.",
 	},
 ];
 
