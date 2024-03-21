@@ -1,4 +1,4 @@
-![RecordScratch Banner](./public/banner.svg)
+![RecordScratch Banner](./public/og-image.png)
 
 # RecordScratch - https://recordscratch.app
 
