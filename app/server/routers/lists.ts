@@ -4,14 +4,14 @@ import {
 	filterUserListsSchema,
 	insertListResourcesSchema,
 	insertListSchema,
+	listOfResourcesSchema,
 	selectListResourcesSchema,
 	selectListSchema,
 	updateListSchema,
-	listOfResourcesSchema,
 } from "@/types/list";
-import { listResources, lists } from "../db/schema";
-import { generateId } from "lucia";
 import { and, asc, desc, eq } from "drizzle-orm/sql";
+import { generateId } from "lucia";
+import { listResources, lists } from "../db/schema";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -173,8 +173,7 @@ export const listsRouter = router({
 							eq(lists.id, listId)
 						),
 					}));
-					if (listOwner) await Promise;
-					await db.transaction(async () => {
+					if (listOwner) {
 						await db
 							.update(lists)
 							.set({ updatedAt: new Date() })
@@ -192,7 +191,7 @@ export const listsRouter = router({
 										);
 								})
 							);
-					});
+					}
 				}
 			),
 
@@ -210,25 +209,24 @@ export const listsRouter = router({
 						),
 					}));
 
-					if (listOwner)
-						await db.transaction(async () => {
-							await db
-								.update(lists)
-								.set({ updatedAt: new Date() })
-								.where(eq(lists.id, listId));
-							await Promise.all(
-								resources.map((item) => {
-									return db
-										.delete(listResources)
-										.where(
-											eq(
-												listResources.resourceId,
-												item.resourceId
-											)
-										);
-								})
-							);
-						});
+					if (listOwner) {
+						await db
+							.update(lists)
+							.set({ updatedAt: new Date() })
+							.where(eq(lists.id, listId));
+						await Promise.all(
+							resources.map((item) => {
+								return db
+									.delete(listResources)
+									.where(
+										eq(
+											listResources.resourceId,
+											item.resourceId
+										)
+									);
+							})
+						);
+					}
 				}
 			),
 	}),
