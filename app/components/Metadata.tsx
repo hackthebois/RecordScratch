@@ -42,7 +42,7 @@ const Metadata = ({
 					<h1
 						className={cn(
 							"text-center sm:text-left",
-							size === "sm" && "text-3xl sm:text-4xl lg:text-5xl"
+							size === "sm" && "text-3xl sm:text-4xl"
 						)}
 					>
 						{title}

@@ -1,10 +1,10 @@
-import { Reorder, useDragControls, useMotionValue } from "framer-motion";
 import { Category, ListItem } from "@/types/list";
-import { DeleteButton } from "./ModifyResource";
+import { cn } from "@/utils/utils";
+import { Reorder, useDragControls, useMotionValue } from "framer-motion";
 import { AlignJustify } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
 import { ArtistItem } from "../artist/ArtistItem";
-import { cn } from "@/utils/utils";
+import { DeleteButton } from "./ModifyResource";
 
 export const ListResource = ({
 	item,
@@ -32,6 +32,7 @@ export const ListResource = ({
 			style={{ y }}
 			dragListener={false}
 			dragControls={dragControls}
+			className="w-full"
 		>
 			<div
 				className={cn(
