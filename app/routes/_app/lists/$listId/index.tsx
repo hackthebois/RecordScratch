@@ -11,26 +11,12 @@ import { Head } from "@/components/Head";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { z } from "zod";
-import { ResourceItem } from "@/components/ResourceItem";
 import SearchAddToList from "@/components/lists/SearchAddToList";
-import { ArtistItem } from "@/components/artist/ArtistItem";
 import { Label } from "@/components/ui/Label";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import { ModifyList } from "@/components/lists/UpdateList";
 import ListImage from "@/components/lists/ListImage";
 import { Reorder } from "framer-motion";
-
-import {
-	AlertDialog,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/AlertDialog";
-import { Button } from "@/components/ui/Button";
 import ListMetadata from "@/components/lists/listMetaData";
 import { useEffect, useState } from "react";
 import { UserAvatar } from "@/components/user/UserAvatar";
@@ -95,46 +81,21 @@ const ListSettings = ({
 						Delete your list and all list items associated
 					</p>
 				</div>
-				<AlertDialog>
-					<AlertDialogTrigger asChild>
-						<Button
-							variant="destructive"
-							className="mt-2 h-10"
-							size="sm"
-						>
-							Delete List
-						</Button>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>
-								Delete you List?
-							</AlertDialogTitle>
-							<AlertDialogDescription>
-								This will remove your list forever
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-
-							<DeleteListButton
-								userId={myProfile.userId}
-								listId={listData.id}
-								onClick={() =>
-									navigate({
-										to: `/$handle`,
-										params: {
-											handle: String(myProfile.handle),
-										},
-										search: {
-											tab: "lists",
-										},
-									})
-								}
-							/>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
+				<DeleteListButton
+					userId={myProfile.userId}
+					listId={listData.id}
+					onClick={() =>
+						navigate({
+							to: `/$handle`,
+							params: {
+								handle: String(myProfile.handle),
+							},
+							search: {
+								tab: "lists",
+							},
+						})
+					}
+				/>
 			</div>
 		</div>
 	);

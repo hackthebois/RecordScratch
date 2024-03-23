@@ -1,5 +1,15 @@
 import { api } from "@/trpc/react";
 import { Button } from "../ui/Button";
+import {
+	AlertDialog,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/AlertDialog";
 
 export const DeleteListButton = ({
 	listId,
@@ -8,7 +18,7 @@ export const DeleteListButton = ({
 }: {
 	listId: string;
 	userId: string;
-	onClick?: () => unknown;
+	onClick?: () => void;
 }) => {
 	const utils = api.useUtils();
 
@@ -20,18 +30,36 @@ export const DeleteListButton = ({
 	}).mutate;
 
 	return (
-		<Button
-			variant="destructive"
-			onClick={() => {
-				if (onClick) {
-					onClick();
-				}
-				deleteResource({
-					id: listId,
-				});
-			}}
-		>
-			Delete
-		</Button>
+		<AlertDialog>
+			<AlertDialogTrigger asChild>
+				<Button variant="destructive" className="mt-2 h-10" size="sm">
+					Delete List
+				</Button>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete you List?</AlertDialogTitle>
+					<AlertDialogDescription>
+						This will remove your list forever
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<Button
+						variant="destructive"
+						onClick={() => {
+							if (onClick) {
+								onClick();
+							}
+							deleteResource({
+								id: listId,
+							});
+						}}
+					>
+						Delete
+					</Button>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 };
