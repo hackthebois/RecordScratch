@@ -16,23 +16,23 @@ const ListSquare = ({
 	let roundedClass;
 	switch (section) {
 		case (section = 0): {
-			roundedClass = "rounded-tl";
+			roundedClass = "rounded-tl-xl";
 			break;
 		}
 		case (section = 1): {
-			roundedClass = "rounded-tr";
+			roundedClass = "rounded-tr-xl";
 			break;
 		}
 		case (section = 2): {
-			roundedClass = "rounded-bl";
+			roundedClass = "rounded-bl-xl";
 			break;
 		}
 		case (section = 3): {
-			roundedClass = "rounded-br";
+			roundedClass = "rounded-br-xl";
 			break;
 		}
 		default: {
-			roundedClass = "rounded-md";
+			roundedClass = "rounded-xl";
 			break;
 		}
 	}
@@ -45,10 +45,10 @@ const ListSquare = ({
 			alt={`${image} cover`}
 			className={`${roundedClass}`}
 			style={{
-				width: imageSize,
-				height: imageSize,
-				maxWidth: imageSize,
-				maxHeight: imageSize,
+				width: "100%",
+				height: "100%",
+				maxWidth: "100%",
+				maxHeight: "100%",
 			}}
 		/>
 	);
