@@ -40,7 +40,11 @@ export const InfiniteCommunityReviews = ({
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full gap-2">
 				{profile ? (
-					<ReviewDialog resource={resource} name={name} />
+					<ReviewDialog
+						userId={profile.userId}
+						resource={resource}
+						name={name}
+					/>
 				) : (
 					<SignInReviewButton />
 				)}

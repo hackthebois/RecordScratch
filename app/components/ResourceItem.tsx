@@ -43,7 +43,11 @@ export const ResourceItem = ({
 		enabled: resource.category === "SONG",
 	});
 
-	if (isLoading || !album || isLoadingTracks) {
+	if (
+		isLoading ||
+		!album ||
+		(resource.category === "SONG" && isLoadingTracks)
+	) {
 		return (
 			<div className="flex flex-row items-center gap-4 rounded">
 				<Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />

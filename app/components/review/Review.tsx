@@ -1,13 +1,14 @@
 import { api } from "@/trpc/react";
+import { SelectComment } from "@/types/comments";
 import { SelectLike } from "@/types/likes";
 import { ReviewType } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
 import { Link } from "@tanstack/react-router";
-import { Heart, Star } from "lucide-react";
+import { Heart, MessageCircle, Star } from "lucide-react";
 import { Suspense } from "react";
-import { SignInWrapper } from "../signIn/SignInWrapper";
-import { Button } from "../ui/Button";
 import { ResourceItem } from "../ResourceItem";
+import { SignInWrapper } from "../signIn/SignInWrapper";
+import { Button, buttonVariants } from "../ui/Button";
 import { Skeleton } from "../ui/Skeleton";
 import { UserAvatar } from "../user/UserAvatar";
 
@@ -78,6 +79,37 @@ const LikeButton = (props: SelectLike) => {
 	);
 };
 
+const CommentsButton = ({
+	handle,
+	resourceId,
+	authorId,
+}: SelectComment & {
+	handle: string;
+}) => {
+	const [comments] = api.comments.getComments.useSuspenseQuery({
+		resourceId,
+		authorId,
+	});
+
+	return (
+		<Link
+			className={buttonVariants({
+				variant: "outline",
+				size: "sm",
+				className: "gap-2 text-muted-foreground",
+			})}
+			to="/$handle/ratings/$resourceId"
+			params={{
+				handle,
+				resourceId,
+			}}
+		>
+			<MessageCircle size={20} />
+			<p>{comments}</p>
+		</Link>
+	);
+};
+
 export const Review = ({
 	userId,
 	parentId,
@@ -123,27 +155,50 @@ export const Review = ({
 					</p>
 				</Link>
 				<p className="whitespace-pre-line text-sm">{content}</p>
-				<Suspense
-					fallback={
-						<Button
-							variant="outline"
-							size="sm"
-							className="gap-2 text-muted-foreground"
-						>
-							<Heart size={20} />
-							<Skeleton className="h-6 w-8" />
-						</Button>
-					}
-				>
-					{profileExists ? (
-						<LikeButton resourceId={resourceId} authorId={userId} />
-					) : (
-						<PublicLikeButton
+				<div className="flex items-center gap-3">
+					<Suspense
+						fallback={
+							<Button
+								variant="outline"
+								size="sm"
+								className="gap-2 text-muted-foreground"
+							>
+								<Heart size={20} />
+								<Skeleton className="h-6 w-8" />
+							</Button>
+						}
+					>
+						{profileExists ? (
+							<LikeButton
+								resourceId={resourceId}
+								authorId={userId}
+							/>
+						) : (
+							<PublicLikeButton
+								resourceId={resourceId}
+								authorId={userId}
+							/>
+						)}
+					</Suspense>
+					<Suspense
+						fallback={
+							<Button
+								variant="outline"
+								size="sm"
+								className="gap-2 text-muted-foreground"
+							>
+								<MessageCircle size={20} />
+								<Skeleton className="h-6 w-8" />
+							</Button>
+						}
+					>
+						<CommentsButton
+							handle={profile.handle}
 							resourceId={resourceId}
 							authorId={userId}
 						/>
-					)}
-				</Suspense>
+					</Suspense>
+				</div>
 			</div>
 		</div>
 	);
