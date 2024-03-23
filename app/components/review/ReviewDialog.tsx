@@ -15,6 +15,7 @@ import { Resource, ReviewForm, ReviewFormSchema } from "@/types/rating";
 import { Text } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { RatingInput } from "../rating/RatingInput";
 import {
 	Form,
 	FormControl,
@@ -23,22 +24,29 @@ import {
 	FormMessage,
 } from "../ui/Form";
 import { Textarea } from "../ui/Textarea";
-import { RatingInput } from "../rating/RatingInput";
 
 export const ReviewDialog = ({
 	resource,
 	name,
+	userId,
 }: {
 	resource: Resource;
 	name: string;
+	userId: string;
 }) => {
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
-	const [userRating] = api.ratings.user.get.useSuspenseQuery(resource);
+	const [userRating] = api.ratings.user.get.useSuspenseQuery({
+		resourceId: resource.resourceId,
+		userId,
+	});
 	const { mutate: reviewMutation } = api.ratings.review.useMutation({
 		onSettled: () => {
 			utils.ratings.feed.community.invalidate({ resource });
-			utils.ratings.user.get.invalidate(resource);
+			utils.ratings.user.get.invalidate({
+				resourceId: resource.resourceId,
+				userId,
+			});
 			utils.ratings.get.invalidate(resource);
 		},
 	});

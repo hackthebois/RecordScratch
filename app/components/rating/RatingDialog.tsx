@@ -26,22 +26,24 @@ import { RateForm, RateFormSchema, Rating, Resource } from "@/types/rating";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { RatingInput } from "./RatingInput";
 import { Form, FormControl, FormField, FormItem } from "../ui/Form";
 import { Skeleton } from "../ui/Skeleton";
+import { RatingInput } from "./RatingInput";
 
 export const RatingDialog = ({
 	initialUserRating,
 	resource,
 	name,
+	userId,
 }: {
 	initialUserRating?: Rating | null;
 	resource: Resource;
 	name?: string;
+	userId: string;
 }) => {
 	const utils = api.useUtils();
 	const { data: userRating, isLoading } = api.ratings.user.get.useQuery(
-		resource,
+		{ resource, userId },
 		{
 			staleTime: Infinity,
 			initialData: initialUserRating,
@@ -49,7 +51,7 @@ export const RatingDialog = ({
 	);
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
 		onSettled: () => {
-			utils.ratings.user.get.invalidate(resource);
+			utils.ratings.user.get.invalidate({ resource, userId });
 			utils.ratings.get.invalidate(resource);
 		},
 	});

@@ -83,7 +83,11 @@ function Song() {
 				<div className="flex items-center gap-4">
 					<RatingInfo resource={resource} />
 					{profile ? (
-						<RatingDialog resource={resource} name={song.title} />
+						<RatingDialog
+							userId={profile.userId}
+							resource={resource}
+							name={song.title}
+						/>
 					) : (
 						<SignInRateButton />
 					)}

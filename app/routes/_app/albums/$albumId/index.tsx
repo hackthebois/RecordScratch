@@ -99,6 +99,7 @@ function Album() {
 							<RatingDialog
 								resource={resource}
 								name={album.title}
+								userId={profile.userId}
 							/>
 							<AddToList
 								parentId={String(album.artist?.id)}

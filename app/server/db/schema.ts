@@ -243,6 +243,29 @@ export const notificationRelations = relations(notifications, ({ one }) => ({
 	}),
 }));
 
+export const comments = pgTable("comments", {
+	id: text("id")
+		.primaryKey()
+		.notNull()
+		.$default(() => generateId(15)),
+	userId: text("user_id").notNull(),
+	resourceId: text("resource_id").notNull(),
+	authorId: text("author_id").notNull(),
+	content: text("content").notNull(),
+	...dates,
+});
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+	rating: one(ratings, {
+		fields: [comments.resourceId, comments.authorId],
+		references: [ratings.resourceId, ratings.userId],
+	}),
+	profile: one(profile, {
+		fields: [comments.userId],
+		references: [profile.userId],
+	}),
+}));
+
 export const tableSchemas = {
 	users,
 	sessions,
@@ -253,6 +276,7 @@ export const tableSchemas = {
 	listResources,
 	likes,
 	notifications,
+	comments,
 };
 
 export const relationSchemas = {
@@ -264,4 +288,5 @@ export const relationSchemas = {
 	listResourcesRelations,
 	likesRelations,
 	notificationRelations,
+	commentsRelations,
 };
