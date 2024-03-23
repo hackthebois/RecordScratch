@@ -60,7 +60,6 @@ export const FollowButtonInner = ({ profileId }: { profileId: string }) => {
 
 	return (
 		<Button
-			className="mr-4"
 			variant="outline"
 			onClick={(e) => {
 				e.stopPropagation();

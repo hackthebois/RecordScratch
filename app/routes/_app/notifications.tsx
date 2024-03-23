@@ -1,3 +1,4 @@
+import { FollowButton } from "@/components/followers/FollowButton";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { UserAvatar } from "@/components/user/UserAvatar";
@@ -30,19 +31,22 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 		>
 			<User size={32} className="text-sky-500" />
 			<div className="flex w-full flex-col gap-2">
-				<div className="flex gap-3">
-					<Link
-						to="/$handle"
-						params={{
-							handle: user.handle,
-						}}
-					>
-						<UserAvatar {...user} size={30} />
-					</Link>
-					<p>
-						<span className="font-bold">{user.handle}</span>{" "}
-						followed you
-					</p>
+				<div className="flex w-full items-center justify-between">
+					<div className="flex gap-3">
+						<Link
+							to="/$handle"
+							params={{
+								handle: user.handle,
+							}}
+						>
+							<UserAvatar {...user} size={30} />
+						</Link>
+						<p>
+							<span className="font-bold">{user.handle}</span>{" "}
+							followed you
+						</p>
+					</div>
+					<FollowButton profileId={user.userId} />
 				</div>
 			</div>
 		</Link>
