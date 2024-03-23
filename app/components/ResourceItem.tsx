@@ -19,20 +19,31 @@ export const ResourceItem = ({
 	showLink?: boolean;
 }) => {
 	const navigate = useNavigate();
-	const { data: album } = useQuery({
+	const albumId =
+		resource.category === "SONG" ? resource.parentId : resource.resourceId;
+
+	const { data: album, isLoading } = useQuery({
 		...getQueryOptions({
 			route: "/album/{id}",
 			input: {
-				id:
-					resource.category === "SONG"
-						? resource.parentId
-						: resource.resourceId,
+				id: albumId,
 			},
 		}),
 		initialData: initialAlbum,
 	});
 
-	if (!album) {
+	const { data: tracks, isLoading: isLoadingTracks } = useQuery({
+		...getQueryOptions({
+			route: "/album/{id}/tracks",
+			input: {
+				id: albumId,
+				limit: 1000,
+			},
+		}),
+		enabled: resource.category === "SONG",
+	});
+
+	if (isLoading || !album || isLoadingTracks) {
 		return (
 			<div className="flex flex-row items-center gap-4 rounded">
 				<Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
@@ -46,17 +57,17 @@ export const ResourceItem = ({
 
 	const name =
 		resource.category === "SONG"
-			? album.tracks?.data.find(
+			? tracks?.data.find(
 					(track) => track.id === Number(resource.resourceId)
 				)?.title
-			: album.title;
+			: album?.title;
 
 	const link =
 		resource.category === "SONG"
 			? {
 					to: `/albums/$albumId/songs/$songId`,
 					params: {
-						albumId: String(album.id),
+						albumId: String(album?.id),
 						songId: resource.resourceId,
 					},
 				}
@@ -74,7 +85,7 @@ export const ResourceItem = ({
 				}
 			}}
 			{...(showLink ? link : {})}
-			className="flex flex-row items-center gap-4 rounded link-no-drag"
+			className="link-no-drag flex flex-row items-center gap-4 rounded"
 		>
 			<div className="relative h-16 w-16 min-w-[64px] rounded">
 				<AlbumImage album={album} />

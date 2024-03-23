@@ -10,7 +10,7 @@ import { z } from "zod";
 import { posthog } from "../posthog";
 
 const PaginatedInput = z.object({
-	cursor: z.number().min(1).max(100).optional(),
+	cursor: z.number().min(1).optional(),
 	limit: z.number().optional(),
 });
 
