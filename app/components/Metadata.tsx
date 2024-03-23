@@ -31,13 +31,7 @@ const Metadata = ({
 						)}
 					/>
 				) : (
-					<span
-						className={cn(
-							"h-[200px] w-[200px] self-center sm:self-start",
-							size === "sm" &&
-								"h-[150px] w-[150px] sm:h-[200px] sm:w-[200px]"
-						)}
-					>
+					<span className={"h-[150px] w-[150px] self-center"}>
 						{cover}
 					</span>
 				)}
