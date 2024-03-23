@@ -1,4 +1,20 @@
+import { Head } from "@/components/Head";
+import Metadata from "@/components/Metadata";
+import { DeleteListButton } from "@/components/lists/DeleteListButton";
+import ListImage from "@/components/lists/ListImage";
+import { ListResource } from "@/components/lists/ListResource";
+import { EditButton } from "@/components/lists/ModifyResource";
+import SearchAddToList from "@/components/lists/SearchAddToList";
+import { ModifyList } from "@/components/lists/UpdateList";
 import { PendingComponent } from "@/components/router/Pending";
+import { Label } from "@/components/ui/Label";
+import { NotFound } from "@/components/ui/NotFound";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { UserAvatar } from "@/components/user/UserAvatar";
+import { api, apiUtils } from "@/trpc/react";
+import { ListItem, ListType } from "@/types/list";
+import { Profile } from "@/types/profile";
+import { timeAgo } from "@/utils/date";
 import {
 	ErrorComponent,
 	Link,
@@ -6,25 +22,9 @@ import {
 	createFileRoute,
 	useNavigate,
 } from "@tanstack/react-router";
-import { api, apiUtils } from "@/trpc/react";
-import { Head } from "@/components/Head";
-import { NotFound } from "@/components/ui/NotFound";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { z } from "zod";
-import SearchAddToList from "@/components/lists/SearchAddToList";
-import { Label } from "@/components/ui/Label";
-import { DeleteListButton } from "@/components/lists/DeleteListButton";
-import { ModifyList } from "@/components/lists/UpdateList";
-import ListImage from "@/components/lists/ListImage";
 import { Reorder } from "framer-motion";
-import ListMetadata from "@/components/lists/listMetaData";
 import { useEffect, useState } from "react";
-import { UserAvatar } from "@/components/user/UserAvatar";
-import { ListItem, ListType } from "@/types/list";
-import { Profile } from "@/types/profile";
-import { EditButton } from "@/components/lists/ModifyResource";
-import { timeAgo } from "@/utils/date";
-import { ListResource } from "@/components/lists/ListResource";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_app/lists/$listId/")({
 	component: List,
@@ -175,30 +175,35 @@ function List() {
 	return (
 		<div className="flex flex-col gap-1">
 			<Head title={listData.name} description={undefined} />
-			<ListMetadata
+			<Metadata
 				title={listData.name}
 				type={`${listData.category} list`}
-				Image={
+				cover={
 					<ListImage
 						listItems={listItems}
 						category={listData.category}
-						size={125}
+						size={150}
 					/>
 				}
-				lastUpdatedTime={timeAgo(listData.updatedAt)}
+				size="sm"
 			>
-				<Link
-					to="/$handle"
-					params={{
-						handle: String(profile.handle),
-					}}
-					className="flex items-center gap-2"
-				>
-					<UserAvatar {...profile} size={30} />
-					<p className="flex text-lg">{profile.name}</p>
-				</Link>
-			</ListMetadata>
-			<Tabs value={tab} className="sm:mt-4">
+				<div className="flex items-center gap-2">
+					<Link
+						to="/$handle"
+						params={{
+							handle: String(profile.handle),
+						}}
+						className="flex items-center gap-2"
+					>
+						<UserAvatar {...profile} size={30} />
+						<p className="flex text-lg">{profile.name}</p>
+					</Link>
+					<p className="text-muted-foreground">
+						• {timeAgo(listData.updatedAt)}
+					</p>
+				</div>
+			</Metadata>
+			<Tabs value={tab} className="mt-4">
 				{isUser && (
 					<div className="mb-4 flex flex-row">
 						<TabsList className="space-x-2">
