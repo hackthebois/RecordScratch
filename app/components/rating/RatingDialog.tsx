@@ -43,7 +43,7 @@ export const RatingDialog = ({
 }) => {
 	const utils = api.useUtils();
 	const { data: userRating, isLoading } = api.ratings.user.get.useQuery(
-		{ resource, userId },
+		{ resourceId: resource.resourceId, userId },
 		{
 			staleTime: Infinity,
 			initialData: initialUserRating,
@@ -51,7 +51,10 @@ export const RatingDialog = ({
 	);
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
 		onSettled: () => {
-			utils.ratings.user.get.invalidate({ resource, userId });
+			utils.ratings.user.get.invalidate({
+				resourceId: resource.resourceId,
+				userId,
+			});
 			utils.ratings.get.invalidate(resource);
 		},
 	});

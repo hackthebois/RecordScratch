@@ -6,12 +6,20 @@ import { cn } from "@/utils/utils";
 import { keepPreviousData } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { Skeleton } from "./ui/Skeleton";
 import { AddToList } from "./lists/AddToList";
-import { SignInRateButton } from "./signIn/SignInRateButton";
 import { RatingDialog } from "./rating/RatingDialog";
+import { SignInRateButton } from "./signIn/SignInRateButton";
+import { Skeleton } from "./ui/Skeleton";
 
-const SongRatingDialog = ({ songs, song }: { songs: Track[]; song: Track }) => {
+const SongRatingDialog = ({
+	songs,
+	song,
+	userId,
+}: {
+	songs: Track[];
+	song: Track;
+	userId: string;
+}) => {
 	const [userRatings] = api.ratings.user.getList.useSuspenseQuery({
 		category: "SONG",
 		resourceIds: songs.map((song) => String(song.id)),
@@ -30,6 +38,7 @@ const SongRatingDialog = ({ songs, song }: { songs: Track[]; song: Track }) => {
 					(rating) => rating.resourceId === resource.resourceId
 				) ?? null
 			}
+			userId={userId}
 			resource={resource}
 			name={song.title}
 		/>
@@ -71,7 +80,11 @@ const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
 			/>
 			{profile ? (
 				<>
-					<SongRatingDialog songs={songs} song={song} />
+					<SongRatingDialog
+						songs={songs}
+						song={song}
+						userId={profile.userId}
+					/>
 					<AddToList
 						parentId={String(song.album.id)}
 						resourceId={String(song.id)}
