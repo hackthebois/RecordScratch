@@ -143,7 +143,7 @@ const albums: {
 		date: dayjs.tz("2024-03-26", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "11591214",
+		albumId: "1344846",
 		date: dayjs.tz("2024-03-27", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
@@ -159,7 +159,7 @@ const albums: {
 		date: dayjs.tz("2024-03-30", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "43265861",
+		albumId: "11591214",
 		date: dayjs.tz("2024-03-31", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
