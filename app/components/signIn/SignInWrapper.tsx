@@ -18,10 +18,10 @@ export const SignInWrapper = ({ children }: { children: React.ReactNode }) => {
 				<AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 				<AlertDialogContent>
 					<AlertDialogTitle>
-						Cannot sign in from Instagram in app browser
+						Instagram in app browser detected
 					</AlertDialogTitle>
 					<AlertDialogDescription>
-						Please open this page in your browser
+						Please sign in from an external browser
 					</AlertDialogDescription>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
