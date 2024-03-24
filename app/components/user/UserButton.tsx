@@ -1,5 +1,14 @@
 import { api } from "@/trpc/react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import {
+	AlertDialog,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/AlertDialog";
 import { buttonVariants } from "../ui/Button";
 import { UserAvatar } from "./UserAvatar";
 
@@ -15,6 +24,26 @@ export const UserButton = () => {
 	}
 
 	if (!profile) {
+		if (navigator.userAgent.includes("Instagram")) {
+			return (
+				<AlertDialog>
+					<AlertDialogTrigger className={buttonVariants({})}>
+						Sign In
+					</AlertDialogTrigger>
+					<AlertDialogContent>
+						<AlertDialogTitle>
+							Cannot sign in from Instagram in app browser
+						</AlertDialogTitle>
+						<AlertDialogDescription>
+							Please open this page in your browser
+						</AlertDialogDescription>
+						<AlertDialogFooter>
+							<AlertDialogCancel>Cancel</AlertDialogCancel>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			);
+		}
 		return (
 			<a href="/auth/google" className={buttonVariants({})}>
 				Sign In
