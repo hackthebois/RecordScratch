@@ -2,6 +2,7 @@ import { listResources, lists } from "@/server/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Profile, ProfileSchema } from "./profile";
+import { Rating, RatingSchema } from "./rating";
 
 export const listSchema = createInsertSchema(lists, {
 	name: z.string().max(50).min(1).trim(),
@@ -40,7 +41,15 @@ export const filterUserListsSchema = listSchema
 export const listResourcesSchema = createInsertSchema(listResources, {
 	parentId: z.string().optional(),
 });
-export type ListItem = z.infer<typeof listResourcesSchema>;
+
+export type listResourceType = z.infer<typeof listResourcesSchema>;
+
+export type ListItem = Pick<
+	listResourceType,
+	"parentId" | "listId" | "resourceId" | "position"
+> & { rating: number | null };
+
+export type UserListItem = listResourceType;
 
 export const getUserSchema = z.object({
 	lists: listSchema,
@@ -54,13 +63,26 @@ export const insertListResourcesSchema = listResourcesSchema.pick({
 	resourceId: true,
 });
 
-export const selectListResourcesSchema = listResourcesSchema.pick({
-	listId: true,
+export const selectListResourcesSchema = z.object({
+	...listResourcesSchema.pick({
+		listId: true,
+	}).shape,
+	...ProfileSchema.pick({ userId: true }).shape,
 });
 
 export const listOfResourcesSchema = z.object({
 	listId: z.string(),
-	resources: z.array(listResourcesSchema),
+	resources: z.array(
+		z.object({
+			...listResourcesSchema.pick({
+				listId: true,
+				resourceId: true,
+				position: true,
+				parentId: true,
+			}).shape,
+			rating: z.number().nullable(),
+		})
+	),
 });
 
 export const deleteListResourcesSchema = listResourcesSchema.pick({
@@ -74,13 +96,7 @@ export type ListType = z.infer<typeof listSchema> & {
 
 export type ListsType = ListType & {
 	profile: Profile | null;
-	resources: ListItem[];
+	resources: UserListItem[];
 };
 const categorySchema = listSchema.pick({ category: true });
 export type Category = z.infer<typeof categorySchema>["category"];
-
-export const GroupedDataSchema = z.object({
-	lists: listSchema,
-	profile: ProfileSchema.nullable(),
-	list_resources: z.array(listResourcesSchema),
-});
