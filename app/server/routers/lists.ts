@@ -1,6 +1,5 @@
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import {
-	deleteListResourcesSchema,
 	filterUserListsSchema,
 	insertListResourcesSchema,
 	insertListSchema,
@@ -11,7 +10,8 @@ import {
 } from "@/types/list";
 import { and, asc, desc, eq } from "drizzle-orm/sql";
 import { generateId } from "lucia";
-import { listResources, lists } from "../db/schema";
+import { listResources, lists, ratings } from "../db/schema";
+import { z } from "zod";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -94,10 +94,23 @@ export const listsRouter = router({
 	resources: router({
 		get: publicProcedure
 			.input(selectListResourcesSchema)
-			.query(async ({ ctx: { db }, input: { listId } }) => {
+			.query(async ({ ctx: { db }, input: { listId, userId } }) => {
 				return await db
-					.select()
+					.select({
+						parentId: listResources.parentId,
+						listId: listResources.listId,
+						resourceId: listResources.resourceId,
+						position: listResources.position,
+						rating: ratings.rating,
+					})
 					.from(listResources)
+					.leftJoin(
+						ratings,
+						and(
+							eq(ratings.resourceId, listResources.resourceId),
+							eq(ratings.userId, userId)
+						)
+					)
 					.where(eq(listResources.listId, listId))
 					.orderBy(listResources.position);
 			}),
@@ -137,27 +150,6 @@ export const listsRouter = router({
 						.set({ updatedAt: new Date() })
 						.where(eq(lists.id, inputs.listId));
 				}
-			}),
-
-		delete: protectedProcedure
-			.input(deleteListResourcesSchema)
-			.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-				const listOwner = !!(await db.query.lists.findFirst({
-					where: and(
-						eq(lists.userId, userId),
-						eq(lists.id, inputs.listId)
-					),
-				}));
-				if (listOwner) {
-					await db
-						.delete(listResources)
-						.where(
-							and(
-								eq(listResources.listId, inputs.listId),
-								eq(listResources.resourceId, inputs.resourceId)
-							)
-						);
-				} else throw new Error("cannot delete from list if not owner");
 			}),
 
 		updatePositions: protectedProcedure

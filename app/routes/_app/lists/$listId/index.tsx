@@ -45,6 +45,7 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 
 		apiUtils.lists.resources.get.ensureData({
 			listId,
+			userId: listData!.userId,
 		});
 		apiUtils.profiles.me.ensureData();
 	},
@@ -114,6 +115,7 @@ function List() {
 	});
 	const [listItems] = api.lists.resources.get.useSuspenseQuery({
 		listId,
+		userId: listData!.userId,
 	});
 
 	const invalidate = async () => {

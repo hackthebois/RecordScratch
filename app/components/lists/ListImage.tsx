@@ -1,4 +1,4 @@
-import { Category, ListItem } from "@/types/list";
+import { Category, ListItem, UserListItem } from "@/types/list";
 import { Deezer, getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { List } from "lucide-react";
@@ -111,7 +111,7 @@ const ListImage = ({
 	category,
 	size,
 }: {
-	listItems?: ListItem[] | null;
+	listItems?: ListItem[] | UserListItem[] | null;
 	category: Category;
 	size: number;
 }) => {

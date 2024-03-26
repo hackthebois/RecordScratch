@@ -1,4 +1,4 @@
-import { ListsType } from "@/types/list";
+import { ListsType, UserListItem } from "@/types/list";
 import { Link } from "@tanstack/react-router";
 import { ScrollArea } from "../ui/ScrollArea";
 import { UserAvatar } from "../user/UserAvatar";

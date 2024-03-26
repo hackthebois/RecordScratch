@@ -1,10 +1,40 @@
 import { Category, ListItem } from "@/types/list";
 import { cn } from "@/utils/utils";
 import { Reorder, useDragControls, useMotionValue } from "framer-motion";
-import { AlignJustify } from "lucide-react";
+import { AlignJustify, Star } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
 import { ArtistItem } from "../artist/ArtistItem";
 import { DeleteButton } from "./ModifyResource";
+
+const Review = ({
+	rating,
+	size = "lg",
+}: {
+	rating: number | null;
+	size?: string;
+}) => {
+	if (!rating) return;
+
+	return (
+		<div className="flex flex-row items-center justify-center gap-2">
+			<Star
+				color="#ffb703"
+				fill="#ffb703"
+				size={size === "lg" ? 22 : 18}
+			/>
+			<div>
+				<p
+					className={cn({
+						"text-lg font-semibold": size === "lg",
+						"font-medium": size === "sm",
+					})}
+				>
+					{rating}
+				</p>
+			</div>
+		</div>
+	);
+};
 
 export const ListResource = ({
 	item,
@@ -49,7 +79,7 @@ export const ListResource = ({
 					<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
 						{position + 1}
 					</p>
-					<div className="max-w-56 overflow-hidden sm:max-w-96 ">
+					<div className="max-w-56 overflow-hidden sm:max-w-lg ">
 						{category === "ARTIST" ? (
 							<ArtistItem
 								artistId={item.resourceId}
@@ -67,7 +97,7 @@ export const ListResource = ({
 						)}
 					</div>
 				</div>
-				{editMode && (
+				{editMode ? (
 					<div className="flex flex-row items-center justify-center gap-5">
 						<div
 							className="reorder-handle"
@@ -86,6 +116,8 @@ export const ListResource = ({
 							onClick={onClick}
 						/>
 					</div>
+				) : (
+					<Review rating={item.rating} />
 				)}
 			</div>
 		</Reorder.Item>
