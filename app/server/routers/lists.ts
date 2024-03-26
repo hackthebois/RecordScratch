@@ -159,6 +159,7 @@ export const listsRouter = router({
 					ctx: { db, userId },
 					input: { listId, resources },
 				}) => {
+					console.log(resources);
 					const listOwner = !!(await db.query.lists.findFirst({
 						where: and(
 							eq(lists.userId, userId),

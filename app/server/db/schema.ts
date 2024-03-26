@@ -164,23 +164,20 @@ export const listRelation = relations(lists, ({ one, many }) => ({
 	resources: many(listResources),
 }));
 
-export const listResources = alias(
-	pgTable(
-		"list_resources",
-		{
-			parentId: text("parent_id"),
-			listId: text("list_id").notNull(),
-			resourceId: text("resource_id").notNull(),
-			position: integer("position").notNull(),
-			...dates,
-		},
-		(table) => ({
-			pk_ratings: primaryKey({
-				columns: [table.listId, table.resourceId],
-			}),
-		})
-	),
-	"listResources"
+export const listResources = pgTable(
+	"list_resources",
+	{
+		parentId: text("parent_id"),
+		listId: text("list_id").notNull(),
+		resourceId: text("resource_id").notNull(),
+		position: integer("position").notNull(),
+		...dates,
+	},
+	(table) => ({
+		pk_ratings: primaryKey({
+			columns: [table.listId, table.resourceId],
+		}),
+	})
 );
 
 export const listResourcesRelations = relations(listResources, ({ one }) => ({
