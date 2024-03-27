@@ -84,6 +84,7 @@ export const ratingsRouter = router({
 	top: publicProcedure.query(async ({ ctx: { db } }) => {
 		return await db
 			.select({
+				total: count(ratings.rating),
 				average: avg(ratings.rating),
 				resourceId: ratings.resourceId,
 			})
@@ -91,6 +92,7 @@ export const ratingsRouter = router({
 			.where(eq(ratings.category, "ALBUM"))
 			.groupBy(ratings.resourceId)
 			.orderBy(({ average }) => desc(average))
+			.having(({ total }) => gt(total, 2))
 			.limit(20);
 	}),
 	feed: router({
