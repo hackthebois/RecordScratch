@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["settings", "lists"]).optional(),
+				tab: z.enum(["settings", "lists", "reviews"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
 				topCategory: z.enum(["ALBUM", "SONG", "ARTIST"]).optional(),
 			})
@@ -183,6 +183,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								topCategory: undefined,
+								tab: tab,
 							}}
 						>
 							Albums
@@ -193,6 +194,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								topCategory: "SONG",
+								tab: tab,
 							}}
 						>
 							Songs
@@ -203,6 +205,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								topCategory: "ARTIST",
+								tab: tab,
 							}}
 						>
 							Artists
@@ -214,7 +217,7 @@ function Handle() {
 						<div className="mt-5 flex flex-row flex-wrap gap-3">
 							{topLists.album.resources.map((album) => (
 								<div
-									className="h-auto w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
+									className="h-auto min-h-[13.25rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
 									key={album.resourceId}
 								>
 									<ResourceItem
@@ -242,7 +245,7 @@ function Handle() {
 						<div className="mt-5 flex flex-row flex-wrap gap-3">
 							{topLists.song.resources.map((song) => (
 								<div
-									className="h-auto w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
+									className="h-auto min-h-[13.25rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
 									key={song.resourceId}
 								>
 									<ResourceItem
@@ -270,14 +273,16 @@ function Handle() {
 						<div className="mt-5 flex flex-row flex-wrap">
 							{topLists.artist.resources.map((artist) => (
 								<div
-									className="h-auto w-28 items-center justify-center overflow-hidden sm:w-40"
+									className="h-auto min-h-[13.25rem] w-28 items-center justify-center overflow-hidden sm:w-40"
 									key={artist.resourceId}
 								>
 									<ArtistItem
 										artistId={artist.resourceId}
 										direction="vertical"
 										textCss="font-medium line-clamp-2 -mt-2 text-center"
-										imageCss={"h-auto w-[6.5rem] sm:w-36"}
+										imageCss={
+											"h-auto w-[6.5rem] sm:min-h-36 sm:w-36"
+										}
 									/>
 								</div>
 							))}
@@ -292,6 +297,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								tab: undefined,
+								topCategory: topCategory,
 							}}
 						>
 							Reviews
@@ -302,6 +308,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								tab: "lists",
+								topCategory: topCategory,
 							}}
 						>
 							Lists
@@ -313,6 +320,7 @@ function Handle() {
 								from={Route.fullPath}
 								search={{
 									tab: "settings",
+									topCategory: topCategory,
 								}}
 							>
 								Settings
