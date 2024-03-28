@@ -19,6 +19,7 @@ import {
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { Profile } from "@/types/profile";
 import { timeAgo } from "@/utils/date";
+import { getImageUrl } from "@/utils/image";
 import { Loader2, Send } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
@@ -91,7 +92,7 @@ const CommentForm = ({
 				className="relative flex flex-col gap-3 rounded border p-3"
 			>
 				<div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-					<UserAvatar {...profile} size={30} />
+					<UserAvatar imageUrl={getImageUrl(profile)} size={30} />
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">
 						@{profile.handle}
@@ -168,7 +169,10 @@ function Rating() {
 						}}
 						className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 					>
-						<UserAvatar {...comment.profile} size={30} />
+						<UserAvatar
+							imageUrl={getImageUrl(comment.profile)}
+							size={30}
+						/>
 						<p>{comment.profile.name}</p>
 						<p className="text-left text-sm text-muted-foreground">
 							@{comment.profile.handle} •{" "}

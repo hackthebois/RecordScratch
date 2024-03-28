@@ -1,4 +1,5 @@
 import { api } from "@/trpc/react";
+import { getImageUrl } from "@/utils/image";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
 	AlertDialog,
@@ -59,7 +60,7 @@ export const UserButton = () => {
 			}}
 		>
 			<UserAvatar
-				imageUrl={profile.imageUrl}
+				imageUrl={getImageUrl(profile)}
 				size={40}
 				className="border border-muted"
 			/>

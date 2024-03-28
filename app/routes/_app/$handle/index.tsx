@@ -19,6 +19,7 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
+import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -142,11 +143,7 @@ function Handle() {
 		<div className="flex flex-col gap-6">
 			<Head title={profile.name} description={profile.bio ?? undefined} />
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-				<UserAvatar
-					{...profile}
-					imageUrl={profile.imageUrl}
-					size={160}
-				/>
+				<UserAvatar imageUrl={getImageUrl(profile)} size={160} />
 				<div className="flex flex-col items-center sm:items-start">
 					<p className="pb-4 text-sm tracking-widest text-muted-foreground">
 						PROFILE
