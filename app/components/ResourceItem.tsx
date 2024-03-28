@@ -4,6 +4,7 @@ import { Album, getQueryOptions } from "@/utils/deezer";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "./ui/Skeleton";
+import { cn } from "@/utils/utils";
 
 export const ResourceItem = ({
 	initialAlbum,
@@ -11,12 +12,20 @@ export const ResourceItem = ({
 	showType,
 	onClick,
 	showLink = true,
+	direction = "horizontal",
+	imageCss,
+	titleCss,
+	showArtist = true,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
 	showType?: boolean;
 	onClick?: () => void;
 	showLink?: boolean;
+	direction?: "horizontal" | "vertical";
+	imageCss?: string;
+	titleCss?: string;
+	showArtist?: boolean;
 }) => {
 	const navigate = useNavigate();
 	const albumId =
@@ -89,13 +98,24 @@ export const ResourceItem = ({
 				}
 			}}
 			{...(showLink ? link : {})}
-			className="link-no-drag flex flex-row items-center gap-4 rounded"
+			className={cn(
+				"link-no-drag flex gap-4 rounded",
+				direction === "vertical" ? "flex-col" : "flex-row items-center"
+			)}
 		>
-			<div className="relative h-16 w-16 min-w-[64px] rounded">
+			<div
+				className={cn(
+					imageCss
+						? imageCss
+						: "relative h-16 w-16 min-w-[64px] rounded"
+				)}
+			>
 				<AlbumImage album={album} />
 			</div>
 			<div className="min-w-0 flex-1">
-				<p className="truncate font-medium">{name}</p>
+				<p className={cn(titleCss ? titleCss : "truncate font-medium")}>
+					{name}
+				</p>
 				<div className="flex gap-1">
 					<button
 						key={album.artist?.id}
@@ -109,7 +129,7 @@ export const ResourceItem = ({
 						}}
 						className="truncate py-1 text-sm text-muted-foreground hover:underline"
 					>
-						{album.artist?.name}
+						{showArtist && album.artist?.name}
 					</button>
 					{showType && (
 						<p className="truncate py-1 text-sm text-muted-foreground">

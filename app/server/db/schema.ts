@@ -153,6 +153,7 @@ export const lists = pgTable("lists", {
 	}).notNull(),
 	description: text("description"),
 	category: categoryEnum("category").notNull(),
+	onProfile: boolean("on_profile").default(false).notNull(),
 	...dates,
 });
 

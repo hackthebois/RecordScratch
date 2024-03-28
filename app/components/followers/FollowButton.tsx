@@ -3,6 +3,7 @@ import { api } from "@/trpc/react";
 import { Suspense } from "react";
 import SignedIn from "../SignedIn";
 import { Skeleton } from "../ui/Skeleton";
+import { cn } from "@/utils/utils";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
 	return (
@@ -57,10 +58,10 @@ export const FollowButtonInner = ({ profileId }: { profileId: string }) => {
 		});
 
 	const following = isFollow ? true : isUnFollow ? false : isFollowing;
-
+	const buttonVariant = following ? "outline" : "default";
 	return (
 		<Button
-			variant="outline"
+			variant={buttonVariant}
 			onClick={(e) => {
 				e.stopPropagation();
 				e.preventDefault();
