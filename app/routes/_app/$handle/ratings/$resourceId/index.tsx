@@ -91,7 +91,7 @@ const CommentForm = ({
 				className="relative flex flex-col gap-3 rounded border p-3"
 			>
 				<div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-					<UserAvatar {...profile} size={30} />
+					<UserAvatar {...profile} className="h-auto w-8" />
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">
 						@{profile.handle}
@@ -168,7 +168,10 @@ function Rating() {
 						}}
 						className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 					>
-						<UserAvatar {...comment.profile} size={30} />
+						<UserAvatar
+							{...comment.profile}
+							className="h-auto w-8"
+						/>
 						<p>{comment.profile.name}</p>
 						<p className="text-left text-sm text-muted-foreground">
 							@{comment.profile.handle} •{" "}

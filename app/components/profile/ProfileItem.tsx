@@ -25,8 +25,12 @@ export const ProfileItem = ({
 			className="flex flex-row items-center justify-between gap-4 rounded"
 		>
 			<div className="flex flex-row items-center">
-				<div className="relative h-16 w-16 min-w-[64px] overflow-hidden rounded-full">
-					<UserAvatar {...profile} size={64} />
+				<div className="relative min-w-[64px] overflow-hidden rounded-full">
+					<UserAvatar
+						{...profile}
+						size={50}
+						className={"h-16 w-16 overflow-hidden rounded-full"}
+					/>
 				</div>
 				<div className="min-w-0 max-w-[5rem] truncate px-3 sm:max-w-[7rem] md:max-w-[10rem] lg:max-w-[12rem]">
 					<p className="truncate font-medium">{profile.name}</p>
