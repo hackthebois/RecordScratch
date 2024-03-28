@@ -1,6 +1,7 @@
 import { Profile } from "@/types/profile";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
+import { cn } from "@/utils/utils";
 
 export const UserAvatar = ({
 	imageUrl,
@@ -12,7 +13,7 @@ export const UserAvatar = ({
 	className?: string;
 }) => {
 	return (
-		<Avatar className={className}>
+		<Avatar className={cn(className ? className : "h-auto sm:w-16")}>
 			<AvatarImage src={imageUrl ?? undefined} />
 			<AvatarFallback
 				style={{

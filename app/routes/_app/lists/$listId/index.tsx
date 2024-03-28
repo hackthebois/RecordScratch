@@ -198,7 +198,7 @@ function List() {
 						}}
 						className="flex items-center gap-2"
 					>
-						<UserAvatar {...profile} size={30} />
+						<UserAvatar {...profile} className="h-auto w-8" />
 						<p className="flex text-lg">{profile.name}</p>
 					</Link>
 					<p className="text-muted-foreground">

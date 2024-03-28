@@ -39,7 +39,11 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 								handle: user.handle,
 							}}
 						>
-							<UserAvatar {...user} size={30} />
+							<UserAvatar
+								{...user}
+								className="h-auto w-8"
+								size={30}
+							/>
 						</Link>
 						<p>
 							<span className="font-bold">{user.handle}</span>{" "}
@@ -72,7 +76,11 @@ const LikeNotification = ({
 							handle: user.handle,
 						}}
 					>
-						<UserAvatar {...user} size={30} />
+						<UserAvatar
+							{...user}
+							className="h-auto w-8"
+							size={30}
+						/>
 					</Link>
 					<p>
 						<span className="font-bold">{user.handle}</span> liked
