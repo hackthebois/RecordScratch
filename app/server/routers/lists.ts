@@ -109,18 +109,31 @@ export const listsRouter = router({
 		.mutation(
 			async ({
 				ctx: { db, userId },
-				input: { id, name, description },
+				input: { id, name, description, onProfile },
 			}) => {
-				const listExists: boolean = !!(await db.query.lists.findFirst({
+				const listExists = await db.query.lists.findFirst({
 					where: and(eq(lists.id, id), eq(lists.userId, userId)),
-				}));
+				});
 
-				if (listExists)
+				console.log(onProfile);
+
+				if (listExists) {
+					if (onProfile)
+						await db
+							.update(lists)
+							.set({ onProfile: false })
+							.where(
+								and(
+									eq(lists.userId, userId),
+									eq(lists.category, listExists.category)
+								)
+							);
+
 					await db
 						.update(lists)
-						.set({ name: name, description: description })
+						.set({ name, description, onProfile })
 						.where(and(eq(lists.id, id), eq(lists.userId, userId)));
-				else throw new Error("List Doesn't exist");
+				} else throw new Error("List Doesn't exist");
 			}
 		),
 

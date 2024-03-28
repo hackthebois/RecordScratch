@@ -146,7 +146,6 @@ function Handle() {
 	const [lists] = api.lists.getUser.useSuspenseQuery({
 		userId: profile.userId,
 	});
-	console.log(topLists);
 
 	const isUser = myProfile?.userId === profile.userId;
 
@@ -158,6 +157,7 @@ function Handle() {
 					{...profile}
 					imageUrl={profile.imageUrl}
 					size={160}
+					className={"h-auto w-36 overflow-hidden rounded-full"}
 				/>
 				<div className="flex flex-col items-center sm:items-start">
 					<p className="pb-4 text-sm tracking-widest text-muted-foreground">
@@ -267,17 +267,19 @@ function Handle() {
 				</TabsContent>
 				<TabsContent value="ARTIST">
 					{topLists?.artist && (
-						<div className="flex flex-row flex-wrap">
+						<div className="mt-5 flex flex-row flex-wrap gap-3">
 							{topLists.artist.resources.map((artist) => (
 								<div
-									className="mx-1 h-48 w-[9.5rem] overflow-hidden"
+									className="h-auto w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
 									key={artist.resourceId}
 								>
 									<ArtistItem
 										artistId={artist.resourceId}
 										direction="vertical"
-										textCss="text-wrap text-center text-sm -mt-2"
-										size={140}
+										textCss="font-medium line-clamp-2 -mt-2"
+										imageCss={
+											"h-auto w-[6.5rem] overflow-hidden rounded-full sm:mr-2 sm:w-36"
+										}
 									/>
 								</div>
 							))}

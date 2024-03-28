@@ -2,7 +2,6 @@ import { listResources, lists } from "@/server/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { Profile, ProfileSchema } from "./profile";
-import { Rating, RatingSchema } from "./rating";
 
 export const listSchema = createInsertSchema(lists, {
 	name: z.string().max(50).min(1).trim(),
@@ -19,10 +18,12 @@ export const updateListSchema = listSchema.pick({
 	id: true,
 	name: true,
 	description: true,
+	onProfile: true,
 });
 export const updateFormSchema = listSchema.pick({
 	name: true,
 	description: true,
+	onProfile: true,
 });
 export type UpdateList = z.infer<typeof updateFormSchema>;
 
