@@ -24,15 +24,18 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
+import { Switch } from "../ui/switch";
 
 export const ModifyList = ({
 	id,
 	name,
 	description,
+	onProfile,
 }: {
 	id: string;
 	name: string;
 	description: string | null;
+	onProfile: boolean;
 }) => {
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
@@ -55,14 +58,16 @@ export const ModifyList = ({
 		form.reset({
 			name: name,
 			description: description ?? "",
+			onProfile: onProfile,
 		});
-	}, [name, description, form]);
+	}, [name, description, onProfile, form]);
 
-	const onSubmit = async ({ name, description }: UpdateList) => {
+	const onSubmit = async ({ name, description, onProfile }: UpdateList) => {
 		updateList({
 			id,
 			name,
 			description,
+			onProfile,
 		});
 	};
 
@@ -83,6 +88,24 @@ export const ModifyList = ({
 						onSubmit={form.handleSubmit(onSubmit)}
 						className="space-y-4"
 					>
+						<FormField
+							control={form.control}
+							name="onProfile"
+							render={({ field }) => (
+								<FormItem className=" flex flex-row items-center">
+									<FormLabel className="mt-2">
+										Show on Top 6?
+									</FormLabel>
+									<FormControl className=" ml-2">
+										<Switch
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name="name"

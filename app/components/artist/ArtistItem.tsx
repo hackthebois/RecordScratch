@@ -11,7 +11,7 @@ export const ArtistItem = ({
 	direction = "horizontal",
 	showLink = true,
 	textCss = "truncate",
-	size,
+	imageCss,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -19,7 +19,7 @@ export const ArtistItem = ({
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
 	textCss?: string;
-	size?: number;
+	imageCss?: string;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -51,13 +51,12 @@ export const ArtistItem = ({
 				direction === "vertical" ? "flex-col" : "flex-row"
 			)}
 		>
-			<div className="relative overflow-hidden rounded-full">
+			<div className="overflow-hidden rounded-full">
 				{artistImage ? (
 					<UserAvatar
 						imageUrl={artistImage}
-						size={
-							size ? size : direction === "horizontal" ? 64 : 96
-						}
+						size={direction === "horizontal" ? 64 : 96}
+						className={imageCss}
 					/>
 				) : (
 					<div className="h-full w-full bg-muted"></div>
