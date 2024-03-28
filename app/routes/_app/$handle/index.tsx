@@ -1,5 +1,7 @@
 import { Head } from "@/components/Head";
+import { ResourceItem } from "@/components/ResourceItem";
 import { useTheme } from "@/components/ThemeProvider";
+import { ArtistItem } from "@/components/artist/ArtistItem";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
@@ -35,16 +37,13 @@ export const Route = createFileRoute("/_app/$handle/")({
 				rating: z.number().optional(),
 				tab: z.enum(["settings", "lists"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
+				topCategory: z.enum(["ALBUM", "SONG", "ARTIST"]).optional(),
 			})
 			.parse(search);
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) return <NotFound />;
-		// apiUtils.profiles.distribution.ensureData({
-		// 	userId: profile.userId,
-		// 	category: undefined,
-		// });
 
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
@@ -56,6 +55,10 @@ export const Route = createFileRoute("/_app/$handle/")({
 		});
 
 		apiUtils.lists.getUser.ensureData({
+			userId: profile.userId,
+		});
+
+		apiUtils.lists.getProfile.ensureData({
 			userId: profile.userId,
 		});
 	},
@@ -116,7 +119,12 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
+	const {
+		rating,
+		tab = "reviews",
+		category = "all",
+		topCategory = "ALBUM",
+	} = Route.useSearch();
 	const { data: myProfile } = api.profiles.me.useQuery();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
@@ -129,12 +137,16 @@ function Handle() {
 			placeholderData: keepPreviousData,
 		}
 	);
-
 	if (!profile) return <NotFound />;
+
+	const [topLists] = api.lists.getProfile.useSuspenseQuery({
+		userId: profile.userId,
+	});
 
 	const [lists] = api.lists.getUser.useSuspenseQuery({
 		userId: profile.userId,
 	});
+	console.log(topLists);
 
 	const isUser = myProfile?.userId === profile.userId;
 
@@ -163,6 +175,116 @@ function Handle() {
 					<FollowerMenu profileId={profile.userId} />
 				</div>
 			</div>
+			<h3 className="-mb-4">{profile.name}'s Top 6</h3>
+			<Tabs value={topCategory}>
+				<TabsList>
+					<TabsTrigger value="ALBUM" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								topCategory: undefined,
+							}}
+						>
+							Albums
+						</Link>
+					</TabsTrigger>
+					<TabsTrigger value="SONG" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								topCategory: "SONG",
+							}}
+						>
+							Songs
+						</Link>
+					</TabsTrigger>
+					<TabsTrigger value="ARTIST" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								topCategory: "ARTIST",
+							}}
+						>
+							Artists
+						</Link>
+					</TabsTrigger>
+				</TabsList>
+				<TabsContent value="ALBUM">
+					{topLists?.album && (
+						<div className="mt-5 flex flex-row flex-wrap gap-3">
+							{topLists.album.resources.map((album) => (
+								<div
+									className="h-auto w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
+									key={album.resourceId}
+								>
+									<ResourceItem
+										resource={{
+											parentId: album.parentId!,
+											resourceId: album.resourceId,
+											category:
+												topLists.album?.category ??
+												"ALBUM",
+										}}
+										direction="vertical"
+										imageCss={
+											"relative min-w-[64px] rounded -mb-3"
+										}
+										titleCss={"font-medium line-clamp-2"}
+										showArtist={false}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</TabsContent>
+				<TabsContent value="SONG">
+					{topLists?.song && (
+						<div className="mt-5 flex flex-row flex-wrap gap-3">
+							{topLists.song.resources.map((song) => (
+								<div
+									className="h-auto w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
+									key={song.resourceId}
+								>
+									<ResourceItem
+										resource={{
+											parentId: song.parentId!,
+											resourceId: song.resourceId,
+											category:
+												topLists.song?.category ??
+												"SONG",
+										}}
+										direction="vertical"
+										imageCss={
+											"relative min-w-[64px] rounded -mb-3"
+										}
+										titleCss="font-medium line-clamp-2"
+										showArtist={false}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</TabsContent>
+				<TabsContent value="ARTIST">
+					{topLists?.artist && (
+						<div className="flex flex-row flex-wrap">
+							{topLists.artist.resources.map((artist) => (
+								<div
+									className="mx-1 h-48 w-[9.5rem] overflow-hidden"
+									key={artist.resourceId}
+								>
+									<ArtistItem
+										artistId={artist.resourceId}
+										direction="vertical"
+										textCss="text-wrap text-center text-sm -mt-2"
+										size={140}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</TabsContent>
+			</Tabs>
 			<Tabs value={tab}>
 				<TabsList>
 					<TabsTrigger value="reviews" asChild>

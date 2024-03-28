@@ -11,6 +11,7 @@ export const ArtistItem = ({
 	direction = "horizontal",
 	showLink = true,
 	textCss = "truncate",
+	size,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -18,6 +19,7 @@ export const ArtistItem = ({
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
 	textCss?: string;
+	size?: number;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -53,7 +55,9 @@ export const ArtistItem = ({
 				{artistImage ? (
 					<UserAvatar
 						imageUrl={artistImage}
-						size={direction === "horizontal" ? 64 : 96}
+						size={
+							size ? size : direction === "horizontal" ? 64 : 96
+						}
 					/>
 				) : (
 					<div className="h-full w-full bg-muted"></div>
