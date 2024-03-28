@@ -73,6 +73,7 @@ const ListSettings = ({
 					id={listData.id}
 					name={listData.name}
 					description={listData.description ?? ""}
+					onProfile={listData.onProfile!}
 				/>
 			</div>
 			<div className="flex items-center justify-between pl-4">

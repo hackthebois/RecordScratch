@@ -14,10 +14,10 @@ export const UserAvatar = ({
 	return (
 		<Avatar
 			className={className}
-			style={{
-				width: size,
-				height: size,
-			}}
+			// style={{
+			// 	width: size,
+			// 	height: size,
+			// }}
 		>
 			<AvatarImage src={imageUrl ?? undefined} />
 			<AvatarFallback
