@@ -51,7 +51,7 @@ const AlbumItem = ({
 						maxHeight: size,
 					}}
 				>
-					<AlbumImage album={album} imageSize={145} />
+					<AlbumImage album={album} />
 				</div>
 				<p className="truncate pt-1 font-medium">{album.title}</p>
 				{field === "date" && (
