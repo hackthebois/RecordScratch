@@ -12,13 +12,7 @@ export const UserAvatar = ({
 	className?: string;
 }) => {
 	return (
-		<Avatar
-			className={className}
-			// style={{
-			// 	width: size,
-			// 	height: size,
-			// }}
-		>
+		<Avatar className={className}>
 			<AvatarImage src={imageUrl ?? undefined} />
 			<AvatarFallback
 				style={{
