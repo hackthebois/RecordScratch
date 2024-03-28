@@ -1,6 +1,5 @@
 import { relations } from "drizzle-orm";
 import {
-	alias,
 	boolean,
 	integer,
 	pgEnum,
@@ -65,7 +64,6 @@ export const profile = pgTable("profile", {
 	})
 		.notNull()
 		.unique(),
-	imageUrl: text("image_url"),
 	bio: varchar("bio", {
 		length: 200,
 	}),

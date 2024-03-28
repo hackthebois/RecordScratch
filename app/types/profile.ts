@@ -66,9 +66,7 @@ export const ProfilePhotoSchema = z
 	.custom<File>((v) => v instanceof File)
 	.refine((file) => file?.size <= 5 * 1024 * 1024, `Max image size is 5MB.`);
 
-export const OnboardSchema = CreateProfileSchema.omit({
-	imageUrl: true,
-}).extend({
+export const OnboardSchema = CreateProfileSchema.extend({
 	bio: z.string().optional(),
 	image: ProfilePhotoSchema.optional(),
 });
@@ -77,9 +75,7 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 export const UpdateProfileSchema = CreateProfileSchema;
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
 
-export const UpdateProfileFormSchema = UpdateProfileSchema.omit({
-	imageUrl: true,
-}).extend({
+export const UpdateProfileFormSchema = UpdateProfileSchema.extend({
 	bio: ProfileBioSchema.optional(),
 	image: ProfilePhotoSchema.optional(),
 });

@@ -1,4 +1,3 @@
-import { Profile } from "@/types/profile";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 
@@ -7,7 +6,7 @@ export const UserAvatar = ({
 	size = 36,
 	className,
 }: {
-	imageUrl: Profile["imageUrl"];
+	imageUrl?: string;
 	size?: number;
 	className?: string;
 }) => {
@@ -19,7 +18,7 @@ export const UserAvatar = ({
 				height: size,
 			}}
 		>
-			<AvatarImage src={imageUrl ?? undefined} />
+			<AvatarImage src={imageUrl} />
 			<AvatarFallback
 				style={{
 					fontSize: size / 2,

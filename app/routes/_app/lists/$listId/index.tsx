@@ -15,6 +15,7 @@ import { api, apiUtils } from "@/trpc/react";
 import { ListItem, ListType } from "@/types/list";
 import { Profile } from "@/types/profile";
 import { timeAgo } from "@/utils/date";
+import { getImageUrl } from "@/utils/image";
 import {
 	ErrorComponent,
 	Link,
@@ -197,7 +198,7 @@ function List() {
 						}}
 						className="flex items-center gap-2"
 					>
-						<UserAvatar {...profile} size={30} />
+						<UserAvatar imageUrl={getImageUrl(profile)} size={30} />
 						<p className="flex text-lg">{profile.name}</p>
 					</Link>
 					<p className="text-muted-foreground">

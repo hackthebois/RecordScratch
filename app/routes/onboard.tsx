@@ -112,7 +112,6 @@ function Onboard() {
 	}, [handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
-		let imageUrl: string | null = null;
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -126,14 +125,11 @@ function Onboard() {
 					"Content-Type": image?.type,
 				},
 			});
-
-			imageUrl = url.split("?")[0];
 		}
 
 		createProfile({
 			name,
 			handle,
-			imageUrl,
 			bio: bio ?? null,
 		});
 	};
@@ -278,19 +274,16 @@ function Onboard() {
 						<UserAvatar
 							className="my-8"
 							size={160}
-							imageUrl={imageUrl ?? null}
+							imageUrl={imageUrl}
 						/>
 						<FormField
 							control={form.control}
 							name="image"
-							render={({
-								field: { value, onChange, ...fieldProps },
-							}) => (
+							render={({ field: { onChange } }) => (
 								<FormItem>
 									<FormControl>
 										<Input
 											type="file"
-											{...fieldProps}
 											className="m-auto text-center"
 											accept="image/png, image/jpeg, image/jpg"
 											onChange={(event) =>
