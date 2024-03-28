@@ -267,19 +267,17 @@ function Handle() {
 				</TabsContent>
 				<TabsContent value="ARTIST">
 					{topLists?.artist && (
-						<div className="mt-5 flex flex-row flex-wrap gap-3">
+						<div className="mt-5 flex flex-row flex-wrap gap-4">
 							{topLists.artist.resources.map((artist) => (
 								<div
-									className="h-auto w-[6.5rem] overflow-hidden sm:mr-2 sm:w-36"
+									className="h-auto w-[6.5rem] items-center justify-center overflow-hidden sm:w-36"
 									key={artist.resourceId}
 								>
 									<ArtistItem
 										artistId={artist.resourceId}
 										direction="vertical"
 										textCss="font-medium line-clamp-2 -mt-2"
-										imageCss={
-											"h-auto w-[6.5rem] overflow-hidden rounded-full sm:mr-2 sm:w-36"
-										}
+										imageCss={"h-auto w-[6.5rem] sm:w-36"}
 									/>
 								</div>
 							))}
