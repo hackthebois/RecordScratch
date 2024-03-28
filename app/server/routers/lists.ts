@@ -11,7 +11,6 @@ import {
 import { and, asc, desc, eq } from "drizzle-orm/sql";
 import { generateId } from "lucia";
 import { listResources, lists, ratings } from "../db/schema";
-import { z } from "zod";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -34,7 +33,7 @@ export const listsRouter = router({
 					eq(lists.userId, userId),
 					eq(lists.category, category)
 				);
-			else whereClause = and(eq(lists.userId, userId));
+			else whereClause = eq(lists.userId, userId);
 
 			return await db.query.lists.findMany({
 				with: {
@@ -47,6 +46,54 @@ export const listsRouter = router({
 				where: whereClause,
 				orderBy: [desc(lists.updatedAt)],
 			});
+		}),
+
+	getProfile: publicProcedure
+		.input(filterUserListsSchema)
+		.query(async ({ ctx: { db }, input: { userId } }) => {
+			const artistList = await db.query.lists.findFirst({
+				with: {
+					resources: {
+						limit: 6,
+						orderBy: [asc(listResources.position)],
+					},
+				},
+				where: and(
+					eq(lists.userId, userId),
+					eq(lists.category, "ARTIST"),
+					eq(lists.onProfile, true)
+				),
+			});
+
+			const albumList = await db.query.lists.findFirst({
+				with: {
+					resources: {
+						limit: 6,
+						orderBy: [asc(listResources.position)],
+					},
+				},
+				where: and(
+					eq(lists.userId, userId),
+					eq(lists.category, "ALBUM"),
+					eq(lists.onProfile, true)
+				),
+			});
+
+			const songList = await db.query.lists.findFirst({
+				with: {
+					resources: {
+						limit: 6,
+						orderBy: [asc(listResources.position)],
+					},
+				},
+				where: and(
+					eq(lists.userId, userId),
+					eq(lists.category, "SONG"),
+					eq(lists.onProfile, true)
+				),
+			});
+
+			return { artist: artistList, album: albumList, song: songList };
 		}),
 
 	create: protectedProcedure
