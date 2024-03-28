@@ -109,7 +109,7 @@ function Onboard() {
 				form.clearErrors("handle");
 			}
 		}
-	}, [handleExists]);
+	}, [form, handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		if (image) {
@@ -143,13 +143,13 @@ function Onboard() {
 					.replace(" ", "")
 			);
 		}
-	}, [name]);
+	}, [form, name]);
 
 	useEffect(() => {
 		if (page === 1) {
 			form.setFocus("name");
 		}
-	}, [page]);
+	}, [form, page]);
 
 	useEffect(() => {
 		if (image && image instanceof File) {
