@@ -272,7 +272,7 @@ function Onboard() {
 						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
-							className="my-8"
+							className="my-8 h-auto w-36 overflow-hidden rounded-full"
 							size={160}
 							imageUrl={imageUrl}
 						/>

@@ -11,7 +11,6 @@ import {
 import { and, asc, desc, eq } from "drizzle-orm/sql";
 import { generateId } from "lucia";
 import { listResources, lists, ratings } from "../db/schema";
-import { z } from "zod";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -34,7 +33,7 @@ export const listsRouter = router({
 					eq(lists.userId, userId),
 					eq(lists.category, category)
 				);
-			else whereClause = and(eq(lists.userId, userId));
+			else whereClause = eq(lists.userId, userId);
 
 			return await db.query.lists.findMany({
 				with: {
@@ -47,6 +46,54 @@ export const listsRouter = router({
 				where: whereClause,
 				orderBy: [desc(lists.updatedAt)],
 			});
+		}),
+
+	getProfile: publicProcedure
+		.input(filterUserListsSchema)
+		.query(async ({ ctx: { db }, input: { userId } }) => {
+			const artistList = await db.query.lists.findFirst({
+				with: {
+					resources: {
+						limit: 6,
+						orderBy: [asc(listResources.position)],
+					},
+				},
+				where: and(
+					eq(lists.userId, userId),
+					eq(lists.category, "ARTIST"),
+					eq(lists.onProfile, true)
+				),
+			});
+
+			const albumList = await db.query.lists.findFirst({
+				with: {
+					resources: {
+						limit: 6,
+						orderBy: [asc(listResources.position)],
+					},
+				},
+				where: and(
+					eq(lists.userId, userId),
+					eq(lists.category, "ALBUM"),
+					eq(lists.onProfile, true)
+				),
+			});
+
+			const songList = await db.query.lists.findFirst({
+				with: {
+					resources: {
+						limit: 6,
+						orderBy: [asc(listResources.position)],
+					},
+				},
+				where: and(
+					eq(lists.userId, userId),
+					eq(lists.category, "SONG"),
+					eq(lists.onProfile, true)
+				),
+			});
+
+			return { artist: artistList, album: albumList, song: songList };
 		}),
 
 	create: protectedProcedure
@@ -62,18 +109,31 @@ export const listsRouter = router({
 		.mutation(
 			async ({
 				ctx: { db, userId },
-				input: { id, name, description },
+				input: { id, name, description, onProfile },
 			}) => {
-				const listExists: boolean = !!(await db.query.lists.findFirst({
+				const listExists = await db.query.lists.findFirst({
 					where: and(eq(lists.id, id), eq(lists.userId, userId)),
-				}));
+				});
 
-				if (listExists)
+				console.log(onProfile);
+
+				if (listExists) {
+					if (onProfile)
+						await db
+							.update(lists)
+							.set({ onProfile: false })
+							.where(
+								and(
+									eq(lists.userId, userId),
+									eq(lists.category, listExists.category)
+								)
+							);
+
 					await db
 						.update(lists)
-						.set({ name: name, description: description })
+						.set({ name, description, onProfile })
 						.where(and(eq(lists.id, id), eq(lists.userId, userId)));
-				else throw new Error("List Doesn't exist");
+				} else throw new Error("List Doesn't exist");
 			}
 		),
 

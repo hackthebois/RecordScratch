@@ -80,7 +80,10 @@ const ListsItem = ({
 					}}
 					className="flex flex-row space-x-1 py-1 text-sm text-muted-foreground hover:underline"
 				>
-					<UserAvatar imageUrl={getImageUrl(profile)} size={30} />
+					<UserAvatar
+						imageUrl={getImageUrl(profile)}
+						className="h-auto w-8"
+					/>
 					<p className="flex">{profile.name}</p>
 				</Link>
 			)}

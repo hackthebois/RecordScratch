@@ -1,3 +1,4 @@
+import { cn } from "@/utils/utils";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 
@@ -11,13 +12,7 @@ export const UserAvatar = ({
 	className?: string;
 }) => {
 	return (
-		<Avatar
-			className={className}
-			style={{
-				width: size,
-				height: size,
-			}}
-		>
+		<Avatar className={cn(className ? className : "h-auto sm:w-16")}>
 			<AvatarImage src={imageUrl} />
 			<AvatarFallback
 				style={{
