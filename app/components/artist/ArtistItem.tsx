@@ -55,8 +55,10 @@ export const ArtistItem = ({
 			{artistImage ? (
 				<UserAvatar
 					imageUrl={artistImage}
-					size={direction === "horizontal" ? 64 : 96}
-					className={imageCss}
+					className={cn(
+						imageCss,
+						direction === "horizontal" ? "h-16 w-16" : "h-24 w-24"
+					)}
 				/>
 			) : (
 				<div className="h-full w-full bg-muted"></div>

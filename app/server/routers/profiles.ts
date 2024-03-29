@@ -1,21 +1,19 @@
 import { followers, profile, ratings } from "@/server/db/schema";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import { CreateProfileSchema, UpdateProfileSchema } from "@/types/profile";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { and, count, eq, ilike, or, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { RatingSchema } from "@/types/rating";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createNotification } from "../notifications";
 import { posthog } from "../posthog";
 
-const s3 = new S3Client({
-	region: process.env.AWS_BUCKET_REGION!,
-	credentials: {
-		accessKeyId: process.env.AWS_KEY!,
-		secretAccessKey: process.env.AWS_SECRET!,
-	},
+import { AwsClient } from "aws4fetch";
+
+const r2 = new AwsClient({
+	accessKeyId: process.env.R2_KEY_ID!,
+	secretAccessKey: process.env.R2_ACCESS_KEY!,
+	region: "auto",
 });
 
 export const profilesRouter = router({
@@ -202,9 +200,6 @@ export const profilesRouter = router({
 				.update(profile)
 				.set({
 					...newProfile,
-					imageUrl: newProfile.imageUrl
-						? `${newProfile.imageUrl}?updatedAt=${new Date().getTime()}`
-						: null,
 				})
 				.where(eq(profile.userId, userId));
 		}),
@@ -216,19 +211,21 @@ export const profilesRouter = router({
 			})
 		)
 		.mutation(async ({ ctx: { userId }, input: { type, size } }) => {
-			const putObjectCommand = new PutObjectCommand({
-				Bucket: process.env.AWS_BUCKET_NAME!,
-				Key: `profile-images/${userId}`,
-				ContentType: type,
-				ContentLength: size,
-				Metadata: {
-					userId,
-				},
-			});
+			const res = await r2.sign(
+				`${process.env.R2_ENDPOINT}/profile-images/${userId}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": type,
+						"Content-Length": `${size}`,
+					},
+					aws: {
+						signQuery: true,
+					},
+				}
+			);
 
-			return await getSignedUrl(s3, putObjectCommand, {
-				expiresIn: 60,
-			});
+			return res.url;
 		}),
 	follow: protectedProcedure
 		.input(z.string())

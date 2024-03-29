@@ -27,26 +27,21 @@ import {
 } from "@/types/profile";
 import { useDebounce } from "@/utils/hooks";
 import { AtSign } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
+import { getImageUrl } from "@/utils/image";
 import { useNavigate } from "@tanstack/react-router";
 import { UserAvatar } from "../user/UserAvatar";
 
 export const EditProfile = ({ profile }: { profile: Profile }) => {
-	const {
-		bio,
-		handle: defaultHandle,
-		imageUrl: defaultImageUrl,
-		name,
-	} = profile;
+	const { bio, handle: defaultHandle, name } = profile;
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 	const navigate = useNavigate();
-	const imageRef = useRef<HTMLInputElement>(null);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(
-		defaultImageUrl + "?updatedAt=" + profile.updatedAt.getTime()
+		getImageUrl(profile)
 	);
 
 	const form = useForm<UpdateProfileForm>({
@@ -86,7 +81,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 			name,
 			handle: defaultHandle,
 		});
-	}, [profile]);
+	}, [bio, defaultHandle, form, name, profile]);
 
 	const { image, handle } = form.watch();
 
@@ -119,7 +114,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 				form.clearErrors("handle");
 			}
 		}
-	}, [handleExists]);
+	}, [form, handleExists]);
 
 	const onSubmit = async ({
 		bio,
@@ -127,7 +122,6 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		handle,
 		image,
 	}: UpdateProfileForm) => {
-		let imageUrl: string | null = null;
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -141,13 +135,10 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 					"Content-Type": image?.type,
 				},
 			});
-
-			imageUrl = url.split("?")[0];
 		}
 
 		updateProfile({
 			bio: bio ?? null,
-			imageUrl: imageUrl ?? defaultImageUrl,
 			name,
 			handle,
 		});
@@ -171,20 +162,20 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 						className="space-y-4"
 					>
 						<div className="flex items-center gap-4">
-							<UserAvatar size={80} imageUrl={imageUrl ?? null} />
+							<UserAvatar
+								className="h-20 w-20"
+								imageUrl={imageUrl}
+							/>
 							<FormField
 								control={form.control}
 								name="image"
-								render={({
-									field: { value, onChange, ...fieldProps },
-								}) => (
+								render={({ field: { onChange } }) => (
 									<FormItem>
 										<FormLabel>Profile Image</FormLabel>
 										<FormControl>
 											<Input
 												type="file"
-												{...fieldProps}
-												accept="image/png, image/jpeg, image/jpg"
+												accept="image/*"
 												onChange={(event) =>
 													onChange(
 														event.target.files &&

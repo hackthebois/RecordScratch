@@ -97,7 +97,7 @@ export const ListResource = ({
 									category: category,
 								}}
 								showLink={!editMode}
-								imageCss={"relative h-auto w-16 sm:w-20 "}
+								imageCss={"relative h-16 w-16 sm:w-20 sm:w-20"}
 							/>
 						)}
 					</div>

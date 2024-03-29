@@ -1,8 +1,9 @@
+import { api } from "@/trpc/react";
 import { Profile } from "@/types/profile";
+import { getImageUrl } from "@/utils/image";
 import { Link } from "@tanstack/react-router";
 import { FollowButton } from "../followers/FollowButton";
 import { UserAvatar } from "../user/UserAvatar";
-import { api } from "@/trpc/react";
 
 export const ProfileItem = ({
 	profile,
@@ -27,8 +28,7 @@ export const ProfileItem = ({
 			<div className="flex flex-row items-center">
 				<div className="relative min-w-[64px] overflow-hidden rounded-full">
 					<UserAvatar
-						{...profile}
-						size={50}
+						imageUrl={getImageUrl(profile)}
 						className={"h-16 w-16 overflow-hidden rounded-full"}
 					/>
 				</div>

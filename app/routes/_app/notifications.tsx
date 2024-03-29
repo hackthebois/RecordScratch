@@ -4,6 +4,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { Profile } from "@/types/profile";
+import { getImageUrl } from "@/utils/image";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { BellOff, Heart, User } from "lucide-react";
 import { useEffect } from "react";
@@ -40,9 +41,8 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 							}}
 						>
 							<UserAvatar
-								{...user}
-								className="h-auto w-8"
-								size={30}
+								imageUrl={getImageUrl(user)}
+								className="h-8 w-8"
 							/>
 						</Link>
 						<p>
@@ -77,9 +77,8 @@ const LikeNotification = ({
 						}}
 					>
 						<UserAvatar
-							{...user}
-							className="h-auto w-8"
-							size={30}
+							imageUrl={getImageUrl(user)}
+							className="h-8 w-8"
 						/>
 					</Link>
 					<p>

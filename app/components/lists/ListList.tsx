@@ -1,4 +1,5 @@
-import { ListsType, UserListItem } from "@/types/list";
+import { ListsType } from "@/types/list";
+import { getImageUrl } from "@/utils/image";
 import { Link } from "@tanstack/react-router";
 import { ScrollArea } from "../ui/ScrollArea";
 import { UserAvatar } from "../user/UserAvatar";
@@ -79,7 +80,10 @@ const ListsItem = ({
 					}}
 					className="flex flex-row space-x-1 py-1 text-sm text-muted-foreground hover:underline"
 				>
-					<UserAvatar {...profile} className="h-auto w-8" />
+					<UserAvatar
+						imageUrl={getImageUrl(profile)}
+						className="h-8 w-8"
+					/>
 					<p className="flex">{profile.name}</p>
 				</Link>
 			)}
