@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { env as serverEnv } from "@/server/env";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { eq } from "drizzle-orm";
 import { generateId } from "lucia";
@@ -16,8 +17,8 @@ import { users } from "../db/schema";
 import { lucia } from "./lucia";
 
 const google = new Google(
-	process.env.GOOGLE_CLIENT_ID!,
-	process.env.GOOGLE_CLIENT_SECRET!,
+	serverEnv.GOOGLE_CLIENT_ID,
+	serverEnv.GOOGLE_CLIENT_SECRET,
 	`${env.VITE_BASE_URL}/auth/google/callback`
 );
 

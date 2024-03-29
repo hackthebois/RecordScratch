@@ -8,11 +8,12 @@ import { RatingSchema } from "@/types/rating";
 import { createNotification } from "../notifications";
 import { posthog } from "../posthog";
 
+import { env } from "@/server/env";
 import { AwsClient } from "aws4fetch";
 
 const r2 = new AwsClient({
-	accessKeyId: process.env.R2_KEY_ID!,
-	secretAccessKey: process.env.R2_ACCESS_KEY!,
+	accessKeyId: env.R2_KEY_ID,
+	secretAccessKey: env.R2_ACCESS_KEY,
 	region: "auto",
 });
 
@@ -212,7 +213,7 @@ export const profilesRouter = router({
 		)
 		.mutation(async ({ ctx: { userId }, input: { type, size } }) => {
 			const res = await r2.sign(
-				`${process.env.R2_ENDPOINT}/profile-images/${userId}`,
+				`${env.R2_ENDPOINT}/profile-images/${userId}`,
 				{
 					method: "PUT",
 					headers: {
