@@ -3,9 +3,6 @@ import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import { fromNodeMiddleware } from "vinxi/http";
 import { createTRPCContext } from "./app/server/trpc";
 
-import dotenv from "dotenv";
-dotenv.config();
-
 const handler = createHTTPHandler({
 	router: appRouter,
 	createContext: createTRPCContext,
