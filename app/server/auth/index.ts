@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { eq } from "drizzle-orm";
 import { generateId } from "lucia";
@@ -21,7 +20,7 @@ export default eventHandler(async (event) => {
 	const google = new Google(
 		process.env.GOOGLE_CLIENT_ID!,
 		process.env.GOOGLE_CLIENT_SECRET!,
-		`${env.VITE_BASE_URL}/auth/google/callback`
+		`${process.env.CF_PAGES_URL}/auth/google/callback`
 	);
 	const db = getDB();
 	const lucia = getLucia();

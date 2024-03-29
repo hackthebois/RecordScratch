@@ -57,7 +57,7 @@ function Root() {
 		<PostHogProvider
 			apiKey={env.VITE_POSTHOG_KEY}
 			options={{
-				api_host: env.VITE_BASE_URL + "/ingest",
+				api_host: process.env.CF_PAGES_URL + "/ingest",
 			}}
 		>
 			<TRPCReactProvider>

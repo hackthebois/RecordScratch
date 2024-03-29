@@ -19,8 +19,6 @@ export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
 	const db = getDB();
 	const lucia = getLucia();
 
-	console.log("DB", db);
-
 	if (!sessionId) {
 		return {
 			db,
