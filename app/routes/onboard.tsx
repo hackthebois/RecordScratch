@@ -109,10 +109,9 @@ function Onboard() {
 				form.clearErrors("handle");
 			}
 		}
-	}, [handleExists]);
+	}, [form, handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
-		let imageUrl: string | null = null;
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -126,14 +125,11 @@ function Onboard() {
 					"Content-Type": image?.type,
 				},
 			});
-
-			imageUrl = url.split("?")[0];
 		}
 
 		createProfile({
 			name,
 			handle,
-			imageUrl,
 			bio: bio ?? null,
 		});
 	};
@@ -147,13 +143,13 @@ function Onboard() {
 					.replace(" ", "")
 			);
 		}
-	}, [name]);
+	}, [form, name]);
 
 	useEffect(() => {
 		if (page === 1) {
 			form.setFocus("name");
 		}
-	}, [page]);
+	}, [form, page]);
 
 	useEffect(() => {
 		if (image && image instanceof File) {
@@ -276,21 +272,17 @@ function Onboard() {
 						<Tag variant="outline">STEP 2/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
-							className="my-8 h-auto w-36 overflow-hidden rounded-full"
-							size={160}
-							imageUrl={imageUrl ?? null}
+							className="my-8 h-36 w-36 overflow-hidden rounded-full"
+							imageUrl={imageUrl}
 						/>
 						<FormField
 							control={form.control}
 							name="image"
-							render={({
-								field: { value, onChange, ...fieldProps },
-							}) => (
+							render={({ field: { onChange } }) => (
 								<FormItem>
 									<FormControl>
 										<Input
 											type="file"
-											{...fieldProps}
 											className="m-auto text-center"
 											accept="image/png, image/jpeg, image/jpg"
 											onChange={(event) =>

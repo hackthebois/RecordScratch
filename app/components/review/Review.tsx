@@ -3,6 +3,7 @@ import { SelectComment } from "@/types/comments";
 import { SelectLike } from "@/types/likes";
 import { ReviewType } from "@/types/rating";
 import { timeAgo } from "@/utils/date";
+import { getImageUrl } from "@/utils/image";
 import { Link } from "@tanstack/react-router";
 import { Heart, MessageCircle, Star } from "lucide-react";
 import { Suspense } from "react";
@@ -148,7 +149,10 @@ export const Review = ({
 					}}
 					className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 				>
-					<UserAvatar {...profile} className="h-auto w-8" />
+					<UserAvatar
+						imageUrl={getImageUrl(profile)}
+						className="h-8 w-8"
+					/>
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">
 						@{profile.handle} • {timeAgo(updatedAt)}

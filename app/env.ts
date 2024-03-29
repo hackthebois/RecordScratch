@@ -8,6 +8,7 @@ export const env = createEnv({
 		VITE_GITHUB_URL: z.string().url(),
 		VITE_DISCORD_URL: z.string().url(),
 		VITE_BASE_URL: z.string().url(),
+		VITE_R2_PUBLIC_URL: z.string().url(),
 	},
 	runtimeEnv: import.meta.env,
 });
