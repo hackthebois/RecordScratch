@@ -94,7 +94,7 @@ const CommentForm = ({
 				<div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
 					<UserAvatar
 						imageUrl={getImageUrl(profile)}
-						className="h-auto w-8"
+						className="h-8 w-8"
 					/>
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">
@@ -174,7 +174,7 @@ function Rating() {
 					>
 						<UserAvatar
 							imageUrl={getImageUrl(comment.profile)}
-							size={30}
+							className="h-8 w-8"
 						/>
 						<p>{comment.profile.name}</p>
 						<p className="text-left text-sm text-muted-foreground">

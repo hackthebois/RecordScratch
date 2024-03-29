@@ -61,8 +61,7 @@ export const UserButton = () => {
 		>
 			<UserAvatar
 				imageUrl={getImageUrl(profile)}
-				size={40}
-				className="border border-muted"
+				className="h-10 w-10 border border-muted"
 			/>
 		</Link>
 	);

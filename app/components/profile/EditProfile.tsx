@@ -162,7 +162,10 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 						className="space-y-4"
 					>
 						<div className="flex items-center gap-4">
-							<UserAvatar size={80} imageUrl={imageUrl} />
+							<UserAvatar
+								className="h-20 w-20"
+								imageUrl={imageUrl}
+							/>
 							<FormField
 								control={form.control}
 								name="image"
