@@ -1,4 +1,3 @@
-import { env } from "@/server/env";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { relationSchemas, tableSchemas } from "./schema";
@@ -9,6 +8,8 @@ const schema = {
 };
 
 // create the connection
-const sql = neon(env.DATABASE_URL);
 
-export const db = drizzle(sql, { schema });
+export const getDB = () => {
+	const sql = neon(process.env.DATABASE_URL!);
+	return drizzle(sql, { schema });
+};
