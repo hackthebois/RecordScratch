@@ -201,7 +201,7 @@ function List() {
 					>
 						<UserAvatar
 							imageUrl={getImageUrl(profile)}
-							className="h-auto w-8"
+							className="h-8 w-8"
 						/>
 						<p className="flex text-lg">{profile.name}</p>
 					</Link>

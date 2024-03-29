@@ -151,7 +151,7 @@ export const Review = ({
 				>
 					<UserAvatar
 						imageUrl={getImageUrl(profile)}
-						className="h-auto w-8"
+						className="h-8 w-8"
 					/>
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">

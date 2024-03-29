@@ -42,7 +42,7 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 						>
 							<UserAvatar
 								imageUrl={getImageUrl(user)}
-								size={30}
+								className="h-8 w-8"
 							/>
 						</Link>
 						<p>
@@ -78,8 +78,7 @@ const LikeNotification = ({
 					>
 						<UserAvatar
 							imageUrl={getImageUrl(user)}
-							className="h-auto w-8"
-							size={30}
+							className="h-8 w-8"
 						/>
 					</Link>
 					<p>
