@@ -1,5 +1,7 @@
 import { Head } from "@/components/Head";
+import { ResourceItem } from "@/components/ResourceItem";
 import { useTheme } from "@/components/ThemeProvider";
+import { ArtistItem } from "@/components/artist/ArtistItem";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
@@ -19,7 +21,6 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
-import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -34,18 +35,15 @@ export const Route = createFileRoute("/_app/$handle/")({
 		return z
 			.object({
 				rating: z.number().optional(),
-				tab: z.enum(["settings", "lists"]).optional(),
+				tab: z.enum(["settings", "lists", "reviews"]).optional(),
 				category: z.enum(["ALBUM", "SONG"]).optional(),
+				topCategory: z.enum(["ALBUM", "SONG", "ARTIST"]).optional(),
 			})
 			.parse(search);
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) return <NotFound />;
-		// apiUtils.profiles.distribution.ensureData({
-		// 	userId: profile.userId,
-		// 	category: undefined,
-		// });
 
 		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
@@ -57,6 +55,10 @@ export const Route = createFileRoute("/_app/$handle/")({
 		});
 
 		apiUtils.lists.getUser.ensureData({
+			userId: profile.userId,
+		});
+
+		apiUtils.lists.getProfile.ensureData({
 			userId: profile.userId,
 		});
 	},
@@ -117,7 +119,12 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { rating, tab = "reviews", category = "all" } = Route.useSearch();
+	const {
+		rating,
+		tab = "reviews",
+		category = "all",
+		topCategory = "ALBUM",
+	} = Route.useSearch();
 	const { data: myProfile } = api.profiles.me.useQuery();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
@@ -130,8 +137,11 @@ function Handle() {
 			placeholderData: keepPreviousData,
 		}
 	);
-
 	if (!profile) return <NotFound />;
+
+	const [topLists] = api.lists.getProfile.useSuspenseQuery({
+		userId: profile.userId,
+	});
 
 	const [lists] = api.lists.getUser.useSuspenseQuery({
 		userId: profile.userId,
@@ -143,7 +153,12 @@ function Handle() {
 		<div className="flex flex-col gap-6">
 			<Head title={profile.name} description={profile.bio ?? undefined} />
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-				<UserAvatar imageUrl={getImageUrl(profile)} size={160} />
+				<UserAvatar
+					{...profile}
+					imageUrl={profile.imageUrl}
+					size={160}
+					className={"h-auto w-36 overflow-hidden rounded-full"}
+				/>
 				<div className="flex flex-col items-center sm:items-start">
 					<p className="pb-4 text-sm tracking-widest text-muted-foreground">
 						PROFILE
@@ -160,6 +175,121 @@ function Handle() {
 					<FollowerMenu profileId={profile.userId} />
 				</div>
 			</div>
+			<h3 className="-mb-4">{profile.name}'s Top 6</h3>
+			<Tabs value={topCategory}>
+				<TabsList>
+					<TabsTrigger value="ALBUM" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								topCategory: undefined,
+								tab: tab,
+							}}
+						>
+							Albums
+						</Link>
+					</TabsTrigger>
+					<TabsTrigger value="SONG" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								topCategory: "SONG",
+								tab: tab,
+							}}
+						>
+							Songs
+						</Link>
+					</TabsTrigger>
+					<TabsTrigger value="ARTIST" asChild>
+						<Link
+							from={Route.fullPath}
+							search={{
+								topCategory: "ARTIST",
+								tab: tab,
+							}}
+						>
+							Artists
+						</Link>
+					</TabsTrigger>
+				</TabsList>
+				<TabsContent value="ALBUM">
+					{topLists?.album && (
+						<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+							{topLists.album.resources.map((album) => (
+								<div
+									className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[12.5rem] sm:min-h-[11.25rem] sm:w-36"
+									key={album.resourceId}
+								>
+									<ResourceItem
+										resource={{
+											parentId: album.parentId!,
+											resourceId: album.resourceId,
+											category:
+												topLists.album?.category ??
+												"ALBUM",
+										}}
+										direction="vertical"
+										imageCss={
+											"relative min-w-[64px] rounded -mb-3"
+										}
+										titleCss={"font-medium line-clamp-2"}
+										showArtist={false}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</TabsContent>
+				<TabsContent value="SONG">
+					{topLists?.song && (
+						<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+							{topLists.song.resources.map((song) => (
+								<div
+									className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[12.5rem] sm:min-h-[11.25rem] sm:w-36"
+									key={song.resourceId}
+								>
+									<ResourceItem
+										resource={{
+											parentId: song.parentId!,
+											resourceId: song.resourceId,
+											category:
+												topLists.song?.category ??
+												"SONG",
+										}}
+										direction="vertical"
+										imageCss={
+											"relative min-w-[64px] rounded -mb-3"
+										}
+										titleCss="font-medium line-clamp-2"
+										showArtist={false}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</TabsContent>
+				<TabsContent value="ARTIST">
+					{topLists?.artist && (
+						<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+							{topLists.artist.resources.map((artist) => (
+								<div
+									className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[12.5rem] sm:min-h-[11.25rem] sm:w-36"
+									key={artist.resourceId}
+								>
+									<ArtistItem
+										artistId={artist.resourceId}
+										direction="vertical"
+										textCss="font-medium line-clamp-2 -mt-2 text-center"
+										imageCss={
+											"h-auto w-[6rem] sm:min-h-32 sm:w-36"
+										}
+									/>
+								</div>
+							))}
+						</div>
+					)}
+				</TabsContent>
+			</Tabs>
 			<Tabs value={tab}>
 				<TabsList>
 					<TabsTrigger value="reviews" asChild>
@@ -167,6 +297,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								tab: undefined,
+								topCategory: topCategory,
 							}}
 						>
 							Reviews
@@ -177,6 +308,7 @@ function Handle() {
 							from={Route.fullPath}
 							search={{
 								tab: "lists",
+								topCategory: topCategory,
 							}}
 						>
 							Lists
@@ -188,6 +320,7 @@ function Handle() {
 								from={Route.fullPath}
 								search={{
 									tab: "settings",
+									topCategory: topCategory,
 								}}
 							>
 								Settings

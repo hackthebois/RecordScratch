@@ -16,17 +16,21 @@ const Review = ({
 	if (!rating) return;
 
 	return (
-		<div className="flex flex-row items-center justify-center gap-2">
+		<div className="flex flex-row items-center justify-center">
 			<Star
 				color="#ffb703"
 				fill="#ffb703"
 				size={size === "lg" ? 22 : 18}
+				className="mr-2"
 			/>
 			<div>
 				<p
 					className={cn({
 						"text-lg font-semibold": size === "lg",
 						"font-medium": size === "sm",
+						"min-w-4": true,
+						"max-w-4": true,
+						" text-end": true,
 					})}
 				>
 					{rating}
@@ -93,6 +97,7 @@ export const ListResource = ({
 									category: category,
 								}}
 								showLink={!editMode}
+								imageCss={"relative h-auto w-16 sm:w-20 "}
 							/>
 						)}
 					</div>

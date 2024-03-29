@@ -76,7 +76,11 @@ const LikeNotification = ({
 							handle: user.handle,
 						}}
 					>
-						<UserAvatar imageUrl={getImageUrl(user)} size={30} />
+						<UserAvatar
+							imageUrl={getImageUrl(user)}
+							className="h-auto w-8"
+							size={30}
+						/>
 					</Link>
 					<p>
 						<span className="font-bold">{user.handle}</span> liked

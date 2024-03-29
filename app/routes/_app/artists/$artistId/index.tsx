@@ -168,6 +168,7 @@ function Artist() {
 										initialArtist={artist}
 										direction="vertical"
 										textCss="text-wrap text-center text-sm -mt-2"
+										imageCss="h-auto w-24"
 									/>
 								</div>
 							))}

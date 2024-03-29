@@ -11,6 +11,7 @@ export const ArtistItem = ({
 	direction = "horizontal",
 	showLink = true,
 	textCss = "truncate",
+	imageCss,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -18,6 +19,7 @@ export const ArtistItem = ({
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
 	textCss?: string;
+	imageCss?: string;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -45,20 +47,21 @@ export const ArtistItem = ({
 			}}
 			{...(showLink ? link : {})}
 			className={cn(
-				"flex w-full min-w-0 items-center gap-4 rounded",
+				"flex w-full min-w-0 items-center gap-4",
 				direction === "vertical" ? "flex-col" : "flex-row"
 			)}
 		>
-			<div className="relative overflow-hidden rounded-full">
-				{artistImage ? (
-					<UserAvatar
-						imageUrl={artistImage}
-						size={direction === "horizontal" ? 64 : 96}
-					/>
-				) : (
-					<div className="h-full w-full bg-muted"></div>
-				)}
-			</div>
+			{/* <div className="items-center justify-center overflow-hidden rounded-full"> */}
+			{artistImage ? (
+				<UserAvatar
+					imageUrl={artistImage}
+					size={direction === "horizontal" ? 64 : 96}
+					className={imageCss}
+				/>
+			) : (
+				<div className="h-full w-full bg-muted"></div>
+			)}
+			{/* </div> */}
 			<p className={cn("flex flex-1 font-medium", textCss)}>
 				{artist.name}
 			</p>

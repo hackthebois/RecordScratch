@@ -74,6 +74,7 @@ const ListSettings = ({
 					id={listData.id}
 					name={listData.name}
 					description={listData.description ?? ""}
+					onProfile={listData.onProfile!}
 				/>
 			</div>
 			<div className="flex items-center justify-between pl-4">
@@ -198,7 +199,10 @@ function List() {
 						}}
 						className="flex items-center gap-2"
 					>
-						<UserAvatar imageUrl={getImageUrl(profile)} size={30} />
+						<UserAvatar
+							imageUrl={getImageUrl(profile)}
+							className="h-auto w-8"
+						/>
 						<p className="flex text-lg">{profile.name}</p>
 					</Link>
 					<p className="text-muted-foreground">
