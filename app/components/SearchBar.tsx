@@ -160,6 +160,8 @@ const ProfileSearch = ({
 		enabled: query.length > 0,
 	});
 
+	console.log(data);
+
 	return (
 		<SearchState
 			isError={isError}
