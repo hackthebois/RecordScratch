@@ -1,18 +1,28 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
+import { AwsClient } from "aws4fetch";
 import Cookies from "cookies";
 import SuperJSON from "superjson";
 import { ZodError } from "zod";
-import { lucia } from "./auth/lucia";
-import { db } from "./db";
+import { getLucia } from "./auth/lucia";
+import { getDB } from "./db";
 
 export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
 	const cookies = new Cookies(opts.req, opts.res);
 	const sessionId = cookies.get("auth_session");
 
+	const r2 = new AwsClient({
+		accessKeyId: process.env.R2_KEY_ID!,
+		secretAccessKey: process.env.R2_ACCESS_KEY!,
+		region: "auto",
+	});
+	const db = getDB();
+	const lucia = getLucia();
+
 	if (!sessionId) {
 		return {
 			db,
+			r2,
 			userId: null,
 		};
 	}
@@ -22,12 +32,14 @@ export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
 	if (!session) {
 		return {
 			db,
+			r2,
 			userId: null,
 		};
 	}
 
 	return {
 		db,
+		r2,
 		userId: session.userId,
 	};
 };

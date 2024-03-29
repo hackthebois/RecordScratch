@@ -2,7 +2,7 @@ import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import reactRefresh from "@vitejs/plugin-react";
 import { fileURLToPath } from "url";
 import { createApp } from "vinxi";
-import { input } from "vinxi/plugins/config";
+import { config, input } from "vinxi/plugins/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default createApp({
@@ -48,6 +48,13 @@ export default createApp({
 			handler: "index.html",
 			target: "browser",
 			plugins: () => [
+				config("custom", {
+					define: {
+						"process.env.CF_PAGES_URL": JSON.stringify(
+							process.env.CF_PAGES_URL
+						),
+					},
+				}),
 				tsconfigPaths(),
 				reactRefresh(),
 				TanStackRouterVite(),
