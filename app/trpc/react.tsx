@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { httpLink, loggerLink } from "@trpc/client";
 import { createTRPCQueryUtils, createTRPCReact } from "@trpc/react-query";
 
 import { type AppRouter } from "@/server/root";
@@ -15,7 +15,7 @@ const client = api.createClient({
 				process.env.NODE_ENV === "development" ||
 				(op.direction === "down" && op.result instanceof Error),
 		}),
-		httpBatchLink({
+		httpLink({
 			url: "/trpc",
 			transformer: SuperJSON,
 		}),
