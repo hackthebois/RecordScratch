@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import React from "react";
 
 import {
@@ -30,5 +29,5 @@ export const SignInWrapper = ({ children }: { children: React.ReactNode }) => {
 			</AlertDialog>
 		);
 	}
-	return <a href={env.VITE_BASE_URL + "/auth/google"}>{children}</a>;
+	return <a href={process.env.CF_PAGES_URL + "/auth/google"}>{children}</a>;
 };

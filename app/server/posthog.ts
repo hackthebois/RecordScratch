@@ -10,7 +10,7 @@ type PostHogEvent = {
 };
 
 const ph = new PostHog(env.VITE_POSTHOG_KEY, {
-	host: env.VITE_BASE_URL + "/ingest",
+	host: process.env.CF_PAGES_URL + "/ingest",
 });
 
 export const posthog = <TEvent extends keyof PostHogEvent>(
@@ -25,7 +25,7 @@ export const posthog = <TEvent extends keyof PostHogEvent>(
 		event,
 		properties: {
 			...payload.properties,
-			$host: env.VITE_BASE_URL.replace(/^https?:\/\//, ""),
+			$host: process.env.CF_PAGES_URL!.replace(/^https?:\/\//, ""),
 		},
 	});
 };
