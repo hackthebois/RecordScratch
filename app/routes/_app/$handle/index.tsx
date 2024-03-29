@@ -6,6 +6,7 @@ import FollowerMenu from "@/components/followers/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
 import ListList from "@/components/lists/ListList";
+import { ResourcesList } from "@/components/lists/TopLists";
 import { EditProfile } from "@/components/profile/EditProfile";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -21,6 +22,7 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
+import { Category, UserListItem } from "@/types/list";
 import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
@@ -213,73 +215,60 @@ function Handle() {
 				</TabsList>
 				<TabsContent value="ALBUM">
 					{topLists?.album && (
-						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
-							{topLists.album.resources.map((album) => (
-								<div
-									className="flex w-full flex-col"
-									key={album.resourceId}
-								>
-									<ResourceItem
-										resource={{
-											parentId: album.parentId!,
-											resourceId: album.resourceId,
-											category:
-												topLists.album?.category ??
-												"ALBUM",
-										}}
-										direction="vertical"
-										imageCss={"relative rounded -mb-3"}
-										titleCss="font-medium text-sm text-center line-clamp-2"
-										showArtist={false}
-									/>
-								</div>
-							))}
-						</div>
+						<ResourcesList
+							category="ALBUM"
+							resources={topLists.album.resources}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "ALBUM",
+									}}
+									direction="vertical"
+									imageCss="relative min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
 					)}
 				</TabsContent>
 				<TabsContent value="SONG">
 					{topLists?.song && (
-						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
-							{topLists.song.resources.map((song) => (
-								<div
-									className="flex w-full flex-col"
-									key={song.resourceId}
-								>
-									<ResourceItem
-										resource={{
-											parentId: song.parentId!,
-											resourceId: song.resourceId,
-											category:
-												topLists.song?.category ??
-												"SONG",
-										}}
-										direction="vertical"
-										imageCss={"relative rounded -mb-3"}
-										titleCss="font-medium text-sm text-center line-clamp-2"
-										showArtist={false}
-									/>
-								</div>
-							))}
-						</div>
+						<ResourcesList
+							category="SONG"
+							resources={topLists.song.resources}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "SONG",
+									}}
+									direction="vertical"
+									imageCss="relative min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
 					)}
 				</TabsContent>
 				<TabsContent value="ARTIST">
 					{topLists?.artist && (
-						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
-							{topLists.artist.resources.map((artist) => (
-								<div
-									className="flex w-full flex-col"
-									key={artist.resourceId}
-								>
-									<ArtistItem
-										artistId={artist.resourceId}
-										direction="vertical"
-										imageCss={"relative rounded-full -mb-3"}
-										textCss="font-medium text-sm text-center line-clamp-2"
-									/>
-								</div>
-							))}
-						</div>
+						<ResourcesList
+							category="ARTIST"
+							resources={topLists.artist.resources}
+							renderItem={(resource: UserListItem) => (
+								<ArtistItem
+									artistId={resource.resourceId}
+									direction="vertical"
+									textCss="font-medium line-clamp-2 -mt-2 text-center"
+									imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
+								/>
+							)}
+						/>
 					)}
 				</TabsContent>
 			</Tabs>
