@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { z } from "zod";
 
 export const ArtistSchema = z.object({
@@ -205,7 +204,7 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	const params = new URLSearchParams(input as any);
 
 	const res = await fetch(
-		`${env.VITE_BASE_URL}/music${modifiedRoute}?${params.toString()}`
+		`${process.env.CF_PAGES_URL}/music${modifiedRoute}?${params.toString()}`
 	);
 	const data: unknown = await res.json();
 

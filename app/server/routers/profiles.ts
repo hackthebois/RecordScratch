@@ -8,15 +8,6 @@ import { RatingSchema } from "@/types/rating";
 import { createNotification } from "../notifications";
 import { posthog } from "../posthog";
 
-import { env } from "@/server/env";
-import { AwsClient } from "aws4fetch";
-
-const r2 = new AwsClient({
-	accessKeyId: env.R2_KEY_ID,
-	secretAccessKey: env.R2_ACCESS_KEY,
-	region: "auto",
-});
-
 export const profilesRouter = router({
 	get: publicProcedure
 		.input(z.string())
@@ -211,9 +202,9 @@ export const profilesRouter = router({
 				size: z.number(),
 			})
 		)
-		.mutation(async ({ ctx: { userId }, input: { type, size } }) => {
+		.mutation(async ({ ctx: { userId, r2 }, input: { type, size } }) => {
 			const res = await r2.sign(
-				`${env.R2_ENDPOINT}/profile-images/${userId}`,
+				`${process.env.R2_ENDPOINT}/profile-images/${userId}`,
 				{
 					method: "PUT",
 					headers: {
