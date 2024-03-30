@@ -70,8 +70,8 @@ export default eventHandler(async (event) => {
 		const query = getQuery(event);
 		const code = z.string().parse(query.code);
 		const state = z.string().parse(query.state);
-		const storedState = getCookie("state");
-		const storedCodeVerifier = getCookie("codeVerifier");
+		const storedState = getCookie(event, "state");
+		const storedCodeVerifier = getCookie(event, "codeVerifier");
 
 		if (
 			!code ||
