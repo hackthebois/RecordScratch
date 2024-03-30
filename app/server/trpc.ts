@@ -1,15 +1,13 @@
 import { TRPCError, initTRPC } from "@trpc/server";
-import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import { AwsClient } from "aws4fetch";
-import Cookies from "cookies";
 import SuperJSON from "superjson";
+import { H3Event, getCookie } from "vinxi/http";
 import { ZodError } from "zod";
 import { getLucia } from "./auth/lucia";
 import { getDB } from "./db";
 
-export const createTRPCContext = async (opts: CreateHTTPContextOptions) => {
-	const cookies = new Cookies(opts.req, opts.res);
-	const sessionId = cookies.get("auth_session");
+export const createTRPCContext = async (event: H3Event) => {
+	const sessionId = getCookie(event, "auth_session");
 
 	const r2 = new AwsClient({
 		accessKeyId: process.env.R2_KEY_ID!,
