@@ -1,0 +1,32 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"jsx": "react-jsx",
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"types": ["vinxi/types/client"],
+		"isolatedModules": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["app/*"]
+		},
+		"skipLibCheck": true
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"../../packages/auth/src/index.ts",
+		"../../packages/api/index.ts",
+		"../../packages/api/lucia.ts",
+		"../../packages/api/src/posthog.ts",
+		"../../packages/db/drizzle.config.ts",
+		"../../drizzle.config.ts"
+	],
+	"exclude": ["node_modules"]
+}
