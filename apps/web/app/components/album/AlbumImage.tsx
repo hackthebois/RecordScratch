@@ -1,4 +1,4 @@
-import { Album } from "@/utils/deezer";
+import { Album } from "@recordscratch/utils/deezer";
 
 const AlbumImage = ({ album }: { album: Album }) => {
 	return (

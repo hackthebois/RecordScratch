@@ -1,4 +1,4 @@
-import { cn } from "@/utils/utils";
+import { cn } from "@recordscratch/utils/utils";
 import React from "react";
 import { Tag } from "./ui/Tag";
 

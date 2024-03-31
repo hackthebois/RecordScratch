@@ -1,7 +1,7 @@
-import { Album, Artist, Track } from "@/utils/deezer";
-import { Profile } from "@recordscratch/types";
+import type { Profile } from "@recordscratch/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { Album, Artist, Track } from "./deezer";
 
 export type Recent =
 	| {

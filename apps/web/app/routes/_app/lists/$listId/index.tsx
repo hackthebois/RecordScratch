@@ -12,9 +12,9 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
-import { timeAgo } from "@/utils/date";
-import { getImageUrl } from "@/utils/image";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
+import { timeAgo } from "@recordscratch/utils/date";
+import { getImageUrl } from "@recordscratch/utils/image";
 import {
 	ErrorComponent,
 	Link,
