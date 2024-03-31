@@ -1,0 +1,25 @@
+{
+	"name": "@recordscratch/utils",
+	"exports": {
+		"./deezer": "./src/deezer.ts",
+		"./date": "./src/date.ts",
+		"./hooks": "./src/hooks.ts",
+		"./recents": "./src/recents.ts",
+		"./utils": "./src/utils.ts",
+		"./image": "./src/image.ts"
+	},
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch"
+	},
+	"dependencies": {
+		"@recordscratch/types": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	}
+}

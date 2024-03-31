@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
-import { useDebounce } from "@/utils/hooks";
-import { Button } from "../ui/Button";
-import { ListPlus, Search } from "lucide-react";
-import { ResourceItem } from "../ResourceItem";
-import { useQuery } from "@tanstack/react-query";
-import { deezer } from "@/utils/deezer";
-import { ArtistItem } from "../artist/ArtistItem";
 import { api } from "@/trpc/react";
+import { deezer } from "@recordscratch/utils/deezer";
+import { useDebounce } from "@recordscratch/utils/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { ListPlus, Search } from "lucide-react";
+import { useState } from "react";
+import { ResourceItem } from "../ResourceItem";
 import { SearchState } from "../SearchBar";
+import { ArtistItem } from "../artist/ArtistItem";
+import { Button } from "../ui/Button";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/Dialog";
 
 export const MusicSearch = ({
 	query,

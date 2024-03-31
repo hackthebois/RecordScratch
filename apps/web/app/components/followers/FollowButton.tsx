@@ -3,7 +3,6 @@ import { api } from "@/trpc/react";
 import { Suspense } from "react";
 import SignedIn from "../SignedIn";
 import { Skeleton } from "../ui/Skeleton";
-import { cn } from "@/utils/utils";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
 	return (
