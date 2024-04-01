@@ -1,6 +1,5 @@
 import { api } from "@/trpc/react";
-import { deezer } from "@recordscratch/utils/deezer";
-import { useDebounce } from "@recordscratch/utils/hooks";
+import { deezer, useDebounce } from "@recordscratch/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ListPlus, Search } from "lucide-react";
 import { useState } from "react";

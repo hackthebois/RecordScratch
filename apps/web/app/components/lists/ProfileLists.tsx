@@ -1,4 +1,4 @@
-import { cn } from "@recordscratch/utils/utils";
+import { cn } from "@recordscratch/utils";
 import { ScrollArea } from "../ui/ScrollArea";
 
 export const ListMetaData = ({

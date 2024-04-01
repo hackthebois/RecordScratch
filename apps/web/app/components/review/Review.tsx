@@ -1,7 +1,6 @@
 import { api } from "@/trpc/react";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
-import { timeAgo } from "@recordscratch/utils/date";
-import { getImageUrl } from "@recordscratch/utils/image";
+import { getImageUrl, timeAgo } from "@recordscratch/utils";
 import { Link } from "@tanstack/react-router";
 import { Heart, MessageCircle, Star } from "lucide-react";
 import { Suspense } from "react";

@@ -10,8 +10,7 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, queryClient } from "@/trpc/react";
 import { Resource } from "@recordscratch/types";
-import { formatDuration } from "@recordscratch/utils/date";
-import { getQueryOptions } from "@recordscratch/utils/deezer";
+import { formatDuration, getQueryOptions } from "@recordscratch/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 

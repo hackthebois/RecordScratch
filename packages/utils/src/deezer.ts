@@ -203,9 +203,11 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 
-	const res = await fetch(
-		`${process.env.CF_PAGES_URL}/music${modifiedRoute}?${params.toString()}`
-	);
+	const baseUrl = process.env.CF_PAGES_URL || process.env.EXPO_PUBLIC_CF_PAGES_URL;
+
+	console.log(baseUrl);
+
+	const res = await fetch(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
 	const data: unknown = await res.json();
 
 	if (!res.ok) {

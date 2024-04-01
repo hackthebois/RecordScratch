@@ -1,7 +1,6 @@
 import AlbumImage from "@/components/album/AlbumImage";
 import { Resource } from "@recordscratch/types";
-import { Album, getQueryOptions } from "@recordscratch/utils/deezer";
-import { cn } from "@recordscratch/utils/utils";
+import { Album, cn, getQueryOptions } from "@recordscratch/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "./ui/Skeleton";

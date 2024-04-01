@@ -25,13 +25,13 @@ import {
 	UpdateProfileForm,
 	UpdateProfileFormSchema,
 } from "@recordscratch/types";
-import { useDebounce } from "@recordscratch/utils/hooks";
+import { useDebounce } from "@recordscratch/utils";
 import { AtSign } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
-import { getImageUrl } from "@recordscratch/utils/image";
+import { getImageUrl } from "@recordscratch/utils";
 import { useNavigate } from "@tanstack/react-router";
 import { UserAvatar } from "../user/UserAvatar";
 

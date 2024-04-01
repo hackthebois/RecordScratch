@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { cn } from "@recordscratch/utils/utils";
+import { cn } from "@recordscratch/utils";
 
 export interface TextareaProps
 	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
