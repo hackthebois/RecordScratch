@@ -1,8 +1,8 @@
-import { cn } from "@recordscratch/utils";
 import { Image } from "expo-image";
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 // import { Tag } from "./ui/Tag";
+import { Text } from "./Text";
 
 const Metadata = ({
 	title,
@@ -42,15 +42,8 @@ const Metadata = ({
 				<View className={"h-[150px] w-[150px] self-center"}>{cover}</View>
 			)}
 			<View className="flex flex-col items-center gap-4 sm:items-start">
-				<Text className="-mb-2 text-sm tracking-widest text-muted-foreground">
-					{type.toUpperCase()}
-				</Text>
-				<Text
-					className={cn(
-						"text-center sm:text-left",
-						size === "sm" && "text-3xl sm:text-4xl"
-					)}
-				>
+				<Text>{type.toUpperCase()}</Text>
+				<Text variant={"h1"} className={"text-center sm:text-left"}>
 					{title}
 				</Text>
 				{/* {tags && (
