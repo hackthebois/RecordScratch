@@ -10,7 +10,7 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { queryClient } from "@/trpc/react";
-import { getQueryOptions } from "@recordscratch/utils/deezer";
+import { getQueryOptions } from "@recordscratch/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";

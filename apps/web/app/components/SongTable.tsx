@@ -1,8 +1,7 @@
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { api } from "@/trpc/react";
 import { Resource } from "@recordscratch/types";
-import { Track } from "@recordscratch/utils/deezer";
-import { cn } from "@recordscratch/utils/utils";
+import { Track, cn } from "@recordscratch/utils";
 import { keepPreviousData } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";

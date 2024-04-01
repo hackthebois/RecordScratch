@@ -1,5 +1,5 @@
 import { ListsType } from "@recordscratch/types";
-import { getImageUrl } from "@recordscratch/utils/image";
+import { getImageUrl } from "@recordscratch/utils";
 import { Link } from "@tanstack/react-router";
 import { ScrollArea } from "../ui/ScrollArea";
 import { UserAvatar } from "../user/UserAvatar";

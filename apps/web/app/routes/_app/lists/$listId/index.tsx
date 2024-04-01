@@ -13,8 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
-import { timeAgo } from "@recordscratch/utils/date";
-import { getImageUrl } from "@recordscratch/utils/image";
+import { getImageUrl, timeAgo } from "@recordscratch/utils";
 import {
 	ErrorComponent,
 	Link,

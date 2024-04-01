@@ -1,6 +1,6 @@
 import { api } from "@/trpc/react";
 import { Resource, ResourceRating } from "@recordscratch/types";
-import { cn } from "@recordscratch/utils/utils";
+import { cn } from "@recordscratch/utils";
 import { Star } from "lucide-react";
 import { Skeleton } from "./Skeleton";
 

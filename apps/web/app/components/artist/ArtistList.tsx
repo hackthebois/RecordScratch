@@ -1,5 +1,5 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Artist } from "@recordscratch/utils/deezer";
+import { Artist } from "@recordscratch/utils";
 import { ArtistItem } from "./ArtistItem";
 
 export const ArtistList = ({

@@ -1,24 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import Constants from "expo-constants";
 import { useState } from "react";
+import superjson from "superjson";
 
-import type { AppRouter } from "@recordscratch/api/src/index";
+import type { AppRouter } from "@recordscratch/api";
 import React from "react";
 
 export const api = createTRPCReact<AppRouter>();
-
-const getBaseUrl = () => {
-	const debuggerHost = Constants.expoConfig?.hostUri;
-	const localhost = debuggerHost?.split(":")[0];
-
-	if (!localhost) {
-		// return "https://turbo.t3.gg";
-		throw new Error("Failed to get localhost. Please point to your production server.");
-	}
-	return `http://${localhost}:3000`;
-};
 
 export function TRPCProvider(props: { children: React.ReactNode }) {
 	const [queryClient] = useState(() => new QueryClient());
@@ -32,8 +21,8 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 					colorMode: "ansi",
 				}),
 				httpBatchLink({
-					// transformer: superjson,
-					url: `${getBaseUrl()}/trpc`,
+					transformer: superjson,
+					url: `${process.env.EXPO_PUBLIC_CF_PAGES_URL}/trpc`,
 				}),
 			],
 		})

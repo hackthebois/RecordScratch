@@ -4,6 +4,9 @@
 		"type-check": "tsc",
 		"dev": "turbo dev --parallel"
 	},
+	"dependencies": {
+		"typescript": "^5.4.2"
+	},
 	"workspaces": [
 		"apps/*",
 		"packages/*"
