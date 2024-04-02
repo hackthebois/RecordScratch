@@ -44,6 +44,7 @@ export const ArtistList = ({
 								? artist
 								: String(artist.id)
 						}
+						imageCss="h-32 w-32"
 						initialArtist={
 							typeof artist === "string" ? undefined : artist
 						}

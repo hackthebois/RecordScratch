@@ -79,6 +79,7 @@ export const SearchState = ({
 										});
 										onNavigate();
 									}}
+									imageCss="h-16 w-16"
 									artistId={String(recent.data.id)}
 									initialArtist={recent.data}
 									key={index}
@@ -271,6 +272,7 @@ export const MusicSearch = ({
 										});
 										onNavigate();
 									}}
+									imageCss="h-16 w-16"
 									artistId={String(artist.id)}
 									initialArtist={artist}
 									key={index}
