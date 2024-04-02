@@ -213,10 +213,10 @@ function Handle() {
 				</TabsList>
 				<TabsContent value="ALBUM">
 					{topLists?.album && (
-						<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
 							{topLists.album.resources.map((album) => (
 								<div
-									className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[12.5rem] sm:min-h-[11.25rem] sm:w-36"
+									className="flex w-full flex-col"
 									key={album.resourceId}
 								>
 									<ResourceItem
@@ -228,10 +228,8 @@ function Handle() {
 												"ALBUM",
 										}}
 										direction="vertical"
-										imageCss={
-											"relative min-w-[64px] rounded -mb-3"
-										}
-										titleCss={"font-medium line-clamp-2"}
+										imageCss={"relative rounded -mb-3"}
+										titleCss="font-medium text-sm text-center line-clamp-2"
 										showArtist={false}
 									/>
 								</div>
@@ -241,10 +239,10 @@ function Handle() {
 				</TabsContent>
 				<TabsContent value="SONG">
 					{topLists?.song && (
-						<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
 							{topLists.song.resources.map((song) => (
 								<div
-									className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[12.5rem] sm:min-h-[11.25rem] sm:w-36"
+									className="flex w-full flex-col"
 									key={song.resourceId}
 								>
 									<ResourceItem
@@ -256,10 +254,8 @@ function Handle() {
 												"SONG",
 										}}
 										direction="vertical"
-										imageCss={
-											"relative min-w-[64px] rounded -mb-3"
-										}
-										titleCss="font-medium line-clamp-2"
+										imageCss={"relative rounded -mb-3"}
+										titleCss="font-medium text-sm text-center line-clamp-2"
 										showArtist={false}
 									/>
 								</div>
@@ -269,19 +265,17 @@ function Handle() {
 				</TabsContent>
 				<TabsContent value="ARTIST">
 					{topLists?.artist && (
-						<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
 							{topLists.artist.resources.map((artist) => (
 								<div
-									className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[12.5rem] sm:min-h-[11.25rem] sm:w-36"
+									className="flex w-full flex-col"
 									key={artist.resourceId}
 								>
 									<ArtistItem
 										artistId={artist.resourceId}
 										direction="vertical"
-										textCss="font-medium line-clamp-2 -mt-2 text-center"
-										imageCss={
-											"h-auto w-[6rem] sm:min-h-32 sm:w-36"
-										}
+										imageCss={"relative rounded-full -mb-3"}
+										textCss="font-medium text-sm text-center line-clamp-2"
 									/>
 								</div>
 							))}

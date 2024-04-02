@@ -2,7 +2,6 @@ import { Artist, getQueryOptions } from "@/utils/deezer";
 import { cn } from "@/utils/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { UserAvatar } from "../user/UserAvatar";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -47,23 +46,20 @@ export const ArtistItem = ({
 			}}
 			{...(showLink ? link : {})}
 			className={cn(
-				"flex w-full min-w-0 items-center gap-4",
+				"flex w-full items-center gap-4",
 				direction === "vertical" ? "flex-col" : "flex-row"
 			)}
 		>
-			{/* <div className="items-center justify-center overflow-hidden rounded-full"> */}
-			{artistImage ? (
-				<UserAvatar
-					imageUrl={artistImage}
-					className={cn(
-						imageCss,
-						direction === "horizontal" ? "h-16 w-16" : "h-24 w-24"
-					)}
-				/>
-			) : (
-				<div className="h-full w-full bg-muted"></div>
-			)}
-			{/* </div> */}
+			<div className="items-center justify-center overflow-hidden rounded-full">
+				{artistImage ? (
+					<img
+						src={artistImage}
+						className={cn("h-full w-full rounded-full", imageCss)}
+					/>
+				) : (
+					<div className="h-full w-full bg-muted"></div>
+				)}
+			</div>
 			<p className={cn("flex flex-1 font-medium", textCss)}>
 				{artist.name}
 			</p>
