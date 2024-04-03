@@ -28,6 +28,7 @@ import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
 import { z } from "zod";
@@ -68,6 +69,14 @@ export const Route = createFileRoute("/_app/$handle/")({
 		});
 	},
 });
+
+const TopListLoader = () => {
+	return (
+		<div className="mb-2 mt-5 flex h-[10rem] items-center justify-center">
+			<Disc3 size={35} className="animate-spin" />
+		</div>
+	);
+};
 
 const SignOutButton = () => {
 	const navigate = useNavigate({
@@ -183,12 +192,14 @@ function Handle() {
 			</div>
 			<div className="flex flex-row items-center justify-center gap-2 sm:justify-start">
 				<h3 className="-mb-4">{profile.name}'s Top 6</h3>
-				<EditTopLists
-					editMode={editMode}
-					onClick={() => {
-						setEditMode(!editMode);
-					}}
-				/>
+				{isUser && (
+					<EditTopLists
+						editMode={editMode}
+						onClick={() => {
+							setEditMode(!editMode);
+						}}
+					/>
+				)}
 			</div>
 
 			<Tabs value={topCategory}>
@@ -228,13 +239,14 @@ function Handle() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="ALBUM">
-					<Suspense>
+					<Suspense fallback={<TopListLoader />}>
 						<ResourcesList
 							category="ALBUM"
 							listId={topLists?.album?.id}
 							editMode={editMode}
 							userId={profile.userId}
 							resources={topLists?.album?.resources}
+							isUser={isUser}
 							renderItem={(resource: UserListItem) => (
 								<ResourceItem
 									resource={{
@@ -252,13 +264,14 @@ function Handle() {
 					</Suspense>
 				</TabsContent>
 				<TabsContent value="SONG">
-					<Suspense>
+					<Suspense fallback={<TopListLoader />}>
 						<ResourcesList
 							listId={topLists?.song?.id}
 							category="SONG"
 							editMode={editMode}
 							userId={profile.userId}
 							resources={topLists?.song?.resources}
+							isUser={isUser}
 							renderItem={(resource: UserListItem) => (
 								<ResourceItem
 									resource={{
@@ -276,13 +289,14 @@ function Handle() {
 					</Suspense>
 				</TabsContent>
 				<TabsContent value="ARTIST">
-					<Suspense>
+					<Suspense fallback={<TopListLoader />}>
 						<ResourcesList
 							listId={topLists?.artist?.id}
 							category="ARTIST"
 							editMode={editMode}
 							userId={profile.userId}
 							resources={topLists?.artist?.resources}
+							isUser={isUser}
 							renderItem={(resource: UserListItem) => (
 								<ArtistItem
 									artistId={resource.resourceId}

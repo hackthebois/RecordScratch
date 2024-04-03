@@ -159,14 +159,15 @@ function Artist() {
 					>
 						<div className="my-6 flex flex-row gap-5">
 							{artists.data.map((artist) => (
-								<ArtistItem
-									key={artist.id}
-									artistId={String(artist.id)}
-									initialArtist={artist}
-									direction="vertical"
-									textCss="text-xs line-clamp-2 -mt-2 text-center"
-									imageCss="min-h-20 min-w-20 sm:min-h-24 sm:min-w-24"
-								/>
+								<div key={artist.id}>
+									<ArtistItem
+										artistId={String(artist.id)}
+										initialArtist={artist}
+										direction="vertical"
+										textCss="text-xs line-clamp-2 -mt-2 text-center"
+										imageCss="min-h-20 min-w-20 sm:min-h-24 sm:min-w-24"
+									/>
+								</div>
 							))}
 						</div>
 					</ScrollArea>

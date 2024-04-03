@@ -40,7 +40,7 @@ const FollowersPopup = ({
 					</DialogTitle>
 				</DialogHeader>
 				<ScrollArea className="flex max-h-96 flex-col gap-3">
-					<div className="flex flex-col gap-3 pb-4">
+					<div className="flex flex-col gap-4 pb-4">
 						{profiles?.map(({ profile }, index) => (
 							<ProfileItem
 								key={index}
