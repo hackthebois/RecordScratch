@@ -1,14 +1,14 @@
 import React from "react";
 import { Text as RNText } from "react-native";
 
-import { cn } from "@recordscratch/utils";
+import { cn } from "@recordscratch/lib";
 import { cva, type VariantProps } from "class-variance-authority";
 
 export const textVariants = cva("text-foreground", {
 	variants: {
 		variant: {
-			text: "text-foreground font-[Montserrat_400Regular]",
-			h1: "text-4xl",
+			text: "text-foreground font-regular",
+			h1: "text-4xl font-bold",
 		},
 	},
 	defaultVariants: {

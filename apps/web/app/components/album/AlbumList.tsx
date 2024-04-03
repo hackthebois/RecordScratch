@@ -1,5 +1,5 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Album, getQueryOptions } from "@recordscratch/utils";
+import { Album, getQueryOptions } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import AlbumImage from "./AlbumImage";

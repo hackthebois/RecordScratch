@@ -1,5 +1,5 @@
 import { api } from "@/trpc/react";
-import { getImageUrl } from "@recordscratch/utils";
+import { getImageUrl } from "@recordscratch/lib";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
 	AlertDialog,

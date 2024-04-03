@@ -20,18 +20,18 @@ import {
 } from "@/components/ui/Form";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { useDebounce } from "@recordscratch/lib";
 import {
 	Profile,
 	UpdateProfileForm,
 	UpdateProfileFormSchema,
 } from "@recordscratch/types";
-import { useDebounce } from "@recordscratch/utils";
 import { AtSign } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
-import { getImageUrl } from "@recordscratch/utils";
+import { getImageUrl } from "@recordscratch/lib";
 import { useNavigate } from "@tanstack/react-router";
 import { UserAvatar } from "../user/UserAvatar";
 

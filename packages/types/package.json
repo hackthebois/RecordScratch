@@ -1,11 +1,6 @@
 {
 	"name": "@recordscratch/types",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./src/index.ts"
-		}
-	},
+	"main": "./src/index.ts",
 	"type": "module",
 	"scripts": {
 		"build": "tsc",

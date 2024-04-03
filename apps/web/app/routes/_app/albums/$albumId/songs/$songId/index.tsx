@@ -9,8 +9,8 @@ import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, queryClient } from "@/trpc/react";
+import { formatDuration, getQueryOptions } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
-import { formatDuration, getQueryOptions } from "@recordscratch/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 

@@ -12,8 +12,8 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
+import { getImageUrl, timeAgo } from "@recordscratch/lib";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
-import { getImageUrl, timeAgo } from "@recordscratch/utils";
 import {
 	ErrorComponent,
 	Link,

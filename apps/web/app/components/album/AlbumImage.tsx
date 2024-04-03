@@ -1,4 +1,4 @@
-import { Album } from "@recordscratch/utils";
+import { Album } from "@recordscratch/lib";
 
 const AlbumImage = ({ album }: { album: Album }) => {
 	return (

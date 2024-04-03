@@ -10,7 +10,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api, apiUtils } from "@/trpc/react";
-import { formatDuration, getQueryOptions } from "@recordscratch/utils";
+import { formatDuration, getQueryOptions } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";

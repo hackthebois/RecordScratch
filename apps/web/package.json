@@ -8,14 +8,15 @@
 		"build": "tsc && vinxi build --preset vercel",
 		"build-cloudflare": "tsc && vinxi build --preset cloudflare_pages",
 		"start": "vinxi start --preset vercel",
-		"studio": "drizzle-kit studio"
+		"studio": "drizzle-kit studio",
+		"clean": "rm -rf node_modules && rm -rf .dist"
 	},
 	"dependencies": {
 		"@recordscratch/db": "workspace:*",
 		"@recordscratch/types": "workspace:*",
 		"@recordscratch/api": "workspace:*",
 		"@recordscratch/auth": "workspace:*",
-		"@recordscratch/utils": "workspace:*",
+		"@recordscratch/lib": "workspace:*",
 		"@hookform/resolvers": "^3.3.4",
 		"@radix-ui/react-alert-dialog": "^1.0.5",
 		"@radix-ui/react-avatar": "^1.0.4",

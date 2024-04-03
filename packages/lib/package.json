@@ -1,6 +1,6 @@
 {
-	"name": "@recordscratch/utils",
-	"main": "src/index.ts",
+	"name": "@recordscratch/lib",
+	"main": "./src/index.ts",
 	"dependencies": {
 		"@recordscratch/types": "workspace:*",
 		"clsx": "^2.1.0",
@@ -8,7 +8,15 @@
 		"tailwind-merge": "^2.2.2",
 		"zustand": "^4.5.2"
 	},
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch"
+	},
 	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
 		"typescript": "^5.4.2"
 	}
 }

@@ -4,7 +4,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
 import { Profile } from "@recordscratch/types";
-import { getImageUrl } from "@recordscratch/utils";
+import { getImageUrl } from "@recordscratch/lib";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { BellOff, Heart, User } from "lucide-react";
 import { useEffect } from "react";

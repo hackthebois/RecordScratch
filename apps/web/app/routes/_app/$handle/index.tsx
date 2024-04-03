@@ -21,7 +21,7 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
-import { cn, getImageUrl } from "@recordscratch/utils";
+import { cn, getImageUrl } from "@recordscratch/lib";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
