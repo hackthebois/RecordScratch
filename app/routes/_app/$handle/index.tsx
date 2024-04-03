@@ -28,7 +28,6 @@ import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { MoreHorizontal } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { z } from "zod";
@@ -184,12 +183,14 @@ function Handle() {
 			</div>
 			<div className="flex flex-row items-center justify-center gap-2 sm:justify-start">
 				<h3 className="-mb-4">{profile.name}'s Top 6</h3>
-				<EditTopLists
-					editMode={editMode}
-					onClick={() => {
-						setEditMode(!editMode);
-					}}
-				/>
+				{isUser && (
+					<EditTopLists
+						editMode={editMode}
+						onClick={() => {
+							setEditMode(!editMode);
+						}}
+					/>
+				)}
 			</div>
 
 			<Tabs value={topCategory}>
@@ -235,6 +236,7 @@ function Handle() {
 						editMode={editMode}
 						userId={profile.userId}
 						resources={topLists?.album?.resources}
+						isUser={isUser}
 						renderItem={(resource: UserListItem) => (
 							<ResourceItem
 								resource={{
@@ -257,6 +259,7 @@ function Handle() {
 						editMode={editMode}
 						userId={profile.userId}
 						resources={topLists?.song?.resources}
+						isUser={isUser}
 						renderItem={(resource: UserListItem) => (
 							<ResourceItem
 								resource={{
@@ -279,6 +282,7 @@ function Handle() {
 						editMode={editMode}
 						userId={profile.userId}
 						resources={topLists?.artist?.resources}
+						isUser={isUser}
 						renderItem={(resource: UserListItem) => (
 							<ArtistItem
 								artistId={resource.resourceId}

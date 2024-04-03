@@ -13,12 +13,14 @@ export const ResourcesList = ({
 	editMode,
 	renderItem,
 	userId,
+	isUser,
 }: {
 	listId: string | undefined;
 	category: Category;
 	resources: UserListItem[] | undefined;
 	editMode: boolean;
 	userId: string;
+	isUser: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-unused-vars
 	renderItem: (resource: UserListItem) => React.ReactNode;
 }) => {
@@ -42,30 +44,32 @@ export const ResourcesList = ({
 	if (!resources || !listId) {
 		return (
 			<div className="flex flex-row">
-				<Button
-					variant={"outline"}
-					className={cn(
-						"mb-1 h-[104px] overflow-hidden sm:mr-2 sm:h-36 sm:w-36",
-						category == "ARTIST" && "rounded-full"
-					)}
-					onClick={() => {
-						createList({
-							name: `My Top 6 ${category.toLowerCase()}s`,
-							category,
-							onProfile: true,
-						});
+				{isUser && (
+					<Button
+						variant={"outline"}
+						className={cn(
+							"mb-1 h-[104px] overflow-hidden sm:mr-2 sm:h-36 sm:w-36",
+							category == "ARTIST" && "rounded-full"
+						)}
+						onClick={() => {
+							createList({
+								name: `My Top 6 ${category.toLowerCase()}s`,
+								category,
+								onProfile: true,
+							});
 
-						utils.lists.getProfile.invalidate({
-							userId,
-						});
+							utils.lists.getProfile.invalidate({
+								userId,
+							});
 
-						utils.lists.getUser.invalidate({ userId });
+							utils.lists.getUser.invalidate({ userId });
 
-						setOpen(true);
-					}}
-				>
-					Add {category.toLowerCase()}
-				</Button>
+							setOpen(true);
+						}}
+					>
+						Add {category.toLowerCase()}
+					</Button>
+				)}
 			</div>
 		);
 	}
@@ -92,7 +96,7 @@ export const ResourcesList = ({
 				</div>
 			))}
 
-			{resources.length < 6 && (
+			{resources.length < 6 && isUser && (
 				<SearchAddToList
 					openMenu={open}
 					category={category}
