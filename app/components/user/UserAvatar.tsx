@@ -1,7 +1,6 @@
 import { cn } from "@/utils/utils";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
-import { cn } from "@/utils/utils";
 
 export const UserAvatar = ({
 	imageUrl,
