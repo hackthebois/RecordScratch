@@ -5,7 +5,7 @@
 > **Warning**
 > This is a work-in-progress and not the finished product.
 
-RecordScratch is a community-driven music rating app that allows users to rate, share and explore music of all genres. We are still early on and there is a long way to go. Some features on the roadmap are sharing, user stats/badges, animations, streaks, games, polls, playable music,recommendations, and so much more!
+RecordScratch is a community-driven music rating app that allows users to rate, share and explore music of all genres. We are still early on and there is a long way to go. Some features on the roadmap are sharing, user stats/badges, animations, streaks, games, polls, playable music, recommendations, and so much more!
 
 ## Join our discord!
 

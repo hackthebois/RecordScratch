@@ -1,0 +1,26 @@
+{
+	"name": "@recordscratch/auth",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch"
+	},
+	"dependencies": {
+		"@lucia-auth/adapter-drizzle": "^1.0.7",
+		"@recordscratch/db": "workspace:*",
+		"drizzle-zod": "^0.5.1",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.4.2"
+	}
+}
