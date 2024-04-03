@@ -1,5 +1,6 @@
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import {
+	deleteListResourcesSchema,
 	filterUserListsSchema,
 	insertListResourcesSchema,
 	insertListSchema,
@@ -11,6 +12,7 @@ import {
 import { and, asc, desc, eq } from "drizzle-orm/sql";
 import { generateId } from "lucia";
 import { listResources, lists, ratings } from "../db/schema";
+import { z } from "zod";
 
 export const listsRouter = router({
 	get: publicProcedure
@@ -49,7 +51,7 @@ export const listsRouter = router({
 		}),
 
 	getProfile: publicProcedure
-		.input(filterUserListsSchema)
+		.input(z.object({ userId: z.string() }))
 		.query(async ({ ctx: { db }, input: { userId } }) => {
 			const artistList = await db.query.lists.findFirst({
 				with: {
@@ -234,9 +236,15 @@ export const listsRouter = router({
 										.update(listResources)
 										.set({ position: index + 1 })
 										.where(
-											eq(
-												listResources.resourceId,
-												item.resourceId
+											and(
+												eq(
+													listResources.resourceId,
+													item.resourceId
+												),
+												eq(
+													listResources.listId,
+													item.listId
+												)
 											)
 										);
 								})
@@ -276,6 +284,33 @@ export const listsRouter = router({
 									);
 							})
 						);
+					}
+				}
+			),
+
+		delete: protectedProcedure
+			.input(deleteListResourcesSchema)
+			.mutation(
+				async ({
+					ctx: { db, userId },
+					input: { listId, resourceId },
+				}) => {
+					const listOwner = !!(await db.query.lists.findFirst({
+						where: and(
+							eq(lists.userId, userId),
+							eq(lists.id, listId)
+						),
+					}));
+
+					if (listOwner) {
+						await db
+							.update(lists)
+							.set({ updatedAt: new Date() })
+							.where(eq(lists.id, listId));
+
+						await db
+							.delete(listResources)
+							.where(eq(listResources.resourceId, resourceId));
 					}
 				}
 			),

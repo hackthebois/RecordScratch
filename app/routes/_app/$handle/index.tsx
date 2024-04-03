@@ -5,6 +5,7 @@ import { ArtistItem } from "@/components/artist/ArtistItem";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
+import { EditTopLists } from "@/components/lists/EditTopLists";
 import ListList from "@/components/lists/ListList";
 import { ResourcesList } from "@/components/lists/TopLists";
 import { EditProfile } from "@/components/profile/EditProfile";
@@ -22,12 +23,14 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
-import { Category, UserListItem } from "@/types/list";
+import { UserListItem } from "@/types/list";
 import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { MoreHorizontal } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
+import { useState } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
@@ -140,6 +143,9 @@ function Handle() {
 			placeholderData: keepPreviousData,
 		}
 	);
+
+	const [editMode, setEditMode] = useState<boolean>(false);
+
 	if (!profile) return <NotFound />;
 
 	const [topLists] = api.lists.getProfile.useSuspenseQuery({
@@ -176,7 +182,16 @@ function Handle() {
 					<FollowerMenu profileId={profile.userId} />
 				</div>
 			</div>
-			<h3 className="-mb-4">{profile.name}'s Top 6</h3>
+			<div className="flex flex-row items-center justify-center gap-2 sm:justify-start">
+				<h3 className="-mb-4">{profile.name}'s Top 6</h3>
+				<EditTopLists
+					editMode={editMode}
+					onClick={() => {
+						setEditMode(!editMode);
+					}}
+				/>
+			</div>
+
 			<Tabs value={topCategory}>
 				<TabsList>
 					<TabsTrigger value="ALBUM" asChild>
@@ -217,6 +232,9 @@ function Handle() {
 					{topLists?.album && (
 						<ResourcesList
 							category="ALBUM"
+							listId={topLists.album.id}
+							editMode={editMode}
+							userId={profile.userId}
 							resources={topLists.album.resources}
 							renderItem={(resource: UserListItem) => (
 								<ResourceItem
@@ -226,7 +244,7 @@ function Handle() {
 										category: "ALBUM",
 									}}
 									direction="vertical"
-									imageCss="relative min-w-[64px] rounded -mb-3"
+									imageCss="min-w-[64px] rounded -mb-3"
 									titleCss="font-medium line-clamp-2"
 									showArtist={false}
 								/>
@@ -237,7 +255,10 @@ function Handle() {
 				<TabsContent value="SONG">
 					{topLists?.song && (
 						<ResourcesList
+							listId={topLists.song.id}
 							category="SONG"
+							editMode={editMode}
+							userId={profile.userId}
 							resources={topLists.song.resources}
 							renderItem={(resource: UserListItem) => (
 								<ResourceItem
@@ -247,9 +268,10 @@ function Handle() {
 										category: "SONG",
 									}}
 									direction="vertical"
-									imageCss="relative min-w-[64px] rounded -mb-3"
+									imageCss="min-w-[64px] rounded -mb-3"
 									titleCss="font-medium line-clamp-2"
 									showArtist={false}
+									showLink={false}
 								/>
 							)}
 						/>
@@ -258,7 +280,10 @@ function Handle() {
 				<TabsContent value="ARTIST">
 					{topLists?.artist && (
 						<ResourcesList
+							listId={topLists.artist.id}
 							category="ARTIST"
+							editMode={editMode}
+							userId={profile.userId}
 							resources={topLists.artist.resources}
 							renderItem={(resource: UserListItem) => (
 								<ArtistItem
