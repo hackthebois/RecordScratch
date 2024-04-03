@@ -28,8 +28,9 @@ import { getImageUrl } from "@/utils/image";
 import { cn } from "@/utils/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
@@ -68,6 +69,14 @@ export const Route = createFileRoute("/_app/$handle/")({
 		});
 	},
 });
+
+const TopListLoader = () => {
+	return (
+		<div className="mb-2 mt-5 flex h-[10rem] items-center justify-center">
+			<Disc3 size={35} className="animate-spin" />
+		</div>
+	);
+};
 
 const SignOutButton = () => {
 	const navigate = useNavigate({
@@ -230,68 +239,74 @@ function Handle() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="ALBUM">
-					<ResourcesList
-						category="ALBUM"
-						listId={topLists?.album?.id}
-						editMode={editMode}
-						userId={profile.userId}
-						resources={topLists?.album?.resources}
-						isUser={isUser}
-						renderItem={(resource: UserListItem) => (
-							<ResourceItem
-								resource={{
-									parentId: resource.parentId!,
-									resourceId: resource.resourceId,
-									category: "ALBUM",
-								}}
-								direction="vertical"
-								imageCss="min-w-[64px] rounded -mb-3"
-								titleCss="font-medium line-clamp-2"
-								showArtist={false}
-							/>
-						)}
-					/>
+					<Suspense fallback={<TopListLoader />}>
+						<ResourcesList
+							category="ALBUM"
+							listId={topLists?.album?.id}
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.album?.resources}
+							isUser={isUser}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "ALBUM",
+									}}
+									direction="vertical"
+									imageCss="min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 				<TabsContent value="SONG">
-					<ResourcesList
-						listId={topLists?.song?.id}
-						category="SONG"
-						editMode={editMode}
-						userId={profile.userId}
-						resources={topLists?.song?.resources}
-						isUser={isUser}
-						renderItem={(resource: UserListItem) => (
-							<ResourceItem
-								resource={{
-									parentId: resource.parentId!,
-									resourceId: resource.resourceId,
-									category: "SONG",
-								}}
-								direction="vertical"
-								imageCss="min-w-[64px] rounded -mb-3"
-								titleCss="font-medium line-clamp-2"
-								showArtist={false}
-							/>
-						)}
-					/>
+					<Suspense fallback={<TopListLoader />}>
+						<ResourcesList
+							listId={topLists?.song?.id}
+							category="SONG"
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.song?.resources}
+							isUser={isUser}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "SONG",
+									}}
+									direction="vertical"
+									imageCss="min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 				<TabsContent value="ARTIST">
-					<ResourcesList
-						listId={topLists?.artist?.id}
-						category="ARTIST"
-						editMode={editMode}
-						userId={profile.userId}
-						resources={topLists?.artist?.resources}
-						isUser={isUser}
-						renderItem={(resource: UserListItem) => (
-							<ArtistItem
-								artistId={resource.resourceId}
-								direction="vertical"
-								textCss="font-medium line-clamp-2 -mt-2 text-center"
-								imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
-							/>
-						)}
-					/>
+					<Suspense fallback={<TopListLoader />}>
+						<ResourcesList
+							listId={topLists?.artist?.id}
+							category="ARTIST"
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.artist?.resources}
+							isUser={isUser}
+							renderItem={(resource: UserListItem) => (
+								<ArtistItem
+									artistId={resource.resourceId}
+									direction="vertical"
+									textCss="font-medium line-clamp-2 -mt-2 text-center"
+									imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 			</Tabs>
 			<Tabs value={tab}>
