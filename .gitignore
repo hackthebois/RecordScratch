@@ -29,3 +29,6 @@ dist-ssr
 .vinxi
 .vercel
 .env*.local
+
+wrangler.toml
+.turbo
