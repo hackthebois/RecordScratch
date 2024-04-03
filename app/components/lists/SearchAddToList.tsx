@@ -191,13 +191,15 @@ export const SearchAddToList = ({
 	listId,
 	button,
 	onClick,
+	openMenu,
 }: {
 	category: "ALBUM" | "SONG" | "ARTIST";
 	listId: string;
 	button?: React.ReactNode;
 	onClick?: () => void;
+	openMenu?: boolean;
 }) => {
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(openMenu ?? false);
 	const [query, setQuery] = useState("");
 
 	const debouncedQuery = useDebounce(query, 500);

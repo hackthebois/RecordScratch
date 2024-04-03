@@ -7,11 +7,15 @@ export const listSchema = createInsertSchema(lists, {
 	name: z.string().max(50).min(1).trim(),
 });
 
-export const insertListSchema = listSchema.pick({
-	name: true,
-	description: true,
-	category: true,
-});
+export const insertListSchema = listSchema
+	.pick({
+		name: true,
+		description: true,
+		category: true,
+	})
+	.extend({
+		onProfile: listSchema.shape.onProfile.optional(),
+	});
 export type InsertList = z.infer<typeof insertListSchema>;
 
 export const updateListSchema = listSchema.pick({
