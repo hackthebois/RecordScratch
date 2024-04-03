@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"build": "vite build",
+		"build": "turbo build",
 		"type-check": "tsc",
 		"dev": "turbo dev --parallel",
 		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
