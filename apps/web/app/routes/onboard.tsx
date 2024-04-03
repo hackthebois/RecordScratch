@@ -17,7 +17,7 @@ import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Onboard } from "@recordscratch/types";
 import { OnboardSchema, handleRegex } from "@recordscratch/types";
-import { cn, useDebounce } from "@recordscratch/utils";
+import { cn, useDebounce } from "@recordscratch/lib";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AtSign, Disc3 } from "lucide-react";
 import { useEffect, useState } from "react";

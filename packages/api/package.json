@@ -1,16 +1,7 @@
 {
 	"name": "@recordscratch/api",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./src/index.ts"
-		}
-	},
 	"type": "module",
-	"scripts": {
-		"build": "tsc",
-		"dev": "tsc --watch"
-	},
+	"main": "./src/index.ts",
 	"dependencies": {
 		"@recordscratch/auth": "workspace:*",
 		"@recordscratch/db": "workspace:*",

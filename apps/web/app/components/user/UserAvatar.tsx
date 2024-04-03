@@ -1,4 +1,4 @@
-import { cn } from "@recordscratch/utils";
+import { cn } from "@recordscratch/lib";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 

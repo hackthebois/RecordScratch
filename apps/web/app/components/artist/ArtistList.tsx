@@ -1,5 +1,5 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { Artist } from "@recordscratch/utils";
+import { Artist } from "@recordscratch/lib";
 import { ArtistItem } from "./ArtistItem";
 
 export const ArtistList = ({

@@ -4,7 +4,7 @@ import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import superjson from "superjson";
 
-import type { AppRouter } from "@recordscratch/api";
+import { AppRouter } from "@recordscratch/api";
 import React from "react";
 
 export const api = createTRPCReact<AppRouter>();

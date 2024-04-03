@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { api } from "@/trpc/react";
-import { deezer, useDebounce, useRecents } from "@recordscratch/utils";
+import { deezer, useDebounce, useRecents } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";

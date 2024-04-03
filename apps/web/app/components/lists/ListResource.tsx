@@ -1,5 +1,5 @@
 import { Category, ListItem } from "@recordscratch/types";
-import { cn } from "@recordscratch/utils";
+import { cn } from "@recordscratch/lib";
 import { Reorder, useDragControls, useMotionValue } from "framer-motion";
 import { AlignJustify, Star } from "lucide-react";
 import { ResourceItem } from "../ResourceItem";
