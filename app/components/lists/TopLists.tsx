@@ -26,12 +26,14 @@ export const ResourcesList = ({
 
 	const { mutate: deleteResource } = api.lists.resources.delete.useMutation({
 		onSettled: () => {
-			utils.lists.getProfile.invalidate({ userId: userId });
+			utils.lists.getProfile.invalidate({ userId });
+			utils.lists.getUser.invalidate({ userId });
 		},
 	});
 	const { mutate: createList } = api.lists.create.useMutation({
 		onSettled: () => {
-			utils.lists.getProfile.invalidate({ userId: userId });
+			utils.lists.getProfile.invalidate({ userId });
+			utils.lists.getUser.invalidate({ userId });
 		},
 	});
 
@@ -39,7 +41,7 @@ export const ResourcesList = ({
 
 	if (!resources || !listId) {
 		return (
-			<div>
+			<div className="flex flex-row">
 				<Button
 					variant={"outline"}
 					className={cn(
@@ -48,7 +50,7 @@ export const ResourcesList = ({
 					)}
 					onClick={() => {
 						createList({
-							name: `Top 6 ${category.toLowerCase()}'s`,
+							name: `My Top 6 ${category.toLowerCase()}s`,
 							category,
 							onProfile: true,
 						});
@@ -108,8 +110,9 @@ export const ResourcesList = ({
 					}
 					onClick={() => {
 						utils.lists.getProfile.invalidate({
-							userId: userId,
+							userId,
 						});
+						utils.lists.getUser.invalidate({ userId });
 						if (open) setOpen(false);
 					}}
 				/>
