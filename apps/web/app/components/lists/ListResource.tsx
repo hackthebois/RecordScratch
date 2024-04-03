@@ -88,6 +88,7 @@ export const ListResource = ({
 							<ArtistItem
 								artistId={item.resourceId}
 								showLink={!editMode}
+								imageCss="h-16 w-16"
 							/>
 						) : (
 							<ResourceItem
