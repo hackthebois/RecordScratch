@@ -71,10 +71,10 @@ export const ResourcesList = ({
 	}
 
 	return (
-		<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
+		<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap justify-center gap-3 sm:max-h-[26rem] sm:justify-start ">
 			{resources.map((resource) => (
 				<div
-					className="relative mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[11.25rem] sm:min-h-[11.25rem] sm:w-36"
+					className="mb-1 h-auto max-h-[10rem] min-h-[10rem] w-[6.5rem] overflow-hidden sm:mr-2 sm:max-h-[11.25rem] sm:min-h-[11.25rem] sm:w-36"
 					key={resource.resourceId}
 				>
 					{renderItem(resource)}

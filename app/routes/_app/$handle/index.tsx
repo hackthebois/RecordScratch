@@ -31,7 +31,7 @@ import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
@@ -230,65 +230,71 @@ function Handle() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="ALBUM">
-					<ResourcesList
-						category="ALBUM"
-						listId={topLists?.album?.id}
-						editMode={editMode}
-						userId={profile.userId}
-						resources={topLists?.album?.resources}
-						renderItem={(resource: UserListItem) => (
-							<ResourceItem
-								resource={{
-									parentId: resource.parentId!,
-									resourceId: resource.resourceId,
-									category: "ALBUM",
-								}}
-								direction="vertical"
-								imageCss="min-w-[64px] rounded -mb-3"
-								titleCss="font-medium line-clamp-2"
-								showArtist={false}
-							/>
-						)}
-					/>
+					<Suspense>
+						<ResourcesList
+							category="ALBUM"
+							listId={topLists?.album?.id}
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.album?.resources}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "ALBUM",
+									}}
+									direction="vertical"
+									imageCss="min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 				<TabsContent value="SONG">
-					<ResourcesList
-						listId={topLists?.song?.id}
-						category="SONG"
-						editMode={editMode}
-						userId={profile.userId}
-						resources={topLists?.song?.resources}
-						renderItem={(resource: UserListItem) => (
-							<ResourceItem
-								resource={{
-									parentId: resource.parentId!,
-									resourceId: resource.resourceId,
-									category: "SONG",
-								}}
-								direction="vertical"
-								imageCss="min-w-[64px] rounded -mb-3"
-								titleCss="font-medium line-clamp-2"
-								showArtist={false}
-							/>
-						)}
-					/>
+					<Suspense>
+						<ResourcesList
+							listId={topLists?.song?.id}
+							category="SONG"
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.song?.resources}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "SONG",
+									}}
+									direction="vertical"
+									imageCss="min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 				<TabsContent value="ARTIST">
-					<ResourcesList
-						listId={topLists?.artist?.id}
-						category="ARTIST"
-						editMode={editMode}
-						userId={profile.userId}
-						resources={topLists?.artist?.resources}
-						renderItem={(resource: UserListItem) => (
-							<ArtistItem
-								artistId={resource.resourceId}
-								direction="vertical"
-								textCss="font-medium line-clamp-2 -mt-2 text-center"
-								imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
-							/>
-						)}
-					/>
+					<Suspense>
+						<ResourcesList
+							listId={topLists?.artist?.id}
+							category="ARTIST"
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.artist?.resources}
+							renderItem={(resource: UserListItem) => (
+								<ArtistItem
+									artistId={resource.resourceId}
+									direction="vertical"
+									textCss="font-medium line-clamp-2 -mt-2 text-center"
+									imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 			</Tabs>
 			<Tabs value={tab}>
