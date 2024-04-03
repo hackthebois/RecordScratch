@@ -83,12 +83,12 @@ export const ListResource = ({
 					<p className=" w-4 pr-5 text-center text-sm text-muted-foreground">
 						{position + 1}
 					</p>
-					<div className="max-w-56 overflow-hidden sm:max-w-lg ">
+					<div className="h-16 max-w-56 overflow-hidden sm:h-20 sm:max-w-lg">
 						{category === "ARTIST" ? (
 							<ArtistItem
 								artistId={item.resourceId}
 								showLink={!editMode}
-								imageCss="h-16 w-16"
+								imageCss={"h-16 w-16 sm:w-20 sm:w-20"}
 							/>
 						) : (
 							<ResourceItem
@@ -98,7 +98,7 @@ export const ListResource = ({
 									category: category,
 								}}
 								showLink={!editMode}
-								imageCss={"relative h-16 w-16 sm:w-20 sm:w-20"}
+								imageCss={"h-16 w-16 sm:w-20 sm:w-20"}
 							/>
 						)}
 					</div>

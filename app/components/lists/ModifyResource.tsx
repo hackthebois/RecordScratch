@@ -1,3 +1,4 @@
+import { cn } from "@/utils/utils";
 import { Button } from "../ui/Button";
 import { Ban, Pencil, Trash2 } from "lucide-react";
 
@@ -5,16 +6,18 @@ export const DeleteButton = ({
 	isVisible = false,
 	position,
 	onClick,
+	className,
 }: {
 	isVisible: boolean;
 	position: number;
+	className?: string;
 	// eslint-disable-next-line no-unused-vars
 	onClick: (position: number) => void;
 }) => {
 	return (
 		isVisible && (
 			<Button
-				className="size-9"
+				className={cn("size-9", className)}
 				onClick={() => onClick(position)}
 				variant="destructive"
 				size="icon"
