@@ -1,9 +1,10 @@
 import { Category, UserListItem } from "@/types/list";
-import React from "react";
+import React, { useState } from "react";
 import SearchAddToList from "./SearchAddToList";
 import { Button } from "../ui/Button";
 import { DeleteButton } from "./ModifyResource";
 import { api } from "@/trpc/react";
+import { cn } from "@/utils/utils";
 
 export const ResourcesList = ({
 	listId,
@@ -13,9 +14,9 @@ export const ResourcesList = ({
 	renderItem,
 	userId,
 }: {
-	listId: string;
+	listId: string | undefined;
 	category: Category;
-	resources: UserListItem[];
+	resources: UserListItem[] | undefined;
 	editMode: boolean;
 	userId: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-unused-vars
@@ -28,6 +29,44 @@ export const ResourcesList = ({
 			utils.lists.getProfile.invalidate({ userId: userId });
 		},
 	});
+	const { mutate: createList } = api.lists.create.useMutation({
+		onSettled: () => {
+			utils.lists.getProfile.invalidate({ userId: userId });
+		},
+	});
+
+	const [open, setOpen] = useState<boolean>(false);
+
+	if (!resources || !listId) {
+		return (
+			<div>
+				<Button
+					variant={"outline"}
+					className={cn(
+						"mb-1 h-[104px] overflow-hidden sm:mr-2 sm:h-36 sm:w-36",
+						category == "ARTIST" && "rounded-full"
+					)}
+					onClick={() => {
+						createList({
+							name: `Top 6 ${category.toLowerCase()}'s`,
+							category,
+							onProfile: true,
+						});
+
+						utils.lists.getProfile.invalidate({
+							userId,
+						});
+
+						utils.lists.getUser.invalidate({ userId });
+
+						setOpen(true);
+					}}
+				>
+					Add {category.toLowerCase()}
+				</Button>
+			</div>
+		);
+	}
 
 	return (
 		<div className="-mb-2 mt-5 flex max-h-[67.5rem] flex-row flex-wrap gap-3 sm:max-h-[26rem]">
@@ -53,12 +92,16 @@ export const ResourcesList = ({
 
 			{resources.length < 6 && (
 				<SearchAddToList
+					openMenu={open}
 					category={category}
 					listId={listId}
 					button={
 						<Button
 							variant={"outline"}
-							className="mb-1 h-[104px] overflow-hidden sm:mr-2 sm:h-36 sm:w-36"
+							className={cn(
+								"mb-1 h-[104px] overflow-hidden sm:mr-2 sm:h-36 sm:w-36",
+								category == "ARTIST" && "rounded-full"
+							)}
 						>
 							Add {category.toLowerCase()}
 						</Button>
@@ -67,7 +110,7 @@ export const ResourcesList = ({
 						utils.lists.getProfile.invalidate({
 							userId: userId,
 						});
-						console.log(`\n\n\nHIIIII\n\n\n`);
+						if (open) setOpen(false);
 					}}
 				/>
 			)}

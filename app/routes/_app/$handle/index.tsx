@@ -229,72 +229,65 @@ function Handle() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="ALBUM">
-					{topLists?.album && (
-						<ResourcesList
-							category="ALBUM"
-							listId={topLists.album.id}
-							editMode={editMode}
-							userId={profile.userId}
-							resources={topLists.album.resources}
-							renderItem={(resource: UserListItem) => (
-								<ResourceItem
-									resource={{
-										parentId: resource.parentId!,
-										resourceId: resource.resourceId,
-										category: "ALBUM",
-									}}
-									direction="vertical"
-									imageCss="min-w-[64px] rounded -mb-3"
-									titleCss="font-medium line-clamp-2"
-									showArtist={false}
-								/>
-							)}
-						/>
-					)}
+					<ResourcesList
+						category="ALBUM"
+						listId={topLists?.album?.id}
+						editMode={editMode}
+						userId={profile.userId}
+						resources={topLists?.album?.resources}
+						renderItem={(resource: UserListItem) => (
+							<ResourceItem
+								resource={{
+									parentId: resource.parentId!,
+									resourceId: resource.resourceId,
+									category: "ALBUM",
+								}}
+								direction="vertical"
+								imageCss="min-w-[64px] rounded -mb-3"
+								titleCss="font-medium line-clamp-2"
+								showArtist={false}
+							/>
+						)}
+					/>
 				</TabsContent>
 				<TabsContent value="SONG">
-					{topLists?.song && (
-						<ResourcesList
-							listId={topLists.song.id}
-							category="SONG"
-							editMode={editMode}
-							userId={profile.userId}
-							resources={topLists.song.resources}
-							renderItem={(resource: UserListItem) => (
-								<ResourceItem
-									resource={{
-										parentId: resource.parentId!,
-										resourceId: resource.resourceId,
-										category: "SONG",
-									}}
-									direction="vertical"
-									imageCss="min-w-[64px] rounded -mb-3"
-									titleCss="font-medium line-clamp-2"
-									showArtist={false}
-									showLink={false}
-								/>
-							)}
-						/>
-					)}
+					<ResourcesList
+						listId={topLists?.song?.id}
+						category="SONG"
+						editMode={editMode}
+						userId={profile.userId}
+						resources={topLists?.song?.resources}
+						renderItem={(resource: UserListItem) => (
+							<ResourceItem
+								resource={{
+									parentId: resource.parentId!,
+									resourceId: resource.resourceId,
+									category: "SONG",
+								}}
+								direction="vertical"
+								imageCss="min-w-[64px] rounded -mb-3"
+								titleCss="font-medium line-clamp-2"
+								showArtist={false}
+							/>
+						)}
+					/>
 				</TabsContent>
 				<TabsContent value="ARTIST">
-					{topLists?.artist && (
-						<ResourcesList
-							listId={topLists.artist.id}
-							category="ARTIST"
-							editMode={editMode}
-							userId={profile.userId}
-							resources={topLists.artist.resources}
-							renderItem={(resource: UserListItem) => (
-								<ArtistItem
-									artistId={resource.resourceId}
-									direction="vertical"
-									textCss="font-medium line-clamp-2 -mt-2 text-center"
-									imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
-								/>
-							)}
-						/>
-					)}
+					<ResourcesList
+						listId={topLists?.artist?.id}
+						category="ARTIST"
+						editMode={editMode}
+						userId={profile.userId}
+						resources={topLists?.artist?.resources}
+						renderItem={(resource: UserListItem) => (
+							<ArtistItem
+								artistId={resource.resourceId}
+								direction="vertical"
+								textCss="font-medium line-clamp-2 -mt-2 text-center"
+								imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
+							/>
+						)}
+					/>
 				</TabsContent>
 			</Tabs>
 			<Tabs value={tab}>
