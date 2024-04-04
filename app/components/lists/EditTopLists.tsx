@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { Button } from "../ui/Button";
-import { Eraser, MoreHorizontal } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popover";
+import { Eraser } from "lucide-react";
 
 export const EditTopLists = ({
 	editMode,
