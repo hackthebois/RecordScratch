@@ -2,7 +2,7 @@ import { api } from "@/trpc/react";
 import { deezer, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { ListPlus, Search } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { ResourceItem } from "../ResourceItem";
 import { SearchState } from "../SearchBar";
 import { ArtistItem } from "../artist/ArtistItem";
@@ -14,11 +14,13 @@ export const MusicSearch = ({
 	category,
 	listId,
 	onNavigate,
+	onClick,
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
 	listId: string;
 	onNavigate: () => void;
+	onClick?: () => void;
 }) => {
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", "search-music", query],
@@ -61,11 +63,12 @@ export const MusicSearch = ({
 
 	const list = api.useUtils().lists.resources.get;
 	const { mutate } = api.lists.resources.create.useMutation({
-		onSettled: (_data, _error, variables) => {
+		onSettled: async (_data, _error, variables) => {
 			if (variables) {
-				list.invalidate({
+				await list.invalidate({
 					listId: variables.listId,
 				});
+				if (onClick) onClick();
 			}
 		},
 	});
@@ -74,7 +77,7 @@ export const MusicSearch = ({
 		<SearchState
 			isError={isError}
 			isLoading={isLoading}
-			onNavigate={onNavigate}
+			onNavigate={() => {}}
 			noResults={
 				data?.albums?.length === 0 && data?.artists?.length === 0
 			}
@@ -137,7 +140,6 @@ export const MusicSearch = ({
 													),
 													listId,
 												});
-												list.invalidate({ listId });
 												onNavigate();
 											}}
 										/>
@@ -168,7 +170,6 @@ export const MusicSearch = ({
 													),
 													listId,
 												});
-												list.invalidate({ listId });
 												onNavigate();
 											}}
 										/>
@@ -186,14 +187,29 @@ export const MusicSearch = ({
 export const SearchAddToList = ({
 	category,
 	listId,
+	button,
+	onClick,
+	openMenu,
 }: {
 	category: "ALBUM" | "SONG" | "ARTIST";
 	listId: string;
+	button?: React.ReactNode;
+	onClick?: () => void;
+	openMenu?: boolean;
 }) => {
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(openMenu ?? false);
 	const [query, setQuery] = useState("");
 
 	const debouncedQuery = useDebounce(query, 500);
+
+	const triggerOutline = button ? (
+		button
+	) : (
+		<Button className="h-10 gap-1 rounded pb-5 pr-3 pt-5" variant="outline">
+			<ListPlus size={18} />
+			Add to List
+		</Button>
+	);
 
 	return (
 		<Dialog
@@ -205,15 +221,7 @@ export const SearchAddToList = ({
 			}}
 			open={open}
 		>
-			<DialogTrigger asChild>
-				<Button
-					className="h-10 gap-1 rounded pb-5 pr-3 pt-5"
-					variant="outline"
-				>
-					<ListPlus size={18} />
-					Add to List
-				</Button>
-			</DialogTrigger>
+			<DialogTrigger asChild>{triggerOutline}</DialogTrigger>
 			<DialogContent className="flex h-1/2 w-full max-w-none flex-col gap-0 p-0 sm:h-[80%] sm:max-h-[800px] sm:max-w-md sm:p-0">
 				<div className="mb-4 flex items-center border-b pr-10">
 					<Search size={20} className="ml-4 text-muted-foreground" />
@@ -235,6 +243,7 @@ export const SearchAddToList = ({
 						setQuery("");
 						setOpen(false);
 					}}
+					onClick={onClick}
 				/>
 			</DialogContent>
 		</Dialog>

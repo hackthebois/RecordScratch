@@ -164,8 +164,8 @@ function Artist() {
 										artistId={String(artist.id)}
 										initialArtist={artist}
 										direction="vertical"
-										textCss="text-wrap text-center text-sm"
-										imageCss="min-h-16 min-w-16 w-16 h-16"
+										textCss="text-xs line-clamp-2 -mt-2 text-center"
+										imageCss="min-h-20 min-w-20 sm:min-h-24 sm:min-w-24"
 									/>
 								</div>
 							))}

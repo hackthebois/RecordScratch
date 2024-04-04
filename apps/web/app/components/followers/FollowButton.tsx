@@ -60,6 +60,7 @@ export const FollowButtonInner = ({ profileId }: { profileId: string }) => {
 	const buttonVariant = following ? "outline" : "default";
 	return (
 		<Button
+			className=" mr-4 h-10 w-[5.5rem]"
 			variant={buttonVariant}
 			onClick={(e) => {
 				e.stopPropagation();
