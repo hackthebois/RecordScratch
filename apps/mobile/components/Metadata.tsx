@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import React from "react";
 import { View } from "react-native";
 // import { Tag } from "./ui/Tag";
+import { Tag } from "./Tag";
 import { Text } from "./Text";
 
 const Metadata = ({
@@ -46,17 +47,15 @@ const Metadata = ({
 				<Text variant={"h1"} className={"text-center sm:text-left"}>
 					{title}
 				</Text>
-				{/* {tags && (
-						<div className="flex flex-wrap justify-center gap-3 sm:justify-start">
-							{tags
-								.filter((tag) => Boolean(tag))
-								.map((tag, index) => (
-									<Tag variant="outline" key={index}>
-										{tag}
-									</Tag>
-								))}
-						</div>
-					)} */}
+				{tags && (
+					<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
+						{tags
+							.filter((tag) => Boolean(tag))
+							.map((tag, index) => (
+								<Tag key={index}>{tag}</Tag>
+							))}
+					</View>
+				)}
 				{children}
 			</View>
 		</View>
