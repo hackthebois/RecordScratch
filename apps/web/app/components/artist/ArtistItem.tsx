@@ -38,9 +38,11 @@ export const ArtistItem = ({
 
 	return (
 		<Link
-			onClick={() => {
+			onClick={(e) => {
 				if (onClick) {
 					onClick();
+					e.preventDefault();
+					e.stopPropagation();
 				}
 			}}
 			{...(showLink ? link : {})}
