@@ -133,6 +133,7 @@ export const MusicSearch = ({
 											showLink={false}
 											artistId={String(artist.id)}
 											initialArtist={artist}
+											imageCss="h-16 w-16"
 											onClick={() => {
 												mutate({
 													resourceId: String(
