@@ -1,10 +1,10 @@
-import { Category, UserListItem } from "@/types/list";
+import { Category, UserListItem } from "@recordscratch/types/src/list";
 import React, { useState } from "react";
 import SearchAddToList from "./SearchAddToList";
 import { Button } from "../ui/Button";
 import { DeleteButton } from "./ModifyResource";
 import { api } from "@/trpc/react";
-import { cn } from "@/utils/utils";
+import { cn } from "@recordscratch/lib/src/utils";
 
 export const ResourcesList = ({
 	listId,

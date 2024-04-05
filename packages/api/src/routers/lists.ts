@@ -1,5 +1,6 @@
 import { listResources, lists, ratings } from "@recordscratch/db";
 import {
+	deleteListResourcesSchema,
 	filterUserListsSchema,
 	insertListResourcesSchema,
 	insertListSchema,
@@ -226,9 +227,31 @@ export const listsRouter = router({
 						resources.map((item) => {
 							return db
 								.delete(listResources)
-								.where(eq(listResources.resourceId, item.resourceId));
+								.where(
+									and(
+										eq(listResources.resourceId, item.resourceId),
+										eq(listResources.listId, listId)
+									)
+								);
 						})
 					);
+				}
+			}),
+
+		delete: protectedProcedure
+			.input(deleteListResourcesSchema)
+			.mutation(async ({ ctx: { db, userId }, input: { listId, resourceId } }) => {
+				const listOwner = !!(await db.query.lists.findFirst({
+					where: and(eq(lists.userId, userId), eq(lists.id, listId)),
+				}));
+
+				if (listOwner) {
+					await db
+						.update(lists)
+						.set({ updatedAt: new Date() })
+						.where(eq(lists.id, listId));
+
+					await db.delete(listResources).where(eq(listResources.resourceId, resourceId));
 				}
 			}),
 	}),

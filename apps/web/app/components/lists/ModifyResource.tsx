@@ -1,4 +1,4 @@
-import { cn } from "@/utils/utils";
+import { cn } from "@recordscratch/lib/src/utils";
 import { Button } from "../ui/Button";
 import { Ban, Pencil, Trash2 } from "lucide-react";
 

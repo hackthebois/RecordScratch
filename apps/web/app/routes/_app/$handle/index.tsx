@@ -5,7 +5,9 @@ import { ArtistItem } from "@/components/artist/ArtistItem";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
+import { EditTopLists } from "@/components/lists/EditTopLists";
 import ListList from "@/components/lists/ListList";
+import { ResourcesList } from "@/components/lists/TopLists";
 import { EditProfile } from "@/components/profile/EditProfile";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -21,10 +23,14 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api, apiUtils } from "@/trpc/react";
-import { cn, getImageUrl } from "@recordscratch/lib";
+import { UserListItem } from "@recordscratch/types/src/list";
+import { getImageUrl } from "@recordscratch/lib/src/image";
+import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
+import { Suspense, useState } from "react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/$handle/")({
@@ -63,6 +69,14 @@ export const Route = createFileRoute("/_app/$handle/")({
 		});
 	},
 });
+
+const TopListLoader = () => {
+	return (
+		<div className="mb-2 mt-5 flex h-[10rem] items-center justify-center">
+			<Disc3 size={35} className="animate-spin" />
+		</div>
+	);
+};
 
 const SignOutButton = () => {
 	const navigate = useNavigate({
@@ -137,6 +151,9 @@ function Handle() {
 			placeholderData: keepPreviousData,
 		}
 	);
+
+	const [editMode, setEditMode] = useState<boolean>(false);
+
 	if (!profile) return <NotFound />;
 
 	const [topLists] = api.lists.getProfile.useSuspenseQuery({
@@ -173,7 +190,18 @@ function Handle() {
 					<FollowerMenu profileId={profile.userId} />
 				</div>
 			</div>
-			<h3 className="-mb-4">{profile.name}'s Top 6</h3>
+			<div className="flex flex-row items-center justify-center gap-2 sm:justify-start">
+				<h3 className="-mb-4">{profile.name}'s Top 6</h3>
+				{isUser && (
+					<EditTopLists
+						editMode={editMode}
+						onClick={() => {
+							setEditMode(!editMode);
+						}}
+					/>
+				)}
+			</div>
+
 			<Tabs value={topCategory}>
 				<TabsList>
 					<TabsTrigger value="ALBUM" asChild>
@@ -211,75 +239,74 @@ function Handle() {
 					</TabsTrigger>
 				</TabsList>
 				<TabsContent value="ALBUM">
-					{topLists?.album && (
-						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
-							{topLists.album.resources.map((album) => (
-								<div
-									className="flex w-full flex-col"
-									key={album.resourceId}
-								>
-									<ResourceItem
-										resource={{
-											parentId: album.parentId!,
-											resourceId: album.resourceId,
-											category:
-												topLists.album?.category ??
-												"ALBUM",
-										}}
-										direction="vertical"
-										imageCss={"relative rounded -mb-3"}
-										titleCss="font-medium text-sm text-center line-clamp-2"
-										showArtist={false}
-									/>
-								</div>
-							))}
-						</div>
-					)}
+					<Suspense fallback={<TopListLoader />}>
+						<ResourcesList
+							category="ALBUM"
+							listId={topLists?.album?.id}
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.album?.resources}
+							isUser={isUser}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "ALBUM",
+									}}
+									direction="vertical"
+									imageCss="min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 				<TabsContent value="SONG">
-					{topLists?.song && (
-						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
-							{topLists.song.resources.map((song) => (
-								<div
-									className="flex w-full flex-col"
-									key={song.resourceId}
-								>
-									<ResourceItem
-										resource={{
-											parentId: song.parentId!,
-											resourceId: song.resourceId,
-											category:
-												topLists.song?.category ??
-												"SONG",
-										}}
-										direction="vertical"
-										imageCss={"relative rounded -mb-3"}
-										titleCss="font-medium text-sm text-center line-clamp-2"
-										showArtist={false}
-									/>
-								</div>
-							))}
-						</div>
-					)}
+					<Suspense fallback={<TopListLoader />}>
+						<ResourcesList
+							listId={topLists?.song?.id}
+							category="SONG"
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.song?.resources}
+							isUser={isUser}
+							renderItem={(resource: UserListItem) => (
+								<ResourceItem
+									resource={{
+										parentId: resource.parentId!,
+										resourceId: resource.resourceId,
+										category: "SONG",
+									}}
+									direction="vertical"
+									imageCss="min-w-[64px] rounded -mb-3"
+									titleCss="font-medium line-clamp-2"
+									showArtist={false}
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 				<TabsContent value="ARTIST">
-					{topLists?.artist && (
-						<div className="grid max-w-screen-md grid-cols-3 gap-3 sm:grid-cols-6">
-							{topLists.artist.resources.map((artist) => (
-								<div
-									className="flex w-full flex-col"
-									key={artist.resourceId}
-								>
-									<ArtistItem
-										artistId={artist.resourceId}
-										direction="vertical"
-										imageCss={"relative rounded-full -mb-3"}
-										textCss="font-medium text-sm text-center line-clamp-2"
-									/>
-								</div>
-							))}
-						</div>
-					)}
+					<Suspense fallback={<TopListLoader />}>
+						<ResourcesList
+							listId={topLists?.artist?.id}
+							category="ARTIST"
+							editMode={editMode}
+							userId={profile.userId}
+							resources={topLists?.artist?.resources}
+							isUser={isUser}
+							renderItem={(resource: UserListItem) => (
+								<ArtistItem
+									artistId={resource.resourceId}
+									direction="vertical"
+									textCss="font-medium line-clamp-2 -mt-2 text-center"
+									imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
+								/>
+							)}
+						/>
+					</Suspense>
 				</TabsContent>
 			</Tabs>
 			<Tabs value={tab}>

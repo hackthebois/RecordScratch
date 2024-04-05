@@ -1,15 +1,19 @@
 {
-	"scripts": {
-		"build": "turbo build",
-		"type-check": "tsc",
-		"dev": "turbo dev --parallel",
-		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
-	},
-	"dependencies": {
-		"typescript": "^5.4.2"
-	},
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	]
+  "scripts": {
+    "build": "dotenv -- turbo build",
+    "type-check": "tsc",
+    "dev": "dotenv -- turbo dev",
+    "clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "typescript": "^5.4.2"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "dotenv-cli": "^7.4.1"
+  }
 }
