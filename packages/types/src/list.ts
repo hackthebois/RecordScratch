@@ -102,5 +102,9 @@ export type ListsType = ListType & {
 	profile: Profile | null;
 	resources: UserListItem[];
 };
+
+export type ListWithResources = z.infer<typeof listSchema> & {
+	resources: UserListItem[];
+};
 const categorySchema = listSchema.pick({ category: true });
 export type Category = z.infer<typeof categorySchema>["category"];

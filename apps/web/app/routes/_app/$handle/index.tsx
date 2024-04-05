@@ -242,69 +242,32 @@ function Handle() {
 					<Suspense fallback={<TopListLoader />}>
 						<ResourcesList
 							category="ALBUM"
-							listId={topLists?.album?.id}
 							editMode={editMode}
 							userId={profile.userId}
-							resources={topLists?.album?.resources}
 							isUser={isUser}
-							renderItem={(resource: UserListItem) => (
-								<ResourceItem
-									resource={{
-										parentId: resource.parentId!,
-										resourceId: resource.resourceId,
-										category: "ALBUM",
-									}}
-									direction="vertical"
-									imageCss="min-w-[64px] rounded -mb-3"
-									titleCss="font-medium line-clamp-2"
-									showArtist={false}
-								/>
-							)}
+							list={topLists?.album}
 						/>
 					</Suspense>
 				</TabsContent>
 				<TabsContent value="SONG">
 					<Suspense fallback={<TopListLoader />}>
 						<ResourcesList
-							listId={topLists?.song?.id}
 							category="SONG"
 							editMode={editMode}
 							userId={profile.userId}
-							resources={topLists?.song?.resources}
 							isUser={isUser}
-							renderItem={(resource: UserListItem) => (
-								<ResourceItem
-									resource={{
-										parentId: resource.parentId!,
-										resourceId: resource.resourceId,
-										category: "SONG",
-									}}
-									direction="vertical"
-									imageCss="min-w-[64px] rounded -mb-3"
-									titleCss="font-medium line-clamp-2"
-									showArtist={false}
-								/>
-							)}
+							list={topLists?.song}
 						/>
 					</Suspense>
 				</TabsContent>
 				<TabsContent value="ARTIST">
 					<Suspense fallback={<TopListLoader />}>
 						<ResourcesList
-							listId={topLists?.artist?.id}
 							category="ARTIST"
 							editMode={editMode}
 							userId={profile.userId}
-							resources={topLists?.artist?.resources}
+							list={topLists?.artist}
 							isUser={isUser}
-							renderItem={(resource: UserListItem) => (
-								<ArtistItem
-									artistId={resource.resourceId}
-									direction="vertical"
-									textCss="font-medium line-clamp-2 -mt-2 text-center"
-									imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
-								/>
-							)}
 						/>
 					</Suspense>
 				</TabsContent>
