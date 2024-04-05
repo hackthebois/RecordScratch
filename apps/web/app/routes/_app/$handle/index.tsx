@@ -25,7 +25,6 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
 import { UserListItem } from "@recordscratch/types/src/list";
-import { getImageUrl } from "@recordscratch/lib/src/image";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
