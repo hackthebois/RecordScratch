@@ -71,9 +71,7 @@ export const ResourcesList = ({
 					category: "SONG",
 				}}
 				direction="vertical"
-				imageCss="min-w-[64px] rounded -mb-3"
-				titleCss="font-medium line-clamp-2"
-				showArtist={false}
+				{...resourceOptions}
 			/>
 		);
 	else
