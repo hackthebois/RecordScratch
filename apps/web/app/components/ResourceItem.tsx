@@ -1,6 +1,6 @@
 import AlbumImage from "@/components/album/AlbumImage";
-import { Resource } from "@recordscratch/types";
 import { Album, cn, getQueryOptions } from "@recordscratch/lib";
+import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Skeleton } from "./ui/Skeleton";
@@ -94,8 +94,8 @@ export const ResourceItem = ({
 			onClick={(e) => {
 				if (onClick) {
 					onClick();
-					e.preventDefault();
-					e.stopPropagation();
+					// e.preventDefault();
+					// e.stopPropagation();
 				}
 			}}
 			{...(showLink ? link : {})}
