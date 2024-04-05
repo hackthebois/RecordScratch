@@ -9,14 +9,16 @@ export const EditTopLists = ({
 	onClick: () => void;
 }) => {
 	return (
-		<Button
-			variant={editMode ? "default" : "outline"}
-			className="-mb-5 p-3"
-			onClick={() => {
-				onClick();
-			}}
-		>
-			<Eraser size={20} />
-		</Button>
+		<div className="-mb-3 w-20">
+			<Button
+				variant={editMode ? "default" : "outline"}
+				className="-mb-5 p-3"
+				onClick={() => {
+					onClick();
+				}}
+			>
+				<Eraser size={20} />
+			</Button>
+		</div>
 	);
 };

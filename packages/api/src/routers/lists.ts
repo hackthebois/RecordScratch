@@ -205,7 +205,12 @@ export const listsRouter = router({
 								return db
 									.update(listResources)
 									.set({ position: index + 1 })
-									.where(eq(listResources.resourceId, item.resourceId));
+									.where(
+										and(
+											eq(listResources.resourceId, item.resourceId),
+											eq(listResources.listId, item.listId)
+										)
+									);
 							})
 						);
 				}
@@ -251,7 +256,14 @@ export const listsRouter = router({
 						.set({ updatedAt: new Date() })
 						.where(eq(lists.id, listId));
 
-					await db.delete(listResources).where(eq(listResources.resourceId, resourceId));
+					await db
+						.delete(listResources)
+						.where(
+							and(
+								eq(listResources.resourceId, resourceId),
+								eq(listResources.listId, listId)
+							)
+						);
 				}
 			}),
 	}),
