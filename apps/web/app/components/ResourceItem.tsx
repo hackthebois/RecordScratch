@@ -94,8 +94,10 @@ export const ResourceItem = ({
 			onClick={(e) => {
 				if (onClick) {
 					onClick();
-					// e.preventDefault();
-					// e.stopPropagation();
+					if (!showLink) {
+						e.preventDefault();
+						e.stopPropagation();
+					}
 				}
 			}}
 			{...(showLink ? link : {})}
