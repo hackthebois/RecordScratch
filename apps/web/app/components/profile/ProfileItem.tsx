@@ -1,6 +1,7 @@
+import { getImageUrl } from "@/lib/image";
 import { api } from "@/trpc/react";
 import { Profile } from "@recordscratch/types";
-import { getImageUrl } from "@recordscratch/lib";
+
 import { Link } from "@tanstack/react-router";
 import { FollowButton } from "../followers/FollowButton";
 import { UserAvatar } from "../user/UserAvatar";

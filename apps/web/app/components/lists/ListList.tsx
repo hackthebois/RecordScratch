@@ -1,4 +1,4 @@
-import { getImageUrl } from "@recordscratch/lib";
+import { getImageUrl } from "@/lib/image";
 import { ListsType } from "@recordscratch/types";
 import { Link } from "@tanstack/react-router";
 import { ScrollArea } from "../ui/ScrollArea";
