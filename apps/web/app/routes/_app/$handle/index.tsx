@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/Label";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
 import { UserListItem } from "@recordscratch/types/src/list";
 import { getImageUrl } from "@recordscratch/lib/src/image";
