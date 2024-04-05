@@ -20,9 +20,14 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { timeAgo } from "@recordscratch/lib";
 import { Profile } from "@recordscratch/types";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, MoreHorizontal, Send, Trash2 } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/Popover";
 
 export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 	component: Rating,
@@ -142,6 +147,35 @@ const CommentForm = ({
 	);
 };
 
+const CommentMenu = ({ onClick }: { onClick: () => void }) => {
+	return (
+		<Popover>
+			<PopoverTrigger asChild>
+				<Button size="icon" variant="outline">
+					<MoreHorizontal size={22} />
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent
+				align="start"
+				side="left"
+				className="w-52 items-center justify-center"
+			>
+				<Button
+					className="mr-1 flex w-44 flex-row items-center justify-evenly border-none py-5"
+					onClick={onClick}
+					variant={"outline"}
+					size="icon"
+				>
+					<p>Delete Comment</p>
+					<div className="flex items-center justify-center rounded-md border border-zinc-800 p-1.5">
+						<Trash2 size={18} />
+					</div>
+				</Button>
+			</PopoverContent>
+		</Popover>
+	);
+};
+
 function Rating() {
 	const { handle, resourceId } = Route.useParams();
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
@@ -155,6 +189,20 @@ function Rating() {
 		authorId: profile!.userId,
 	});
 
+	const utils = api.useUtils();
+	const { mutate: deleteComment } = api.comments.delete.useMutation({
+		onSettled: () => {
+			utils.comments.list.invalidate({
+				authorId: profile!.userId,
+				resourceId,
+			});
+			utils.comments.getComments.invalidate({
+				authorId: profile!.userId,
+				resourceId,
+			});
+		},
+	});
+
 	if (!profile || !rating) return null;
 
 	return (
@@ -164,24 +212,36 @@ function Rating() {
 				<CommentForm profile={myProfile} authorId={profile.userId} />
 			)}
 			{comments.map((comment) => (
-				<div className="relative flex flex-col gap-3 rounded border p-3">
-					<Link
-						to="/$handle"
-						params={{
-							handle: comment.profile.handle,
-						}}
-						className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
-					>
-						<UserAvatar
-							imageUrl={getImageUrl(comment.profile)}
-							className="h-8 w-8"
-						/>
-						<p>{comment.profile.name}</p>
-						<p className="text-left text-sm text-muted-foreground">
-							@{comment.profile.handle} •{" "}
-							{timeAgo(comment.updatedAt)}
-						</p>
-					</Link>
+				<div
+					className="relative flex flex-col gap-3 rounded border p-3"
+					key={comment.id}
+				>
+					<div className="flex flex-row justify-between">
+						<Link
+							to="/$handle"
+							params={{
+								handle: comment.profile.handle,
+							}}
+							className="flex min-w-0 max-w-60 flex-1 flex-wrap items-center gap-2"
+						>
+							<UserAvatar
+								imageUrl={getImageUrl(comment.profile)}
+								className="h-8 w-8"
+							/>
+							<p>{comment.profile.name}</p>
+							<p className="text-left text-sm text-muted-foreground">
+								@{comment.profile.handle} •{" "}
+								{timeAgo(comment.updatedAt)}
+							</p>
+						</Link>
+						{myProfile?.userId == comment.userId && (
+							<CommentMenu
+								onClick={() =>
+									deleteComment({ id: comment.id })
+								}
+							/>
+						)}
+					</div>
 					<p className="text-sm">{comment.content}</p>
 				</div>
 			))}
