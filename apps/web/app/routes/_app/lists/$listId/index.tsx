@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/Label";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
-import { getImageUrl, timeAgo } from "@recordscratch/lib";
+import { timeAgo } from "@recordscratch/lib";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
 import {
 	ErrorComponent,

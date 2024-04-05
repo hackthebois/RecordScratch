@@ -17,8 +17,9 @@ import {
 	FormMessage,
 } from "@/components/ui/Form";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { getImageUrl } from "@/lib/image";
+import { timeAgo } from "@recordscratch/lib";
 import { Profile } from "@recordscratch/types";
-import { getImageUrl, timeAgo } from "@recordscratch/lib";
 import { Loader2, Send } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
