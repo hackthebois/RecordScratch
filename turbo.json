@@ -9,7 +9,11 @@
 			"persistent": true,
 			"cache": false
 		},
-		"clean": {}
+		"clean": {},
+		"studio": {
+			"persistent": true,
+			"cache": false
+		}
 	},
 	"globalEnv": ["DATABASE_URL"]
 }

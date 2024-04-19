@@ -8,7 +8,6 @@
 		"build": "tsc && vinxi build --preset vercel",
 		"build-cloudflare": "tsc && vinxi build --preset cloudflare_pages",
 		"start": "vinxi start --preset vercel",
-		"studio": "drizzle-kit studio",
 		"clean": "rm -rf node_modules && rm -rf .dist"
 	},
 	"dependencies": {
