@@ -3,7 +3,7 @@ import { api } from "@/trpc/react";
 import { timeAgo } from "@recordscratch/lib";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "@tanstack/react-router";
-import { Heart, MessageCircle, Star } from "lucide-react";
+import { Heart, MessageCircle, Reply, Star } from "lucide-react";
 import { Suspense } from "react";
 import { ResourceItem } from "../ResourceItem";
 import { SignInWrapper } from "../signIn/SignInWrapper";
@@ -91,6 +91,36 @@ const CommentsButton = ({
 	});
 
 	return (
+		<>
+			{!!comments && (
+				<Link
+					className={buttonVariants({
+						variant: "outline",
+						size: "sm",
+						className: "gap-2 text-muted-foreground",
+					})}
+					to="/$handle/ratings/$resourceId"
+					params={{
+						handle,
+						resourceId,
+					}}
+				>
+					<MessageCircle size={20} />
+					<p>{comments}</p>
+				</Link>
+			)}
+		</>
+	);
+};
+
+const ReplyButton = ({
+	handle,
+	resourceId,
+}: {
+	resourceId: string;
+	handle: string;
+}) => {
+	return (
 		<Link
 			className={buttonVariants({
 				variant: "outline",
@@ -102,9 +132,9 @@ const CommentsButton = ({
 				handle,
 				resourceId,
 			}}
+			search={{ reply: true }}
 		>
-			<MessageCircle size={20} />
-			<p>{comments}</p>
+			<Reply size={20} />
 		</Link>
 	);
 };
@@ -182,6 +212,10 @@ export const Review = ({
 							/>
 						)}
 					</Suspense>
+					<ReplyButton
+						handle={profile.handle}
+						resourceId={resourceId}
+					/>
 					<Suspense
 						fallback={
 							<Button

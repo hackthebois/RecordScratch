@@ -88,7 +88,7 @@ export const ListResource = ({
 							<ArtistItem
 								artistId={item.resourceId}
 								showLink={!editMode}
-								imageCss={"h-16 w-16 sm:w-20 sm:w-20"}
+								imageCss={"h-16 w-16 sm:h-20 sm:w-20"}
 							/>
 						) : (
 							<ResourceItem
@@ -98,7 +98,7 @@ export const ListResource = ({
 									category: category,
 								}}
 								showLink={!editMode}
-								imageCss={"h-16 w-16 sm:w-20 sm:w-20"}
+								imageCss={"h-16 w-16 sm:h-20 sm:w-20"}
 							/>
 						)}
 					</div>

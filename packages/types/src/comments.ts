@@ -1,6 +1,7 @@
 import { comments } from "@recordscratch/db";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { string, z } from "zod";
+import type { Profile } from "./profile";
 
 export const SelectCommentSchema = z.object({
 	resourceId: z.string(),
@@ -15,4 +16,15 @@ export type CreateComment = z.infer<typeof CreateCommentSchema>;
 
 export const DeleteCommentSchema = CreateCommentSchema.pick({
 	id: true,
+	rootId: true,
 });
+
+export const SelectReplySchema = CreateCommentSchema.pick({
+	authorId: true,
+	resourceId: true,
+	rootId: true,
+});
+const CommentSchema = createSelectSchema(comments);
+type CommentSchemaType = z.infer<typeof CommentSchema>;
+
+export type CommentAndProfile = CommentSchemaType & { profile: Profile };

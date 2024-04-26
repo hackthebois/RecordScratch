@@ -211,7 +211,7 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	const data: unknown = await res.json();
 
 	if (!res.ok) {
-		throw new Error(`Deezer API error (${route}): ${JSON.stringify(data)}`);
+		throw new Error(`Deezer API error (${route}): input:(${input}) ${JSON.stringify(data)}`);
 	}
 
 	return DeezerSchema.shape[route].shape["output"].parse(data);
