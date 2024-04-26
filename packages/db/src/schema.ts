@@ -59,6 +59,7 @@ export const profile = pgTable("profile", {
 	name: varchar("name", {
 		length: 50,
 	}).notNull(),
+	imageUrl: text("image_url"),
 	handle: varchar("handle", {
 		length: 20,
 	})
@@ -251,6 +252,8 @@ export const comments = pgTable("comments", {
 	userId: text("user_id").notNull(),
 	resourceId: text("resource_id").notNull(),
 	authorId: text("author_id").notNull(),
+	parentId: text("parent_id"),
+	rootId: text("root_id"),
 	content: text("content").notNull(),
 	...dates,
 });

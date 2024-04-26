@@ -2,9 +2,9 @@ import "dotenv/config";
 import type { Config } from "drizzle-kit";
 
 export default {
-	schema: "./src/schema.ts",
+	schema: "./packages/db/src/schema.ts",
 	driver: "pg",
-	out: "./migrations",
+	out: "./packages/db/migrations",
 	dbCredentials: {
 		connectionString: process.env.DATABASE_URL!,
 	},
