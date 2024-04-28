@@ -116,9 +116,11 @@ const CommentsButton = ({
 const ReplyButton = ({
 	handle,
 	resourceId,
+	onClick,
 }: {
 	resourceId: string;
 	handle: string;
+	onClick: () => void;
 }) => {
 	return (
 		<Link
@@ -133,6 +135,7 @@ const ReplyButton = ({
 				resourceId,
 			}}
 			search={{ reply: true }}
+			onClick={onClick}
 		>
 			<Reply size={20} />
 		</Link>
@@ -148,7 +151,8 @@ export const Review = ({
 	resourceId,
 	category,
 	updatedAt,
-}: ReviewType) => {
+	onReply,
+}: ReviewType & { onReply?: () => void }) => {
 	const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
 		<div className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
@@ -215,6 +219,9 @@ export const Review = ({
 					<ReplyButton
 						handle={profile.handle}
 						resourceId={resourceId}
+						onClick={() => {
+							if (onReply) onReply();
+						}}
 					/>
 					<Suspense
 						fallback={

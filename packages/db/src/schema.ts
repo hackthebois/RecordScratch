@@ -204,7 +204,7 @@ export const likesRelations = relations(likes, ({ one }) => ({
 	}),
 }));
 
-export const typeEnum = pgEnum("notifications_type", ["LIKE", "FOLLOW"]);
+export const typeEnum = pgEnum("notifications_type", ["LIKE", "FOLLOW", "COMMENT", "REPLY"]);
 
 export const notifications = pgTable(
 	"notifications",

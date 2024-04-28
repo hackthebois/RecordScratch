@@ -4,7 +4,11 @@ import { PendingComponent } from "@/components/router/Pending";
 import { NotFound } from "@/components/ui/NotFound";
 import { api, apiUtils } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CommentAndProfile, CreateCommentSchema } from "@recordscratch/types";
+import {
+	CommentAndProfile,
+	CommentAndProfileAndParent,
+	CreateCommentSchema,
+} from "@recordscratch/types";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
@@ -38,6 +42,7 @@ import {
 } from "@/components/ui/Popover";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/Label";
+import { createNotification } from "@recordscratch/api/src/notifications";
 
 export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 	component: Rating,
@@ -75,6 +80,7 @@ const CommentForm = ({
 	rootId,
 	onSubmitForm,
 	replyHandle,
+	replyUserId,
 }: {
 	profile: Profile;
 	authorId: string;
@@ -82,6 +88,7 @@ const CommentForm = ({
 	rootId?: string;
 	onSubmitForm?: () => void;
 	replyHandle?: string;
+	replyUserId?: string;
 }) => {
 	const { resourceId } = Route.useParams();
 	const utils = api.useUtils();
@@ -93,7 +100,7 @@ const CommentForm = ({
 	});
 
 	const { mutate, isPending } = api.comments.create.useMutation({
-		onSuccess: () => {
+		onSuccess: async () => {
 			form.reset();
 			if (!rootId && !parentId)
 				utils.comments.list.invalidate({
@@ -128,6 +135,7 @@ const CommentForm = ({
 			authorId,
 			rootId,
 			parentId,
+			replyUserId,
 		});
 	};
 
@@ -230,27 +238,30 @@ const Comment = ({
 	id,
 	rootId,
 	resourceId,
+	authorId,
 	content,
 	replyCount,
 	updatedAt,
 	profile,
 	myProfile,
+	parentProfile,
 	commentView,
-	isOpen,
 	openCommentFormId,
 	toggleCommentForm,
 }: {
 	id: string;
 	rootId: string | null;
+	authorId: string;
 	resourceId: string;
 	content: string;
 	replyCount?: number;
 	updatedAt: Date;
 	profile: Profile;
 	myProfile: Profile | null;
+	parentProfile?: Profile;
 	commentView?: () => void;
-	isOpen: boolean;
 	openCommentFormId: string | null;
+	// eslint-disable-next-line no-unused-vars
 	toggleCommentForm: (commentId: string | null) => void;
 }) => {
 	const utils = api.useUtils();
@@ -258,23 +269,23 @@ const Comment = ({
 		onSettled: () => {
 			if (!rootId)
 				utils.comments.list.invalidate({
-					authorId: profile!.userId,
+					authorId,
 					resourceId,
 				});
 			else {
 				utils.comments.getReplies.invalidate({
-					authorId: profile!.userId,
+					authorId,
 					resourceId,
 					rootId,
 				});
 				utils.comments.getReplyCount.invalidate({
-					authorId: profile!.userId,
+					authorId,
 					resourceId,
 					rootId,
 				});
 			}
 			utils.comments.getComments.invalidate({
-				authorId: profile!.userId,
+				authorId,
 				resourceId,
 			});
 		},
@@ -304,9 +315,17 @@ const Comment = ({
 						<CommentMenu onClick={() => deleteComment({ id })} />
 					)}
 				</div>
-				<p className="text-sm">
-					{content} "{id}"
-				</p>
+				<div className="flex flex-row items-center">
+					{!!parentProfile && (
+						<Label className=" mr-2 flex flex-row items-center rounded">
+							<AtSign size={15} />
+							<p className=" max-w-20 truncate">
+								{parentProfile.handle}
+							</p>
+						</Label>
+					)}
+					<p className="text-sm">{content}</p>
+				</div>
 				<div className="flex flex-row gap-2">
 					<Button
 						variant="outline"
@@ -336,12 +355,13 @@ const Comment = ({
 					<CommentForm
 						replyHandle={profile.handle}
 						profile={myProfile}
-						authorId={profile.userId}
+						authorId={authorId}
 						rootId={rootId ?? id}
 						parentId={id}
 						onSubmitForm={() => {
 							toggleCommentForm(null);
 						}}
+						replyUserId={profile.userId}
 					/>
 				</div>
 			)}
@@ -352,26 +372,27 @@ const Comment = ({
 const CommentLayout = ({
 	comment,
 	myProfile,
-	openForm,
-	toggleOpenForm,
+	openCommentFormId,
+	toggleCommentForm,
 }: {
 	comment: CommentAndProfile;
 	myProfile: Profile | null;
-	openForm: boolean;
-	toggleOpenForm: () => void;
+	openCommentFormId: string | null;
+	// eslint-disable-next-line no-unused-vars
+	toggleCommentForm: (commentId: string | null) => void;
 }) => {
-	const [replies, setReplies] = useState<CommentAndProfile[]>([]);
+	const [replies, setReplies] = useState<CommentAndProfileAndParent[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
 
 	const { data: getReplies } = api.comments.getReplies.useQuery({
 		rootId: comment.id,
-		authorId: comment.profile.userId,
+		authorId: comment.authorId,
 		resourceId: comment.resourceId,
 	});
 
 	const [replyCount] = api.comments.getReplyCount.useSuspenseQuery({
 		rootId: comment.id,
-		authorId: comment.profile.userId,
+		authorId: comment.authorId,
 		resourceId: comment.resourceId,
 	});
 
@@ -385,16 +406,6 @@ const CommentLayout = ({
 		setIsOpen(!isOpen);
 	};
 
-	const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(
-		null
-	);
-	const toggleCommentForm = (commentId: string | null) => {
-		if (commentId === openCommentFormId) setOpenCommentFormId(null);
-		else setOpenCommentFormId(commentId);
-
-		if (openForm) toggleOpenForm();
-	};
-
 	return (
 		<div>
 			<Comment
@@ -402,19 +413,18 @@ const CommentLayout = ({
 				replyCount={replyCount}
 				myProfile={myProfile}
 				commentView={toggleOpen}
-				isOpen={isOpen}
 				openCommentFormId={openCommentFormId}
 				toggleCommentForm={toggleCommentForm}
 			/>
 			<div>
 				{isOpen &&
-					replies.map((reply: CommentAndProfile) => {
+					replies.map((reply) => {
 						return (
 							<div className=" ml-10 mt-2" key={reply.id}>
 								<Comment
 									{...reply}
 									myProfile={myProfile}
-									isOpen={isOpen}
+									parentProfile={reply.parent}
 									openCommentFormId={openCommentFormId}
 									toggleCommentForm={toggleCommentForm}
 								/>
@@ -440,22 +450,34 @@ function Rating() {
 	});
 
 	const { reply = false } = Route.useSearch();
-	const [openForm, setOpenForm] = useState(reply);
+	const [openReply, setOpenReply] = useState(reply);
+	const toggleOpenReply = () => {
+		setOpenReply((open) => {
+			if (!open) toggleCommentForm(null);
+			return !open;
+		});
+	};
 
-	const toggleOpenForm = () => {
-		setOpenForm(!openForm);
+	const [openCommentFormId, setOpenCommentFormId] = useState<string | null>(
+		null
+	);
+	const toggleCommentForm = (commentId: string | null) => {
+		if (commentId === openCommentFormId) setOpenCommentFormId(null);
+		else setOpenCommentFormId(commentId);
+
+		if (commentId) setOpenReply(false);
 	};
 
 	if (!profile || !rating) return null;
 
 	return (
 		<div className="flex flex-col gap-2">
-			<Review {...rating} profile={profile} />
-			{openForm && myProfile && (
+			<Review {...rating} profile={profile} onReply={toggleOpenReply} />
+			{openReply && myProfile && (
 				<CommentForm
 					profile={myProfile}
 					authorId={profile.userId}
-					onSubmitForm={toggleOpenForm}
+					onSubmitForm={toggleOpenReply}
 				/>
 			)}
 			{comments.map((comment: CommentAndProfile) => (
@@ -463,8 +485,8 @@ function Rating() {
 					comment={comment}
 					myProfile={myProfile}
 					key={comment.id}
-					openForm={openForm}
-					toggleOpenForm={toggleOpenForm}
+					openCommentFormId={openCommentFormId}
+					toggleCommentForm={toggleCommentForm}
 				/>
 			))}
 		</div>

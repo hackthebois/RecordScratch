@@ -6,7 +6,7 @@ import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
 import { Profile } from "@recordscratch/types";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
-import { BellOff, Heart, User } from "lucide-react";
+import { BellOff, Heart, MessageCircle, User } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/_app/notifications")({
@@ -97,6 +97,73 @@ const LikeNotification = ({
 		</div>
 	);
 };
+const CommentNotification = ({
+	user,
+	content,
+}: {
+	user: Profile;
+	content?: string | null;
+}) => {
+	// TODO: link to the review (need review pages first)
+	return (
+		<div className="flex items-center gap-4 rounded-lg border p-4">
+			<MessageCircle size={28} />
+			<div className="flex w-full flex-col gap-2">
+				<div className="flex gap-3">
+					<Link
+						to="/$handle"
+						params={{
+							handle: user.handle,
+						}}
+					>
+						<UserAvatar
+							imageUrl={getImageUrl(user)}
+							className="h-8 w-8"
+						/>
+					</Link>
+					<p>
+						<span className="font-bold">{user.handle}</span>{" "}
+						commented on your {content ? "review" : "rating"}
+					</p>
+				</div>
+				{content && (
+					<p className="text-muted-foreground">
+						{content.length > 100
+							? content.slice(0, 100) + "..."
+							: content}
+					</p>
+				)}
+			</div>
+		</div>
+	);
+};
+const ReplyNotification = ({ user }: { user: Profile }) => {
+	// TODO: link to the review (need review pages first)
+	return (
+		<div className="flex items-center gap-4 rounded-lg border p-4">
+			<MessageCircle size={28} />
+			<div className="flex w-full flex-col gap-2">
+				<div className="flex gap-3">
+					<Link
+						to="/$handle"
+						params={{
+							handle: user.handle,
+						}}
+					>
+						<UserAvatar
+							imageUrl={getImageUrl(user)}
+							className="h-8 w-8"
+						/>
+					</Link>
+					<p>
+						<span className="font-bold">{user.handle}</span> replied
+						to you comment
+					</p>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 function Notifications() {
 	const [notifications] = api.notifications.get.useSuspenseQuery();
@@ -128,6 +195,15 @@ function Notifications() {
 					)}
 					{notification.type === "LIKE" && (
 						<LikeNotification
+							user={notification.from}
+							content={notification.rating?.content}
+						/>
+					)}
+					{notification.type === "REPLY" && (
+						<ReplyNotification user={notification.from} />
+					)}
+					{notification.type === "COMMENT" && (
+						<CommentNotification
 							user={notification.from}
 							content={notification.rating?.content}
 						/>

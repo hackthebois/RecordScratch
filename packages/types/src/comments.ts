@@ -11,7 +11,7 @@ export type SelectComment = z.infer<typeof SelectCommentSchema>;
 
 export const CreateCommentSchema = createInsertSchema(comments, {
 	content: z.string().min(1).max(10000),
-});
+}).extend({ replyUserId: z.string().optional() });
 export type CreateComment = z.infer<typeof CreateCommentSchema>;
 
 export const DeleteCommentSchema = CreateCommentSchema.pick({
@@ -28,3 +28,4 @@ const CommentSchema = createSelectSchema(comments);
 type CommentSchemaType = z.infer<typeof CommentSchema>;
 
 export type CommentAndProfile = CommentSchemaType & { profile: Profile };
+export type CommentAndProfileAndParent = CommentSchemaType & { profile: Profile; parent: Profile };
