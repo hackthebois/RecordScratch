@@ -7,6 +7,8 @@ import {
 } from "@recordscratch/types";
 import { and, count, desc, eq, or, getTableColumns, isNull } from "drizzle-orm";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { alias } from "drizzle-orm/pg-core";
+import { createNotification } from "../notifications";
 
 export const commentsRouter = router({
 	getComments: publicProcedure
@@ -52,12 +54,33 @@ export const commentsRouter = router({
 		.input(CreateCommentSchema)
 		.mutation(async ({ ctx: { db }, input }) => {
 			await db.insert(comments).values(input);
+
+			console.log(input.replyUserId);
+
+			if (input.replyUserId != input.authorId && input.authorId != input.userId) {
+				console.log("COMMENT");
+				await createNotification({
+					fromId: input.userId,
+					userId: input.authorId,
+					type: "COMMENT",
+					resourceId: null,
+				});
+			}
+
+			if (input.replyUserId) {
+				console.log("REPLY");
+				await createNotification({
+					fromId: input.userId,
+					userId: input.replyUserId,
+					type: "REPLY",
+					resourceId: null,
+				});
+			}
 		}),
 
 	delete: protectedProcedure
 		.input(DeleteCommentSchema)
 		.mutation(async ({ ctx: { db, userId }, input: { id, rootId } }) => {
-			console.log(userId, id);
 			const CommentOwnerAndExists = !!(await db.query.comments.findFirst({
 				where: and(eq(comments.id, id!), eq(comments.userId, userId)),
 			}));
@@ -76,10 +99,20 @@ export const commentsRouter = router({
 	getReplies: publicProcedure
 		.input(SelectReplySchema)
 		.query(async ({ ctx: { db }, input: { resourceId, authorId, rootId } }) => {
+			const profileAlias = alias(profile, "profileAlias");
+			const parentUserAlias = alias(profile, "parentUserAlias");
+			const parentCommentAlias = alias(comments, "parentCommentAlias");
+
 			return await db
-				.select({ ...getTableColumns(comments), profile: { ...getTableColumns(profile) } })
+				.select({
+					...getTableColumns(comments),
+					profile: { ...getTableColumns(profileAlias) },
+					parent: { ...getTableColumns(parentUserAlias) },
+				})
 				.from(comments)
-				.innerJoin(profile, eq(comments.userId, profile.userId))
+				.innerJoin(profileAlias, eq(comments.userId, profileAlias.userId))
+				.innerJoin(parentCommentAlias, eq(parentCommentAlias.id, comments.parentId))
+				.innerJoin(parentUserAlias, eq(parentCommentAlias.userId, parentUserAlias.userId))
 				.where(
 					and(
 						eq(comments.resourceId, resourceId),

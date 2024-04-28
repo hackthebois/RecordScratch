@@ -51,8 +51,6 @@ export const ResourceItem = ({
 		enabled: resource.category === "SONG",
 	});
 
-	console.log(isLoading || !album || (resource.category === "SONG" && isLoadingTracks));
-
 	if (isLoading || !album || (resource.category === "SONG" && isLoadingTracks)) {
 		return (
 			<View className="flex flex-row items-center gap-4 rounded">

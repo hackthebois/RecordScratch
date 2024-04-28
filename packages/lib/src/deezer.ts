@@ -205,8 +205,6 @@ export const deezer = async <TRoute extends keyof Deezer>({
 
 	const baseUrl = process.env.CF_PAGES_URL || process.env.EXPO_PUBLIC_CF_PAGES_URL;
 
-	console.log(baseUrl);
-
 	const res = await fetch(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
 	const data: unknown = await res.json();
 
