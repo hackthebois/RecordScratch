@@ -25,7 +25,7 @@ export const SelectReplySchema = CreateCommentSchema.pick({
 	rootId: true,
 });
 const CommentSchema = createSelectSchema(comments);
-type CommentSchemaType = z.infer<typeof CommentSchema>;
+export type CommentSchemaType = z.infer<typeof CommentSchema>;
 
 export type CommentAndProfile = CommentSchemaType & { profile: Profile };
 export type CommentAndProfileAndParent = CommentSchemaType & { profile: Profile; parent: Profile };

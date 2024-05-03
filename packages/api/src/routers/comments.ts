@@ -8,7 +8,7 @@ import {
 import { and, count, desc, eq, or, getTableColumns, isNull } from "drizzle-orm";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { alias } from "drizzle-orm/pg-core";
-import { createNotification } from "../notifications";
+import { createCommentNotification, createNotification } from "../notifications";
 
 export const commentsRouter = router({
 	getComments: publicProcedure
@@ -23,17 +23,6 @@ export const commentsRouter = router({
 			return countList[0].count;
 		}),
 	list: publicProcedure.input(SelectCommentSchema).query(async ({ ctx: { db }, input }) => {
-		// return await db.query.comments.findMany({
-		// 	where: and(
-		// 		eq(comments.resourceId, input.resourceId),
-		// 		eq(comments.authorId, input.authorId)
-		// 	),
-		// 	orderBy: desc(comments.createdAt),
-		// 	with: {
-		// 		profile: true,
-		// 	},
-		// });
-
 		return await db
 			.select({
 				...getTableColumns(comments),
@@ -55,25 +44,34 @@ export const commentsRouter = router({
 		.mutation(async ({ ctx: { db }, input }) => {
 			await db.insert(comments).values(input);
 
-			console.log(input.replyUserId);
+			const id = (
+				await db
+					.select({ id: comments.id })
+					.from(comments)
+					.where(
+						and(
+							eq(comments.resourceId, input.resourceId),
+							eq(comments.authorId, input.authorId),
+							eq(comments.userId, input.userId)
+						)
+					)
+			)[0].id;
 
 			if (input.replyUserId != input.authorId && input.authorId != input.userId) {
-				console.log("COMMENT");
-				await createNotification({
+				await createCommentNotification({
 					fromId: input.userId,
 					userId: input.authorId,
 					type: "COMMENT",
-					resourceId: null,
+					commentId: id,
 				});
 			}
 
 			if (input.replyUserId) {
-				console.log("REPLY");
-				await createNotification({
+				await createCommentNotification({
 					fromId: input.userId,
 					userId: input.replyUserId,
 					type: "REPLY",
-					resourceId: null,
+					commentId: id,
 				});
 			}
 		}),
