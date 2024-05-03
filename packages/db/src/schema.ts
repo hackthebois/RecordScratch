@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { like, not, relations } from "drizzle-orm";
 import {
 	boolean,
 	integer,
@@ -229,6 +229,46 @@ export const notifications = pgTable(
 	})
 );
 
+export const commentEnum = pgEnum("comment_type", ["COMMENT", "REPLY"]);
+const notificationOutline = {
+	userId: text("user_id").notNull(),
+	fromId: text("from_id").notNull(),
+	seen: boolean("seen").default(false).notNull(),
+	...dates,
+};
+
+export const commentNotifications = pgTable("comment_notifications", {
+	id: text("id")
+		.primaryKey()
+		.$default(() => generateId(15)),
+	commentId: text("comment_id").notNull(),
+	type: commentEnum("type").notNull(),
+	...notificationOutline,
+});
+
+export const followNotifications = pgTable(
+	"follow_notifications",
+	{ ...notificationOutline },
+	(table) => ({
+		pk: primaryKey({
+			columns: [table.fromId, table.userId],
+		}),
+	})
+);
+
+export const likeNotifications = pgTable(
+	"like_notifications",
+	{
+		resourceId: text("resource_id").notNull(),
+		...notificationOutline,
+	},
+	(table) => ({
+		pk: primaryKey({
+			columns: [table.fromId, table.userId, table.resourceId],
+		}),
+	})
+);
+
 export const notificationRelations = relations(notifications, ({ one }) => ({
 	profile: one(profile, {
 		fields: [notifications.fromId],
@@ -280,6 +320,9 @@ export const tableSchemas = {
 	likes,
 	notifications,
 	comments,
+	commentNotifications,
+	followNotifications,
+	likeNotifications,
 };
 
 export const relationSchemas = {
