@@ -119,6 +119,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		bio,
 		name,
 		handle,
+		imageUrl,
 		image,
 	}: UpdateProfileForm) => {
 		if (image) {
@@ -140,6 +141,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 			bio: bio ?? null,
 			name,
 			handle,
+			imageUrl,
 		});
 	};
 
