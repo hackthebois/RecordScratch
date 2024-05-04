@@ -146,12 +146,12 @@ const CommentNotification = ({
 					{type === "COMMENT" ? (
 						<p>
 							<span className="font-bold">{user.handle}</span>{" "}
-							commented on your {content ? "review" : "rating"}
+							commented on your {!content ? "review" : "rating"}
 						</p>
 					) : (
 						<p>
 							<span className="font-bold">{user.handle}</span>{" "}
-							replied to your comment {content}
+							replied to your comment
 						</p>
 					)}
 				</div>

@@ -44,6 +44,10 @@ export const commentsRouter = router({
 		.mutation(async ({ ctx: { db }, input }) => {
 			await db.insert(comments).values(input);
 
+			const parentCond = input.parentId
+				? eq(comments.parentId, input.parentId)
+				: isNull(comments.parentId);
+
 			const id = (
 				await db
 					.select({ id: comments.id })
@@ -52,9 +56,11 @@ export const commentsRouter = router({
 						and(
 							eq(comments.resourceId, input.resourceId),
 							eq(comments.authorId, input.authorId),
-							eq(comments.userId, input.userId)
+							eq(comments.userId, input.userId),
+							parentCond
 						)
 					)
+					.orderBy(desc(comments.createdAt))
 			)[0].id;
 
 			if (input.replyUserId != input.authorId && input.authorId != input.userId) {
