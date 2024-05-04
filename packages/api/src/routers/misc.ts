@@ -295,16 +295,96 @@ const albums: {
 		date: dayjs.tz("2024-05-03", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "107858",
+		albumId: "736492",
 		date: dayjs.tz("2024-05-04", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "736492",
+		albumId: "107858",
 		date: dayjs.tz("2024-05-05", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
 		albumId: "7517452",
 		date: dayjs.tz("2024-05-06", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "153406392",
+		date: dayjs.tz("2024-05-07", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "11336428",
+		date: dayjs.tz("2024-05-08", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "97140952",
+		date: dayjs.tz("2024-05-09", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "139385112",
+		date: dayjs.tz("2024-05-10", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "301663",
+		date: dayjs.tz("2024-05-11", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "653084",
+		date: dayjs.tz("2024-05-12", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "7654077",
+		date: dayjs.tz("2024-05-13", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "162683632",
+		date: dayjs.tz("2024-05-14", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "488053955",
+		date: dayjs.tz("2024-05-15", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "14880741",
+		date: dayjs.tz("2024-05-16", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "6899610",
+		date: dayjs.tz("2024-05-17", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "12114242",
+		date: dayjs.tz("2024-05-18", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "9896728",
+		date: dayjs.tz("2024-05-19", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "8497029",
+		date: dayjs.tz("2024-05-20", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "1440805",
+		date: dayjs.tz("2024-05-21", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "302002",
+		date: dayjs.tz("2024-05-22", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "11126554",
+		date: dayjs.tz("2024-05-23", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "76056042",
+		date: dayjs.tz("2024-05-24", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "90875",
+		date: dayjs.tz("2024-05-25", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "436186197",
+		date: dayjs.tz("2024-05-26", "YYYY-MM-DD", "America/Toronto"),
 	},
 ];
 
