@@ -120,6 +120,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		name,
 		handle,
 		image,
+		imageUrl,
 	}: UpdateProfileForm) => {
 		if (image) {
 			const url = await getSignedURL({
@@ -140,6 +141,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 			bio: bio ?? null,
 			name,
 			handle,
+			imageUrl,
 		});
 	};
 
