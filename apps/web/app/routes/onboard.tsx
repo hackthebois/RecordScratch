@@ -137,7 +137,6 @@ function Onboard() {
 			handle,
 			imageUrl,
 			bio: bio ?? null,
-			imageUrl,
 		});
 	};
 
