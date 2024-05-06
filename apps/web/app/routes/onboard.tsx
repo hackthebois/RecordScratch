@@ -110,7 +110,13 @@ function Onboard() {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
+	const onSubmit = async ({
+		name,
+		handle,
+		image,
+		bio,
+		imageUrl,
+	}: Onboard) => {
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -129,6 +135,7 @@ function Onboard() {
 		createProfile({
 			name,
 			handle,
+			imageUrl,
 			bio: bio ?? null,
 		});
 	};
