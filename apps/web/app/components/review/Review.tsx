@@ -91,25 +91,21 @@ const CommentsButton = ({
 	});
 
 	return (
-		<>
-			{!!comments && (
-				<Link
-					className={buttonVariants({
-						variant: "outline",
-						size: "sm",
-						className: "gap-2 text-muted-foreground",
-					})}
-					to="/$handle/ratings/$resourceId"
-					params={{
-						handle,
-						resourceId,
-					}}
-				>
-					<MessageCircle size={20} />
-					<p>{comments}</p>
-				</Link>
-			)}
-		</>
+		<Link
+			className={buttonVariants({
+				variant: "outline",
+				size: "sm",
+				className: "gap-2 text-muted-foreground",
+			})}
+			to="/$handle/ratings/$resourceId"
+			params={{
+				handle,
+				resourceId,
+			}}
+		>
+			<MessageCircle size={20} />
+			<p>{comments}</p>
+		</Link>
 	);
 };
 
@@ -216,13 +212,6 @@ export const Review = ({
 							/>
 						)}
 					</Suspense>
-					<ReplyButton
-						handle={profile.handle}
-						resourceId={resourceId}
-						onClick={() => {
-							if (onReply) onReply();
-						}}
-					/>
 					<Suspense
 						fallback={
 							<Button
@@ -241,6 +230,13 @@ export const Review = ({
 							authorId={userId}
 						/>
 					</Suspense>
+					<ReplyButton
+						handle={profile.handle}
+						resourceId={resourceId}
+						onClick={() => {
+							if (onReply) onReply();
+						}}
+					/>
 				</div>
 			</div>
 		</div>
