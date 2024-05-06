@@ -24,11 +24,12 @@ export const likesRouter = router({
 				authorId,
 				resourceId,
 			});
-			await createLikeNotification({
-				resourceId,
-				fromId: userId,
-				userId: authorId,
-			});
+			if (userId != authorId)
+				await createLikeNotification({
+					resourceId,
+					fromId: userId,
+					userId: authorId,
+				});
 		}),
 	unlike: protectedProcedure
 		.input(SelectLikeSchema)
