@@ -135,6 +135,7 @@ function Onboard() {
 		createProfile({
 			name,
 			handle,
+			imageUrl,
 			bio: bio ?? null,
 			imageUrl,
 		});
