@@ -5,7 +5,7 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 import { RatingSchema } from "@recordscratch/types";
-import { createNotification } from "../notifications";
+import { createFollowNotification } from "../notifications";
 import { posthog } from "../posthog";
 
 export const profilesRouter = router({
@@ -220,12 +220,9 @@ export const profilesRouter = router({
 
 			if (followExists) throw new Error("User Already Follows");
 			else await db.insert(followers).values({ userId, followingId });
-
-			await createNotification({
+			await createFollowNotification({
 				fromId: userId,
 				userId: followingId,
-				type: "FOLLOW",
-				resourceId: null,
 			});
 		}),
 	unFollow: protectedProcedure

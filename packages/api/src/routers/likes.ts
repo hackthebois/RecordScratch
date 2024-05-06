@@ -1,7 +1,7 @@
 import { likes } from "@recordscratch/db";
 import { SelectLikeSchema } from "@recordscratch/types";
 import { and, count, eq } from "drizzle-orm";
-import { createNotification } from "../notifications";
+import { createLikeNotification } from "../notifications";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const likesRouter = router({
@@ -24,11 +24,10 @@ export const likesRouter = router({
 				authorId,
 				resourceId,
 			});
-			await createNotification({
+			await createLikeNotification({
+				resourceId,
 				fromId: userId,
 				userId: authorId,
-				type: "LIKE",
-				resourceId,
 			});
 		}),
 	unlike: protectedProcedure

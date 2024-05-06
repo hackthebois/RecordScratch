@@ -8,7 +8,7 @@ import {
 import { and, count, desc, eq, or, getTableColumns, isNull } from "drizzle-orm";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { alias } from "drizzle-orm/pg-core";
-import { createCommentNotification, createNotification } from "../notifications";
+import { createCommentNotification } from "../notifications";
 
 export const commentsRouter = router({
 	getComments: publicProcedure
@@ -72,7 +72,7 @@ export const commentsRouter = router({
 				});
 			}
 
-			if (input.replyUserId) {
+			if (input.replyUserId && input.replyUserId != input.userId) {
 				await createCommentNotification({
 					fromId: input.userId,
 					userId: input.replyUserId,
