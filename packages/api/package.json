@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@recordscratch/auth": "workspace:*",
 		"@recordscratch/db": "workspace:*",
-		"@trpc/server": "next",
+		"@trpc/server": "^11.0.0-rc.364",
 		"aws4fetch": "^1.0.18",
 		"drizzle-zod": "^0.5.1",
 		"posthog-node": "^4.0.0",
