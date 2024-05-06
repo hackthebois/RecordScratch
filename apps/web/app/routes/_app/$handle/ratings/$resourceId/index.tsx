@@ -160,18 +160,20 @@ const CommentForm = ({
 					render={({ field }) => (
 						<FormItem>
 							<FormControl>
-								<div className="flex flex-row items-center">
+								<div className="flex flex-row items-start">
 									{!!replyHandle && (
-										<Label className="flex w-10 flex-row items-center rounded">
+										<Label className="mr-2 flex flex-row items-center rounded">
 											<AtSign size={15} />
-											<p>{replyHandle}</p>
+											<p className="max-w-10 truncate">
+												{replyHandle}
+											</p>
 										</Label>
 									)}
-
 									<TextareaAutosize
 										placeholder="Create a new comment..."
-										className="w-full resize-none border-none bg-background text-sm outline-none"
+										className="mt-1 w-full resize-none border-none bg-background text-sm outline-none"
 										autoFocus
+										maxLength={250}
 										{...field}
 									/>
 								</div>
