@@ -59,7 +59,35 @@ export const notificationsRouter = router({
 			.where(and(eq(likeNotifications.userId, userId)))
 			.orderBy(desc(likeNotifications.createdAt));
 
-		return { comments: commentNotifs, follows: followNotifs, likes: likeNotifs };
+		// Add 'type' attribute to each notification object
+		const commentNotificationsWithType = commentNotifs.map((notification) => ({
+			...notification,
+			notifType: "COMMENT",
+			createdAt: notification.notification.createdAt,
+		}));
+
+		const followNotificationsWithType = followNotifs.map((notification) => ({
+			...notification,
+			notifType: "FOLLOW",
+			createdAt: notification.follow_notifications.createdAt,
+		}));
+
+		const likeNotificationsWithType = likeNotifs.map((notification) => ({
+			...notification,
+			notifType: "LIKE",
+			createdAt: notification.like_notifications.createdAt,
+		}));
+
+		// Merge all notification arrays into one
+		const allNotifications = [
+			...commentNotificationsWithType,
+			...followNotificationsWithType,
+			...likeNotificationsWithType,
+		];
+
+		allNotifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+		return allNotifications;
 	}),
 	getUnseen: protectedProcedure.query(async ({ ctx: { db, userId } }) => {
 		// const unseen = await db

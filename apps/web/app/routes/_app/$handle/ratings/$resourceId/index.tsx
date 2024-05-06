@@ -42,7 +42,6 @@ import {
 } from "@/components/ui/Popover";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/Label";
-import { createNotification } from "@recordscratch/api/src/notifications";
 
 export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 	component: Rating,

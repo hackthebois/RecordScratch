@@ -1,3 +1,4 @@
+import { ResourceItem } from "@/components/ResourceItem";
 import { FollowButton } from "@/components/followers/FollowButton";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -5,14 +6,14 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
 import {
-	CommentAndProfile,
 	CommentSchemaType,
 	Profile,
 	Rating,
+	ReviewType,
 } from "@recordscratch/types";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
-import { BellOff, Heart, MessageCircle, User } from "lucide-react";
-import { useEffect } from "react";
+import { BellOff, Heart, MessageCircle, Star, User } from "lucide-react";
+import React, { useEffect } from "react";
 
 export const Route = createFileRoute("/_app/notifications")({
 	component: Notifications,
@@ -36,9 +37,9 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 			className="flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition hover:bg-hover"
 		>
 			<User size={32} className="text-sky-500" />
-			<div className="flex w-full flex-col gap-2">
+			<div className="mr-4 flex w-full flex-col gap-2">
 				<div className="flex w-full items-center justify-between">
-					<div className="flex gap-3">
+					<div className="flex items-center gap-3">
 						<Link
 							to="/$handle"
 							params={{
@@ -50,26 +51,56 @@ const FollowNotification = ({ user }: { user: Profile }) => {
 								className="h-8 w-8"
 							/>
 						</Link>
-						<p>
+						<p className="text-sm lg:text-base">
 							<span className="font-bold">{user.handle}</span>{" "}
 							followed you
 						</p>
 					</div>
-					<FollowButton profileId={user.userId} />
+					<div className="hidden lg:block">
+						<FollowButton profileId={user.userId} />
+					</div>
 				</div>
 			</div>
 		</Link>
 	);
 };
 
+const Review = ({ parentId, rating, resourceId, category }: ReviewType) => {
+	return (
+		<div>
+			<div className=" mb-2 max-w-52 truncate">
+				<ResourceItem
+					resource={{ parentId, resourceId, category }}
+					showType
+				/>
+			</div>
+			<div className="flex flex-1 flex-col items-start gap-3">
+				<div className="flex items-center gap-1">
+					{Array.from(Array(rating)).map((_, i) => (
+						<Star
+							key={i}
+							size={18}
+							color="#ffb703"
+							fill="#ffb703"
+						/>
+					))}
+					{Array.from(Array(10 - rating)).map((_, i) => (
+						<Star key={i} size={18} color="#ffb703" />
+					))}
+				</div>
+			</div>
+		</div>
+	);
+};
+
 const LikeNotification = ({
+	fromUser,
 	user,
 	rating,
-	content,
 }: {
+	fromUser: Profile;
 	user: Profile;
 	rating: Rating;
-	content?: string | null;
 }) => {
 	// TODO: link to the review (need review pages first)
 	return (
@@ -79,31 +110,29 @@ const LikeNotification = ({
 			params={{ handle: user.handle, resourceId: rating.resourceId }}
 		>
 			<Heart size={28} color="#ff4d4f" />
-			<div className="flex w-full flex-col gap-2">
-				<div className="flex gap-3">
-					<Link
-						to="/$handle"
-						params={{
-							handle: user.handle,
-						}}
-					>
-						<UserAvatar
-							imageUrl={getImageUrl(user)}
-							className="h-8 w-8"
-						/>
-					</Link>
-					<p>
-						<span className="font-bold">{user.handle}</span> liked
-						your {content ? "review" : "rating"}
-					</p>
+			<div className="mr-10 flex w-full flex-row items-center justify-end">
+				<div className="flex w-full flex-col gap-2">
+					<div className="flex items-center gap-3">
+						<Link
+							to="/$handle"
+							params={{
+								handle: fromUser.handle,
+							}}
+						>
+							<UserAvatar
+								imageUrl={getImageUrl(fromUser)}
+								className="h-8 w-8"
+							/>
+						</Link>
+						<p className="text-sm lg:text-base">
+							<span className="font-bold">{fromUser.handle}</span>{" "}
+							liked your {rating.content ? "review" : "rating"}
+						</p>
+					</div>
 				</div>
-				{content && (
-					<p className="text-muted-foreground">
-						{content.length > 100
-							? content.slice(0, 100) + "..."
-							: content}
-					</p>
-				)}
+				<div className="hidden lg:block">
+					<Review {...rating} profile={user} />
+				</div>
 			</div>
 		</Link>
 	);
@@ -130,8 +159,8 @@ const CommentNotification = ({
 			}}
 		>
 			<MessageCircle size={28} />
-			<div className="flex w-full flex-col gap-2">
-				<div className="flex gap-3">
+			<div className="mr-10 flex w-full flex-row items-center justify-end">
+				<div className="flex w-full flex-row items-center gap-2">
 					<Link
 						to="/$handle"
 						params={{
@@ -144,31 +173,32 @@ const CommentNotification = ({
 						/>
 					</Link>
 					{type === "COMMENT" ? (
-						<p>
+						<p className="text-sm lg:text-base">
 							<span className="font-bold">{user.handle}</span>{" "}
 							commented on your {!content ? "review" : "rating"}
 						</p>
 					) : (
-						<p>
+						<p className="text-sm lg:text-base">
 							<span className="font-bold">{user.handle}</span>{" "}
 							replied to your comment
 						</p>
 					)}
 				</div>
-				{content && (
-					<p className="text-muted-foreground">
-						{content.length > 100
-							? content.slice(0, 100) + "..."
-							: content}
-					</p>
-				)}
+				<p className="hidden w-96 text-end text-muted-foreground lg:block">
+					"
+					{content.length > 100
+						? content.slice(0, 100) + "..."
+						: content}
+					"
+				</p>
 			</div>
 		</Link>
 	);
 };
 
 function Notifications() {
-	const [notifications] = api.notifications.get.useSuspenseQuery();
+	const [allNotifications] = api.notifications.get.useSuspenseQuery();
+	const [userProfile] = api.profiles.me.useSuspenseQuery();
 
 	const { mutate } = api.notifications.markAllSeen.useMutation({
 		onSettled: () => {
@@ -180,10 +210,7 @@ function Notifications() {
 		mutate();
 	}, [mutate]);
 
-	const emptyNotifications =
-		notifications.comments.length === 0 &&
-		notifications.follows.length === 0 &&
-		notifications.likes.length === 0;
+	const emptyNotifications = allNotifications.length === 0;
 
 	return (
 		<div className="flex flex-col gap-3">
@@ -195,52 +222,39 @@ function Notifications() {
 					</p>
 				</div>
 			)}
-			{/* {notifications.map((notification) => (
-				<div key={notification.id}>
-					{notification.type === "FOLLOW" && (
-						<FollowNotification user={notification.from} />
-					)}
-					{notification.type === "LIKE" && (
-						<LikeNotification
-							user={notification.from}
-							content={notification.rating?.content}
-						/>
-					)}
-					{notification.type === "REPLY" && (
-						<ReplyNotification user={notification.from} />
-					)}
-					{notification.type === "COMMENT" && (
+			{allNotifications.map((notification, index) => (
+				<React.Fragment key={index}>
+					{notification.notifType === "COMMENT" && (
 						<CommentNotification
-							user={notification.from}
-							content={notification.rating?.content}
+							user={notification.profile}
+							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+							/* @ts-ignore */
+							comment={notification.comment}
+							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+							/* @ts-ignore */
+							ratingProfile={notification.ratingProfile}
+							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+							/* @ts-ignore */
+							type={notification.notification.type}
 						/>
 					)}
-				</div>
-			))} */}
+					{notification.notifType === "FOLLOW" && (
+						<FollowNotification user={notification.profile} />
+					)}
 
-			{notifications.comments.map((notification) => (
-				<div key={notification.notification.id}>
-					<CommentNotification
-						user={notification.profile}
-						comment={notification.comment}
-						ratingProfile={notification.ratingProfile}
-						type={notification.notification.type}
-					/>
-				</div>
-			))}
-			{notifications.follows.map((notification, index) => (
-				<div key={index}>
-					<FollowNotification user={notification.profile} />
-				</div>
-			))}
-			{notifications.likes.map((notification, index) => (
-				<div key={index}>
-					<LikeNotification
-						user={notification.profile}
-						content={notification.ratings.content}
-						rating={notification.ratings}
-					/>
-				</div>
+					{notification.notifType === "LIKE" && (
+						<LikeNotification
+							user={userProfile!}
+							fromUser={notification.profile}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							/* @ts-ignore */
+							content={notification.ratings.content}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							/* @ts-ignore */
+							rating={notification.ratings}
+						/>
+					)}
+				</React.Fragment>
 			))}
 		</div>
 	);
