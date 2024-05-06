@@ -119,7 +119,6 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		bio,
 		name,
 		handle,
-		imageUrl,
 		image,
 		imageUrl,
 	}: UpdateProfileForm) => {
