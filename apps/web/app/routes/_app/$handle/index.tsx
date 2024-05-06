@@ -1,7 +1,5 @@
 import { Head } from "@/components/Head";
-import { ResourceItem } from "@/components/ResourceItem";
 import { useTheme } from "@/components/ThemeProvider";
-import { ArtistItem } from "@/components/artist/ArtistItem";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
@@ -24,7 +22,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
-import { UserListItem } from "@recordscratch/types/src/list";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -207,10 +204,10 @@ function Handle() {
 					<TabsTrigger value="ALBUM" asChild>
 						<Link
 							from={Route.fullPath}
-							search={{
+							search={(prev) => ({
+								...prev,
 								topCategory: undefined,
-								tab: tab,
-							}}
+							})}
 						>
 							Albums
 						</Link>
@@ -218,10 +215,10 @@ function Handle() {
 					<TabsTrigger value="SONG" asChild>
 						<Link
 							from={Route.fullPath}
-							search={{
+							search={(prev) => ({
+								...prev,
 								topCategory: "SONG",
-								tab: tab,
-							}}
+							})}
 						>
 							Songs
 						</Link>
@@ -229,10 +226,10 @@ function Handle() {
 					<TabsTrigger value="ARTIST" asChild>
 						<Link
 							from={Route.fullPath}
-							search={{
+							search={(prev) => ({
+								...prev,
 								topCategory: "ARTIST",
-								tab: tab,
-							}}
+							})}
 						>
 							Artists
 						</Link>
@@ -277,10 +274,10 @@ function Handle() {
 					<TabsTrigger value="reviews" asChild>
 						<Link
 							from={Route.fullPath}
-							search={{
+							search={(prev) => ({
+								...prev,
 								tab: undefined,
-								topCategory: topCategory,
-							}}
+							})}
 						>
 							Reviews
 						</Link>
@@ -288,10 +285,10 @@ function Handle() {
 					<TabsTrigger value="lists" asChild>
 						<Link
 							from={Route.fullPath}
-							search={{
+							search={(prev) => ({
+								...prev,
 								tab: "lists",
-								topCategory: topCategory,
-							}}
+							})}
 						>
 							Lists
 						</Link>
@@ -300,10 +297,10 @@ function Handle() {
 						<TabsTrigger value="settings" asChild>
 							<Link
 								from={Route.fullPath}
-								search={{
+								search={(prev) => ({
+									...prev,
 									tab: "settings",
-									topCategory: topCategory,
-								}}
+								})}
 							>
 								Settings
 							</Link>
@@ -316,16 +313,13 @@ function Handle() {
 							{distribution?.map((ratings, index) => (
 								<Link
 									from={Route.fullPath}
-									search={{
+									search={(prev) => ({
+										...prev,
 										rating:
 											rating === index + 1
 												? undefined
 												: index + 1,
-										category:
-											category === "all"
-												? undefined
-												: category,
-									}}
+									})}
 									className="flex h-full flex-1 flex-col-reverse"
 									key={index}
 								>
