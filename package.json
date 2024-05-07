@@ -21,6 +21,8 @@
     "dotenv-cli": "^7.4.1"
   },
   "trustedDependencies": [
-    "core-js"
+    "core-js",
+    "es5-ext",
+    "esbuild"
   ]
 }

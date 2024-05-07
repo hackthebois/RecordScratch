@@ -25,7 +25,7 @@ import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Disc3 } from "lucide-react";
+import { Disc3, Star } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
 import { z } from "zod";
@@ -150,6 +150,7 @@ function Handle() {
 	);
 
 	const [editMode, setEditMode] = useState<boolean>(false);
+	const [hoverIndex, setHoverIndex] = useState(-1);
 
 	if (!profile) return <NotFound />;
 
@@ -322,28 +323,46 @@ function Handle() {
 									})}
 									className="flex h-full flex-1 flex-col-reverse"
 									key={index}
+									onMouseEnter={() => setHoverIndex(index)}
+									onMouseLeave={() => setHoverIndex(-1)}
 								>
 									<div
 										style={{
 											height: `${(ratings / (Math.max(...distribution) === 0 ? 1 : Math.max(...distribution))) * 100}%`,
 										}}
 										className={cn(
-											"h-full min-h-0 w-full rounded-t bg-[#ffb703] hover:opacity-90",
-											rating === index + 1 &&
-												"bg-orange-500"
+											"h-full min-h-0 w-full rounded-t bg-[#ffb703]",
+											{
+												"hover:opacity-70":
+													hoverIndex === index,
+											},
+											{
+												"bg-orange-500":
+													rating === index + 1,
+											},
+											{
+												"opacity-30":
+													hoverIndex !== -1 &&
+													hoverIndex !== index,
+											}
 										)}
 									/>
 								</Link>
 							))}
 						</div>
 						<div className="flex w-full items-end gap-1 pt-1">
-							{distribution?.map((_, index) => (
-								<p
-									key={index + 1}
-									className="flex-1 text-center text-sm text-muted-foreground"
-								>
-									{index + 1}
-								</p>
+							{distribution?.map((ratings, index) => (
+								<div className="flex flex-1 flex-row items-center justify-center gap-0.5">
+									{hoverIndex != index ? (
+										<p className="text-center text-sm text-[#ffb703] text-muted-foreground">
+											{index + 1}
+										</p>
+									) : (
+										<p className="text-center text-sm font-bold text-muted-foreground">
+											{ratings}
+										</p>
+									)}
+								</div>
 							))}
 						</div>
 						<Tabs value={category} className="mt-2 w-full">
