@@ -328,16 +328,6 @@ const Comment = ({
 					<p className="text-sm">{content}</p>
 				</div>
 				<div className="flex flex-row gap-2">
-					<Button
-						variant="outline"
-						size="sm"
-						className=" w-12 gap-2 text-muted-foreground"
-						onClick={() => {
-							toggleCommentForm(id);
-						}}
-					>
-						<Reply size={20} />
-					</Button>
 					{!!replyCount && (
 						<Button
 							variant="outline"
@@ -349,6 +339,16 @@ const Comment = ({
 							<p>{replyCount}</p>
 						</Button>
 					)}
+					<Button
+						variant="outline"
+						size="sm"
+						className=" w-12 gap-2 text-muted-foreground"
+						onClick={() => {
+							toggleCommentForm(id);
+						}}
+					>
+						<Reply size={20} />
+					</Button>
 				</div>
 			</div>
 			{openCommentFormId === id && myProfile && (

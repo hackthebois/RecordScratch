@@ -19,7 +19,7 @@ export const RatingInput = ({
 					onClick={() => onChange(index)}
 					onMouseOver={() => setHoverRating(index)}
 					onMouseLeave={() => setHoverRating(null)}
-					className="flex flex-1 justify-center py-2 hover:cursor-pointer"
+					className="flex flex-1 flex-col items-center justify-center pt-2 hover:cursor-pointer"
 				>
 					<Star
 						color="orange"

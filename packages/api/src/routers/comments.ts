@@ -124,7 +124,7 @@ export const commentsRouter = router({
 						eq(comments.rootId, rootId!)
 					)
 				)
-				.orderBy(desc(comments.createdAt));
+				.orderBy(comments.createdAt);
 		}),
 
 	getReplyCount: publicProcedure
