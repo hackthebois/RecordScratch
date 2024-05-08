@@ -17,6 +17,7 @@ import { Theme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { TRPCProvider } from "../components/TrpcProvider";
 import "../global.css";
 
@@ -93,11 +94,13 @@ export default function RootLayout() {
 
 	return (
 		<TRPCProvider>
-			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-				<Stack>
-					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				</Stack>
-			</ThemeProvider>
+			<SafeAreaProvider>
+				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+					<Stack>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					</Stack>
+				</ThemeProvider>
+			</SafeAreaProvider>
 		</TRPCProvider>
 	);
 }
