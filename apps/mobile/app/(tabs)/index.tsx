@@ -32,8 +32,15 @@ const Index = () => {
 
 	const { setColorScheme, colorScheme } = useColorScheme();
 
+	console.log(colorScheme);
+
 	return (
-		<SafeAreaView edges={["top", "left", "right"]}>
+		<SafeAreaView
+			style={{
+				flex: 1,
+			}}
+			edges={["top", "left", "right"]}
+		>
 			<ScrollView contentContainerClassName="flex flex-col gap-8 flex-1" nestedScrollEnabled>
 				<Metadata
 					title={album.title}
