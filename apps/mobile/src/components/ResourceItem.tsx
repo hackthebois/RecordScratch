@@ -1,4 +1,5 @@
-import { Album, cn, getQueryOptions } from "@recordscratch/lib";
+import { getQueryOptions } from "@/utils/deezer";
+import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
