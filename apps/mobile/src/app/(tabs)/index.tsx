@@ -1,14 +1,9 @@
-import { Button } from "@/components/Button";
-import Metadata from "@/components/Metadata";
-import { ResourceItem } from "@/components/ResourceItem";
-import { Text } from "@/components/Text";
-import { api } from "@/components/TrpcProvider";
-import { Album, formatDuration, getQueryOptions } from "@recordscratch/lib";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { api } from "@/utils/api";
+import { Album } from "@recordscratch/lib";
 import { Image } from "expo-image";
 import { useColorScheme } from "nativewind";
 import React from "react";
-import { FlatList, ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const AlbumItem = ({ album }: { album: Album }) => {
@@ -20,15 +15,24 @@ const AlbumItem = ({ album }: { album: Album }) => {
 };
 
 const Index = () => {
-	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
-	const { data: album } = useSuspenseQuery(
-		getQueryOptions({
-			route: "/album/{id}",
-			input: { id: albumOfTheDay?.albumId! },
-		})
-	);
-	const [trending] = api.ratings.trending.useSuspenseQuery();
-	const [top] = api.ratings.top.useSuspenseQuery();
+	const { data: albumOfTheDay } = api.misc.albumOfTheDay.useQuery();
+	// const { data: album } = useSuspenseQuery({
+	// 	queryKey: ["album"],
+	// 	queryFn: async () => {
+	// 		const res = await fetch(`${getBaseUrl()}/music/album/6237061`, {
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 				Accept: "application/json",
+	// 			},
+	// 		});
+	// 		const data = await res.json();
+	// 		console.log(data);
+	// 		return data;
+	// 	},
+	// });
+	console.log(albumOfTheDay);
+	// const [trending] = api.ratings.trending.useSuspenseQuery();
+	// const [top] = api.ratings.top.useSuspenseQuery();
 
 	const { setColorScheme, colorScheme } = useColorScheme();
 
@@ -41,7 +45,7 @@ const Index = () => {
 			}}
 			edges={["top", "left", "right"]}
 		>
-			<ScrollView contentContainerClassName="flex flex-col gap-8 flex-1" nestedScrollEnabled>
+			{/* <ScrollView contentContainerClassName="flex flex-col gap-8 flex-1" nestedScrollEnabled>
 				<Metadata
 					title={album.title}
 					cover={album.cover_big}
@@ -95,7 +99,7 @@ const Index = () => {
 					variant="secondary"
 					onPress={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
 				/>
-			</ScrollView>
+			</ScrollView> */}
 		</SafeAreaView>
 	);
 };

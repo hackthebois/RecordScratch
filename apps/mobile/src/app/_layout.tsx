@@ -1,3 +1,4 @@
+import { TRPCProvider } from "@/utils/api";
 import { NAV_THEME } from "@/utils/contants";
 import { useColorScheme } from "@/utils/useColorScheme";
 import {
@@ -18,8 +19,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { TRPCProvider } from "../components/TrpcProvider";
-import "../global.css";
+import "../styles.css";
 
 const LIGHT_THEME: Theme = {
 	dark: false,

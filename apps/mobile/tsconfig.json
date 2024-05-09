@@ -17,13 +17,21 @@
 		"noUncheckedIndexedAccess": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./src/*"]
 		},
 		"jsx": "react-native",
 		"tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
 		"types": ["nativewind/types"]
 	},
 	"exclude": ["node_modules", "build", "dist", ".next", ".expo"],
-	"include": ["*.ts", "*.js", ".expo/types/**/*.ts", "expo-env.d.ts", "components", "app"],
+	"include": [
+		"*.ts",
+		"*.js",
+		".expo/types/**/*.ts",
+		"expo-env.d.ts",
+		"src/components",
+		"src/app",
+		"src/env.ts"
+	],
 	"extends": "expo/tsconfig.base"
 }
