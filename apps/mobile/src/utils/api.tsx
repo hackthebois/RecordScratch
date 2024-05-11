@@ -17,7 +17,7 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
  * Extend this function when going to production by
  * setting the baseUrl to your production API URL.
  */
-const getBaseUrl = () => {
+export const getBaseUrl = () => {
 	/**
 	 * Gets the IP address of your host-machine. If it cannot automatically find it,
 	 * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
@@ -27,7 +27,8 @@ const getBaseUrl = () => {
 	 * baseUrl to your production API URL.
 	 */
 	const debuggerHost = Constants.expoConfig?.hostUri;
-	const localhost = debuggerHost?.split(":")[0];
+	// const localhost = debuggerHost?.split(":")[0];
+	const localhost = "localhost";
 
 	if (!localhost) {
 		// return "https://turbo.t3.gg";

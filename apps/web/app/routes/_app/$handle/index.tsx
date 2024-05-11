@@ -354,7 +354,7 @@ function Handle() {
 							{distribution?.map((ratings, index) => (
 								<div className="flex flex-1 flex-row items-center justify-center gap-0.5">
 									{hoverIndex != index ? (
-										<p className="text-center text-sm text-[#ffb703] text-muted-foreground">
+										<p className="text-star-orange text-center text-sm text-muted-foreground">
 											{index + 1}
 										</p>
 									) : (
