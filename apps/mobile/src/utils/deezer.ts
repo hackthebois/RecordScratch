@@ -15,7 +15,6 @@ export const getQueryOptions = <TRoute extends keyof Deezer>(input: {
 	route: TRoute;
 	input: Deezer[TRoute]["input"];
 }) => {
-	console.log(env.CF_PAGES_URL);
 	return gqo({
 		...input,
 		baseUrl: env.CF_PAGES_URL,

@@ -12,6 +12,9 @@ export default {
 			},
 		},
 		extend: {
+			textColor: {
+				"star-orange": "#ffb703",
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

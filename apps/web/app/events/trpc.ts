@@ -1,6 +1,7 @@
 import { appRouter, createTRPCContext } from "@recordscratch/api";
 import { resolveResponse } from "@trpc/server/http";
 import {
+	appendCorsHeaders,
 	eventHandler,
 	getCookie,
 	getRequestURL,
@@ -31,6 +32,12 @@ export default eventHandler(async (event) => {
 				setHeader(event, key, headers.get(key)!);
 			}
 		});
+
+	// // Set cors headers
+	// appendCorsHeaders(event, {
+	// 	origin: "*",
+	// 	methods: ["POST", "GET", "OPTIONS"],
+	// });
 
 	return body;
 });

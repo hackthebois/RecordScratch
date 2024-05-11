@@ -1,9 +1,14 @@
-import { api } from "@/utils/api";
-import { Album } from "@recordscratch/lib";
+import { Button } from "@/components/Button";
+import Metadata from "@/components/Metadata";
+import { ResourceItem } from "@/components/ResourceItem";
+import { api, getBaseUrl } from "@/utils/api";
+import { Album, formatDuration } from "@recordscratch/lib";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useColorScheme } from "nativewind";
 import React from "react";
-import { View } from "react-native";
+import { FlatList, ScrollView, View } from "react-native";
+import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const AlbumItem = ({ album }: { album: Album }) => {
@@ -16,23 +21,23 @@ const AlbumItem = ({ album }: { album: Album }) => {
 
 const Index = () => {
 	const { data: albumOfTheDay } = api.misc.albumOfTheDay.useQuery();
-	// const { data: album } = useSuspenseQuery({
-	// 	queryKey: ["album"],
-	// 	queryFn: async () => {
-	// 		const res = await fetch(`${getBaseUrl()}/music/album/6237061`, {
-	// 			headers: {
-	// 				"Content-Type": "application/json",
-	// 				Accept: "application/json",
-	// 			},
-	// 		});
-	// 		const data = await res.json();
-	// 		console.log(data);
-	// 		return data;
-	// 	},
-	// });
-	console.log(albumOfTheDay);
-	// const [trending] = api.ratings.trending.useSuspenseQuery();
-	// const [top] = api.ratings.top.useSuspenseQuery();
+	const { data: album } = useSuspenseQuery({
+		queryKey: ["album"],
+		queryFn: async () => {
+			const res = await fetch(`${getBaseUrl()}/music/album/6237061`, {
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+			});
+			const data = await res.json();
+			console.log(data);
+			return data;
+		},
+	});
+	console.log(album);
+	const [trending] = api.ratings.trending.useSuspenseQuery();
+	const [top] = api.ratings.top.useSuspenseQuery();
 
 	const { setColorScheme, colorScheme } = useColorScheme();
 
@@ -45,7 +50,7 @@ const Index = () => {
 			}}
 			edges={["top", "left", "right"]}
 		>
-			{/* <ScrollView contentContainerClassName="flex flex-col gap-8 flex-1" nestedScrollEnabled>
+			<ScrollView contentContainerClassName="flex flex-col gap-8 flex-1" nestedScrollEnabled>
 				<Metadata
 					title={album.title}
 					cover={album.cover_big}
@@ -53,7 +58,7 @@ const Index = () => {
 					tags={[
 						album.release_date,
 						album.duration ? `${formatDuration(album.duration)}` : undefined,
-						...(album.genres?.data.map((genre) => genre.name) ?? []),
+						...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
 					]}
 				>
 					<></>
@@ -99,7 +104,7 @@ const Index = () => {
 					variant="secondary"
 					onPress={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
 				/>
-			</ScrollView> */}
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
