@@ -42,7 +42,7 @@ const Metadata = ({
 			) : (
 				<View className={"h-[150px] w-[150px] self-center"}>{cover}</View>
 			)}
-			<View className="flex flex-col items-center gap-4 sm:items-start">
+			<View className="flex flex-col justify-center items-center gap-4 sm:justify-center">
 				<Text className="text-muted-foreground">{type.toUpperCase()}</Text>
 				<Text variant={"h1"} className={"text-center sm:text-left"}>
 					{title}

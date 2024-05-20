@@ -106,54 +106,93 @@ const AppAlbumsAlbumIdSongsSongIdIndexRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
     '/onboard': {
+      id: '/onboard'
+      path: '/onboard'
+      fullPath: '/onboard'
       preLoaderRoute: typeof OnboardImport
       parentRoute: typeof rootRoute
     }
     '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
       preLoaderRoute: typeof AppNotificationsImport
       parentRoute: typeof AppImport
     }
     '/_app/privacy-policy': {
+      id: '/_app/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
       preLoaderRoute: typeof AppPrivacyPolicyLazyImport
       parentRoute: typeof AppImport
     }
     '/_app/roadmap': {
+      id: '/_app/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
       preLoaderRoute: typeof AppRoadmapLazyImport
       parentRoute: typeof AppImport
     }
     '/_app/terms': {
+      id: '/_app/terms'
+      path: '/terms'
+      fullPath: '/terms'
       preLoaderRoute: typeof AppTermsLazyImport
       parentRoute: typeof AppImport
     }
     '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/$handle/': {
+      id: '/_app/$handle/'
+      path: '/$handle'
+      fullPath: '/$handle'
       preLoaderRoute: typeof AppHandleIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/albums/$albumId/': {
+      id: '/_app/albums/$albumId/'
+      path: '/albums/$albumId'
+      fullPath: '/albums/$albumId'
       preLoaderRoute: typeof AppAlbumsAlbumIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/artists/$artistId/': {
+      id: '/_app/artists/$artistId/'
+      path: '/artists/$artistId'
+      fullPath: '/artists/$artistId'
       preLoaderRoute: typeof AppArtistsArtistIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/lists/$listId/': {
+      id: '/_app/lists/$listId/'
+      path: '/lists/$listId'
+      fullPath: '/lists/$listId'
       preLoaderRoute: typeof AppListsListIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/$handle/ratings/$resourceId/': {
+      id: '/_app/$handle/ratings/$resourceId/'
+      path: '/$handle/ratings/$resourceId'
+      fullPath: '/$handle/ratings/$resourceId'
       preLoaderRoute: typeof AppHandleRatingsResourceIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/albums/$albumId/songs/$songId/': {
+      id: '/_app/albums/$albumId/songs/$songId/'
+      path: '/albums/$albumId/songs/$songId'
+      fullPath: '/albums/$albumId/songs/$songId'
       preLoaderRoute: typeof AppAlbumsAlbumIdSongsSongIdIndexImport
       parentRoute: typeof AppImport
     }
@@ -162,8 +201,8 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
-  AppRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
+  AppRoute: AppRoute.addChildren({
     AppNotificationsRoute,
     AppPrivacyPolicyLazyRoute,
     AppRoadmapLazyRoute,
@@ -175,8 +214,8 @@ export const routeTree = rootRoute.addChildren([
     AppListsListIdIndexRoute,
     AppHandleRatingsResourceIdIndexRoute,
     AppAlbumsAlbumIdSongsSongIdIndexRoute,
-  ]),
+  }),
   OnboardRoute,
-])
+})
 
 /* prettier-ignore-end */

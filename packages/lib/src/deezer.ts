@@ -185,9 +185,11 @@ const DeezerSchema = z.object({
 export type Deezer = z.infer<typeof DeezerSchema>;
 
 export const deezer = async <TRoute extends keyof Deezer>({
+	baseUrl,
 	route,
 	input: rawInput,
 }: {
+	baseUrl: string;
 	route: TRoute;
 	input: Deezer[TRoute]["input"];
 }): Promise<Deezer[TRoute]["output"]> => {
@@ -203,7 +205,7 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 
-	const baseUrl = process.env.CF_PAGES_URL || process.env.EXPO_PUBLIC_CF_PAGES_URL;
+	console.log(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
 
 	const res = await fetch(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
 	const data: unknown = await res.json();
@@ -216,14 +218,16 @@ export const deezer = async <TRoute extends keyof Deezer>({
 };
 
 export const getQueryOptions = <TRoute extends keyof Deezer>({
+	baseUrl,
 	route,
 	input,
 }: {
+	baseUrl: string;
 	route: TRoute;
 	input: Deezer[TRoute]["input"];
 }) => {
 	return {
 		queryKey: [route, input],
-		queryFn: () => deezer({ route, input }),
+		queryFn: () => deezer({ baseUrl, route, input }),
 	};
 };

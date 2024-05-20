@@ -9,9 +9,11 @@ export default createApp({
 		routeRules: {
 			"/music/**": {
 				proxy: "https://api.deezer.com/**",
+				cors: true,
 			},
 			"/ingest/**": {
 				proxy: "https://app.posthog.com/**",
+				cors: true,
 			},
 		},
 		experimental: {

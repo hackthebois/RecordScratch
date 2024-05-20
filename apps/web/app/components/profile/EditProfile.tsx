@@ -148,6 +148,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 			name,
 			handle,
 			imageUrl: null,
+			imageUrl: null,
 		});
 	};
 

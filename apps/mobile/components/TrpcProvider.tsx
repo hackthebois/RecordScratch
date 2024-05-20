@@ -6,10 +6,15 @@ import superjson from "superjson";
 
 import { AppRouter } from "@recordscratch/api";
 import React from "react";
+import { Platform } from "react-native";
 
 export const api = createTRPCReact<AppRouter>();
 
 export function TRPCProvider(props: { children: React.ReactNode }) {
+	const url =
+		Platform.OS === "android"
+			? process.env.EXPO_PUBLIC_CF_PAGES_URL_ANDROID
+			: process.env.EXPO_PUBLIC_CF_PAGES_URL;
 	const [queryClient] = useState(() => new QueryClient());
 	const [trpcClient] = useState(() =>
 		api.createClient({
