@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Head } from "@/components/Head";
 import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
@@ -205,7 +206,7 @@ function Handle() {
 					<TabsTrigger value="ALBUM" asChild>
 						<Link
 							from={Route.fullPath}
-							search={(prev) => ({
+							search={(prev: any) => ({
 								...prev,
 								topCategory: undefined,
 							})}
@@ -216,7 +217,7 @@ function Handle() {
 					<TabsTrigger value="SONG" asChild>
 						<Link
 							from={Route.fullPath}
-							search={(prev) => ({
+							search={(prev: any) => ({
 								...prev,
 								topCategory: "SONG",
 							})}
@@ -227,7 +228,7 @@ function Handle() {
 					<TabsTrigger value="ARTIST" asChild>
 						<Link
 							from={Route.fullPath}
-							search={(prev) => ({
+							search={(prev: any) => ({
 								...prev,
 								topCategory: "ARTIST",
 							})}
@@ -275,7 +276,7 @@ function Handle() {
 					<TabsTrigger value="reviews" asChild>
 						<Link
 							from={Route.fullPath}
-							search={(prev) => ({
+							search={(prev: any) => ({
 								...prev,
 								tab: undefined,
 							})}
@@ -286,7 +287,7 @@ function Handle() {
 					<TabsTrigger value="lists" asChild>
 						<Link
 							from={Route.fullPath}
-							search={(prev) => ({
+							search={(prev: any) => ({
 								...prev,
 								tab: "lists",
 							})}
@@ -298,7 +299,7 @@ function Handle() {
 						<TabsTrigger value="settings" asChild>
 							<Link
 								from={Route.fullPath}
-								search={(prev) => ({
+								search={(prev: any) => ({
 									...prev,
 									tab: "settings",
 								})}
@@ -314,7 +315,7 @@ function Handle() {
 							{distribution?.map((ratings, index) => (
 								<Link
 									from={Route.fullPath}
-									search={(prev) => ({
+									search={(prev: any) => ({
 										...prev,
 										rating:
 											rating === index + 1
@@ -354,7 +355,7 @@ function Handle() {
 							{distribution?.map((ratings, index) => (
 								<div className="flex flex-1 flex-row items-center justify-center gap-0.5">
 									{hoverIndex != index ? (
-										<p className="text-center text-sm text-[#ffb703] text-muted-foreground">
+										<p className="text-center text-sm text-muted-foreground text-star-orange">
 											{index + 1}
 										</p>
 									) : (
@@ -370,7 +371,7 @@ function Handle() {
 								<TabsTrigger value="all" asChild>
 									<Link
 										from={Route.fullPath}
-										search={(prev) => ({
+										search={(prev: any) => ({
 											...prev,
 											category: undefined,
 										})}
@@ -381,7 +382,7 @@ function Handle() {
 								<TabsTrigger value="ALBUM" asChild>
 									<Link
 										from={Route.fullPath}
-										search={(prev) => ({
+										search={(prev: any) => ({
 											...prev,
 											category: "ALBUM",
 										})}
@@ -392,7 +393,7 @@ function Handle() {
 								<TabsTrigger value="SONG" asChild>
 									<Link
 										from={Route.fullPath}
-										search={(prev) => ({
+										search={(prev: any) => ({
 											...prev,
 											category: "SONG",
 										})}

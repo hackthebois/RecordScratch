@@ -53,6 +53,8 @@ const SlideWrapper = ({
 	);
 };
 
+const onInvalid = (errors: unknown) => console.error(errors);
+
 function Onboard() {
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
@@ -318,7 +320,8 @@ function Onboard() {
 				<Button
 					onClick={() => {
 						if (page === 3) {
-							form.handleSubmit(onSubmit)();
+							console.log("CALLED ONSUBMIT");
+							form.handleSubmit(onSubmit, onInvalid)();
 						} else {
 							setPage((page) => page + 1);
 						}
@@ -329,7 +332,7 @@ function Onboard() {
 					{page === 2 && !bio
 						? "Skip"
 						: page === 3 && !image
-							? "Skip"
+							? `Skip`
 							: page === 3
 								? "Finish"
 								: "Next"}

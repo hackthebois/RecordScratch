@@ -1,4 +1,5 @@
-import { Album, cn, getQueryOptions } from "@recordscratch/lib";
+import { getQueryOptions } from "@/utils/deezer";
+import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
@@ -69,7 +70,9 @@ export const ResourceItem = ({
 			: album?.title;
 
 	const link =
-		resource.category === "SONG" ? `/albums/$albumId/songs/$songId` : `/albums/$albumId`;
+		resource.category === "SONG"
+			? `/albums/${resource.parentId}/songs/${resource.resourceId}`
+			: `/albums/${resource.resourceId}`;
 
 	return (
 		<Link

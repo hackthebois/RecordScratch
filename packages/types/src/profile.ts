@@ -67,7 +67,7 @@ export const ProfilePhotoSchema = z
 export const OnboardSchema = CreateProfileSchema.extend({
 	bio: z.string().optional(),
 	image: ProfilePhotoSchema.optional(),
-});
+}).omit({ imageUrl: true });
 export type Onboard = z.infer<typeof OnboardSchema>;
 
 export const UpdateProfileSchema = CreateProfileSchema;
@@ -76,5 +76,5 @@ export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
 export const UpdateProfileFormSchema = UpdateProfileSchema.extend({
 	bio: ProfileBioSchema.optional(),
 	image: ProfilePhotoSchema.optional(),
-});
+}).omit({ imageUrl: true });
 export type UpdateProfileForm = z.infer<typeof UpdateProfileFormSchema>;

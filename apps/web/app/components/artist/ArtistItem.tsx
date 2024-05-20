@@ -1,4 +1,5 @@
-import { Artist, cn, getQueryOptions } from "@recordscratch/lib";
+import { getQueryOptions } from "@/lib/deezer";
+import { Artist, cn } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 

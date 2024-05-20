@@ -1,5 +1,6 @@
+import { getQueryOptions } from "@/lib/deezer";
+import { Deezer } from "@recordscratch/lib";
 import { Category, ListItem, UserListItem } from "@recordscratch/types";
-import { Deezer, getQueryOptions } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { List } from "lucide-react";
 import { Suspense } from "react";
