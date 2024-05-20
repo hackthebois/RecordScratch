@@ -53,6 +53,8 @@ const SlideWrapper = ({
 	);
 };
 
+const onInvalid = (errors: unknown) => console.error(errors);
+
 function Onboard() {
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
@@ -110,13 +112,13 @@ function Onboard() {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({
-		name,
-		handle,
-		image,
-		bio,
-		imageUrl,
-	}: Onboard) => {
+	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
+		console.log("Submitting form with values:", {
+			name,
+			handle,
+			image,
+			bio,
+		});
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -130,12 +132,18 @@ function Onboard() {
 					"Content-Type": image?.type,
 				},
 			});
+			createProfile({
+				name,
+				handle,
+				imageUrl: url,
+				bio: bio ?? null,
+			});
 		}
 
 		createProfile({
 			name,
 			handle,
-			imageUrl,
+			imageUrl: null,
 			bio: bio ?? null,
 		});
 	};
@@ -275,7 +283,7 @@ function Onboard() {
 						/>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={3}>
-						<Tag variant="outline">STEP 2/3</Tag>
+						<Tag variant="outline">STEP 3/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
 							className="my-8 h-36 w-36 overflow-hidden rounded-full"
@@ -318,7 +326,8 @@ function Onboard() {
 				<Button
 					onClick={() => {
 						if (page === 3) {
-							form.handleSubmit(onSubmit)();
+							console.log("CALLED ONSUBMIT");
+							form.handleSubmit(onSubmit, onInvalid)();
 						} else {
 							setPage((page) => page + 1);
 						}
@@ -329,7 +338,7 @@ function Onboard() {
 					{page === 2 && !bio
 						? "Skip"
 						: page === 3 && !image
-							? "Skip"
+							? `Skip`
 							: page === 3
 								? "Finish"
 								: "Next"}

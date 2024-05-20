@@ -406,6 +406,12 @@ export const miscRouter = router({
 				return true;
 			}
 		});
-		return yesterdaysAlbum ? yesterdaysAlbum : albums[0];
+
+		const fallbackAlbum = {
+			albumId: "44730061",
+			date: dayjs.tz("2024-02-23", "YYYY-MM-DD", "America/Toronto"),
+		};
+
+		return yesterdaysAlbum ? yesterdaysAlbum : fallbackAlbum;
 	}),
 });
