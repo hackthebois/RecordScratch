@@ -110,13 +110,7 @@ function Onboard() {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({
-		name,
-		handle,
-		image,
-		bio,
-		imageUrl,
-	}: Onboard) => {
+	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -130,12 +124,18 @@ function Onboard() {
 					"Content-Type": image?.type,
 				},
 			});
+			createProfile({
+				name,
+				handle,
+				imageUrl: url,
+				bio: bio ?? null,
+			});
 		}
 
 		createProfile({
 			name,
 			handle,
-			imageUrl,
+			imageUrl: null,
 			bio: bio ?? null,
 		});
 	};
@@ -275,7 +275,7 @@ function Onboard() {
 						/>
 					</SlideWrapper>
 					<SlideWrapper page={page} pageIndex={3}>
-						<Tag variant="outline">STEP 2/3</Tag>
+						<Tag variant="outline">STEP 3/3</Tag>
 						<h1 className="mt-4">Image</h1>
 						<UserAvatar
 							className="my-8 h-36 w-36 overflow-hidden rounded-full"
