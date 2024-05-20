@@ -10,38 +10,38 @@ import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
 import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getQueryOptions } from "@/utils/deezer";
 
-const AlbumItem = ({ album }: { album: Album }) => {
+const AlbumOfTheDay = () => {
+	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
+	const { data: album } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/album/{id}",
+			input: { id: albumOfTheDay.albumId },
+		})
+	);
+
 	return (
-		<View>
-			<Image source={album.cover_big} className="w-16 h-16" />
-		</View>
+		<Metadata
+			title={album.title}
+			cover={album.cover_big}
+			type="ALBUM OF THE DAY"
+			tags={[
+				album.release_date,
+				album.duration ? `${formatDuration(album.duration)}` : undefined,
+				...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+			]}
+		>
+			<></>
+		</Metadata>
 	);
 };
 
 const Index = () => {
-	const { data: albumOfTheDay } = api.misc.albumOfTheDay.useQuery();
-	const { data: album } = useSuspenseQuery({
-		queryKey: ["album"],
-		queryFn: async () => {
-			const res = await fetch(`${getBaseUrl()}/music/album/6237061`, {
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-				},
-			});
-			const data = await res.json();
-			console.log(data);
-			return data;
-		},
-	});
-	console.log(album);
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
 
 	const { setColorScheme, colorScheme } = useColorScheme();
-
-	console.log(colorScheme);
 
 	return (
 		<SafeAreaView
@@ -50,55 +50,52 @@ const Index = () => {
 			}}
 			edges={["top", "left", "right"]}
 		>
-			<ScrollView contentContainerClassName="flex flex-col gap-8 flex-1" nestedScrollEnabled>
-				<Metadata
-					title={album.title}
-					cover={album.cover_big}
-					type="ALBUM OF THE DAY"
-					tags={[
-						album.release_date,
-						album.duration ? `${formatDuration(album.duration)}` : undefined,
-						...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
-					]}
-				>
-					<></>
-				</Metadata>
-				<Text variant="h1" className="px-4 mt-4">
-					Trending
-				</Text>
-				<FlatList
-					data={trending}
-					renderItem={({ item }) => (
-						<ResourceItem
-							direction="vertical"
-							resource={{
-								resourceId: item.resourceId,
-								category: "ALBUM",
-								parentId: "",
-							}}
-						/>
-					)}
-					horizontal
-					contentContainerClassName="gap-4 px-4 pb-4"
-				/>
-				<Text variant="h1" className="px-4">
-					Top Albums
-				</Text>
-				<FlatList
-					data={top}
-					renderItem={({ item }) => (
-						<ResourceItem
-							direction="vertical"
-							resource={{
-								resourceId: item.resourceId,
-								category: "ALBUM",
-								parentId: "",
-							}}
-						/>
-					)}
-					horizontal
-					contentContainerClassName="gap-4 px-4 pb-4"
-				/>
+			<ScrollView
+				contentContainerClassName="flex flex-col gap-6 flex-1 mt-10"
+				nestedScrollEnabled
+			>
+				<AlbumOfTheDay />
+				<div className="flex flex-col gap-2">
+					<Text variant="h1" className="dark:text-white px-4 mt-4">
+						Trending
+					</Text>
+					<FlatList
+						data={trending}
+						renderItem={({ item }) => (
+							<ResourceItem
+								direction="vertical"
+								resource={{
+									resourceId: item.resourceId,
+									category: "ALBUM",
+									parentId: "",
+								}}
+							/>
+						)}
+						horizontal
+						contentContainerClassName="gap-4 px-4 pb-4"
+					/>
+				</div>
+				<div className="flex flex-col gap-2">
+					<Text variant="h1" className="px-4">
+						Top Albums
+					</Text>
+					<FlatList
+						data={top}
+						renderItem={({ item }) => (
+							<ResourceItem
+								direction="vertical"
+								resource={{
+									resourceId: item.resourceId,
+									category: "ALBUM",
+									parentId: "",
+								}}
+							/>
+						)}
+						horizontal
+						contentContainerClassName="gap-4 px-4 pb-4"
+					/>
+				</div>
+
 				<Button
 					label="Toggle mode"
 					variant="secondary"

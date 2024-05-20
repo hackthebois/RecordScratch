@@ -70,7 +70,9 @@ export const ResourceItem = ({
 			: album?.title;
 
 	const link =
-		resource.category === "SONG" ? `/albums/$albumId/songs/$songId` : `/albums/$albumId`;
+		resource.category === "SONG"
+			? `/albums/${resource.parentId}/songs/${resource.resourceId}`
+			: `/albums/${resource.resourceId}`;
 
 	return (
 		<Link
