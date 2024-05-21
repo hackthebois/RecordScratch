@@ -54,8 +54,14 @@ const PostHogIdentify = () => {
 
 function Root() {
 	return (
+		// <PostHogProvider
+		// 	apiKey={process.env.VITE_POSTHOG_KEY}
+		// 	options={{
+		// 		api_host: process.env.CF_PAGES_URL + "/ingest",
+		// 	}}
+		// >
 		<PostHogProvider
-			apiKey={process.env.VITE_POSTHOG_KEY}
+			apiKey={"phc_KcRi70tMuUs32z028DvLlkxMfLXYJFlxH12RZxyuCnf"}
 			options={{
 				api_host: process.env.CF_PAGES_URL + "/ingest",
 			}}

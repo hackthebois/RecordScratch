@@ -7,9 +7,12 @@ type PostHogEvent = {
 	review: ReviewForm;
 };
 
-const ph = new PostHog(process.env.VITE_POSTHOG_KEY!, {
+const ph = new PostHog("phc_KcRi70tMuUs32z028DvLlkxMfLXYJFlxH12RZxyuCnf", {
 	host: process.env.CF_PAGES_URL + "/ingest",
 });
+// const ph = new PostHog(process.env.VITE_POSTHOG_KEY!, {
+// 	host: process.env.CF_PAGES_URL + "/ingest",
+// });
 
 export const posthog = <TEvent extends keyof PostHogEvent>(
 	event: TEvent,
