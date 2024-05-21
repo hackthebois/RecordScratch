@@ -1,28 +1,29 @@
 {
-  "scripts": {
-    "build": "dotenv -- turbo build",
-    "type-check": "tsc",
-    "dev": "dotenv -- turbo dev",
-    "studio": "dotenv -- turbo studio",
-    "clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "expo-router": "~3.4.9",
-    "expo-splash-screen": "~0.26.5",
-    "react-native-safe-area-context": "4.8.2",
-    "typescript": "^5.4.2"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
-    "dotenv-cli": "^7.4.1"
-  },
-  "trustedDependencies": [
-    "core-js",
-    "es5-ext",
-    "esbuild"
-  ]
+	"scripts": {
+		"build": "dotenv -- turbo build",
+		"type-check": "tsc",
+		"dev": "dotenv -- turbo dev",
+		"studio": "dotenv -- turbo studio",
+		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb",
+		"build-cloudflare": "cd apps/web && bun build-cloudflare"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"expo-router": "~3.4.9",
+		"expo-splash-screen": "~0.26.5",
+		"react-native-safe-area-context": "4.8.2",
+		"typescript": "^5.4.2"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"devDependencies": {
+		"dotenv-cli": "^7.4.1"
+	},
+	"trustedDependencies": [
+		"core-js",
+		"es5-ext",
+		"esbuild"
+	]
 }
