@@ -20,7 +20,7 @@
 		"@react-navigation/native": "^6.0.2",
 		"@recordscratch/api": "workspace:*",
 		"@recordscratch/lib": "workspace:*",
-		"@tanstack/react-query": "^5.28.9",
+		"@tanstack/react-query": "latest",
 		"expo": "~50.0.14",
 		"expo-font": "~11.10.3",
 		"expo-image": "~1.10.6",
