@@ -18,5 +18,5 @@
 			"cache": false
 		}
 	},
-	"globalEnv": ["DATABASE_URL", "VITE_POSTHOG_KEY", "VITE_POSTHOG_HOST"]
+	"globalEnv": ["DATABASE_URL"]
 }
