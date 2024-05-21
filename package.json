@@ -4,8 +4,7 @@
 		"type-check": "tsc",
 		"dev": "dotenv -- turbo dev",
 		"studio": "dotenv -- turbo studio",
-		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb",
-		"build-cloudflare": "cd apps/web &&  dotenv -- bun build-cloudflare "
+		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.5",

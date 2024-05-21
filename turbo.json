@@ -4,12 +4,6 @@
 		"build": {
 			"outputs": ["dist/**"]
 		},
-		"build-cloudflare": {
-			"dependsOn": ["^build"],
-			"outputs": ["dist/**"],
-			"inputs": ["src/**/*", "package.json", "tsconfig.json"],
-			"command": "bun build src/index.ts --outdir=dist --target=browser"
-		},
 		"type-check": {},
 		"dev": {
 			"persistent": true,
