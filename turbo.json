@@ -2,7 +2,10 @@
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
 		"build": {
-			"outputs": ["./apps/web/dist/**"]
+			"outputs": ["dist/**"]
+		},
+		"build-cloudflare": {
+			"outputs": ["dist/**"]
 		},
 		"type-check": {},
 		"dev": {
