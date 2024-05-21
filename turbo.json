@@ -2,7 +2,7 @@
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
 		"build": {
-			"outputs": ["dist/**"]
+			"outputs": ["./apps/web/dist/**"]
 		},
 		"type-check": {},
 		"dev": {
