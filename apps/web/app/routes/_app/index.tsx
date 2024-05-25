@@ -42,6 +42,8 @@ const AlbumOfTheDay = () => {
 		})
 	);
 
+	console.log(albumOfTheDay.albumId);
+
 	return (
 		<Metadata
 			title={album.title}
