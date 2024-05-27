@@ -205,7 +205,7 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 
-	console.log(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
+	// console.log(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
 
 	const res = await fetch(`${baseUrl}/music${modifiedRoute}?${params.toString()}`);
 	const data: unknown = await res.json();
@@ -213,7 +213,6 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	if (!res.ok) {
 		throw new Error(`Deezer API error (${route}): input:(${input}) ${JSON.stringify(data)}`);
 	}
-
 	return DeezerSchema.shape[route].shape["output"].parse(data);
 };
 
@@ -228,6 +227,8 @@ export const getQueryOptions = <TRoute extends keyof Deezer>({
 }) => {
 	return {
 		queryKey: [route, input],
-		queryFn: () => deezer({ baseUrl, route, input }),
+		queryFn: () => {
+			return deezer({ baseUrl, route, input });
+		},
 	};
 };

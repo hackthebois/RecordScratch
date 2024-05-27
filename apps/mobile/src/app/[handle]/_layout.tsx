@@ -19,7 +19,7 @@ export default function TabLayout() {
 				options={{
 					title: "Profile",
 					headerShown: false,
-					tabBarIcon: () => <User size={25} className="text-muted-foreground" />,
+					tabBarIcon: () => <User size={20} className="text-muted-foreground" />,
 					href: "/profile",
 				}}
 			/>

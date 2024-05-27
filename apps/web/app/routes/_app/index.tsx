@@ -8,6 +8,7 @@ import {
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
+import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
 import { api, apiUtils } from "@/trpc/react";
@@ -41,8 +42,7 @@ const AlbumOfTheDay = () => {
 			input: { id: albumOfTheDay.albumId },
 		})
 	);
-
-	console.log(albumOfTheDay.albumId);
+	if (!album) return <NotFound />;
 
 	return (
 		<Metadata

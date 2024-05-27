@@ -11,7 +11,7 @@ export const UserAvatar = ({
 }) => {
 	return (
 		<Avatar className={cn(className ? className : "h-auto sm:w-16")}>
-			<AvatarImage src={imageUrl} />
+			<AvatarImage src={imageUrl ?? ""} />
 			<AvatarFallback>
 				<User className="h-[60%] w-[60%] text-muted-foreground" />
 			</AvatarFallback>

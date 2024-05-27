@@ -386,6 +386,10 @@ const albums: {
 		albumId: "436186197",
 		date: dayjs.tz("2024-05-26", "YYYY-MM-DD", "America/Toronto"),
 	},
+	{
+		albumId: "184480112",
+		date: dayjs.tz("2024-05-27", "YYYY-MM-DD", "America/Toronto"),
+	},
 ];
 
 export const miscRouter = router({

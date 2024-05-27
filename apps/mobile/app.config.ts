@@ -37,4 +37,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		tsconfigPaths: true,
 		typedRoutes: true,
 	},
+	jsEngine: "hermes",
 });

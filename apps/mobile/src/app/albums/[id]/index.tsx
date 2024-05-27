@@ -1,11 +1,12 @@
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
 import React, { useLayoutEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import Metadata from "@/components/Metadata";
 import { formatDuration } from "@recordscratch/lib";
+import NotFound from "@/app/+not-found";
+import SongTable from "@/components/SongTable";
 
 const AlbumPage = () => {
 	const { id } = useLocalSearchParams();
@@ -29,21 +30,43 @@ const AlbumPage = () => {
 		})
 	);
 
+	if (!album) return <NotFound />;
+
+	const { data: songs } = useSuspenseQuery({
+		...getQueryOptions({
+			route: "/album/{id}/tracks",
+			input: { id: albumId, limit: 1000 },
+		}),
+		initialData: {
+			data: album?.tracks?.data ?? [],
+		},
+	});
+
 	return (
-		<View className="flex-col mt-5 items-center">
-			<Metadata
-				title={album.title}
-				cover={album.cover_big}
-				type="ALBUM OF THE DAY"
-				tags={[
-					album.release_date,
-					album.duration ? `${formatDuration(album.duration)}` : undefined,
-					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
-				]}
+		<SafeAreaView
+			style={{
+				flex: 1,
+			}}
+		>
+			<ScrollView
+				contentContainerClassName="flex flex-col gap-6 flex-1 mt-10"
+				nestedScrollEnabled
 			>
-				<></>
-			</Metadata>
-		</View>
+				<Metadata
+					title={album.title}
+					cover={album.cover_big}
+					type="ALBUM OF THE DAY"
+					tags={[
+						album.release_date,
+						album.duration ? `${formatDuration(album.duration)}` : undefined,
+						...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+					]}
+				>
+					<></>
+				</Metadata>
+				<SongTable songs={songs?.data?.map((song) => ({ ...song, album })) ?? []} />
+			</ScrollView>
+		</SafeAreaView>
 	);
 };
 

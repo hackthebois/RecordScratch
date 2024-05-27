@@ -95,7 +95,8 @@ export default function RootLayout() {
 	return (
 		<TRPCProvider>
 			<SafeAreaProvider>
-				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+				<ThemeProvider value={LIGHT_THEME}>
+					{/* <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}> */}
 					<Stack>
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 					</Stack>
