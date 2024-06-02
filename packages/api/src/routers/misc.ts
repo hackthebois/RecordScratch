@@ -483,7 +483,7 @@ const albums: {
 		date: dayjs.tz("2024-06-18", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "1345663",
+		albumId: "1345662",
 		date: dayjs.tz("2024-06-19", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
