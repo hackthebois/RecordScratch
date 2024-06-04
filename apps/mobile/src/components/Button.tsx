@@ -51,11 +51,20 @@ interface ButtonProps
 	label: string;
 	labelClasses?: string;
 }
-function Button({ label, labelClasses, className, variant, size, ...props }: ButtonProps) {
+function Button({
+	label,
+	labelClasses,
+	className,
+	variant,
+	size,
+	children,
+	...props
+}: ButtonProps) {
 	return (
 		<TouchableOpacity className={cn(buttonVariants({ variant, size, className }))} {...props}>
 			<Text className={cn(buttonTextVariants({ variant, size, className: labelClasses }))}>
 				{label}
+				{children}
 			</Text>
 		</TouchableOpacity>
 	);

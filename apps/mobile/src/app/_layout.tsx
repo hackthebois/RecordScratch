@@ -15,11 +15,17 @@ import {
 } from "@expo-google-fonts/montserrat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Slot, Stack, Tabs } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Profile from "./(tabs)/profile";
+import { SearchBar } from "@/components/SearchBar";
+import { User, Home } from "lucide-react-native";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -92,13 +98,20 @@ export default function RootLayout() {
 		return null;
 	}
 
+	const Tab = createBottomTabNavigator();
+
 	return (
 		<TRPCProvider>
 			<SafeAreaProvider>
 				<ThemeProvider value={LIGHT_THEME}>
 					{/* <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}> */}
 					<Stack>
-						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen
+							name="(tabs)"
+							options={{
+								headerShown: false,
+							}}
+						/>
 					</Stack>
 				</ThemeProvider>
 			</SafeAreaProvider>

@@ -1,7 +1,7 @@
-import { Slot, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { Home } from "lucide-react-native";
 
-export default function AlbumLayout() {
+export default function HandleLayout() {
 	return (
 		<Tabs screenOptions={{ tabBarActiveTintColor: "blue" }}>
 			<Tabs.Screen

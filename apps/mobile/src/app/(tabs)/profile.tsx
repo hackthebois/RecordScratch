@@ -7,9 +7,9 @@ import { getImageUrl } from "@/utils/image";
 import { Avatar, View } from "react-native-ui-lib";
 
 const Profile = () => {
-	const [profile] = api.profiles.me.useSuspenseQuery();
+	// const [profile] = api.profiles.me.useSuspenseQuery();
+	const [profile] = api.profiles.get.useSuspenseQuery("fil");
 
-	console.log(profile);
 	if (!profile) return <NotFound />;
 
 	return (

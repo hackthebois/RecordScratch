@@ -100,6 +100,18 @@ function Artist() {
 			},
 		})
 	);
+
+	albums.data.sort((a, b) => {
+		if (!a.release_date && !b.release_date) return 0;
+		if (!a.release_date) return 1;
+		if (!b.release_date) return -1;
+
+		const dateA = new Date(a.release_date).getTime();
+		const dateB = new Date(b.release_date).getTime();
+
+		// Sort by earliest first
+		return dateB - dateA;
+	});
 	return (
 		<div className="flex flex-col gap-6">
 			<Head title={artist.name} />

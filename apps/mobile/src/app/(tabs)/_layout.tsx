@@ -1,5 +1,6 @@
+import { SearchBar } from "@/components/SearchBar";
 import { Tabs } from "expo-router";
-import { Home, User } from "lucide-react-native";
+import { CircleArrowUp, Home, User } from "lucide-react-native";
 import React from "react";
 
 export default function TabLayout() {
@@ -10,7 +11,7 @@ export default function TabLayout() {
 				options={{
 					title: "",
 					headerShown: false,
-					tabBarIcon: () => <Home size={20} className="text-muted-foreground" />,
+					tabBarIcon: () => <CircleArrowUp size={20} className="text-muted-foreground" />,
 					href: null,
 				}}
 			/>
@@ -18,20 +19,19 @@ export default function TabLayout() {
 				name="home"
 				options={{
 					title: "Home",
-					headerShown: false,
+					headerShown: true,
 					tabBarIcon: () => <Home size={20} className="text-muted-foreground" />,
-					href: "/home",
+					headerRight: () => {
+						return <SearchBar />;
+					},
 				}}
 			/>
 			<Tabs.Screen
 				name="profile"
 				options={{
 					title: "Profile",
-					headerShown: false,
+					headerShown: true,
 					tabBarIcon: () => <User size={25} className="text-muted-foreground" />,
-					href: {
-						pathname: "/profile",
-					},
 				}}
 			/>
 		</Tabs>

@@ -1,12 +1,11 @@
 import { api } from "@/utils/api";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView, ScrollView } from "react-native";
-import NotFound from "../+not-found";
-import { UserAvatar } from "@/components/UserAvatar";
+import NotFound from "../../+not-found";
 import { getImageUrl } from "@/utils/image";
 import { Avatar, View } from "react-native-ui-lib";
 
-const Handle = () => {
+const HandlePage = () => {
 	const { handle } = useLocalSearchParams();
 
 	// Check if id is undefined or not a string
@@ -57,4 +56,4 @@ const Handle = () => {
 	);
 };
 
-export default Handle;
+export default HandlePage;
