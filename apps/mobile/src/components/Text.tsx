@@ -9,6 +9,8 @@ export const textVariants = cva("text-foreground", {
 		variant: {
 			text: "text-foreground font-regular",
 			h1: "text-4xl font-bold",
+			h2: "text-2xl font-bold",
+			h3: "text-xl font-bold",
 		},
 	},
 	defaultVariants: {

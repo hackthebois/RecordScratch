@@ -1,8 +1,9 @@
 import { getQueryOptions } from "@/utils/deezer";
 import { Artist, cn } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
+import { Image } from "expo-image";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -40,7 +41,8 @@ export const ArtistItem = ({
 
 	return (
 		<Link
-			onClick={(e) => {
+			href={showLink ? link : ""}
+			onPress={(e) => {
 				if (onClick) {
 					onClick();
 					if (!showLink) {
@@ -49,7 +51,6 @@ export const ArtistItem = ({
 					}
 				}
 			}}
-			{...(showLink ? link : {})}
 			className={cn(
 				"flex w-full items-center gap-4",
 				direction === "vertical" ? "flex-col" : "flex-row"

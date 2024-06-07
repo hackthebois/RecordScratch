@@ -92,28 +92,27 @@ export const ResourceItem = ({
 					width: 128,
 				}}
 			>
-				<Image
-					source={album.cover_big}
-					style={{
-						width: 128,
-						height: 128,
-						borderRadius: 8,
-					}}
-				/>
-				<Text className="font-medium w-full" numberOfLines={1}>
-					{name}
-				</Text>
-				<View className="flex gap-1">
-					<Pressable
-						onPress={() => {
-							router.push("/artists/$artistId");
-						}}
-					>
-						<Text className="text-muted-foreground truncate">
-							{showArtist ? album.artist?.name : ""}
-						</Text>
-					</Pressable>
-					{showType && <Text>{resource.category === "SONG" ? "• Song" : "• Album"}</Text>}
+				{album.cover_big ? (
+					<img src={album.cover_big} className={cn("h-full w-full", imageCss)} />
+				) : (
+					<View className="h-full w-full bg-muted"></View>
+				)}
+				<View className="flex flex-col gap-2">
+					<Text className="w-full font-semibold">{name}</Text>
+					<View className="flex gap-1">
+						<Pressable
+							onPress={() => {
+								router.push("/artists/$artistId");
+							}}
+						>
+							<Text className="text-muted-foreground truncate">
+								{showArtist ? album.artist?.name : ""}
+							</Text>
+						</Pressable>
+						{showType && (
+							<Text>{resource.category === "SONG" ? "• Song" : "• Album"}</Text>
+						)}
+					</View>
 				</View>
 			</View>
 		</Link>
