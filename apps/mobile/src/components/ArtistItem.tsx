@@ -3,7 +3,6 @@ import { Artist, cn } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
-import { Image } from "expo-image";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -32,12 +31,7 @@ export const ArtistItem = ({
 		initialData: initialArtist,
 	});
 	const artistImage = artist.picture_medium;
-	const link = {
-		to: "/artists/$artistId",
-		params: {
-			artistId: String(artist.id),
-		},
-	};
+	const link = `/artists/${String(artist.id)}`;
 
 	return (
 		<Link

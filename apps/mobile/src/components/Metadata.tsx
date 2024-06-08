@@ -1,7 +1,6 @@
 import { Image } from "expo-image";
 import React from "react";
 import { View } from "react-native";
-// import { Tag } from "./ui/Tag";
 import { Tag } from "./Tag";
 import { Text } from "./Text";
 
@@ -15,7 +14,7 @@ const Metadata = ({
 }: {
 	title: string;
 	cover?: string | React.ReactNode;
-	type: string;
+	type?: string;
 	tags?: (string | undefined)[];
 	children: React.ReactNode;
 	size?: "base" | "sm";
@@ -43,7 +42,7 @@ const Metadata = ({
 				<View className={"h-[150px] w-[150px] self-center"}>{cover}</View>
 			)}
 			<View className="flex flex-col justify-center items-center gap-4 sm:justify-center">
-				<Text className="text-muted-foreground">{type.toUpperCase()}</Text>
+				{!!type && <Text className="text-muted-foreground">{type.toUpperCase()}</Text>}
 				<Text variant={"h1"} className={"text-center sm:text-left"}>
 					{title}
 				</Text>

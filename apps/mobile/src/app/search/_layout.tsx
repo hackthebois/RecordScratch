@@ -7,7 +7,6 @@ import { useDebounce } from "@recordscratch/lib";
 import MusicSearch from "@/components/MusicSearch";
 import ProfileSearch from "@/components/ProfileSearch";
 import { TouchableOpacity } from "react-native-ui-lib";
-import AlbumSearch from "@/components/AlbumSearch";
 
 const SearchInput = ({ query, setQuery }: { query: string; setQuery: (_: string) => void }) => {
 	const navigation = useNavigation();
@@ -31,70 +30,9 @@ const SearchInput = ({ query, setQuery }: { query: string; setQuery: (_: string)
 	);
 };
 
-const TopResults = ({
-	debouncedQuery,
-	setQuery,
-}: {
-	debouncedQuery: string;
-	setQuery: (_: string) => void;
-}) => (
-	<ScrollView className="mt-3">
-		<MusicSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
-	</ScrollView>
-);
-const ProfileResults = ({
-	debouncedQuery,
-	setQuery,
-}: {
-	debouncedQuery: string;
-	setQuery: (_: string) => void;
-}) => (
-	<ScrollView className="mt-3">
-		<ProfileSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
-	</ScrollView>
-);
-const AlbumResults = ({
-	debouncedQuery,
-	setQuery,
-}: {
-	debouncedQuery: string;
-	setQuery: (_: string) => void;
-}) => (
-	<ScrollView className="mt-3">
-		<AlbumSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
-	</ScrollView>
-);
-
-const ArtistResults = ({
-	debouncedQuery,
-	setQuery,
-}: {
-	debouncedQuery: string;
-	setQuery: (_: string) => void;
-}) => (
-	<ScrollView className="mt-3">
-		<MusicSearch
-			query={debouncedQuery}
-			onNavigate={() => setQuery("")}
-			hide={{ songs: true, albums: true }}
-		/>
-	</ScrollView>
-);
-const SongResults = ({
-	debouncedQuery,
-	setQuery,
-}: {
-	debouncedQuery: string;
-	setQuery: (_: string) => void;
-}) => (
-	<ScrollView className="mt-3">
-		<MusicSearch
-			query={debouncedQuery}
-			onNavigate={() => setQuery("")}
-			hide={{ artists: true, albums: true }}
-		/>
-	</ScrollView>
-);
+const Results = ({ children }: { children: React.ReactNode }) => {
+	return <ScrollView className="mt-3">{children}</ScrollView>;
+};
 
 export default function SearchLayout() {
 	const Tab = createMaterialTopTabNavigator();
@@ -107,8 +45,6 @@ export default function SearchLayout() {
 			header: () => <SearchInput query={query} setQuery={setQuery} />,
 		});
 	}, [navigation, query]);
-
-	const params = { debouncedQuery, setQuery };
 
 	return (
 		<View className="flex flex-1">
@@ -128,11 +64,58 @@ export default function SearchLayout() {
 					tabBarScrollEnabled: true,
 				}}
 			>
-				<Tab.Screen name="Top Results" children={() => <TopResults {...params} />} />
-				<Tab.Screen name="Profiles" children={() => <ProfileResults {...params} />} />
-				<Tab.Screen name="Albums" children={() => <AlbumResults {...params} />} />
-				<Tab.Screen name="Artists" children={() => <ArtistResults {...params} />} />
-				<Tab.Screen name="Songs" children={() => <SongResults {...params} />} />
+				<Tab.Screen
+					name="Top Results"
+					children={() => (
+						<Results>
+							<MusicSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
+						</Results>
+					)}
+				/>
+				<Tab.Screen
+					name="Profiles"
+					children={() => (
+						<Results>
+							<ProfileSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
+						</Results>
+					)}
+				/>
+				<Tab.Screen
+					name="Albums"
+					children={() => (
+						<Results>
+							<MusicSearch
+								query={debouncedQuery}
+								onNavigate={() => setQuery("")}
+								hide={{ songs: true, artists: true }}
+							/>
+						</Results>
+					)}
+				/>
+				<Tab.Screen
+					name="Artists"
+					children={() => (
+						<Results>
+							<MusicSearch
+								query={debouncedQuery}
+								onNavigate={() => setQuery("")}
+								hide={{ songs: true, albums: true }}
+							/>
+						</Results>
+					)}
+				/>
+				<Tab.Screen
+					name="Songs"
+					children={() => (
+						<Results>
+							<MusicSearch
+								query={debouncedQuery}
+								onNavigate={() => setQuery("")}
+								hide={{ artists: true, albums: true }}
+							/>
+						</Results>
+					)}
+				/>
 			</Tab.Navigator>
 		</View>
 	);

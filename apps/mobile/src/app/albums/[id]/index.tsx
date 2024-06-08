@@ -55,7 +55,7 @@ const AlbumPage = () => {
 				<Metadata
 					title={album.title}
 					cover={album.cover_big}
-					type="ALBUM OF THE DAY"
+					type=""
 					tags={[
 						album.release_date,
 						album.duration ? `${formatDuration(album.duration)}` : undefined,
