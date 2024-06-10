@@ -15,18 +15,11 @@ import {
 } from "@expo-google-fonts/montserrat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
-import { Slot, Stack, Tabs } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useDebounce } from "@recordscratch/lib";
-import { View } from "react-native-ui-lib";
-import MusicSearch from "@/components/MusicSearch";
-import ProfileSearch from "@/components/ProfileSearch";
-import { Search } from "lucide-react-native";
-import { TextInput, StyleSheet } from "react-native";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -49,64 +42,6 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-const Tab = createMaterialTopTabNavigator();
-
-const SearchTabs = ({
-	debouncedQuery,
-	setQuery,
-}: {
-	debouncedQuery: string;
-	setQuery: (_: string) => void;
-}) => {
-	return (
-		<Tab.Navigator
-			screenOptions={{
-				tabBarStyle: {
-					justifyContent: "center",
-				},
-				tabBarItemStyle: {
-					width: "auto",
-					alignItems: "center",
-					flex: 1,
-				},
-				tabBarLabelStyle: {
-					textAlign: "center",
-				},
-				tabBarScrollEnabled: true,
-			}}
-		>
-			<Tab.Screen
-				name="Top Results"
-				children={() => (
-					<View style={styles.resultsContainer}>
-						<MusicSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
-					</View>
-				)}
-			/>
-			<Tab.Screen
-				name="Profiles"
-				children={() => (
-					<View style={styles.resultsContainer}>
-						<ProfileSearch query={debouncedQuery} onNavigate={() => setQuery("")} />
-					</View>
-				)}
-			/>
-			<Tab.Screen
-				name="Albums"
-				children={() => <View style={styles.resultsContainer}></View>}
-			/>
-			<Tab.Screen
-				name="Artists"
-				children={() => <View style={styles.resultsContainer}></View>}
-			/>
-			<Tab.Screen
-				name="Songs"
-				children={() => <View style={styles.resultsContainer}></View>}
-			/>
-		</Tab.Navigator>
-	);
-};
 
 export default function RootLayout() {
 	const [fontLoaded, fontError] = useFonts({
@@ -162,7 +97,7 @@ export default function RootLayout() {
 			<SafeAreaProvider>
 				<ThemeProvider value={LIGHT_THEME}>
 					{/* <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}> */}
-					<Stack>
+					<Stack screenOptions={{ animation: "slide_from_right" }}>
 						<Stack.Screen
 							name="(tabs)"
 							options={{
@@ -175,43 +110,3 @@ export default function RootLayout() {
 		</TRPCProvider>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
-	searchContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		borderBottomWidth: 1,
-		marginTop: 2,
-		paddingHorizontal: 10,
-		marginBottom: 3,
-	},
-	chevron: {
-		marginLeft: 4,
-	},
-	inputContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		borderWidth: 1,
-		borderRadius: 1,
-		width: "80%",
-		marginBottom: 1,
-	},
-	searchIcon: {
-		marginLeft: 4,
-		color: "gray",
-	},
-	input: {
-		flex: 1,
-		borderWidth: 0,
-		backgroundColor: "transparent",
-		paddingVertical: 2,
-		paddingLeft: 4,
-		fontSize: 16,
-	},
-	resultsContainer: {
-		marginTop: 3,
-	},
-});

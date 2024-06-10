@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import { ScrollView, TextInput, View } from "react-native";
+import { ScrollView, TextInput, View, StyleSheet } from "react-native";
 import { useNavigation } from "expo-router";
 import { ArrowLeft, Search } from "lucide-react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -48,22 +48,7 @@ export default function SearchLayout() {
 
 	return (
 		<View className="flex flex-1">
-			<Tab.Navigator
-				screenOptions={{
-					tabBarStyle: {
-						justifyContent: "center",
-					},
-					tabBarItemStyle: {
-						width: "auto",
-						alignItems: "center",
-						flex: 1,
-					},
-					tabBarLabelStyle: {
-						textAlign: "center",
-					},
-					tabBarScrollEnabled: true,
-				}}
-			>
+			<Tab.Navigator screenOptions={searchBarOptions}>
 				<Tab.Screen
 					name="Top Results"
 					children={() => (
@@ -120,3 +105,24 @@ export default function SearchLayout() {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	tabBarStyle: {
+		justifyContent: "center",
+	},
+	tabBarItemStyle: {
+		width: "auto",
+		alignItems: "center",
+		flex: 1,
+	},
+	tabBarLabelStyle: {
+		textAlign: "center",
+	},
+});
+
+const searchBarOptions = {
+	tabBarStyle: styles.tabBarStyle,
+	tabBarItemStyle: styles.tabBarItemStyle,
+	tabBarLabelStyle: styles.tabBarLabelStyle,
+	tabBarScrollEnabled: true,
+};

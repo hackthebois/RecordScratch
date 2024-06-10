@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { TouchableOpacity, View } from "react-native-ui-lib";
 import { Album, Artist, Track } from "@recordscratch/lib";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react-native";
 import SongTable from "@/components/SongTable";
 import { Text } from "@/components/Text";
@@ -72,7 +72,7 @@ const Discography = ({ data }: { data: Album[] }) => {
 	});
 
 	return (
-		<View className="flex">
+		<View>
 			<Text
 				variant="h2"
 				className="dark:text-white px-4 mt-4 flex text-center items-center justify-center"
@@ -157,18 +157,20 @@ const ArtistPage = () => {
 		});
 	}, [navigation]);
 
+	const swipeEnabled = false;
+
 	return (
-		<ScrollView className="flex flex-1">
+		<ScrollView centerContent={true}>
 			<ArtistMetadata artist={artist} />
 			<Tab.Navigator
 				screenOptions={{
 					tabBarContentContainerStyle: {
 						justifyContent: "space-around",
-						flexGrow: 1,
 					},
 					tabBarLabelStyle: {
 						textAlign: "center",
 					},
+					swipeEnabled,
 				}}
 			>
 				<Tab.Screen

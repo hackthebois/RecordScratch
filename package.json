@@ -1,35 +1,35 @@
 {
-  "scripts": {
-    "build": "dotenv -- turbo build",
-    "build-cloudflare": "dotenv -- turbo build-cloudflare",
-    "type-check": "tsc",
-    "dev": "dotenv -- turbo dev",
-    "studio": "dotenv -- turbo studio",
-    "clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
-  },
-  "dependencies": {
-    "@react-navigation/material-top-tabs": "^6.6.13",
-    "dotenv": "^16.4.5",
-    "expo-router": "~3.4.9",
-    "expo-splash-screen": "~0.26.5",
-    "react-native-gesture-handler": "^2.16.2",
-    "react-native-reanimated": "^3.11.0",
-    "react-native-safe-area-context": "4.8.2",
-    "react-native-tab-view": "^3.5.2",
-    "react-native-ui-lib": "^7.22.0",
-    "turbo": "^1.13.3",
-    "typescript": "^5.4.2"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
-    "dotenv-cli": "^7.4.1"
-  },
-  "trustedDependencies": [
-    "core-js",
-    "es5-ext",
-    "esbuild"
-  ]
+	"scripts": {
+		"build": "dotenv -- turbo build",
+		"build-cloudflare": "dotenv -- turbo build-cloudflare",
+		"type-check": "tsc",
+		"dev": "dotenv -- turbo dev",
+		"studio": "dotenv -- turbo studio",
+		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
+	},
+	"dependencies": {
+		"@react-navigation/material-top-tabs": "^6.6.13",
+		"dotenv": "^16.4.5",
+		"expo-router": "~3.4.9",
+		"expo-splash-screen": "~0.26.5",
+		"react-native-gesture-handler": "^2.16.2",
+		"react-native-reanimated": "^3.11.0",
+		"react-native-safe-area-context": "4.8.2",
+		"react-native-tab-view": "^3.5.2",
+		"react-native-ui-lib": "^7.22.0",
+		"turbo": "^1.13.3",
+		"typescript": "^5.4.2"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"devDependencies": {
+		"dotenv-cli": "^7.4.1"
+	},
+	"trustedDependencies": [
+		"core-js",
+		"es5-ext",
+		"esbuild"
+	]
 }
