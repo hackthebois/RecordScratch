@@ -97,7 +97,12 @@ export default function RootLayout() {
 			<SafeAreaProvider>
 				<ThemeProvider value={LIGHT_THEME}>
 					{/* <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}> */}
-					<Stack screenOptions={{ animation: "slide_from_right" }}>
+					<Stack
+						screenOptions={{
+							animation: "slide_from_right",
+							headerTitleAlign: "center",
+						}}
+					>
 						<Stack.Screen
 							name="(tabs)"
 							options={{

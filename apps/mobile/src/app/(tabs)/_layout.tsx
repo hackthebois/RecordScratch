@@ -1,11 +1,16 @@
 import { SearchBar } from "@/components/SearchBar";
 import { Tabs } from "expo-router";
-import { CircleArrowUp, Home, User } from "lucide-react-native";
+import { CircleArrowUp, Home, Star, User } from "lucide-react-native";
 import React from "react";
 
 export default function TabLayout() {
 	return (
-		<Tabs screenOptions={{ tabBarActiveTintColor: "blue" }}>
+		<Tabs
+			screenOptions={{
+				tabBarActiveTintColor: "blue",
+				headerTitleAlign: "center",
+			}}
+		>
 			<Tabs.Screen
 				name="index"
 				options={{
@@ -24,6 +29,14 @@ export default function TabLayout() {
 					headerRight: () => {
 						return <SearchBar />;
 					},
+				}}
+			/>
+			<Tabs.Screen
+				name="feed"
+				options={{
+					title: "Feed",
+					headerShown: true,
+					tabBarIcon: () => <Star size={25} className="text-muted-foreground" />,
 				}}
 			/>
 			<Tabs.Screen

@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { TouchableOpacity, View } from "react-native-ui-lib";
 import { Album, Artist, Track } from "@recordscratch/lib";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react-native";
 import SongTable from "@/components/SongTable";
 import { Text } from "@/components/Text";
@@ -153,24 +153,29 @@ const ArtistPage = () => {
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
-			headerTitle: () => <Text className="flex justify-center ml-20">{artist.name}</Text>,
+			title: `${artist.name}`,
 		});
 	}, [navigation]);
 
-	const swipeEnabled = false;
+	const [tabIndex, setTabIndex] = useState(0);
 
 	return (
-		<ScrollView centerContent={true}>
+		<ScrollView>
 			<ArtistMetadata artist={artist} />
 			<Tab.Navigator
-				screenOptions={{
+				screenOptions={() => ({
 					tabBarContentContainerStyle: {
 						justifyContent: "space-around",
 					},
 					tabBarLabelStyle: {
 						textAlign: "center",
 					},
-					swipeEnabled,
+					swipeEnabled: false,
+				})}
+				screenListeners={{
+					state: (e) => {
+						setTabIndex(e.data.state.index);
+					},
 				}}
 			>
 				<Tab.Screen
@@ -179,7 +184,7 @@ const ArtistPage = () => {
 				/>
 				<Tab.Screen
 					name="Discography"
-					children={() => <Discography data={albums.data} />}
+					children={() => (tabIndex === 1 ? <Discography data={albums.data} /> : null)}
 				/>
 			</Tab.Navigator>
 		</ScrollView>
