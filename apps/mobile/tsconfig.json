@@ -1,0 +1,37 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"lib": ["dom", "dom.iterable", "ES2022"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"moduleResolution": "Bundler",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"moduleDetection": "force",
+		"incremental": true,
+		"noUncheckedIndexedAccess": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"jsx": "react-native",
+		"tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+		"types": ["nativewind/types"]
+	},
+	"exclude": ["node_modules", "build", "dist", ".next", ".expo"],
+	"include": [
+		"*.ts",
+		"*.js",
+		".expo/types/**/*.ts",
+		"expo-env.d.ts",
+		"src/components",
+		"src/app",
+		"src/env.ts"
+	],
+	"extends": "expo/tsconfig.base"
+}
