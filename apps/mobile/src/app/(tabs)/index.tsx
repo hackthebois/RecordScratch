@@ -5,7 +5,7 @@ import { api } from "@/utils/api";
 import { router } from "expo-router";
 import { Button } from "@/components/Button";
 
-const Index = () => {
+const IndexPage = () => {
 	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 	const navigation = useNavigation();
@@ -37,4 +37,4 @@ const Index = () => {
 	);
 };
 
-export default Index;
+export default IndexPage;

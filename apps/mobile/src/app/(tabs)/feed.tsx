@@ -1,7 +1,12 @@
+import { RecentFeedReviews } from "@/components/InfiniteFeedReviews";
 import { View } from "react-native-ui-lib";
 
-const Feed = () => {
-	return <View></View>;
+const FeedPage = () => {
+	return (
+		<View>
+			<RecentFeedReviews input={{ limit: 5 }} />
+		</View>
+	);
 };
 
-export default Feed;
+export default FeedPage;

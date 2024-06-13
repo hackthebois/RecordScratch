@@ -43,7 +43,7 @@ export const listsRouter = router({
 			});
 		}),
 
-	getProfile: publicProcedure
+	topLists: publicProcedure
 		.input(filterUserListsSchema)
 		.query(async ({ ctx: { db }, input: { userId } }) => {
 			const artistList = await db.query.lists.findFirst({

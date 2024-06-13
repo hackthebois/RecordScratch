@@ -1,6 +1,6 @@
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useLayoutEffect } from "react";
 import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import Metadata from "@/components/Metadata";
@@ -29,6 +29,13 @@ const AlbumPage = () => {
 			input: { id: albumId! },
 		})
 	);
+
+	const navigation = useNavigation();
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			title: `${album.title}`,
+		});
+	}, [navigation]);
 
 	if (!album) return <NotFound />;
 
