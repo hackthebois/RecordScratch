@@ -64,13 +64,6 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 };
 
 const Discography = ({ data }: { data: Album[] }) => {
-	const style = StyleSheet.create({
-		row: {
-			flex: 1,
-			justifyContent: "space-around",
-		},
-	});
-
 	return (
 		<View>
 			<Text
@@ -92,7 +85,10 @@ const Discography = ({ data }: { data: Album[] }) => {
 					/>
 				)}
 				numColumns={2}
-				columnWrapperStyle={style.row}
+				columnWrapperStyle={{
+					flex: 1,
+					justifyContent: "space-around",
+				}}
 				horizontal={false}
 				contentContainerClassName="gap-4 px-4 pb-4 mt-3"
 			/>

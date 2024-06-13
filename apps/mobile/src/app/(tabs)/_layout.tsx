@@ -1,26 +1,32 @@
 import { SearchBar } from "@/components/SearchBar";
-import { Tabs } from "expo-router";
-import { CircleArrowUp, Home, Star, User } from "lucide-react-native";
+import { Tabs, useNavigation } from "expo-router";
+import { CircleArrowUp, Home, Star, User, View } from "lucide-react-native";
 import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import IndexPage from ".";
+import HomePage from "./home";
+import FeedPage from "./feed";
+import { ProfilePage } from "../profiles/[handle]/_layout";
 
+const Tab = createBottomTabNavigator();
 export default function TabLayout() {
 	return (
-		<Tabs
+		<Tab.Navigator
 			screenOptions={{
 				tabBarActiveTintColor: "blue",
 				headerTitleAlign: "center",
 			}}
 		>
-			<Tabs.Screen
+			<Tab.Screen
 				name="index"
 				options={{
 					title: "",
 					headerShown: false,
 					tabBarIcon: () => <CircleArrowUp size={20} className="text-muted-foreground" />,
-					href: null,
 				}}
+				children={() => <IndexPage />}
 			/>
-			<Tabs.Screen
+			<Tab.Screen
 				name="home"
 				options={{
 					title: "Home",
@@ -30,23 +36,26 @@ export default function TabLayout() {
 						return <SearchBar />;
 					},
 				}}
+				children={() => <HomePage />}
 			/>
-			<Tabs.Screen
+			<Tab.Screen
 				name="feed"
 				options={{
 					title: "Feed",
 					headerShown: true,
 					tabBarIcon: () => <Star size={25} className="text-muted-foreground" />,
 				}}
+				children={() => <FeedPage />}
 			/>
-			<Tabs.Screen
+			<Tab.Screen
 				name="profile"
 				options={{
 					title: "Profile",
 					headerShown: true,
 					tabBarIcon: () => <User size={25} className="text-muted-foreground" />,
 				}}
+				children={() => <ProfilePage />}
 			/>
-		</Tabs>
+		</Tab.Navigator>
 	);
 }

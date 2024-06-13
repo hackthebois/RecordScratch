@@ -62,7 +62,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 			userId: profile.userId,
 		});
 
-		apiUtils.lists.getProfile.ensureData({
+		apiUtils.lists.topLists.ensureData({
 			userId: profile.userId,
 		});
 	},
@@ -155,7 +155,7 @@ function Handle() {
 
 	if (!profile) return <NotFound />;
 
-	const [topLists] = api.lists.getProfile.useSuspenseQuery({
+	const [topLists] = api.lists.topLists.useSuspenseQuery({
 		userId: profile.userId,
 	});
 

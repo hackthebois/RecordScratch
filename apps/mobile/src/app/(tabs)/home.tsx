@@ -54,7 +54,7 @@ const AlbumOfTheDay = () => {
 	);
 };
 
-const Home = () => {
+const HomePage = () => {
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
 
@@ -123,4 +123,4 @@ const Home = () => {
 	);
 };
 
-export default Home;
+export default HomePage;

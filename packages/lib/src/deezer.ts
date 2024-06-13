@@ -62,6 +62,12 @@ export const AlbumSchema = z.object({
 });
 export type Album = z.infer<typeof AlbumSchema>;
 
+export const TrackAndArtistSchema = BaseTrackSchema.extend({
+	artist: ArtistSchema,
+});
+
+export type TrackAndArtist = z.infer<typeof TrackAndArtistSchema>;
+
 export const TrackSchema = BaseTrackSchema.extend({
 	artist: ArtistSchema,
 	album: AlbumSchema,

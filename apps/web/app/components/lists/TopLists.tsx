@@ -31,13 +31,13 @@ export const ResourcesList = ({
 
 	const { mutate: deleteResource } = api.lists.resources.delete.useMutation({
 		onSettled: () => {
-			utils.lists.getProfile.invalidate({ userId });
+			utils.lists.topLists.invalidate({ userId });
 			utils.lists.getUser.invalidate({ userId });
 		},
 	});
 	const { mutate: createList } = api.lists.create.useMutation({
 		onSettled: () => {
-			utils.lists.getProfile.invalidate({ userId });
+			utils.lists.topLists.invalidate({ userId });
 			utils.lists.getUser.invalidate({ userId });
 		},
 	});
@@ -101,7 +101,7 @@ export const ResourcesList = ({
 								onProfile: true,
 							});
 
-							utils.lists.getProfile.invalidate({
+							utils.lists.topLists.invalidate({
 								userId,
 							});
 
@@ -156,7 +156,7 @@ export const ResourcesList = ({
 						</Button>
 					}
 					onClick={() => {
-						utils.lists.getProfile.invalidate({
+						utils.lists.topLists.invalidate({
 							userId,
 						});
 						utils.lists.getUser.invalidate({ userId });

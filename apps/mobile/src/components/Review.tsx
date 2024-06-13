@@ -3,10 +3,10 @@ import { ReviewType } from "@recordscratch/types";
 import { View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
 import { Star, MessageCircle } from "lucide-react-native";
-import { UserAvatar } from "./UserAvatar";
 import { getImageUrl } from "@/utils/image";
 import { timeAgo } from "@recordscratch/lib";
 import { Link } from "expo-router";
+import { Avatar } from "react-native-ui-lib";
 
 export const Review = ({
 	userId,
@@ -22,7 +22,11 @@ export const Review = ({
 	const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
 		<View className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
-			<ResourceItem resource={{ parentId, resourceId, category }} showType />
+			<ResourceItem
+				resource={{ parentId, resourceId, category }}
+				showType
+				imageCss="h-16 w-16"
+			/>
 			<View className="flex flex-1 flex-col items-start gap-3">
 				<View className="flex flex-row items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
@@ -33,10 +37,11 @@ export const Review = ({
 					))}
 				</View>
 				<Link
-					href={`/${String(profile.handle)}`}
+					href={`/profiles/${String(profile.handle)}`}
 					className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 				>
-					<UserAvatar imageUrl={getImageUrl(profile)} className="h-8 w-8" />
+					{/* <UserAvatar imageUrl={getImageUrl(profile)} className="h-4 w-4" /> */}
+					<Avatar size={50} source={getImageUrl(profile)} label="🤦" />
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">
 						@{profile.handle} • {timeAgo(updatedAt)}

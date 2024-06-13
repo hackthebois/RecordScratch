@@ -1,21 +1,24 @@
-import { useEffect } from "react";
 import { View, ActivityIndicator, FlatList, Text } from "react-native";
 import { api } from "@/utils/api";
-import { RouterInputs } from "@/utils/shared";
 import { Review } from "./Review";
-import { ScrollView } from "react-native-gesture-handler";
+import { Resource } from "@recordscratch/types";
 
-export const RecentFeedReviews = ({
-	input,
+export const InfiniteCommunityReviews = ({
+	pageLimit,
+	resource,
+	name,
 }: {
-	input?: RouterInputs["ratings"]["feed"]["recent"];
+	pageLimit: number;
+	resource: Resource;
+	name: string;
 }) => {
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.recent.useInfiniteQuery(
+	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.community.useInfiniteQuery(
 		{
-			...input,
+			limit: pageLimit,
+			resource,
 		},
 		{
-			getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
+			getNextPageParam: (lastPage) => lastPage.nextCursor,
 		}
 	);
 
