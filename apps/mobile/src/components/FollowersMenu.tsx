@@ -8,6 +8,10 @@ import { Button } from "./Button";
 const FollowerMenu = ({ profileId }: { profileId: string }) => {
 	const { data: profile } = api.profiles.me.useQuery();
 
+	const [totalRatings] = api.profiles.getTotalRatings.useSuspenseQuery({
+		userId: profileId,
+	});
+
 	const [followerCount] = api.profiles.followCount.useSuspenseQuery({
 		profileId,
 		type: "followers",
@@ -22,7 +26,7 @@ const FollowerMenu = ({ profileId }: { profileId: string }) => {
 	return (
 		<View className="flex flex-row items-center justify-center gap-6 sm:justify-start">
 			<View className="flex flex-col items-center gap-1">
-				<Button variant={"secondary"} label={`100`} />
+				<Button variant={"secondary"} label={`${totalRatings}`} />
 				<p className="text-sm font-medium">Reviews</p>
 			</View>
 			<View className="flex flex-col items-center gap-1">

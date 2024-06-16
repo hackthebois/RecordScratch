@@ -1,6 +1,6 @@
 import { api } from "@/utils/api";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { FlatList, ScrollView, StyleSheet } from "react-native";
+import { Dimensions, ScrollView } from "react-native";
 import NotFound from "../../+not-found";
 import { getImageUrl } from "@/utils/image";
 import { View } from "react-native-ui-lib";
@@ -9,34 +9,10 @@ import FollowerMenu from "@/components/FollowersMenu";
 import { useLayoutEffect } from "react";
 import { Settings } from "lucide-react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Category, ListWithResources, UserListItem } from "@recordscratch/types/src/list";
-import { ResourceItem } from "@/components/ResourceItem";
-
-const TopLists = ({ lists }: { lists?: ListWithResources }) => {
-	return (
-		<View>
-			<FlatList
-				data={lists?.resources}
-				renderItem={({ item: resource }) => (
-					<View className="mx-1">
-						<ResourceItem
-							resource={{
-								parentId: resource.parentId!,
-								resourceId: resource.resourceId,
-								category: "ALBUM",
-							}}
-							direction="vertical"
-							imageCss="min-w-[32px] rounded -mb-3"
-							titleCss="font-medium line-clamp-2"
-							showArtist={false}
-						/>
-					</View>
-				)}
-				numColumns={3}
-			/>
-		</View>
-	);
-};
+import TopLists from "@/components/TopLists";
+import { ListWithResources } from "@recordscratch/types";
+import DistributionChart from "@/components/DistributionChart";
+import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams();
@@ -55,6 +31,38 @@ const HandlePage = () => {
 
 	return <ProfilePage handleId={handleId} />;
 };
+
+const ReviewsTab = ({
+	topLists,
+	userId,
+}: {
+	topLists: {
+		album?: ListWithResources;
+		song?: ListWithResources;
+		artist?: ListWithResources;
+	};
+	userId: string;
+}) => {
+	const { data: distribution } = api.profiles.distribution.useQuery({
+		userId,
+	});
+
+	return (
+		<ScrollView className="flex-1">
+			<View className="rounded-md border mb-1">
+				<TopLists {...topLists} />
+			</View>
+			<DistributionChart distribution={distribution} />
+			<InfiniteProfileReviews
+				input={{
+					profileId: userId,
+					limit: 20,
+				}}
+			/>
+		</ScrollView>
+	);
+};
+
 export const ProfilePage = ({ handleId }: { handleId?: string }) => {
 	let profile;
 
@@ -92,7 +100,7 @@ export const ProfilePage = ({ handleId }: { handleId?: string }) => {
 								@{profile.handle}
 							</p>
 						</View>
-						<View className="flex flex-1 flex-col items-center mt-4">
+						<View className="flex flex-1 flex-col items-center mt-4 mb-10">
 							<FollowerMenu profileId={profile.userId} />
 							<p className="pt-4 text-sm">{profile.bio || "No bio yet"}</p>
 						</View>
@@ -107,9 +115,13 @@ export const ProfilePage = ({ handleId }: { handleId?: string }) => {
 					tabBarLabelStyle: {
 						textAlign: "center",
 					},
+					swipeEnabled: false,
 				}}
 			>
-				<Tab.Screen name="Reviews" children={() => <TopLists lists={topLists.album} />} />
+				<Tab.Screen
+					name="Reviews"
+					children={() => <ReviewsTab topLists={topLists} userId={profile.userId} />}
+				/>
 				<Tab.Screen name="Lists" children={() => <View></View>} />
 			</Tab.Navigator>
 		</ScrollView>

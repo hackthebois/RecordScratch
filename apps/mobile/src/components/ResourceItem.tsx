@@ -17,6 +17,7 @@ export const ResourceItem = ({
 	imageCss,
 	titleCss,
 	showArtist = true,
+	className,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
@@ -27,6 +28,7 @@ export const ResourceItem = ({
 	imageCss?: string;
 	titleCss?: string;
 	showArtist?: boolean;
+	className?: string;
 }) => {
 	const router = useRouter();
 	const albumId = resource.category === "SONG" ? resource.parentId : resource.resourceId;
@@ -86,6 +88,7 @@ export const ResourceItem = ({
 			<View
 				className={cn(
 					"flex gap-4 rounded w-full",
+					className,
 					direction === "vertical" ? "flex-col" : "flex-row items-center"
 				)}
 				style={{

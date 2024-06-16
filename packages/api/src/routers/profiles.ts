@@ -60,6 +60,21 @@ export const profilesRouter = router({
 
 			return outputList;
 		}),
+	getTotalRatings: publicProcedure
+		.input(
+			z.object({
+				userId: z.string(),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { userId } }) => {
+			const total = await db
+				.select({ total: count(ratings.rating) })
+				.from(ratings)
+				.where(eq(ratings.userId, userId));
+
+			if (total) return total[0].total;
+			else 0;
+		}),
 	followCount: publicProcedure
 		.input(
 			z.object({

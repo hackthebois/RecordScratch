@@ -12,6 +12,7 @@ export const ArtistItem = ({
 	showLink = true,
 	textCss = "truncate",
 	imageCss,
+	className,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -20,6 +21,7 @@ export const ArtistItem = ({
 	showLink?: boolean;
 	textCss?: string;
 	imageCss?: string;
+	className?: string;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -47,6 +49,7 @@ export const ArtistItem = ({
 			}}
 			className={cn(
 				"flex w-full items-center gap-4",
+				className,
 				direction === "vertical" ? "flex-col" : "flex-row"
 			)}
 		>
