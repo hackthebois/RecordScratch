@@ -65,7 +65,7 @@ export default eventHandler(async (event) => {
 		url.pathname === "/auth/google/callback" ||
 		url.pathname === "/auth/google/callback/"
 	) {
-		// Validation
+		// Validations
 		const query = getQuery(event);
 		const code = z.string().parse(query.code);
 		const state = z.string().parse(query.state);
