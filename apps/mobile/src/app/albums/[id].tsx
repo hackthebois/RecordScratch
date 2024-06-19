@@ -10,6 +10,7 @@ import { Album, Track, TrackAndArtist, formatDuration } from "@recordscratch/lib
 import NotFound from "@/app/+not-found";
 import SongTable from "@/components/SongTable";
 import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
+import NotFoundScreen from "@/app/+not-found";
 
 const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
 	return (
@@ -42,20 +43,8 @@ const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) =
 
 export default function AlbumLayout() {
 	const Tab = createMaterialTopTabNavigator();
-
-	const { id } = useLocalSearchParams();
-
-	// Check if id is undefined or not a string
-	if (typeof id === "undefined") {
-		return <div>Error: ID parameter is missing. Please provide a valid album ID.</div>;
-	}
-
-	const albumId = Array.isArray(id) ? id[0] : id;
-
-	// Check if albumId is a string
-	if (typeof albumId !== "string") {
-		return <div>Error: Invalid ID format. Please provide a valid album ID.</div>;
-	}
+	const { id } = useLocalSearchParams<{ id: string }>();
+	const albumId = id!;
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -71,7 +60,7 @@ export default function AlbumLayout() {
 		});
 	}, [navigation]);
 
-	if (!album) return <NotFound />;
+	if (!album) return <NotFoundScreen />;
 
 	const { data: songs } = useSuspenseQuery({
 		...getQueryOptions({

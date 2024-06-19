@@ -6,27 +6,26 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import IndexPage from ".";
 import HomePage from "./home";
 import FeedPage from "./feed";
-import { ProfilePage } from "../profiles/[handle]/_layout";
+import { ProfilePage } from "../profiles/[handle]";
 
-const Tab = createBottomTabNavigator();
 export default function TabLayout() {
 	return (
-		<Tab.Navigator
+		<Tabs
 			screenOptions={{
 				tabBarActiveTintColor: "blue",
 				headerTitleAlign: "center",
 			}}
 		>
-			<Tab.Screen
+			<Tabs.Screen
 				name="index"
 				options={{
-					title: "",
+					title: "Sign In",
 					headerShown: false,
 					tabBarIcon: () => <CircleArrowUp size={20} className="text-muted-foreground" />,
+					tabBarButton: () => null,
 				}}
-				children={() => <IndexPage />}
 			/>
-			<Tab.Screen
+			<Tabs.Screen
 				name="home"
 				options={{
 					title: "Home",
@@ -36,26 +35,23 @@ export default function TabLayout() {
 						return <SearchBar />;
 					},
 				}}
-				children={() => <HomePage />}
 			/>
-			<Tab.Screen
+			<Tabs.Screen
 				name="feed"
 				options={{
 					title: "Feed",
 					headerShown: true,
 					tabBarIcon: () => <Star size={25} className="text-muted-foreground" />,
 				}}
-				children={() => <FeedPage />}
 			/>
-			<Tab.Screen
+			<Tabs.Screen
 				name="profile"
 				options={{
 					title: "Profile",
 					headerShown: true,
 					tabBarIcon: () => <User size={25} className="text-muted-foreground" />,
 				}}
-				children={() => <ProfilePage />}
 			/>
-		</Tab.Navigator>
+		</Tabs>
 	);
 }

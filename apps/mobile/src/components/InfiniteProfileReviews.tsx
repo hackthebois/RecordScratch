@@ -1,4 +1,4 @@
-import { View, ActivityIndicator, FlatList, Text } from "react-native";
+import { View, ActivityIndicator, FlatList, Text, ScrollView } from "react-native";
 import { RouterInputs, api } from "@/utils/api";
 import { Review } from "./Review";
 
@@ -23,7 +23,7 @@ export const InfiniteProfileReviews = ({
 	};
 
 	return (
-		<View className="flex-1">
+		<View style={{ flex: 1 }}>
 			<FlatList
 				data={data?.pages.flatMap((page) => page.items)}
 				keyExtractor={(item, index) => `review-${item.userId}-${index}`}
@@ -35,12 +35,11 @@ export const InfiniteProfileReviews = ({
 				ListFooterComponent={() =>
 					hasNextPage ? <ActivityIndicator size="large" /> : null
 				}
-				scrollEnabled={false}
+				scrollEnabled={true}
 				onEndReachedThreshold={0.1}
 				onEndReached={handleLoadMore}
-				contentContainerStyle={{ padding: 4 }}
+				contentContainerStyle={{ padding: 4, flexGrow: 1 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}
-				className=" h-screen"
 			/>
 		</View>
 	);

@@ -2,7 +2,7 @@ import Metadata from "@/components/Metadata";
 import { getQueryOptions } from "@/utils/deezer";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { TouchableOpacity, View } from "react-native-ui-lib";
 import { Album, Artist, Track } from "@recordscratch/lib";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -97,20 +97,9 @@ const Discography = ({ data }: { data: Album[] }) => {
 };
 
 const ArtistPage = () => {
-	const { id } = useLocalSearchParams();
+	const { id } = useLocalSearchParams<{ id: string }>();
+	const artistId = id!;
 
-	// Check if id is undefined or not a string
-	if (typeof id === "undefined") {
-		return <div>Error: ID parameter is missing. Please provide a valid album ID.</div>;
-	}
-
-	const artistId = Array.isArray(id) ? id[0] : id;
-
-	// Check if albumId is a string
-	if (typeof artistId !== "string") {
-		return <div>Error: Invalid ID format. Please provide a valid album ID.</div>;
-	}
-	const navigation = useNavigation();
 	const Tab = createMaterialTopTabNavigator();
 
 	const { data: artist } = useSuspenseQuery(
@@ -147,43 +136,42 @@ const ArtistPage = () => {
 		})
 	);
 
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			title: `${artist.name}`,
-		});
-	}, [navigation]);
-
 	const [tabIndex, setTabIndex] = useState(0);
 
 	return (
-		<ScrollView>
-			<ArtistMetadata artist={artist} />
-			<Tab.Navigator
-				screenOptions={() => ({
-					tabBarContentContainerStyle: {
-						justifyContent: "space-around",
-					},
-					tabBarLabelStyle: {
-						textAlign: "center",
-					},
-					swipeEnabled: false,
-				})}
-				screenListeners={{
-					state: (e) => {
-						setTabIndex(e.data.state.index);
-					},
-				}}
-			>
-				<Tab.Screen
-					name="Top Songs"
-					children={() => <TopResults data={top.data} artists={artists.data} />}
-				/>
-				<Tab.Screen
-					name="Discography"
-					children={() => (tabIndex === 1 ? <Discography data={albums.data} /> : null)}
-				/>
-			</Tab.Navigator>
-		</ScrollView>
+		<>
+			<Stack.Screen options={{ headerTitle: `${artist.name}` }} />
+			<ScrollView>
+				<ArtistMetadata artist={artist} />
+				<Tab.Navigator
+					screenOptions={() => ({
+						tabBarContentContainerStyle: {
+							justifyContent: "space-around",
+						},
+						tabBarLabelStyle: {
+							textAlign: "center",
+						},
+						swipeEnabled: false,
+					})}
+					screenListeners={{
+						state: (e) => {
+							setTabIndex(e.data.state.index);
+						},
+					}}
+				>
+					<Tab.Screen
+						name="Top Songs"
+						children={() => <TopResults data={top.data} artists={artists.data} />}
+					/>
+					<Tab.Screen
+						name="Discography"
+						children={() =>
+							tabIndex === 1 ? <Discography data={albums.data} /> : null
+						}
+					/>
+				</Tab.Navigator>
+			</ScrollView>
+		</>
 	);
 };
 

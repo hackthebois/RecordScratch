@@ -11,7 +11,7 @@ export const UserAvatar = ({
 	className?: String;
 }) => {
 	return (
-		<View className={cn(className)}>
+		<View className={cn(className, "h-auto")}>
 			<Avatar source={imageUrl} size={size ?? 100} label="🤦" />
 		</View>
 	);

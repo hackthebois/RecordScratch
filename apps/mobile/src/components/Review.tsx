@@ -1,12 +1,87 @@
 import { api } from "@/utils/api";
-import { ReviewType } from "@recordscratch/types";
+import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
-import { Star, MessageCircle } from "lucide-react-native";
+import { Star, MessageCircle, Heart, Reply } from "lucide-react-native";
 import { getImageUrl } from "@/utils/image";
 import { timeAgo } from "@recordscratch/lib";
 import { Link } from "expo-router";
-import { Avatar } from "react-native-ui-lib";
+import { Suspense } from "react";
+import { Button, buttonVariants } from "./Button";
+import { UserAvatar } from "./UserAvatar";
+
+const PublicLikeButton = (props: SelectLike) => {
+	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
+
+	return (
+		<Button variant="secondary" size="sm" label="">
+			<View className="flex flex-row gap-2 text-muted-foreground">
+				<Heart size={20} />
+				<p>{likes}</p>
+			</View>
+		</Button>
+	);
+};
+
+const ReplyButton = ({
+	handle,
+	resourceId,
+	onClick,
+}: {
+	resourceId: string;
+	handle: string;
+	onClick: () => void;
+}) => {
+	return (
+		<Link
+			className={buttonVariants({
+				variant: "secondary",
+				size: "sm",
+				className: "gap-2 text-muted-foreground",
+			})}
+			href={{
+				pathname: "profiles/[handle]/ratings/[id]",
+				params: {
+					handle,
+					id: resourceId,
+				},
+			}}
+			onPress={onClick}
+		>
+			<Reply size={20} />
+		</Link>
+	);
+};
+
+const CommentsButton = ({
+	handle,
+	resourceId,
+	authorId,
+}: SelectComment & {
+	handle: string;
+}) => {
+	const [comments] = api.comments.getComments.useSuspenseQuery({
+		resourceId,
+		authorId,
+	});
+
+	return (
+		<Link
+			className={buttonVariants({
+				variant: "secondary",
+				size: "sm",
+				className: "gap-2 text-muted-foreground",
+			})}
+			href={{
+				pathname: "profiles/[handle]/ratings/[id]",
+				params: { handle: handle, id: resourceId },
+			}}
+		>
+			<MessageCircle size={20} />
+			<p>{comments}</p>
+		</Link>
+	);
+};
 
 export const Review = ({
 	userId,
@@ -40,48 +115,42 @@ export const Review = ({
 					href={`/profiles/${String(profile.handle)}`}
 					className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 				>
-					{/* <UserAvatar imageUrl={getImageUrl(profile)} className="h-4 w-4" /> */}
-					<Avatar size={50} source={getImageUrl(profile)} label="🤦" />
+					<UserAvatar size={50} imageUrl={getImageUrl(profile)} />
 					<p>{profile.name}</p>
 					<p className="text-left text-sm text-muted-foreground">
 						@{profile.handle} • {timeAgo(updatedAt)}
 					</p>
 				</Link>
 				<p className="whitespace-pre-line text-sm">{content}</p>
-				{/* <View className="flex items-center gap-3">
+				<View className="flex flex-row items-center gap-3">
 					<Suspense
 						fallback={
 							<Button
-								variant="outline"
+								variant="default"
 								size="sm"
 								className="gap-2 text-muted-foreground"
+								label={""}
 							>
 								<Heart size={20} />
-								<Skeleton className="h-6 w-8" />
+								{/* <Skeleton className="h-6 w-8" /> */}
 							</Button>
 						}
 					>
-						{profileExists ? (
-							<LikeButton
-								resourceId={resourceId}
-								authorId={userId}
-							/>
-						) : (
-							<PublicLikeButton
-								resourceId={resourceId}
-								authorId={userId}
-							/>
-						)}
+						{/* {profileExists ? (
+							<LikeButton resourceId={resourceId} authorId={userId} />
+						) : */}
+						<PublicLikeButton resourceId={resourceId} authorId={userId} />
 					</Suspense>
 					<Suspense
 						fallback={
 							<Button
-								variant="outline"
+								variant="secondary"
 								size="sm"
 								className="gap-2 text-muted-foreground"
+								label={""}
 							>
 								<MessageCircle size={20} />
-								<Skeleton className="h-6 w-8" />
+								{/* <Skeleton className="h-6 w-8" /> */}
 							</Button>
 						}
 					>
@@ -98,7 +167,7 @@ export const Review = ({
 							if (onReply) onReply();
 						}}
 					/>
-				</View> */}
+				</View>
 			</View>
 		</View>
 	);
