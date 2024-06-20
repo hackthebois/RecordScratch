@@ -26,7 +26,7 @@ import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Disc3, Star } from "lucide-react";
+import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
 import { z } from "zod";
@@ -324,6 +324,8 @@ function Handle() {
 									})}
 									className="flex h-full flex-1 flex-col-reverse"
 									key={index}
+									onFocus={() => setHoverIndex(index)}
+									onBlur={() => setHoverIndex(-1)}
 									onMouseEnter={() => setHoverIndex(index)}
 									onMouseLeave={() => setHoverIndex(-1)}
 								>
@@ -334,7 +336,7 @@ function Handle() {
 										className={cn(
 											"h-full min-h-0 w-full rounded-t bg-[#ffb703]",
 											{
-												"hover:opacity-70":
+												"opacity-70":
 													hoverIndex === index,
 											},
 											{
