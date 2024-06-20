@@ -106,93 +106,54 @@ const AppAlbumsAlbumIdSongsSongIdIndexRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: ''
       preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
     '/onboard': {
-      id: '/onboard'
-      path: '/onboard'
-      fullPath: '/onboard'
       preLoaderRoute: typeof OnboardImport
       parentRoute: typeof rootRoute
     }
     '/_app/notifications': {
-      id: '/_app/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
       preLoaderRoute: typeof AppNotificationsImport
       parentRoute: typeof AppImport
     }
     '/_app/privacy-policy': {
-      id: '/_app/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
       preLoaderRoute: typeof AppPrivacyPolicyLazyImport
       parentRoute: typeof AppImport
     }
     '/_app/roadmap': {
-      id: '/_app/roadmap'
-      path: '/roadmap'
-      fullPath: '/roadmap'
       preLoaderRoute: typeof AppRoadmapLazyImport
       parentRoute: typeof AppImport
     }
     '/_app/terms': {
-      id: '/_app/terms'
-      path: '/terms'
-      fullPath: '/terms'
       preLoaderRoute: typeof AppTermsLazyImport
       parentRoute: typeof AppImport
     }
     '/_app/': {
-      id: '/_app/'
-      path: '/'
-      fullPath: '/'
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/$handle/': {
-      id: '/_app/$handle/'
-      path: '/$handle'
-      fullPath: '/$handle'
       preLoaderRoute: typeof AppHandleIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/albums/$albumId/': {
-      id: '/_app/albums/$albumId/'
-      path: '/albums/$albumId'
-      fullPath: '/albums/$albumId'
       preLoaderRoute: typeof AppAlbumsAlbumIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/artists/$artistId/': {
-      id: '/_app/artists/$artistId/'
-      path: '/artists/$artistId'
-      fullPath: '/artists/$artistId'
       preLoaderRoute: typeof AppArtistsArtistIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/lists/$listId/': {
-      id: '/_app/lists/$listId/'
-      path: '/lists/$listId'
-      fullPath: '/lists/$listId'
       preLoaderRoute: typeof AppListsListIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/$handle/ratings/$resourceId/': {
-      id: '/_app/$handle/ratings/$resourceId/'
-      path: '/$handle/ratings/$resourceId'
-      fullPath: '/$handle/ratings/$resourceId'
       preLoaderRoute: typeof AppHandleRatingsResourceIdIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/albums/$albumId/songs/$songId/': {
-      id: '/_app/albums/$albumId/songs/$songId/'
-      path: '/albums/$albumId/songs/$songId'
-      fullPath: '/albums/$albumId/songs/$songId'
       preLoaderRoute: typeof AppAlbumsAlbumIdSongsSongIdIndexImport
       parentRoute: typeof AppImport
     }
@@ -201,8 +162,8 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  AppRoute: AppRoute.addChildren({
+export const routeTree = rootRoute.addChildren([
+  AppRoute.addChildren([
     AppNotificationsRoute,
     AppPrivacyPolicyLazyRoute,
     AppRoadmapLazyRoute,
@@ -214,85 +175,8 @@ export const routeTree = rootRoute.addChildren({
     AppListsListIdIndexRoute,
     AppHandleRatingsResourceIdIndexRoute,
     AppAlbumsAlbumIdSongsSongIdIndexRoute,
-  }),
+  ]),
   OnboardRoute,
-})
+])
 
 /* prettier-ignore-end */
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/_app",
-        "/onboard"
-      ]
-    },
-    "/_app": {
-      "filePath": "_app.tsx",
-      "children": [
-        "/_app/notifications",
-        "/_app/privacy-policy",
-        "/_app/roadmap",
-        "/_app/terms",
-        "/_app/",
-        "/_app/$handle/",
-        "/_app/albums/$albumId/",
-        "/_app/artists/$artistId/",
-        "/_app/lists/$listId/",
-        "/_app/$handle/ratings/$resourceId/",
-        "/_app/albums/$albumId/songs/$songId/"
-      ]
-    },
-    "/onboard": {
-      "filePath": "onboard.tsx"
-    },
-    "/_app/notifications": {
-      "filePath": "_app/notifications.tsx",
-      "parent": "/_app"
-    },
-    "/_app/privacy-policy": {
-      "filePath": "_app/privacy-policy.lazy.tsx",
-      "parent": "/_app"
-    },
-    "/_app/roadmap": {
-      "filePath": "_app/roadmap.lazy.tsx",
-      "parent": "/_app"
-    },
-    "/_app/terms": {
-      "filePath": "_app/terms.lazy.tsx",
-      "parent": "/_app"
-    },
-    "/_app/": {
-      "filePath": "_app/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/$handle/": {
-      "filePath": "_app/$handle/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/albums/$albumId/": {
-      "filePath": "_app/albums/$albumId/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/artists/$artistId/": {
-      "filePath": "_app/artists/$artistId/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/lists/$listId/": {
-      "filePath": "_app/lists/$listId/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/$handle/ratings/$resourceId/": {
-      "filePath": "_app/$handle/ratings/$resourceId/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/albums/$albumId/songs/$songId/": {
-      "filePath": "_app/albums/$albumId/songs/$songId/index.tsx",
-      "parent": "/_app"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
