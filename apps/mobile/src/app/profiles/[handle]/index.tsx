@@ -1,18 +1,18 @@
-import { api } from "@/utils/api";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { ScrollView } from "react-native";
-import { getImageUrl } from "@/utils/image";
-import { View } from "react-native-ui-lib";
-import { UserAvatar } from "@/components/UserAvatar";
-import FollowerMenu from "@/components/FollowersMenu";
-import { useLayoutEffect } from "react";
-import { Settings } from "lucide-react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import TopLists from "@/components/TopLists";
-import { ListWithResources, Profile } from "@recordscratch/types";
-import DistributionChart from "@/components/DistributionChart";
-import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
 import NotFoundScreen from "@/app/+not-found";
+import DistributionChart from "@/components/DistributionChart";
+import FollowerMenu from "@/components/FollowersMenu";
+import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
+import { Text } from "@/components/Text";
+import TopLists from "@/components/TopLists";
+import { UserAvatar } from "@/components/UserAvatar";
+import { api } from "@/utils/api";
+import { getImageUrl } from "@/utils/image";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { ListWithResources } from "@recordscratch/types";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { Settings } from "lucide-react-native";
+import { ScrollView } from "react-native";
+import { View } from "react-native-ui-lib";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -76,13 +76,13 @@ export const ProfilePage = ({ handleId }: { handleId: string }) => {
 						<View className="flex flex-row">
 							<View>
 								<UserAvatar imageUrl={getImageUrl(profile)} size={75} />
-								<p className="ml-6 text-muted-foreground text-lg mt-4">
+								<Text className="ml-6 text-muted-foreground text-lg mt-4">
 									@{profile.handle}
-								</p>
+								</Text>
 							</View>
 							<View className="flex flex-1 flex-col items-center mt-4 mb-10">
 								<FollowerMenu profileId={profile.userId} />
-								<p className="pt-4 text-sm">{profile.bio || "No bio yet"}</p>
+								<Text className="pt-4 text-sm">{profile.bio || "No bio yet"}</Text>
 							</View>
 						</View>
 					</View>

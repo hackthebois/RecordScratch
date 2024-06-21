@@ -1,5 +1,6 @@
 import { Track, cn } from "@recordscratch/lib";
 import { Link } from "expo-router";
+import { Text } from "./Text";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (
@@ -17,11 +18,11 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 							href={`/albums/${String(song.album.id)}/songs/${String(song.id)}`}
 							className="flex w-full min-w-0 gap-3 p-3"
 						>
-							<p className="w-4 text-center text-sm text-muted-foreground">
+							<Text className="w-4 text-center text-sm text-muted-foreground">
 								{index + 1}
-							</p>
+							</Text>
 							<div className="min-w-0 flex-1">
-								<p className="truncate text-sm">{song.title}</p>
+								<Text className="truncate text-sm">{song.title}</Text>
 							</div>
 						</Link>
 					</div>

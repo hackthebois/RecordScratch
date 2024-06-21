@@ -1,6 +1,6 @@
 import NotFoundScreen from "@/app/+not-found";
-import { Review } from "@/components/Review";
 import Comment from "@/components/Comment";
+import { Review } from "@/components/Review";
 import { api } from "@/utils/api";
 import { CommentAndProfile, CommentAndProfileAndParent, Profile } from "@recordscratch/types";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -45,7 +45,7 @@ const CommentLayout = ({
 	};
 
 	return (
-		<div>
+		<View>
 			<Comment
 				{...comment}
 				replyCount={replyCount}
@@ -54,11 +54,11 @@ const CommentLayout = ({
 				openCommentFormId={openCommentFormId}
 				toggleCommentForm={toggleCommentForm}
 			/>
-			<div>
+			<View>
 				{isOpen &&
 					replies.map((reply) => {
 						return (
-							<div className=" ml-10 mt-2" key={reply.id}>
+							<View className=" ml-10 mt-2" key={reply.id}>
 								<Comment
 									{...reply}
 									myProfile={myProfile}
@@ -66,11 +66,11 @@ const CommentLayout = ({
 									openCommentFormId={openCommentFormId}
 									toggleCommentForm={toggleCommentForm}
 								/>
-							</div>
+							</View>
 						);
 					})}
-			</div>
-		</div>
+			</View>
+		</View>
 	);
 };
 

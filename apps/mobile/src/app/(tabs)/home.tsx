@@ -1,15 +1,15 @@
 import { Button } from "@/components/Button";
 import Metadata from "@/components/Metadata";
 import { ResourceItem } from "@/components/ResourceItem";
+import { Text } from "@/components/Text";
 import { api } from "@/utils/api";
+import { getQueryOptions } from "@/utils/deezer";
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
-import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getQueryOptions } from "@/utils/deezer";
 import NotFound from "../+not-found";
 
 const SignIn = () => {
@@ -67,12 +67,9 @@ const HomePage = () => {
 			}}
 			edges={["top", "left", "right"]}
 		>
-			<ScrollView
-				contentContainerClassName="flex flex-col gap-6 flex-1 mt-10"
-				nestedScrollEnabled
-			>
+			<ScrollView contentContainerClassName="flex flex-col" nestedScrollEnabled>
 				<AlbumOfTheDay />
-				<div className="flex flex-col gap-2">
+				<View className="flex flex-col gap-2">
 					<Text variant="h1" className="dark:text-white px-4 mt-4">
 						Trending
 					</Text>
@@ -91,8 +88,8 @@ const HomePage = () => {
 						horizontal
 						contentContainerClassName="gap-4 px-4 pb-4"
 					/>
-				</div>
-				<div className="flex flex-col gap-2">
+				</View>
+				<View className="flex flex-col gap-2">
 					<Text variant="h1" className="px-4">
 						Top Albums
 					</Text>
@@ -111,7 +108,7 @@ const HomePage = () => {
 						horizontal
 						contentContainerClassName="gap-4 px-4 pb-4"
 					/>
-				</div>
+				</View>
 
 				<Button
 					label="Toggle mode"

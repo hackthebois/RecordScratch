@@ -1,8 +1,10 @@
 import { getQueryOptions } from "@/utils/deezer";
 import { Artist, cn } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Image } from 'expo-image';
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
+import { Text } from "./Text";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -55,12 +57,12 @@ export const ArtistItem = ({
 		>
 			<View className="items-center justify-center overflow-hidden rounded-full">
 				{artistImage ? (
-					<img src={artistImage} className={cn("h-full w-full rounded-full", imageCss)} />
+					<Image source={artistImage} className={cn("h-full w-full rounded-full", imageCss)} />
 				) : (
 					<View className="h-full w-full bg-muted"></View>
 				)}
 			</View>
-			<p className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</p>
+			<Text className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</Text>
 		</Link>
 	);
 };

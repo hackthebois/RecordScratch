@@ -1,12 +1,11 @@
-import { api } from "@/utils/api";
-import { Profile } from "@recordscratch/types";
-import { UserAvatar } from "./UserAvatar";
-import { timeAgo } from "@recordscratch/lib";
-import { AtSign, MessageCircle, Reply } from "lucide-react-native";
-import { Text } from "./Text";
-import { Button } from "./Button";
-import { Link } from "expo-router";
 import { getImageUrl } from "@/utils/image";
+import { timeAgo } from "@recordscratch/lib";
+import { Profile } from "@recordscratch/types";
+import { Link } from "expo-router";
+import { AtSign, MessageCircle, Reply } from "lucide-react-native";
+import { Button } from "./Button";
+import { Text } from "./Text";
+import { UserAvatar } from "./UserAvatar";
 
 const Comment = ({
 	id,
@@ -79,10 +78,10 @@ const Comment = ({
 						className="flex min-w-0 max-w-60 flex-1 flex-wrap items-center gap-2"
 					>
 						<UserAvatar size={50} imageUrl={getImageUrl(profile)} />
-						<p>{profile.name}</p>
-						<p className="text-left text-sm text-muted-foreground">
+						<Text>{profile.name}</Text>
+						<Text className="text-left text-sm text-muted-foreground">
 							@{profile.handle} • {timeAgo(updatedAt)}
-						</p>
+						</Text>
 					</Link>
 					{/* {myProfile?.userId == profile.userId && (
 						<CommentMenu onClick={() => deleteComment({ id })} />
@@ -92,10 +91,10 @@ const Comment = ({
 					{!!parentProfile && (
 						<Text variant="h3" className=" mr-2 flex flex-row items-center rounded">
 							<AtSign size={15} />
-							<p className=" max-w-20 truncate">{parentProfile.handle}</p>
+							<Text className=" max-w-20 truncate">{parentProfile.handle}</Text>
 						</Text>
 					)}
-					<p className="text-sm">{content}</p>
+					<Text className="text-sm">{content}</Text>
 				</div>
 				<div className="flex flex-row gap-2">
 					{!!replyCount && (
@@ -107,7 +106,7 @@ const Comment = ({
 							label=""
 						>
 							<MessageCircle size={20} />
-							<p>{replyCount}</p>
+							<Text>{replyCount}</Text>
 						</Button>
 					)}
 					{myProfile && (

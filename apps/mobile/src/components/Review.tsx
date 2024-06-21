@@ -1,13 +1,14 @@
 import { api } from "@/utils/api";
-import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
-import { View } from "react-native";
-import { ResourceItem } from "./ResourceItem";
-import { Star, MessageCircle, Heart, Reply } from "lucide-react-native";
 import { getImageUrl } from "@/utils/image";
 import { timeAgo } from "@recordscratch/lib";
+import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "expo-router";
+import { Heart, MessageCircle, Reply, Star } from "lucide-react-native";
 import { Suspense } from "react";
+import { View } from "react-native";
 import { Button, buttonVariants } from "./Button";
+import { ResourceItem } from "./ResourceItem";
+import { Text } from "./Text";
 import { UserAvatar } from "./UserAvatar";
 
 const PublicLikeButton = (props: SelectLike) => {
@@ -17,7 +18,7 @@ const PublicLikeButton = (props: SelectLike) => {
 		<Button variant="secondary" size="sm" label="">
 			<View className="flex flex-row gap-2 text-muted-foreground">
 				<Heart size={20} />
-				<p>{likes}</p>
+				<Text>{likes}</Text>
 			</View>
 		</Button>
 	);
@@ -78,7 +79,7 @@ const CommentsButton = ({
 			}}
 		>
 			<MessageCircle size={20} />
-			<p>{comments}</p>
+			<Text>{comments}</Text>
 		</Link>
 	);
 };
@@ -116,12 +117,12 @@ export const Review = ({
 					className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
 				>
 					<UserAvatar size={50} imageUrl={getImageUrl(profile)} />
-					<p>{profile.name}</p>
-					<p className="text-left text-sm text-muted-foreground">
+					<Text>{profile.name}</Text>
+					<Text className="text-left text-sm text-muted-foreground">
 						@{profile.handle} • {timeAgo(updatedAt)}
-					</p>
+					</Text>
 				</Link>
-				<p className="whitespace-pre-line text-sm">{content}</p>
+				<Text className="whitespace-pre-line text-sm">{content}</Text>
 				<View className="flex flex-row items-center gap-3">
 					<Suspense
 						fallback={

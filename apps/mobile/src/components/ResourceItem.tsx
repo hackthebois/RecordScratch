@@ -96,7 +96,11 @@ export const ResourceItem = ({
 				}}
 			>
 				{album.cover_big ? (
-					<img src={album.cover_big} className={cn("h-full w-full", imageCss)} />
+					<Image source={album.cover_big} contentFit="cover" style={{
+						width: 128,
+						height: 128,
+						borderRadius: 8,
+					}} className={imageCss} />
 				) : (
 					<View className="h-full w-full bg-muted"></View>
 				)}
