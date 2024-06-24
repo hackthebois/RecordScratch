@@ -121,9 +121,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 								{index + 1}
 							</p>
 							<div className="min-w-0 flex-1">
-								<p className="truncate text-sm">
-									{song.title.replace(/ *\([^)]*\) */g, "")}
-								</p>
+								<p className="truncate text-sm">{song.title}</p>
 							</div>
 						</Link>
 						<Suspense fallback={<Skeleton className="h-12 w-24" />}>

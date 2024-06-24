@@ -1,6 +1,6 @@
 import NotFoundScreen from "@/app/+not-found";
-import { Review } from "@/components/Review";
 import Comment from "@/components/Comment";
+import { Review } from "@/components/Review";
 import { api } from "@/utils/api";
 import { CommentAndProfile, CommentAndProfileAndParent, Profile } from "@recordscratch/types";
 import { Stack, useLocalSearchParams } from "expo-router";

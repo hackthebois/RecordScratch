@@ -3,6 +3,7 @@ import React from "react";
 import { View } from "react-native";
 import { Button } from "./Button";
 import { Text } from "./Text";
+import { Text } from "./Text";
 
 // const FollowersPopup = React.lazy(() => import("./FollowersPopup"));
 

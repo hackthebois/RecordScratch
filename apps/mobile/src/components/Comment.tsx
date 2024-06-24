@@ -1,9 +1,8 @@
-import { api } from "@/utils/api";
-import { Profile } from "@recordscratch/types";
-import { UserAvatar } from "./UserAvatar";
+import { getImageUrl } from "@/utils/image";
 import { timeAgo } from "@recordscratch/lib";
+import { Profile } from "@recordscratch/types";
+import { Link } from "expo-router";
 import { AtSign, MessageCircle, Reply } from "lucide-react-native";
-import { Text } from "./Text";
 import { Button } from "./Button";
 import { Link } from "expo-router";
 import { getImageUrl } from "@/utils/image";
@@ -82,7 +81,10 @@ const Comment = ({
 						<UserAvatar size={50} imageUrl={getImageUrl(profile)} />
 						<Text>{profile.name}</Text>
 						<Text className="text-left text-sm text-muted-foreground">
-							@{profile.handle} • {timeAgo(updatedAt)}
+							<Text>{profile.name}</Text>
+							<Text className="text-left text-sm text-muted-foreground">
+								@{profile.handle} • {timeAgo(updatedAt)}
+							</Text>
 						</Text>
 					</Link>
 					{/* {myProfile?.userId == profile.userId && (
@@ -93,6 +95,7 @@ const Comment = ({
 					{!!parentProfile && (
 						<Text variant="h3" className=" mr-2 flex flex-row items-center rounded">
 							<AtSign size={15} />
+							<Text className=" max-w-20 truncate">{parentProfile.handle}</Text>
 							<Text className=" max-w-20 truncate">{parentProfile.handle}</Text>
 						</Text>
 					)}
@@ -108,6 +111,7 @@ const Comment = ({
 							label=""
 						>
 							<MessageCircle size={20} />
+							<Text>{replyCount}</Text>
 							<Text>{replyCount}</Text>
 						</Button>
 					)}

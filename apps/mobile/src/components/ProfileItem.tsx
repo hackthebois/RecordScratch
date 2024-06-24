@@ -1,7 +1,6 @@
 import { getImageUrl } from "@/utils/image";
 import { Profile } from "@recordscratch/types";
-import { UserAvatar } from "./UserAvatar";
-import { api } from "@/utils/api";
+import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
 import { Link } from "expo-router";
 import { Text } from "./Text";

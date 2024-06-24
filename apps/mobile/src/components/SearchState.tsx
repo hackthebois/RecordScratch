@@ -1,6 +1,3 @@
-import { ArtistItem } from "./ArtistItem";
-import { ProfileItem } from "./ProfileItem";
-import { ResourceItem } from "./ResourceItem";
 import { useRecents } from "@recordscratch/lib";
 import { Loader2 } from "lucide-react-native";
 import { ScrollView } from "react-native";
@@ -35,6 +32,7 @@ export const SearchState = ({
 		return (
 			<View className="flex flex-1 items-center justify-center">
 				<Text className="text-muted-foreground">An error occurred</Text>
+				<Text className="text-muted-foreground">An error occurred</Text>
 			</View>
 		);
 	}
@@ -50,6 +48,7 @@ export const SearchState = ({
 	if (noResults) {
 		return (
 			<View className="flex flex-1 items-center justify-center">
+				<Text className="text-muted-foreground">No results found</Text>
 				<Text className="text-muted-foreground">No results found</Text>
 			</View>
 		);

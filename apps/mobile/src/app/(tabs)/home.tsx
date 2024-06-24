@@ -1,15 +1,14 @@
 import { Button } from "@/components/Button";
 import Metadata from "@/components/Metadata";
 import { ResourceItem } from "@/components/ResourceItem";
+import { Text } from "@/components/Text";
 import { api } from "@/utils/api";
 import { cn, formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
-import { Text } from "@/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getQueryOptions } from "@/utils/deezer";
 import NotFound from "../+not-found";
 
 const AlbumItem = ({
