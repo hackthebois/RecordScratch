@@ -34,6 +34,46 @@ const albums: {
 		albumId: "12965126",
 		date: dayjs.tz("2024-06-22", "YYYY-MM-DD", "America/Toronto"),
 	},
+	{
+		albumId: "384314",
+		date: dayjs.tz("2024-06-23", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "384314",
+		date: dayjs.tz("2024-06-24", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "93038342",
+		date: dayjs.tz("2024-06-25", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "170950362",
+		date: dayjs.tz("2024-06-26", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "106054",
+		date: dayjs.tz("2024-06-27", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "6941016",
+		date: dayjs.tz("2024-06-28", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "326313137",
+		date: dayjs.tz("2024-06-29", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "139890932",
+		date: dayjs.tz("2024-06-30", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "550558532",
+		date: dayjs.tz("2024-07-01", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "13257639",
+		date: dayjs.tz("2024-07-02", "YYYY-MM-DD", "America/Toronto"),
+	},
 ];
 
 export const miscRouter = router({
