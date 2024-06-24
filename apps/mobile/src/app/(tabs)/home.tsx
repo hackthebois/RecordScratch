@@ -10,6 +10,7 @@ import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../+not-found";
+import { getQueryOptions } from "@/utils/deezer";
 
 const AlbumItem = ({
 	resourceId,
@@ -29,7 +30,6 @@ const AlbumItem = ({
 					parentId: "",
 				}}
 				titleCss="line-clamp-2"
-				imageCss="w-8"
 			/>
 		</View>
 	);
