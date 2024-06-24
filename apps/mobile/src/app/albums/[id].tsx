@@ -17,7 +17,6 @@ const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) =
 			<Metadata
 				title={album.title}
 				cover={album.cover_big}
-				type=""
 				tags={[
 					album.release_date,
 					album.duration ? `${formatDuration(album.duration)}` : undefined,
