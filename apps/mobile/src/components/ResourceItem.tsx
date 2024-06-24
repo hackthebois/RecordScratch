@@ -18,6 +18,7 @@ export const ResourceItem = ({
 	titleCss,
 	showArtist = true,
 	className,
+	imageWidthAndHeight = 150,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
@@ -26,6 +27,7 @@ export const ResourceItem = ({
 	showLink?: boolean;
 	direction?: "horizontal" | "vertical";
 	imageCss?: string;
+	imageWidthAndHeight?: number;
 	titleCss?: string;
 	showArtist?: boolean;
 	className?: string;
@@ -58,10 +60,10 @@ export const ResourceItem = ({
 		return (
 			<View className="flex flex-row items-center gap-4 rounded">
 				{/* <Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
-				<div className="flex flex-col gap-2">
+				<View className="flex flex-col gap-2">
 					<Skeleton className="mb-1 h-4 w-32" />
 					<Skeleton className="h-4 w-24" />
-				</div> */}
+				</View> */}
 			</View>
 		);
 	}
@@ -96,16 +98,24 @@ export const ResourceItem = ({
 				}}
 			>
 				{album.cover_big ? (
-					<img src={album.cover_big} className={cn("h-full w-full", imageCss)} />
+					<Image
+						source={album.cover_big}
+						style={{
+							width: imageWidthAndHeight,
+							height: imageWidthAndHeight,
+							borderRadius: 12,
+						}}
+						className={cn("h-full w-full", imageCss)}
+					/>
 				) : (
 					<View className="h-full w-full bg-muted"></View>
 				)}
 				<View className="flex flex-col gap-2">
-					<Text className="w-full font-semibold">{name}</Text>
+					<Text className={cn("w-full font-semibold", titleCss)}>{name}</Text>
 					<View className="flex gap-1">
 						<Pressable
 							onPress={() => {
-								router.push("/artists/$artistId");
+								router.push(`/artists/${album.artist?.id}`);
 							}}
 						>
 							<Text className="text-muted-foreground truncate">

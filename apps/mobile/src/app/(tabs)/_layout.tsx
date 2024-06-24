@@ -1,19 +1,23 @@
 import { SearchBar } from "@/components/SearchBar";
-import { Tabs, useNavigation } from "expo-router";
-import { CircleArrowUp, Home, Star, User, View } from "lucide-react-native";
+import { Tabs } from "expo-router";
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import IndexPage from ".";
-import HomePage from "./home";
-import FeedPage from "./feed";
-import { ProfilePage } from "../profiles/[handle]";
+import { AntDesign } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
+import { TextStyle } from "react-native";
 
 export default function TabLayout() {
+	const iconSize = 30;
+	const tabBarLabelStyle: TextStyle = {
+		fontSize: 14,
+		fontWeight: "bold",
+	};
+
 	return (
 		<Tabs
 			screenOptions={{
 				tabBarActiveTintColor: "blue",
 				headerTitleAlign: "center",
+				tabBarLabelStyle: tabBarLabelStyle,
 			}}
 		>
 			<Tabs.Screen
@@ -21,7 +25,7 @@ export default function TabLayout() {
 				options={{
 					title: "Sign In",
 					headerShown: false,
-					tabBarIcon: () => <CircleArrowUp size={20} className="text-muted-foreground" />,
+					tabBarIcon: () => <Octicons name="sign-in" size={iconSize} color="black" />,
 					tabBarButton: () => null,
 				}}
 			/>
@@ -30,7 +34,7 @@ export default function TabLayout() {
 				options={{
 					title: "Home",
 					headerShown: true,
-					tabBarIcon: () => <Home size={20} className="text-muted-foreground" />,
+					tabBarIcon: () => <AntDesign name="home" size={iconSize} color="black" />,
 					headerRight: () => {
 						return <SearchBar />;
 					},
@@ -41,7 +45,7 @@ export default function TabLayout() {
 				options={{
 					title: "Feed",
 					headerShown: true,
-					tabBarIcon: () => <Star size={25} className="text-muted-foreground" />,
+					tabBarIcon: () => <AntDesign name="staro" size={iconSize} color="black" />,
 				}}
 			/>
 			<Tabs.Screen
@@ -49,7 +53,7 @@ export default function TabLayout() {
 				options={{
 					title: "Profile",
 					headerShown: true,
-					tabBarIcon: () => <User size={25} className="text-muted-foreground" />,
+					tabBarIcon: () => <AntDesign name="user" size={iconSize} color="black" />,
 				}}
 			/>
 		</Tabs>

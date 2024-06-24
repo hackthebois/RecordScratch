@@ -3,6 +3,8 @@ import { Artist, cn } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
+import { Text } from "@/components/Text";
+import { Image } from "expo-image";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -13,6 +15,7 @@ export const ArtistItem = ({
 	textCss = "truncate",
 	imageCss,
 	className,
+	imageWidthAndHeight = 100,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -21,6 +24,7 @@ export const ArtistItem = ({
 	showLink?: boolean;
 	textCss?: string;
 	imageCss?: string;
+	imageWidthAndHeight?: number;
 	className?: string;
 }) => {
 	const { data: artist } = useSuspenseQuery({
@@ -32,7 +36,7 @@ export const ArtistItem = ({
 		}),
 		initialData: initialArtist,
 	});
-	const artistImage = artist.picture_medium;
+	const artistImage = artist.picture_big;
 	const link = `/artists/${String(artist.id)}`;
 
 	return (
@@ -47,20 +51,27 @@ export const ArtistItem = ({
 					}
 				}
 			}}
-			className={cn(
-				"flex w-full items-center gap-4",
-				className,
-				direction === "vertical" ? "flex-col" : "flex-row"
-			)}
 		>
-			<View className="items-center justify-center overflow-hidden rounded-full">
-				{artistImage ? (
-					<img src={artistImage} className={cn("h-full w-full rounded-full", imageCss)} />
-				) : (
-					<View className="h-full w-full bg-muted"></View>
+			<View
+				className={cn(
+					"flex w-full items-center gap-4",
+					className,
+					direction === "vertical" ? "flex-col" : "flex-row"
 				)}
+			>
+				<View className="items-center justify-center overflow-hidden rounded-full">
+					{artistImage ? (
+						<Image
+							source={artistImage}
+							className={cn("h-full w-full rounded-full", imageCss)}
+							style={{ width: imageWidthAndHeight, height: imageWidthAndHeight }}
+						/>
+					) : (
+						<View className="h-full w-full bg-muted"></View>
+					)}
+				</View>
+				<Text className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</Text>
 			</View>
-			<p className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</p>
 		</Link>
 	);
 };

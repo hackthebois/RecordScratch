@@ -6,7 +6,8 @@ import { router } from "expo-router";
 import { Button } from "@/components/Button";
 
 const IndexPage = () => {
-	const [profile] = api.profiles.me.useSuspenseQuery();
+	//const [profile] = api.profiles.me.useSuspenseQuery();
+	const profile = undefined;
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 	const navigation = useNavigation();
 
@@ -32,7 +33,7 @@ const IndexPage = () => {
 
 	return (
 		<View className="flex-1 justify-center items-center bg-white">
-			<Text className="text-2xl font-semibold">Welcome back, {profile.name}!</Text>
+			<Text className="text-2xl font-semibold">Welcome back</Text>
 		</View>
 	);
 };

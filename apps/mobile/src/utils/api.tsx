@@ -28,13 +28,14 @@ export const getBaseUrl = () => {
 	 */
 	const debuggerHost = Constants.expoConfig?.hostUri;
 	// const localhost = debuggerHost?.split(":")[0];
-	const localhost = "localhost";
+	const localhost = process.env.EXPO_PUBLIC_CF_PAGES_URL_ANDROID;
+	// const localhost = "localhost";
 
 	if (!localhost) {
 		// return "https://turbo.t3.gg";
 		throw new Error("Failed to get localhost. Please point to your production server.");
 	}
-	return `http://${localhost}:3000`;
+	return localhost;
 };
 
 /**
@@ -55,6 +56,7 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 				httpBatchLink({
 					transformer: superjson,
 					url: `${getBaseUrl()}/trpc`,
+					// url: `https://recordscratch.app/trpc`,
 					headers() {
 						const headers = new Map<string, string>();
 						headers.set("x-trpc-source", "expo-react");

@@ -45,7 +45,7 @@ const CommentLayout = ({
 	};
 
 	return (
-		<div>
+		<View>
 			<Comment
 				{...comment}
 				replyCount={replyCount}
@@ -54,11 +54,11 @@ const CommentLayout = ({
 				openCommentFormId={openCommentFormId}
 				toggleCommentForm={toggleCommentForm}
 			/>
-			<div>
+			<View>
 				{isOpen &&
 					replies.map((reply) => {
 						return (
-							<div className=" ml-10 mt-2" key={reply.id}>
+							<View className=" ml-10 mt-2" key={reply.id}>
 								<Comment
 									{...reply}
 									myProfile={myProfile}
@@ -66,11 +66,11 @@ const CommentLayout = ({
 									openCommentFormId={openCommentFormId}
 									toggleCommentForm={toggleCommentForm}
 								/>
-							</div>
+							</View>
 						);
 					})}
-			</div>
-		</div>
+			</View>
+		</View>
 	);
 };
 
@@ -78,7 +78,8 @@ const RatingPage = () => {
 	const { id, handle } = useLocalSearchParams<{ id: string; handle: string }>();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle!);
-	const [myProfile] = api.profiles.me.useSuspenseQuery();
+	//const [myProfile] = api.profiles.me.useSuspenseQuery();
+	const myProfile = null;
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
 		userId: profile!.userId,
 		resourceId: id!,

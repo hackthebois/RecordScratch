@@ -2,7 +2,7 @@ import { Button } from "@/components/Button";
 import Metadata from "@/components/Metadata";
 import { ResourceItem } from "@/components/ResourceItem";
 import { api } from "@/utils/api";
-import { formatDuration } from "@recordscratch/lib";
+import { cn, formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useColorScheme } from "nativewind";
 import React from "react";
@@ -12,19 +12,28 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getQueryOptions } from "@/utils/deezer";
 import NotFound from "../+not-found";
 
-const SignIn = () => {
-	const [profile] = api.profiles.me.useSuspenseQuery();
-	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
-
-	// if (needsOnboarding) {
-	// 	navigate({
-	// 		to: "/onboard",
-	// 	});
-	// }
-
-	if (!profile) {
-		return <a href="/auth/google">Sign In</a>;
-	}
+const AlbumItem = ({
+	resourceId,
+	className,
+}: {
+	total: number;
+	resourceId: string;
+	className?: string;
+}) => {
+	return (
+		<View className={cn(className)}>
+			<ResourceItem
+				direction="vertical"
+				resource={{
+					resourceId: resourceId,
+					category: "ALBUM",
+					parentId: "",
+				}}
+				titleCss="line-clamp-2"
+				imageCss="w-8"
+			/>
+		</View>
+	);
 };
 
 const AlbumOfTheDay = () => {
@@ -61,61 +70,38 @@ const HomePage = () => {
 	const { setColorScheme, colorScheme } = useColorScheme();
 
 	return (
-		<SafeAreaView
-			style={{
-				flex: 1,
-			}}
-			edges={["top", "left", "right"]}
-		>
+		<SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
 			<ScrollView
-				contentContainerClassName="flex flex-col gap-6 flex-1 mt-10"
+				contentContainerClassName="flex flex-col gap-3"
 				nestedScrollEnabled
+				style={{ flex: 1 }}
 			>
 				<AlbumOfTheDay />
-				<div className="flex flex-col gap-2">
-					<Text variant="h1" className="dark:text-white px-4 mt-4">
+				<View className="flex flex-col gap-2">
+					<Text variant="h1" className="px-4">
 						Trending
 					</Text>
 					<FlatList
 						data={trending}
-						renderItem={({ item }) => (
-							<ResourceItem
-								direction="vertical"
-								resource={{
-									resourceId: item.resourceId,
-									category: "ALBUM",
-									parentId: "",
-								}}
-							/>
-						)}
+						renderItem={({ item }) => <AlbumItem {...item} className="p-4" />}
 						horizontal
 						contentContainerClassName="gap-4 px-4 pb-4"
 					/>
-				</div>
-				<div className="flex flex-col gap-2">
-					<Text variant="h1" className="px-4">
+				</View>
+				<View className="flex flex-col gap-2">
+					<Text variant="h1" className="py-2 px-4">
 						Top Albums
 					</Text>
 					<FlatList
 						data={top}
-						renderItem={({ item }) => (
-							<ResourceItem
-								direction="vertical"
-								resource={{
-									resourceId: item.resourceId,
-									category: "ALBUM",
-									parentId: "",
-								}}
-							/>
-						)}
+						renderItem={({ item }) => <AlbumItem {...item} className="p-4" />}
 						horizontal
 						contentContainerClassName="gap-4 px-4 pb-4"
 					/>
-				</div>
-
+				</View>
 				<Button
-					label="Toggle mode"
 					variant="secondary"
+					label="Toggle mode"
 					onPress={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
 				/>
 			</ScrollView>

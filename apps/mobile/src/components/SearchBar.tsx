@@ -1,14 +1,15 @@
-import { Search } from "lucide-react-native";
 import { View } from "react-native-ui-lib";
-import { Button } from "./Button";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 
 export const SearchBar = () => {
+	const router = useRouter();
 	return (
 		<View className="mr-5">
-			<Link href={"/search"}>
-				<Search size={20} />
-			</Link>
+			<TouchableOpacity onPress={() => router.push("/search")} className="mr-4">
+				<AntDesign name="search1" size={24} color="black" />
+			</TouchableOpacity>
 		</View>
 	);
 };

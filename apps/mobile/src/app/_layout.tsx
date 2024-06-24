@@ -95,8 +95,8 @@ export default function RootLayout() {
 	return (
 		<TRPCProvider>
 			<SafeAreaProvider>
-				<ThemeProvider value={LIGHT_THEME}>
-					{/* <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}> */}
+				{/* <ThemeProvider value={LIGHT_THEME}> */}
+				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
 					<Stack
 						screenOptions={{
 							animation: "slide_from_right",

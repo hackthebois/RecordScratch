@@ -7,37 +7,27 @@ import React, { useLayoutEffect } from "react";
 import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import Metadata from "@/components/Metadata";
 import { Album, Track, TrackAndArtist, formatDuration } from "@recordscratch/lib";
-import NotFound from "@/app/+not-found";
 import SongTable from "@/components/SongTable";
 import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
 import NotFoundScreen from "@/app/+not-found";
 
 const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
 	return (
-		<SafeAreaView
-			style={{
-				flex: 1,
-			}}
-		>
-			<ScrollView
-				contentContainerClassName="flex flex-col gap-6 flex-1 mt-10"
-				nestedScrollEnabled
+		<ScrollView className="flex flex-col gap-6 mt-6 mb-2" nestedScrollEnabled>
+			<Metadata
+				title={album.title}
+				cover={album.cover_big}
+				type=""
+				tags={[
+					album.release_date,
+					album.duration ? `${formatDuration(album.duration)}` : undefined,
+					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+				]}
 			>
-				<Metadata
-					title={album.title}
-					cover={album.cover_big}
-					type=""
-					tags={[
-						album.release_date,
-						album.duration ? `${formatDuration(album.duration)}` : undefined,
-						...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
-					]}
-				>
-					<></>
-				</Metadata>
-				<SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />
-			</ScrollView>
-		</SafeAreaView>
+				<></>
+			</Metadata>
+			<SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />
+		</ScrollView>
 	);
 };
 
@@ -79,30 +69,32 @@ export default function AlbumLayout() {
 	};
 
 	return (
-		<Tab.Navigator
-			screenOptions={{
-				tabBarContentContainerStyle: {
-					justifyContent: "space-around",
-				},
-				tabBarLabelStyle: {
-					textAlign: "center",
-				},
-			}}
-		>
-			<Tab.Screen
-				name="Album"
-				children={() => <AlbumTab album={album} songs={songs.data} />}
-			/>
-			<Tab.Screen
-				name="Reviews"
-				children={() => (
-					<InfiniteCommunityReviews
-						resource={resource}
-						pageLimit={10}
-						name={album.title}
-					/>
-				)}
-			/>
-		</Tab.Navigator>
+		<SafeAreaView className="flex flex-1">
+			<Tab.Navigator
+				screenOptions={{
+					tabBarContentContainerStyle: {
+						justifyContent: "space-around",
+					},
+					tabBarLabelStyle: {
+						textAlign: "center",
+					},
+				}}
+			>
+				<Tab.Screen
+					name="Album"
+					children={() => <AlbumTab album={album} songs={songs.data} />}
+				/>
+				<Tab.Screen
+					name="Reviews"
+					children={() => (
+						<InfiniteCommunityReviews
+							resource={resource}
+							pageLimit={10}
+							name={album.title}
+						/>
+					)}
+				/>
+			</Tab.Navigator>
+		</SafeAreaView>
 	);
 }

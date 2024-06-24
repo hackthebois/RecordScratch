@@ -29,8 +29,8 @@ export const Text = ({ children, className, variant, ...props }: TextProps) => {
 			className={cn(
 				textVariants({
 					variant,
-					className,
-				})
+				}),
+				className
 			)}
 		>
 			{children}

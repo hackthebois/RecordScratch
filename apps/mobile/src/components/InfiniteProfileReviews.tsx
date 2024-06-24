@@ -35,8 +35,8 @@ export const InfiniteProfileReviews = ({
 				ListFooterComponent={() =>
 					hasNextPage ? <ActivityIndicator size="large" /> : null
 				}
-				scrollEnabled={true}
-				onEndReachedThreshold={0.1}
+				scrollEnabled={false}
+				onEndReachedThreshold={0.7}
 				onEndReached={handleLoadMore}
 				contentContainerStyle={{ padding: 4, flexGrow: 1 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}

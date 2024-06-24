@@ -4,6 +4,7 @@ import { UserAvatar } from "./UserAvatar";
 import { api } from "@/utils/api";
 import { View } from "react-native-ui-lib";
 import { Link } from "expo-router";
+import { Text } from "./Text";
 
 export const ProfileItem = ({ profile, onClick }: { profile: Profile; onClick?: () => void }) => {
 	// const { data: myProfile } = api.profiles.me.useQuery();
@@ -27,8 +28,10 @@ export const ProfileItem = ({ profile, onClick }: { profile: Profile; onClick?: 
 					/>
 				</View>
 				<View className="min-w-0 max-w-[5rem] truncate px-3 sm:max-w-[7rem] md:max-w-[10rem] lg:max-w-[12rem]">
-					<p className="truncate font-medium">{profile.name}</p>
-					<p className="truncate py-1 text-sm text-muted-foreground">{profile.handle}</p>
+					<Text className="truncate font-medium">{profile.name}</Text>
+					<Text className="truncate py-1 text-sm text-muted-foreground">
+						{profile.handle}
+					</Text>
 				</View>
 			</View>
 			{/* {showButton && <FollowButton profileId={profile.userId} />} */}

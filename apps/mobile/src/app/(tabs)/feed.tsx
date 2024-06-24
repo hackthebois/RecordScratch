@@ -3,7 +3,7 @@ import { View } from "react-native-ui-lib";
 
 const FeedPage = () => {
 	return (
-		<View>
+		<View className="flex flex-1">
 			<RecentFeedReviews input={{ limit: 5 }} />
 		</View>
 	);

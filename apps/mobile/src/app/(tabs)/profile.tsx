@@ -11,7 +11,7 @@ const Profile = () => {
 				flex: 1,
 			}}
 		>
-			<ProfilePage handleId={handle} />
+			<ProfilePage handleId={handle} isProfile={true} />
 		</SafeAreaView>
 	);
 };

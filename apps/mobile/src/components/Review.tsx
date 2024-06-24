@@ -2,22 +2,23 @@ import { api } from "@/utils/api";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
-import { Star, MessageCircle, Heart, Reply } from "lucide-react-native";
 import { getImageUrl } from "@/utils/image";
-import { timeAgo } from "@recordscratch/lib";
+import { cn, timeAgo } from "@recordscratch/lib";
 import { Link } from "expo-router";
 import { Suspense } from "react";
 import { Button, buttonVariants } from "./Button";
 import { UserAvatar } from "./UserAvatar";
+import { AntDesign } from "@expo/vector-icons";
+import { Text } from "./Text";
 
 const PublicLikeButton = (props: SelectLike) => {
 	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
 
 	return (
 		<Button variant="secondary" size="sm" label="">
-			<View className="flex flex-row gap-2 text-muted-foreground">
-				<Heart size={20} />
-				<p>{likes}</p>
+			<View className="flex flex-row gap-2 text-muted-foreground items-center">
+				<AntDesign name="hearto" size={24} color="black" />
+				<Text className="font-bold">{likes}</Text>
 			</View>
 		</Button>
 	);
@@ -48,7 +49,7 @@ const ReplyButton = ({
 			}}
 			onPress={onClick}
 		>
-			<Reply size={20} />
+			<AntDesign name="back" size={24} color="black" />
 		</Link>
 	);
 };
@@ -67,18 +68,21 @@ const CommentsButton = ({
 
 	return (
 		<Link
-			className={buttonVariants({
-				variant: "secondary",
-				size: "sm",
-				className: "gap-2 text-muted-foreground",
-			})}
+			className={cn(
+				buttonVariants({
+					variant: "secondary",
+					size: "sm",
+				})
+			)}
 			href={{
 				pathname: "profiles/[handle]/ratings/[id]",
 				params: { handle: handle, id: resourceId },
 			}}
 		>
-			<MessageCircle size={20} />
-			<p>{comments}</p>
+			<View className="flex flex-row gap-2 text-muted-foreground items-center">
+				<AntDesign name="message1" size={24} color="black" />
+				<Text className="font-bold">{comments}</Text>
+			</View>
 		</Link>
 	);
 };
@@ -94,34 +98,33 @@ export const Review = ({
 	updatedAt,
 	onReply,
 }: ReviewType & { onReply?: () => void }) => {
-	const [profileExists] = api.profiles.me.useSuspenseQuery();
+	//const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
-		<View className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
+		<View className="flex flex-col gap-4 rounded-lg border border-gray-300 p-3 py-4 text-card-foreground">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
-				imageCss="h-16 w-16"
+				imageWidthAndHeight={75}
 			/>
 			<View className="flex flex-1 flex-col items-start gap-3">
 				<View className="flex flex-row items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
-						<Star key={i} size={18} color="#ffb703" fill="#ffb703" />
+						<AntDesign name="star" key={i} size={24} color="#ffb703" />
 					))}
 					{Array.from(Array(10 - rating)).map((_, i) => (
-						<Star key={i} size={18} color="#ffb703" />
+						<AntDesign name="staro" key={i} size={24} color="#ffb703" />
 					))}
 				</View>
-				<Link
-					href={`/profiles/${String(profile.handle)}`}
-					className="flex min-w-0 flex-1 flex-wrap items-center gap-2"
-				>
-					<UserAvatar size={50} imageUrl={getImageUrl(profile)} />
-					<p>{profile.name}</p>
-					<p className="text-left text-sm text-muted-foreground">
-						@{profile.handle} • {timeAgo(updatedAt)}
-					</p>
+				<Link href={`/profiles/${String(profile.handle)}`}>
+					<View className="flex flex-row flex-wrap items-center gap-2">
+						<UserAvatar size={65} imageUrl={getImageUrl(profile)} />
+						<Text className="text-lg">{profile.name}</Text>
+						<Text className="text-left text-muted-foreground text-lg">
+							@{profile.handle} • {timeAgo(updatedAt)}
+						</Text>
+					</View>
 				</Link>
-				<p className="whitespace-pre-line text-sm">{content}</p>
+				<Text className="whitespace-pre-line text-lg">{content}</Text>
 				<View className="flex flex-row items-center gap-3">
 					<Suspense
 						fallback={
@@ -131,7 +134,7 @@ export const Review = ({
 								className="gap-2 text-muted-foreground"
 								label={""}
 							>
-								<Heart size={20} />
+								<AntDesign name="hearto" size={24} color="black" />
 								{/* <Skeleton className="h-6 w-8" /> */}
 							</Button>
 						}
@@ -149,7 +152,7 @@ export const Review = ({
 								className="gap-2 text-muted-foreground"
 								label={""}
 							>
-								<MessageCircle size={20} />
+								<AntDesign name="message1" size={24} color="black" />
 								{/* <Skeleton className="h-6 w-8" /> */}
 							</Button>
 						}

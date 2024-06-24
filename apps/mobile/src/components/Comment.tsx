@@ -7,6 +7,7 @@ import { Text } from "./Text";
 import { Button } from "./Button";
 import { Link } from "expo-router";
 import { getImageUrl } from "@/utils/image";
+import { View } from "react-native";
 
 const Comment = ({
 	id,
@@ -67,8 +68,8 @@ const Comment = ({
 
 	return (
 		<>
-			<div className="relative flex flex-col gap-3 rounded border p-3">
-				<div className="flex flex-row justify-between">
+			<View className="relative flex flex-col gap-3 rounded border p-3">
+				<View className="flex flex-row justify-between">
 					<Link
 						href={{
 							pathname: "profile/[handle]",
@@ -79,25 +80,25 @@ const Comment = ({
 						className="flex min-w-0 max-w-60 flex-1 flex-wrap items-center gap-2"
 					>
 						<UserAvatar size={50} imageUrl={getImageUrl(profile)} />
-						<p>{profile.name}</p>
-						<p className="text-left text-sm text-muted-foreground">
+						<Text>{profile.name}</Text>
+						<Text className="text-left text-sm text-muted-foreground">
 							@{profile.handle} • {timeAgo(updatedAt)}
-						</p>
+						</Text>
 					</Link>
 					{/* {myProfile?.userId == profile.userId && (
 						<CommentMenu onClick={() => deleteComment({ id })} />
 					)} */}
-				</div>
-				<div className="flex flex-row items-center">
+				</View>
+				<View className="flex flex-row items-center">
 					{!!parentProfile && (
 						<Text variant="h3" className=" mr-2 flex flex-row items-center rounded">
 							<AtSign size={15} />
-							<p className=" max-w-20 truncate">{parentProfile.handle}</p>
+							<Text className=" max-w-20 truncate">{parentProfile.handle}</Text>
 						</Text>
 					)}
-					<p className="text-sm">{content}</p>
-				</div>
-				<div className="flex flex-row gap-2">
+					<Text className="text-sm">{content}</Text>
+				</View>
+				<View className="flex flex-row gap-2">
 					{!!replyCount && (
 						<Button
 							variant="secondary"
@@ -107,7 +108,7 @@ const Comment = ({
 							label=""
 						>
 							<MessageCircle size={20} />
-							<p>{replyCount}</p>
+							<Text>{replyCount}</Text>
 						</Button>
 					)}
 					{myProfile && (
@@ -123,10 +124,10 @@ const Comment = ({
 							<Reply size={20} />
 						</Button>
 					)}
-				</div>
-			</div>
+				</View>
+			</View>
 			{openCommentFormId === id && myProfile && (
-				<div className={!rootId ? "ml-10 mt-2" : ""}>
+				<View className={!rootId ? "ml-10 mt-2" : ""}>
 					{/* <CommentForm
 						replyHandle={profile.handle}
 						profile={myProfile}
@@ -138,7 +139,7 @@ const Comment = ({
 						}}
 						replyUserId={profile.userId}
 					/> */}
-				</div>
+				</View>
 			)}
 		</>
 	);

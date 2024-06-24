@@ -30,7 +30,7 @@ export const RecentFeedReviews = ({
 				data={data?.pages.flatMap((page) => page.items)}
 				keyExtractor={(item, index) => `review-${item.userId}-${index}`}
 				renderItem={({ item }) => (
-					<View className="my-3">
+					<View className="my-1">
 						<Review {...item} />
 					</View>
 				)}
@@ -39,7 +39,7 @@ export const RecentFeedReviews = ({
 				}
 				onEndReachedThreshold={0.1}
 				onEndReached={handleLoadMore}
-				contentContainerStyle={{ flexGrow: 1, padding: 10 }}
+				contentContainerStyle={{ flexGrow: 1, padding: 4 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}
 				className=" h-screen"
 			/>

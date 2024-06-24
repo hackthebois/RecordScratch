@@ -1,28 +1,29 @@
 import React, { useLayoutEffect, useState } from "react";
 import { ScrollView, TextInput, View, StyleSheet } from "react-native";
-import { useNavigation } from "expo-router";
+import { Stack, useNavigation } from "expo-router";
 import { ArrowLeft, Search } from "lucide-react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useDebounce } from "@recordscratch/lib";
 import MusicSearch from "@/components/MusicSearch";
 import ProfileSearch from "@/components/ProfileSearch";
 import { TouchableOpacity } from "react-native-ui-lib";
+import { AntDesign } from "@expo/vector-icons";
 
 const SearchInput = ({ query, setQuery }: { query: string; setQuery: (_: string) => void }) => {
 	const navigation = useNavigation();
 	return (
-		<View className="flex-row items-center mt-2 px-4">
+		<View className="flex-row items-center ml-4 mt-2">
 			<TouchableOpacity onPress={() => navigation.goBack()} className="mr-4">
-				<ArrowLeft />
+				<AntDesign name="arrowleft" size={24} color="black" />
 			</TouchableOpacity>
 			<View className="flex-row items-center border border-gray-300 rounded-md w-5/6">
-				<Search size={20} className="ml-2 text-gray-500" />
+				<AntDesign name="search1" size={20} color="grey" className="ml-2" />
 				<TextInput
 					id="name"
 					autoComplete="off"
 					placeholder="Search"
 					value={query}
-					className="flex-1 bg-transparent p-2 pl-2 text-lg outline-none"
+					className="flex-1 bg-transparent p-2 text-lg outline-none"
 					onChangeText={(text) => setQuery(text)}
 				/>
 			</View>
@@ -38,16 +39,18 @@ export default function SearchLayout() {
 	const Tab = createMaterialTopTabNavigator();
 	const [query, setQuery] = useState("");
 	const debouncedQuery = useDebounce(query, 500);
-	const navigation = useNavigation();
-
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			header: () => <SearchInput query={query} setQuery={setQuery} />,
-		});
-	}, [navigation, query]);
 
 	return (
 		<View className="flex flex-1">
+			<Stack.Screen
+				options={{
+					header: () => (
+						<View className="mt-8">
+							<SearchInput query={query} setQuery={setQuery} />
+						</View>
+					),
+				}}
+			/>
 			<Tab.Navigator screenOptions={searchBarOptions}>
 				<Tab.Screen
 					name="Top Results"

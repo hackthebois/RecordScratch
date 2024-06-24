@@ -9,7 +9,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react-native";
 import SongTable from "@/components/SongTable";
 import { Text } from "@/components/Text";
-import { FlatList, ScrollView, StyleSheet } from "react-native";
+import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 import { ArtistItem } from "@/components/ArtistItem";
 import { ResourceItem } from "@/components/ResourceItem";
 
@@ -38,11 +38,11 @@ const ArtistMetadata = ({ artist }: { artist: Artist }) => {
 const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => {
 	return (
 		<View>
-			<Text variant="h2" className="dark:text-white px-4 mt-4">
+			<Text variant="h2" className="px-4 my-4">
 				Top Songs
 			</Text>
 			<SongTable songs={data} />
-			<Text variant="h2" className="dark:text-white px-4 mt-4 mb-2">
+			<Text variant="h2" className="px-4 my-6">
 				Related Artists
 			</Text>
 			<FlatList
@@ -52,8 +52,8 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 						artistId={String(artist.id)}
 						initialArtist={artist}
 						direction="vertical"
-						textCss="text-xs line-clamp-2 -mt-2 text-center"
-						imageCss="h-24 w-24"
+						textCss="line-clamp-2 text-center w-40 -mt-2"
+						imageWidthAndHeight={115}
 					/>
 				)}
 				horizontal
@@ -65,7 +65,7 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 
 const Discography = ({ data }: { data: Album[] }) => {
 	return (
-		<View>
+		<SafeAreaView style={{ flex: 1 }}>
 			<Text
 				variant="h2"
 				className="dark:text-white px-4 mt-4 flex text-center items-center justify-center"
@@ -91,8 +91,9 @@ const Discography = ({ data }: { data: Album[] }) => {
 				}}
 				horizontal={false}
 				contentContainerClassName="gap-4 px-4 pb-4 mt-3"
+				scrollEnabled={false}
 			/>
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -123,7 +124,7 @@ const ArtistPage = () => {
 			route: "/artist/{id}/albums",
 			input: {
 				id: artistId,
-				limit: 1000,
+				limit: 100,
 			},
 		})
 	);

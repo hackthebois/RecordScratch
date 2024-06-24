@@ -4,6 +4,7 @@ import { Animated, Dimensions, FlatList, View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
 import { useRef } from "react";
 import { Text } from "./Text";
+import { cn } from "@recordscratch/lib";
 
 const { width } = Dimensions.get("window");
 
@@ -11,15 +12,17 @@ const TopLists = ({
 	album,
 	song,
 	artist,
+	className,
 }: {
 	album?: ListWithResources;
 	song?: ListWithResources;
 	artist?: ListWithResources;
+	className?: string;
 }) => {
 	const animatedValue = useRef(new Animated.Value(0)).current;
 
 	return (
-		<View className="mt-2 flex-1">
+		<View className={cn("mt-2 flex-1", className)}>
 			<View>
 				<Animated.FlatList
 					data={[album, song, artist]}
@@ -31,7 +34,7 @@ const TopLists = ({
 					)}
 					pagingEnabled={true}
 					keyExtractor={(_, index) => index.toString()}
-					renderItem={({ item, index }) => {
+					renderItem={({ item }) => {
 						if (!item) return null;
 						return (
 							<View style={{ width }}>
@@ -90,8 +93,8 @@ const ResourceList = ({ data, category }: { data?: UserListItem[]; category: Cat
 		renderItem = renderArtistItem;
 	}
 	return (
-		<View className="gap-2">
-			<Text variant="h2" className=" flex items-center justify-center mt-3">
+		<View className="flex w-full gap-2 justify-center">
+			<Text variant="h2" className="text-center mt-3">
 				{label}
 			</Text>
 			<FlatList
@@ -99,49 +102,54 @@ const ResourceList = ({ data, category }: { data?: UserListItem[]; category: Cat
 				renderItem={renderItem}
 				numColumns={3}
 				keyExtractor={(item) => item.resourceId}
+				style={{ width: "100%" }}
+				contentContainerStyle={{ alignItems: "center" }}
 			/>
 		</View>
 	);
 };
 
 const renderAlbumItem = ({ item: resource }: { item: UserListItem }) => (
-	<ResourceItem
-		resource={{
-			parentId: resource.parentId!,
-			resourceId: resource.resourceId,
-			category: "ALBUM",
-		}}
-		direction="vertical"
-		imageCss="w-28 rounded -mb-3"
-		titleCss="font-medium line-clamp-2"
-		showArtist={false}
-		className="mx-1"
-	/>
+	<View className="mx-2">
+		<ResourceItem
+			resource={{
+				parentId: resource.parentId!,
+				resourceId: resource.resourceId,
+				category: "ALBUM",
+			}}
+			direction="vertical"
+			titleCss="font-medium line-clamp-2"
+			showArtist={false}
+			imageWidthAndHeight={125}
+		/>
+	</View>
 );
 
 const renderSongItem = ({ item: resource }: { item: UserListItem }) => (
-	<ResourceItem
-		resource={{
-			parentId: resource.parentId!,
-			resourceId: resource.resourceId,
-			category: "SONG",
-		}}
-		direction="vertical"
-		imageCss="w-28 rounded -mb-3"
-		titleCss="font-medium line-clamp-2"
-		showArtist={false}
-		className="mx-1"
-	/>
+	<View className="mx-2">
+		<ResourceItem
+			resource={{
+				parentId: resource.parentId!,
+				resourceId: resource.resourceId,
+				category: "SONG",
+			}}
+			direction="vertical"
+			titleCss="font-medium line-clamp-2"
+			showArtist={false}
+			imageWidthAndHeight={125}
+		/>
+	</View>
 );
 
 const renderArtistItem = ({ item: resource }: { item: UserListItem }) => (
-	<ArtistItem
-		artistId={resource.resourceId}
-		direction="vertical"
-		textCss="font-medium line-clamp-2 -mt-2 text-center"
-		imageCss="h-auto w-[7rem]"
-		className="mx-1 mt-3"
-	/>
+	<View className="mx-3 mb-12">
+		<ArtistItem
+			artistId={resource.resourceId}
+			direction="vertical"
+			textCss="font-medium line-clamp-2 text-center"
+			imageWidthAndHeight={125}
+		/>
+	</View>
 );
 
 const PagingDot = ({

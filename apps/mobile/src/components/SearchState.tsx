@@ -5,6 +5,7 @@ import { useRecents } from "@recordscratch/lib";
 import { Loader2 } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { View } from "react-native-ui-lib";
+import { Text } from "./Text";
 
 export const SearchState = ({
 	isError,
@@ -33,7 +34,7 @@ export const SearchState = ({
 	if (isError) {
 		return (
 			<View className="flex flex-1 items-center justify-center">
-				<p className="text-muted-foreground">An error occurred</p>
+				<Text className="text-muted-foreground">An error occurred</Text>
 			</View>
 		);
 	}
@@ -49,7 +50,7 @@ export const SearchState = ({
 	if (noResults) {
 		return (
 			<View className="flex flex-1 items-center justify-center">
-				<p className="text-muted-foreground">No results found</p>
+				<Text className="text-muted-foreground">No results found</Text>
 			</View>
 		);
 	}
