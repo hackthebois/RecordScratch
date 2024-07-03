@@ -133,7 +133,7 @@ export default eventHandler(async (event) => {
 		const sessionCookie = lucia.createSessionCookie(session.id);
 
 		if (isMobile)
-			redirect = `exp://10.0.0.62:8081?session_id=${session.id}`;
+			redirect = `exp://10.0.0.62:8081/auth?session_id=${session.id}`;
 		else
 			setCookie(
 				event,

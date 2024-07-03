@@ -1,9 +1,10 @@
 import NotFoundScreen from "@/app/+not-found";
 import { Button } from "@/components/Button";
 import { api } from "@/utils/api";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { View } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { useAuth } from "@/app/_layout";
 
 const removeSessionId = async () => {
 	return await SecureStore.deleteItemAsync("sessionId");
@@ -12,6 +13,8 @@ const removeSessionId = async () => {
 const SettingsPage = () => {
 	const { handle } = useLocalSearchParams<{ id: string; handle: string }>();
 	const [profile] = api.profiles.me.useSuspenseQuery();
+	const router = useRouter();
+	const { logout } = useAuth();
 
 	if (!profile || profile.handle != handle) return <NotFoundScreen />;
 
@@ -26,8 +29,9 @@ const SettingsPage = () => {
 			<Button
 				variant="destructive"
 				onPress={async () => {
-					fetch("/auth/signout");
-					await removeSessionId();
+					fetch("https://recordscratch.app/auth/signout");
+					router.replace("/auth");
+					logout();
 				}}
 			>
 				Sign out
