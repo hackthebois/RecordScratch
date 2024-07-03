@@ -29,6 +29,7 @@ export const getBaseUrl = () => {
 	 */
 	// const debuggerHost = Constants.expoConfig?.hostUri;
 	// const localhost = debuggerHost?.split(":")[0];
+
 	const localhost = process.env.EXPO_PUBLIC_CF_PAGES_URL_ANDROID;
 
 	if (!localhost) {
