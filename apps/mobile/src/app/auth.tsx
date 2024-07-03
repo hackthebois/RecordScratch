@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { api } from "@/utils/api";
 import { router } from "expo-router";
@@ -7,9 +7,10 @@ import { Button } from "@/components/Button";
 import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import * as SecureStore from "expo-secure-store";
+import { Text } from "@/components/Text";
 
 Browser.maybeCompleteAuthSession();
-const IndexPage = () => {
+const AuthPage = () => {
 	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 	const navigation = useNavigation();
@@ -24,7 +25,7 @@ const IndexPage = () => {
 
 	const _handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
-			`$recordscratch.app/auth/google?mobile=true`,
+			`https://recordscratch.app/auth/google?mobile=true`,
 			`${Linking.createURL("")}`
 		);
 		setResult(result.type);
@@ -54,10 +55,14 @@ const IndexPage = () => {
 
 	return (
 		<View className="flex-1 justify-center items-center bg-white">
-			<Text className="text-3xl mb-4">Welcome back</Text>
-			<Text className="text-2xl font-semibold">{profile.name}</Text>
+			<Text className="mb-4" variant="h1">
+				Welcome back
+			</Text>
+			<Text className="font-semibold" variant="h1">
+				{profile.name}
+			</Text>
 		</View>
 	);
 };
 
-export default IndexPage;
+export default AuthPage;

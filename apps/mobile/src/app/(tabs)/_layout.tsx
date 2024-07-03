@@ -21,14 +21,6 @@ export default function TabLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="index"
-				options={{
-					title: "Sign In",
-					headerShown: false,
-					tabBarIcon: () => <Octicons name="sign-in" size={iconSize} color="black" />,
-				}}
-			/>
-			<Tabs.Screen
 				name="home"
 				options={{
 					title: "Home",

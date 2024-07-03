@@ -10,7 +10,7 @@ import { getImageUrl } from "@/utils/image";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { ListWithResources, Profile } from "@recordscratch/types";
 import { AntDesign } from "@expo/vector-icons";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
 const HandlePage = () => {
@@ -64,6 +64,7 @@ export const ProfilePage = ({
 	});
 
 	const Tab = createMaterialTopTabNavigator();
+	const router = useRouter();
 
 	return (
 		<>
@@ -72,7 +73,9 @@ export const ProfilePage = ({
 					headerTitle: `${handleId ? profile.name.toLocaleUpperCase() : "Profile"}`,
 					headerRight: () =>
 						isProfile ? (
-							<TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => router.push(`profiles/${handleId}/settings`)}
+							>
 								<AntDesign
 									name="setting"
 									size={30}

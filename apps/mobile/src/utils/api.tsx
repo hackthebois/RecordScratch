@@ -61,7 +61,6 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 				httpBatchLink({
 					transformer: superjson,
 					url: `${getBaseUrl()}/trpc`,
-					// url: `https://recordscratch.app/trpc`,
 					async headers() {
 						const sessionId = await getSessionId();
 						const headers = new Map<string, string>();

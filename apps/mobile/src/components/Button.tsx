@@ -48,11 +48,11 @@ const buttonTextVariants = cva("text-center font-medium", {
 interface ButtonProps
 	extends React.ComponentPropsWithoutRef<typeof TouchableOpacity>,
 		VariantProps<typeof buttonVariants> {
-	label: string;
+	label?: string;
 	labelClasses?: string;
 }
 function Button({
-	label,
+	label = "",
 	labelClasses,
 	className,
 	variant,

@@ -15,11 +15,12 @@ import {
 } from "@expo-google-fonts/montserrat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
+import * as SecureStore from "expo-secure-store";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -39,7 +40,47 @@ export const unstable_settings = {
 	// Ensure that reloading on `/modal` keeps a back button present.
 	initialRouteName: "(tabs)",
 };
+const getSessionId = async () => {
+	return await SecureStore.getItemAsync("sessionId");
+};
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	const [sessionId, setSessionId] = useState<string | null>(null);
+	const [loading, setLoading] = useState(true);
 
+	useEffect(() => {
+		const fetchSessionId = async () => {
+			const id = await getSessionId();
+			setSessionId(id);
+			setLoading(false);
+		};
+
+		fetchSessionId();
+	}, []);
+
+	if (loading) {
+		return null; // or some loading spinner/component
+	}
+
+	if (sessionId) {
+		return <>{children}</>;
+	}
+
+	return (
+		<Stack
+			screenOptions={{
+				animation: "slide_from_right",
+				headerTitleAlign: "center",
+			}}
+		>
+			<Stack.Screen
+				name="auth"
+				options={{
+					headerShown: false,
+				}}
+			/>
+		</Stack>
+	);
+};
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -95,21 +136,22 @@ export default function RootLayout() {
 	return (
 		<TRPCProvider>
 			<SafeAreaProvider>
-				{/* <ThemeProvider value={LIGHT_THEME}> */}
 				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-					<Stack
-						screenOptions={{
-							animation: "slide_from_right",
-							headerTitleAlign: "center",
-						}}
-					>
-						<Stack.Screen
-							name="(tabs)"
-							options={{
-								headerShown: false,
+					<AuthProvider>
+						<Stack
+							screenOptions={{
+								animation: "slide_from_right",
+								headerTitleAlign: "center",
 							}}
-						/>
-					</Stack>
+						>
+							<Stack.Screen
+								name="(tabs)"
+								options={{
+									headerShown: false,
+								}}
+							/>
+						</Stack>
+					</AuthProvider>
 				</ThemeProvider>
 			</SafeAreaProvider>
 		</TRPCProvider>

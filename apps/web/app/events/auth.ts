@@ -18,10 +18,9 @@ export default eventHandler(async (event) => {
 	const query = getQuery(event);
 	const isMobile = query.mobile === "true";
 
-	const callBackUrl =
-		`${process.env.CF_PAGES_URL}/auth/google/callback` + isMobile
-			? `?mobile=true`
-			: "";
+	const callBackUrl = `${process.env.CF_PAGES_URL}/auth/google/callback${
+		isMobile ? `?mobile=true` : ""
+	}`;
 
 	const google = new Google(
 		process.env.GOOGLE_CLIENT_ID!,
