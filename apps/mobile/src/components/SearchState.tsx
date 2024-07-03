@@ -1,8 +1,11 @@
-import { useRecents } from "@recordscratch/lib";
+import { useRecents } from "&/recents";
 import { Loader2 } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { View } from "react-native-ui-lib";
 import { Text } from "./Text";
+import { ArtistItem } from "./ArtistItem";
+import { ResourceItem } from "./ResourceItem";
+import { ProfileItem } from "./ProfileItem";
 
 export const SearchState = ({
 	isError,
@@ -26,7 +29,8 @@ export const SearchState = ({
 		songs?: boolean;
 	};
 }) => {
-	const { recents, addRecent } = useRecents("SEARCH");
+	const recentStore = useRecents("SEARCH");
+	const { recents, addRecent } = recentStore();
 
 	if (isError) {
 		return (
@@ -53,8 +57,8 @@ export const SearchState = ({
 			</View>
 		);
 	}
-	const ImageCss = "h-20 w-20 mb-1";
-	const ViewCss = "border-b border-gray-400 ";
+	const imageWidthAndHeight = 100;
+	const ViewCss = "border-b border-gray-400 p-1";
 
 	return (
 		<ScrollView className="flex flex-col gap-3 px-4">
@@ -77,7 +81,7 @@ export const SearchState = ({
 										}}
 										artistId={String(recent.data.id)}
 										initialArtist={recent.data}
-										imageCss={ImageCss}
+										imageWidthAndHeight={imageWidthAndHeight}
 									/>
 								</View>
 							) : recent.type === "ALBUM" && !hide?.albums ? (
@@ -98,7 +102,7 @@ export const SearchState = ({
 											});
 											onNavigate();
 										}}
-										imageCss={ImageCss}
+										imageWidthAndHeight={imageWidthAndHeight}
 									/>
 								</View>
 							) : recent.type === "SONG" && !hide?.songs ? (
@@ -118,7 +122,7 @@ export const SearchState = ({
 											});
 											onNavigate();
 										}}
-										imageCss={ImageCss}
+										imageWidthAndHeight={imageWidthAndHeight}
 									/>
 								</View>
 							) : recent.type === "PROFILE" && !hide?.profiles ? (

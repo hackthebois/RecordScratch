@@ -5,6 +5,7 @@ import { ResourceItem } from "./ResourceItem";
 import { useRef } from "react";
 import { Text } from "./Text";
 import { cn } from "@recordscratch/lib";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -20,7 +21,42 @@ const TopLists = ({
 	className?: string;
 }) => {
 	const animatedValue = useRef(new Animated.Value(0)).current;
-
+	if (!album)
+		album = {
+			resources: [],
+			category: "ALBUM",
+			id: "",
+			userId: "",
+			name: "",
+			description: undefined,
+			onProfile: undefined,
+			createdAt: undefined,
+			updatedAt: undefined,
+		};
+	if (!song)
+		song = {
+			resources: [],
+			category: "SONG",
+			id: "",
+			userId: "",
+			name: "",
+			description: undefined,
+			onProfile: undefined,
+			createdAt: undefined,
+			updatedAt: undefined,
+		};
+	if (!artist)
+		artist = {
+			resources: [],
+			category: "ARTIST",
+			id: "",
+			userId: "",
+			name: "",
+			description: undefined,
+			onProfile: undefined,
+			createdAt: undefined,
+			updatedAt: undefined,
+		};
 	return (
 		<View className={cn("mt-2 flex-1", className)}>
 			<View>
@@ -35,7 +71,6 @@ const TopLists = ({
 					pagingEnabled={true}
 					keyExtractor={(_, index) => index.toString()}
 					renderItem={({ item }) => {
-						if (!item) return null;
 						return (
 							<View style={{ width }}>
 								<ResourceList data={item.resources} category={item.category} />
@@ -142,12 +177,12 @@ const renderSongItem = ({ item: resource }: { item: UserListItem }) => (
 );
 
 const renderArtistItem = ({ item: resource }: { item: UserListItem }) => (
-	<View className="mx-3 mb-12">
+	<View className="mx-3 mb-14">
 		<ArtistItem
 			artistId={resource.resourceId}
 			direction="vertical"
-			textCss="font-medium line-clamp-2 text-center"
-			imageWidthAndHeight={125}
+			textCss="font-medium line-clamp-2 text-center w-32"
+			imageWidthAndHeight={115}
 		/>
 	</View>
 );

@@ -5,7 +5,6 @@ import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
 import { Text } from "@/components/Text";
-import { Image } from "expo-image";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -17,6 +16,7 @@ export const ArtistItem = ({
 	imageCss,
 	className,
 	imageWidthAndHeight = 100,
+	showType = false,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -27,6 +27,7 @@ export const ArtistItem = ({
 	imageCss?: string;
 	imageWidthAndHeight?: number;
 	className?: string;
+	showType?: boolean;
 }) => {
 	const { data: artist } = useSuspenseQuery({
 		...getQueryOptions({
@@ -71,7 +72,10 @@ export const ArtistItem = ({
 						<View className="h-full w-full bg-muted"></View>
 					)}
 				</View>
-				<Text className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</Text>
+				<View className="flex flex-col gap-1">
+					<Text className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</Text>
+					{showType && <Text>{"• Artist"}</Text>}
+				</View>
 			</View>
 		</Link>
 	);

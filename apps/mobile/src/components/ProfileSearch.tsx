@@ -1,10 +1,11 @@
 import { ProfileItem } from "./ProfileItem";
 import { api } from "../utils/api";
-import { useRecents } from "@recordscratch/lib";
 import SearchState from "./SearchState";
+import { useRecents } from "&/recents";
 
 const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () => void }) => {
-	const { addRecent } = useRecents("SEARCH");
+	const recentStore = useRecents("SEARCH");
+	const { addRecent } = recentStore();
 
 	const { data, isLoading, isError } = api.profiles.search.useQuery(query, {
 		gcTime: 0,

@@ -3,7 +3,6 @@ import React from "react";
 import { View } from "react-native";
 import { Button } from "./Button";
 import { Text } from "./Text";
-import { Text } from "./Text";
 
 // const FollowersPopup = React.lazy(() => import("./FollowersPopup"));
 
@@ -29,7 +28,7 @@ const FollowerMenu = ({ profileId }: { profileId: string }) => {
 		<View className="flex flex-row items-center justify-center gap-6 sm:justify-start">
 			<View className="flex flex-col items-center gap-1">
 				<Button variant={"secondary"} label={`${totalRatings}`} />
-				<Text className="text-lg font-medium">Reviews</Text>
+				<Text className="text-lg font-medium">Ratings</Text>
 			</View>
 			<View className="flex flex-col items-center gap-1">
 				<Button variant={"secondary"} label={`${followerCount}`} />

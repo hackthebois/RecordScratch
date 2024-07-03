@@ -1,19 +1,16 @@
 import { api } from "@/utils/api";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
-import { View } from "react-native";
-import { ResourceItem } from "./ResourceItem";
 import { getImageUrl } from "@/utils/image";
 import { cn, timeAgo } from "@recordscratch/lib";
 import { Link } from "expo-router";
 import { Heart, MessageCircle, Reply, Star } from "lucide-react-native";
-import { Suspense } from "react";
 import { View } from "react-native";
 import { Button, buttonVariants } from "./Button";
 import { ResourceItem } from "./ResourceItem";
 import { Text } from "./Text";
 import { UserAvatar } from "./UserAvatar";
 import { AntDesign } from "@expo/vector-icons";
-import { Text } from "./Text";
+import { Suspense } from "react";
 
 const PublicLikeButton = (props: SelectLike) => {
 	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
@@ -108,7 +105,7 @@ export const Review = ({
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
-				imageWidthAndHeight={75}
+				imageWidthAndHeight={80}
 			/>
 			<View className="flex flex-1 flex-col items-start gap-3">
 				<View className="flex flex-row items-center gap-1">

@@ -78,6 +78,7 @@ const RatingPage = () => {
 	const { id, handle } = useLocalSearchParams<{ id: string; handle: string }>();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle!);
+
 	//const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const myProfile = null;
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
@@ -88,6 +89,8 @@ const RatingPage = () => {
 		resourceId: id!,
 		authorId: profile!.userId,
 	});
+
+	console.log(rating?.rating);
 
 	const [openReply, setOpenReply] = useState(false);
 	const toggleOpenReply = () => {
@@ -108,7 +111,7 @@ const RatingPage = () => {
 	if (!profile || !rating) return <NotFoundScreen />;
 
 	return (
-		<View className="flex flex-col gap-2">
+		<View className="flex flex-col gap-2 flex-1">
 			<Stack.Screen options={{ headerTitle: `${profile.name}'s Rating` }} />
 			<Review {...rating} profile={profile} onReply={toggleOpenReply} />
 			{/* {openReply && myProfile && (

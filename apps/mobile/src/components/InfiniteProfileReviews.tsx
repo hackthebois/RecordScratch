@@ -36,7 +36,7 @@ export const InfiniteProfileReviews = ({
 					hasNextPage ? <ActivityIndicator size="large" /> : null
 				}
 				scrollEnabled={false}
-				onEndReachedThreshold={0.7}
+				onEndReachedThreshold={0.5}
 				onEndReached={handleLoadMore}
 				contentContainerStyle={{ padding: 4, flexGrow: 1 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}

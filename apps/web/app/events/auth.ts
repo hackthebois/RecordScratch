@@ -15,11 +15,18 @@ import { z } from "zod";
 
 export default eventHandler(async (event) => {
 	const url = getRequestURL(event);
+	const query = getQuery(event);
+	const isMobile = query.mobile === "true";
+
+	const callBackUrl =
+		`${process.env.CF_PAGES_URL}/auth/google/callback` + isMobile
+			? `?mobile=true`
+			: "";
 
 	const google = new Google(
 		process.env.GOOGLE_CLIENT_ID!,
 		process.env.GOOGLE_CLIENT_SECRET!,
-		`${process.env.CF_PAGES_URL}/auth/google/callback`
+		callBackUrl
 	);
 	const db = getDB();
 	const lucia = getLucia();
@@ -78,7 +85,8 @@ export default eventHandler(async (event) => {
 			!storedCodeVerifier ||
 			state !== storedState
 		) {
-			throw new Error("Invalid request");
+			console.log(code, storedState, storedCodeVerifier, state);
+			throw new Error("Invalid request Google Request");
 		}
 
 		const tokens = await google.validateAuthorizationCode(
@@ -124,12 +132,17 @@ export default eventHandler(async (event) => {
 			googleId,
 		});
 		const sessionCookie = lucia.createSessionCookie(session.id);
-		setCookie(
-			event,
-			sessionCookie.name,
-			sessionCookie.value,
-			sessionCookie.attributes
-		);
+
+		if (isMobile)
+			redirect = `exp://10.0.0.62:8081?session_id=${session.id}`;
+		else
+			setCookie(
+				event,
+				sessionCookie.name,
+				sessionCookie.value,
+				sessionCookie.attributes
+			);
+
 		return sendRedirect(event, redirect);
 	}
 

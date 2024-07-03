@@ -5,7 +5,7 @@ import { AwsClient } from "aws4fetch";
 import SuperJSON from "superjson";
 import { ZodError } from "zod";
 
-export const createTRPCContext = async ({ sessionId }: { sessionId?: string }) => {
+export const createTRPCContext = async ({ sessionId }: { sessionId?: string | null }) => {
 	const r2 = new AwsClient({
 		accessKeyId: process.env.R2_KEY_ID!,
 		secretAccessKey: process.env.R2_ACCESS_KEY!,

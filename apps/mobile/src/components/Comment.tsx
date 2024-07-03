@@ -4,9 +4,9 @@ import { Profile } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { AtSign, MessageCircle, Reply } from "lucide-react-native";
 import { Button } from "./Button";
-import { Link } from "expo-router";
-import { getImageUrl } from "@/utils/image";
 import { View } from "react-native";
+import { Text } from "./Text";
+import { UserAvatar } from "./UserAvatar";
 
 const Comment = ({
 	id,
@@ -67,7 +67,7 @@ const Comment = ({
 
 	return (
 		<>
-			<View className="relative flex flex-col gap-3 rounded border p-3">
+			<View className="relative flex flex-col gap-3 rounded border-gray-300 border p-3">
 				<View className="flex flex-row justify-between">
 					<Link
 						href={{

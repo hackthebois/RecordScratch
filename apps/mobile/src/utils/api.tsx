@@ -4,6 +4,7 @@ import { createTRPCReact } from "@trpc/react-query";
 import Constants from "expo-constants";
 import React, { useState } from "react";
 import superjson from "superjson";
+import * as SecureStore from "expo-secure-store";
 
 import type { AppRouter } from "@recordscratch/api";
 
@@ -26,16 +27,19 @@ export const getBaseUrl = () => {
 	 * **NOTE**: This is only for development. In production, you'll want to set the
 	 * baseUrl to your production API URL.
 	 */
-	const debuggerHost = Constants.expoConfig?.hostUri;
+	// const debuggerHost = Constants.expoConfig?.hostUri;
 	// const localhost = debuggerHost?.split(":")[0];
 	const localhost = process.env.EXPO_PUBLIC_CF_PAGES_URL_ANDROID;
-	// const localhost = "localhost";
 
 	if (!localhost) {
 		// return "https://turbo.t3.gg";
 		throw new Error("Failed to get localhost. Please point to your production server.");
 	}
 	return localhost;
+};
+
+const getSessionId = async () => {
+	return await SecureStore.getItemAsync("sessionId");
 };
 
 /**
@@ -57,9 +61,11 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 					transformer: superjson,
 					url: `${getBaseUrl()}/trpc`,
 					// url: `https://recordscratch.app/trpc`,
-					headers() {
+					async headers() {
+						const sessionId = await getSessionId();
 						const headers = new Map<string, string>();
 						headers.set("x-trpc-source", "expo-react");
+						headers.set("Authorization", `${sessionId}`);
 						return Object.fromEntries(headers);
 					},
 				}),

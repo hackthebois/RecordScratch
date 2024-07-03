@@ -1,14 +1,15 @@
 import { ArtistItem } from "./ArtistItem";
 import { ResourceItem } from "./ResourceItem";
 import { deezer } from "../utils/deezer";
-import { Album, Artist, Track, useRecents } from "@recordscratch/lib";
+import { Album, Artist, Track } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { View } from "react-native-ui-lib";
 import SearchState from "./SearchState";
 import React from "react";
+import { useRecents } from "&/recents";
 
 const SearchResults = ({ children }: { children: React.ReactNode }) => {
-	return <View className=" border-b border-gray-400">{children}</View>;
+	return <View className=" border-b border-gray-400 p-1">{children}</View>;
 };
 
 export const MusicSearch = ({
@@ -20,7 +21,8 @@ export const MusicSearch = ({
 	onNavigate: () => void;
 	hide?: { artists?: boolean; albums?: boolean; songs?: boolean };
 }) => {
-	const { addRecent } = useRecents("SEARCH");
+	const recentStore = useRecents("SEARCH");
+	const { addRecent } = recentStore();
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ["search", query, hide],
@@ -37,7 +39,7 @@ export const MusicSearch = ({
 				promises.push(
 					deezer({
 						route: "/search/artist",
-						input: { q: query, limit: 3 },
+						input: { q: query, limit: 6 },
 					}).then((response) => {
 						results.artists = response.data;
 					})
@@ -48,7 +50,7 @@ export const MusicSearch = ({
 				promises.push(
 					deezer({
 						route: "/search/album",
-						input: { q: query, limit: 3 },
+						input: { q: query, limit: 6 },
 					}).then((response) => {
 						results.albums = response.data;
 					})
@@ -59,7 +61,7 @@ export const MusicSearch = ({
 				promises.push(
 					deezer({
 						route: "/search/track",
-						input: { q: query, limit: 3 },
+						input: { q: query, limit: 6 },
 					}).then((response) => {
 						results.songs = response.data;
 					})
@@ -72,7 +74,8 @@ export const MusicSearch = ({
 		refetchOnMount: false,
 		enabled: query.length > 0,
 	});
-	const ImageCss = "h-20 w-20 mb-2";
+
+	const imageWidthAndHeight = 100;
 
 	return (
 		<SearchState
@@ -103,8 +106,8 @@ export const MusicSearch = ({
 									});
 									onNavigate();
 								}}
-								imageCss={ImageCss}
 								showType={true}
+								imageWidthAndHeight={imageWidthAndHeight}
 							/>
 						</SearchResults>
 					))}
@@ -122,7 +125,8 @@ export const MusicSearch = ({
 								}}
 								artistId={String(artist.id)}
 								initialArtist={artist}
-								imageCss={ImageCss}
+								imageWidthAndHeight={imageWidthAndHeight}
+								showType={true}
 							/>
 						</SearchResults>
 					))}
@@ -142,8 +146,8 @@ export const MusicSearch = ({
 									});
 									onNavigate();
 								}}
-								imageCss={ImageCss}
 								showType={true}
+								imageWidthAndHeight={imageWidthAndHeight}
 							/>
 						</SearchResults>
 					))}

@@ -38,4 +38,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		typedRoutes: true,
 	},
 	jsEngine: "hermes",
+	platforms: ["ios", "android", "web"],
 });

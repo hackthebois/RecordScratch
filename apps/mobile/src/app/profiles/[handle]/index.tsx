@@ -8,13 +8,10 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { api } from "@/utils/api";
 import { getImageUrl } from "@/utils/image";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import TopLists from "@/components/TopLists";
 import { ListWithResources, Profile } from "@recordscratch/types";
-import DistributionChart from "@/components/DistributionChart";
-import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
-import NotFoundScreen from "@/app/+not-found";
-import { Text } from "@/components/Text";
 import { AntDesign } from "@expo/vector-icons";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -75,11 +72,18 @@ export const ProfilePage = ({
 					headerTitle: `${handleId ? profile.name.toLocaleUpperCase() : "Profile"}`,
 					headerRight: () =>
 						isProfile ? (
-							<AntDesign name="setting" size={30} color="black" className="mr-6" />
+							<TouchableOpacity>
+								<AntDesign
+									name="setting"
+									size={30}
+									color="black"
+									className="mr-6"
+								/>
+							</TouchableOpacity>
 						) : null,
 				}}
 			/>
-			<View className="flex flex-col gap-6 flex-1">
+			<View className="flex flex-col gap-6 flex-1 mt-2">
 				<View className="border-b border-gray-300">
 					<View className="flex flex-col justify-start ml-5">
 						<View className="flex flex-col">
@@ -91,7 +95,9 @@ export const ProfilePage = ({
 								<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
 									@{profile.handle}
 								</Text>
-								<Text className="py-4 w-2/3">{profile.bio || "No bio yet"}</Text>
+								<Text className="pl-4 py-4 w-full">
+									{profile.bio || "No bio yet"}
+								</Text>
 							</View>
 						</View>
 					</View>

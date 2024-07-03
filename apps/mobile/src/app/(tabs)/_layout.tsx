@@ -26,7 +26,6 @@ export default function TabLayout() {
 					title: "Sign In",
 					headerShown: false,
 					tabBarIcon: () => <Octicons name="sign-in" size={iconSize} color="black" />,
-					tabBarButton: () => null,
 				}}
 			/>
 			<Tabs.Screen

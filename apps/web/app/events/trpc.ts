@@ -13,7 +13,8 @@ export default eventHandler(async (event) => {
 	const url = getRequestURL(event);
 	const path = url.pathname.replace(/^\/trpc/, "").slice(1);
 	const req = getWebRequest(event);
-	const sessionId = getCookie(event, "auth_session");
+	const sessionId =
+		getCookie(event, "auth_session") ?? req.headers.get("Authorization");
 
 	const { status, headers, body } = await resolveResponse({
 		router: appRouter,
@@ -28,6 +29,7 @@ export default eventHandler(async (event) => {
 	headers &&
 		Object.keys(headers).forEach((key) => {
 			if (headers.get(key)) {
+				console.log(headers.get(key));
 				setHeader(event, key, headers.get(key)!);
 			}
 		});

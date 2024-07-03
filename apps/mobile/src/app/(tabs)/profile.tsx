@@ -3,15 +3,14 @@ import { ProfilePage } from "../profiles/[handle]";
 import { api } from "@/utils/api";
 
 const Profile = () => {
-	// const handle = api.profiles.me.useSuspenseQuery()
-	const handle = "fil";
+	const [profile] = api.profiles.me.useSuspenseQuery();
 	return (
 		<SafeAreaView
 			style={{
 				flex: 1,
 			}}
 		>
-			<ProfilePage handleId={handle} isProfile={true} />
+			<ProfilePage handleId={profile!.handle} isProfile={true} />
 		</SafeAreaView>
 	);
 };

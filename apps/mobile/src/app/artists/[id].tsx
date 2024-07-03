@@ -52,12 +52,12 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 						artistId={String(artist.id)}
 						initialArtist={artist}
 						direction="vertical"
-						textCss="line-clamp-2 text-center w-40 -mt-2"
-						imageWidthAndHeight={115}
+						textCss="line-clamp-2 text-center w-32 -mt-2"
+						imageWidthAndHeight={105}
 					/>
 				)}
 				horizontal
-				contentContainerClassName="gap-4 px-4 pb-4"
+				contentContainerClassName="gap-2 pb-4"
 			/>
 		</View>
 	);
