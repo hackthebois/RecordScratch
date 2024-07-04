@@ -11,68 +11,64 @@ const albums: {
 	date: dayjs.Dayjs;
 }[] = [
 	{
-		albumId: "303072",
-		date: dayjs.tz("2024-06-17", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "1345663",
-		date: dayjs.tz("2024-06-18", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "108706862",
-		date: dayjs.tz("2024-06-19", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "162134",
-		date: dayjs.tz("2024-06-20", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "1435446",
-		date: dayjs.tz("2024-06-21", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "12965126",
-		date: dayjs.tz("2024-06-22", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "384314",
-		date: dayjs.tz("2024-06-23", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "384314",
-		date: dayjs.tz("2024-06-24", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "93038342",
-		date: dayjs.tz("2024-06-25", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "170950362",
-		date: dayjs.tz("2024-06-26", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "106054",
-		date: dayjs.tz("2024-06-27", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "6941016",
-		date: dayjs.tz("2024-06-28", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "326313137",
-		date: dayjs.tz("2024-06-29", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
-		albumId: "139890932",
-		date: dayjs.tz("2024-06-30", "YYYY-MM-DD", "America/Toronto"),
-	},
-	{
 		albumId: "550558532",
 		date: dayjs.tz("2024-07-01", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
 		albumId: "13257639",
 		date: dayjs.tz("2024-07-02", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "43265861",
+		date: dayjs.tz("2024-07-03", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "7485484",
+		date: dayjs.tz("2024-07-04", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "100905552",
+		date: dayjs.tz("2024-07-05", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "367622287",
+		date: dayjs.tz("2024-07-06", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "597350882",
+		date: dayjs.tz("2024-07-07", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "12330310",
+		date: dayjs.tz("2024-07-08", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "54307722",
+		date: dayjs.tz("2024-07-09", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "319814",
+		date: dayjs.tz("2024-07-10", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "489849155",
+		date: dayjs.tz("2024-07-11", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "941125",
+		date: dayjs.tz("2024-07-12", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "12215006",
+		date: dayjs.tz("2024-07-13", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "273467",
+		date: dayjs.tz("2024-07-14", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "149142962",
+		date: dayjs.tz("2024-07-15", "YYYY-MM-DD", "America/Toronto"),
 	},
 ];
 
