@@ -25,7 +25,6 @@ const SettingsPage = () => {
 				variant="destructive"
 				onPress={async () => {
 					fetch("https://recordscratch.app/auth/signout");
-					router.replace("/auth");
 					logout();
 				}}
 			>

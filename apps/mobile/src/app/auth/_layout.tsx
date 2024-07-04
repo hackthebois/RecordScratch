@@ -12,7 +12,7 @@ import { useAuth } from "@/utils/Authentication";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
-	const { sessionId, login } = useAuth();
+	const { login } = useAuth();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 	const router = useRouter();
 
@@ -38,36 +38,19 @@ const AuthPage = () => {
 		if (!sessionId) return;
 		login(sessionId);
 	};
-	const route = useRoute();
-
-	if (!sessionId) {
-		return (
-			<View className="flex-1 justify-center items-center bg-white">
-				<Text className="font-semibold mb-4" variant="h2">
-					Welcome to RecordScratch!
-				</Text>
-				<Button
-					className=" rounded-md px-4 py-2"
-					onPress={_handlePressButtonAsync}
-					label="Sign In"
-					variant="secondary"
-				/>
-				<Text className="mt-6 font-bold text-xl">{result}</Text>
-				<Text className="mt-6 font-bold text-xl">{route.name}</Text>
-			</View>
-		);
-	}
 
 	return (
-		<View className="flex-1 justify-center items-center bg-white gap-4">
-			<Text className="font-semibold mb-4" variant="h1">
-				Welcome back
+		<View className="flex-1 justify-center items-center bg-white">
+			<Text className="font-semibold mb-4" variant="h2">
+				Welcome to RecordScratch!
 			</Text>
 			<Button
+				className=" rounded-md px-4 py-2"
+				onPress={_handlePressButtonAsync}
+				label="Sign In"
 				variant="secondary"
-				label="Return to Home Screen"
-				onPress={() => router.replace("/home")}
 			/>
+			<Text className="mt-6 font-bold text-xl">{result}</Text>
 		</View>
 	);
 };
