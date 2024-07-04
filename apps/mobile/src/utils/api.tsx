@@ -7,6 +7,7 @@ import superjson from "superjson";
 import * as SecureStore from "expo-secure-store";
 
 import type { AppRouter } from "@recordscratch/api";
+import { useAuth } from "./Authentication";
 
 /**
  * A set of typesafe hooks for consuming your API.
@@ -39,15 +40,13 @@ export const getBaseUrl = () => {
 	return localhost;
 };
 
-const getSessionId = async () => {
-	return await SecureStore.getItemAsync("sessionId");
-};
-
 /**
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
  */
 export function TRPCProvider(props: { children: React.ReactNode }) {
+	const { sessionId } = useAuth();
+
 	const [queryClient] = useState(() => new QueryClient());
 	const [trpcClient] = useState(() =>
 		api.createClient({
@@ -62,7 +61,6 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 					transformer: superjson,
 					url: `${getBaseUrl()}/trpc`,
 					async headers() {
-						const sessionId = await getSessionId();
 						const headers = new Map<string, string>();
 						headers.set("x-trpc-source", "expo-react");
 						headers.set("Authorization", `${sessionId}`);

@@ -15,12 +15,12 @@ import {
 } from "@expo-google-fonts/montserrat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
-import { Stack, useNavigation } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import * as SecureStore from "expo-secure-store";
+import { AuthProvider } from "@/utils/Authentication";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -38,81 +38,9 @@ export {
 
 export const unstable_settings = {
 	// Ensure that reloading on `/modal` keeps a back button present.
-	initialRouteName: "(tabs)",
+	initialRouteName: "auth",
 };
 
-// Define the context type
-interface AuthContextType {
-	sessionId: string | null;
-	login: (id: string) => Promise<void>;
-	logout: () => Promise<void>;
-}
-
-// Create the Auth context with a default value of undefined
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-	const context = useContext(AuthContext);
-	if (context === undefined) {
-		throw new Error("useAuth must be used within an AuthProvider");
-	}
-	return context;
-};
-
-const getSessionId = async () => {
-	return await SecureStore.getItemAsync("sessionId");
-};
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [sessionId, setSessionId] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		const fetchSessionId = async () => {
-			const id = await getSessionId();
-			setSessionId(id);
-			setLoading(false);
-		};
-
-		fetchSessionId();
-	}, []);
-
-	const login = async (id: string) => {
-		await SecureStore.setItemAsync("sessionId", id);
-		setSessionId(id);
-	};
-
-	const logout = async () => {
-		await SecureStore.deleteItemAsync("sessionId");
-		setSessionId(null);
-	};
-
-	if (loading) {
-		return null; // or some loading spinner/component
-	}
-
-	return (
-		<AuthContext.Provider value={{ sessionId, login, logout }}>
-			{sessionId ? (
-				children
-			) : (
-				<Stack
-					screenOptions={{
-						animation: "slide_from_right",
-						headerTitleAlign: "center",
-					}}
-				>
-					<Stack.Screen
-						name="auth"
-						options={{
-							headerShown: false,
-						}}
-					/>
-				</Stack>
-			)}
-		</AuthContext.Provider>
-	);
-};
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -166,10 +94,10 @@ export default function RootLayout() {
 	}
 
 	return (
-		<TRPCProvider>
-			<SafeAreaProvider>
-				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-					<AuthProvider>
+		<AuthProvider>
+			<TRPCProvider>
+				<SafeAreaProvider>
+					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
 						<Stack
 							screenOptions={{
 								animation: "slide_from_right",
@@ -182,10 +110,16 @@ export default function RootLayout() {
 									headerShown: false,
 								}}
 							/>
+							<Stack.Screen
+								name="auth"
+								options={{
+									headerShown: false,
+								}}
+							/>
 						</Stack>
-					</AuthProvider>
-				</ThemeProvider>
-			</SafeAreaProvider>
-		</TRPCProvider>
+					</ThemeProvider>
+				</SafeAreaProvider>
+			</TRPCProvider>
+		</AuthProvider>
 	);
 }

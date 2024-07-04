@@ -1,34 +1,33 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { api } from "@/utils/api";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Button } from "@/components/Button";
 import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import * as SecureStore from "expo-secure-store";
 import { Text } from "@/components/Text";
-import { useAuth } from "./_layout";
+import { useAuth } from "@/utils/Authentication";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
-	const { login } = useAuth();
-	const [profile] = api.profiles.me.useSuspenseQuery();
+	const { sessionId, login } = useAuth();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
-	const navigation = useNavigation();
+	const router = useRouter();
 
 	React.useEffect(() => {
 		if (needsOnboarding) {
-			router.navigate("/onboard");
+			router.replace("/onboard");
 		}
-	}, [needsOnboarding, navigation]);
+	}, [needsOnboarding, router]);
 
-	const [result, setResult] = useState("");
+	const [result, setResult] = useState("Null");
 
 	const _handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
 			`https://recordscratch.app/auth/google?mobile=true`,
-			`exp://10.0.0.62:8081/auth`
+			`exp://10.0.0.62:8081`
 		);
 		setResult(result.type);
 
@@ -39,8 +38,9 @@ const AuthPage = () => {
 		if (!sessionId) return;
 		login(sessionId);
 	};
+	const route = useRoute();
 
-	if (!profile) {
+	if (!sessionId) {
 		return (
 			<View className="flex-1 justify-center items-center bg-white">
 				<Text className="font-semibold mb-4" variant="h2">
@@ -53,6 +53,7 @@ const AuthPage = () => {
 					variant="secondary"
 				/>
 				<Text className="mt-6 font-bold text-xl">{result}</Text>
+				<Text className="mt-6 font-bold text-xl">{route.name}</Text>
 			</View>
 		);
 	}
@@ -61,9 +62,6 @@ const AuthPage = () => {
 		<View className="flex-1 justify-center items-center bg-white gap-4">
 			<Text className="font-semibold mb-4" variant="h1">
 				Welcome back
-			</Text>
-			<Text className=" font-medium" variant="h1">
-				{profile.name}
 			</Text>
 			<Button
 				variant="secondary"
