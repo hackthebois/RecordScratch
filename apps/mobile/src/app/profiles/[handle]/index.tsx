@@ -12,6 +12,7 @@ import { ListWithResources, Profile } from "@recordscratch/types";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
+import { useColorScheme } from "@/utils/useColorScheme";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -55,6 +56,7 @@ export const ProfilePage = ({
 	handleId: string;
 	isProfile?: boolean;
 }) => {
+	const { utilsColor } = useColorScheme();
 	const [profile] = api.profiles.get.useSuspenseQuery(handleId);
 
 	if (!profile) return <NotFoundScreen />;
@@ -65,6 +67,8 @@ export const ProfilePage = ({
 
 	const Tab = createMaterialTopTabNavigator();
 	const router = useRouter();
+
+	console.log(`IMAGEURL: ${getImageUrl(profile)}`);
 
 	return (
 		<>
@@ -79,7 +83,7 @@ export const ProfilePage = ({
 								<AntDesign
 									name="setting"
 									size={30}
-									color="black"
+									color={utilsColor}
 									className="mr-6"
 								/>
 							</TouchableOpacity>

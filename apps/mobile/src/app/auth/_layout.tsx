@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { api } from "@/utils/api";
-import { useRouter } from "expo-router";
 import { Button } from "@/components/Button";
 import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import * as SecureStore from "expo-secure-store";
 import { Text } from "@/components/Text";
 import { useAuth } from "@/utils/Authentication";
+import { useRouter } from "expo-router";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
-	const { login } = useAuth();
-	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
-	const router = useRouter();
-
-	React.useEffect(() => {
-		if (needsOnboarding) {
-			router.replace("/onboard");
-		}
-	}, [needsOnboarding, router]);
-
+	const { sessionId, login } = useAuth();
 	const [result, setResult] = useState("Null");
+	const router = useRouter();
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	useLayoutEffect(() => {
+		if (isMounted && sessionId) {
+			router.replace("");
+		}
+	}, [isMounted, sessionId, router]);
 
 	const _handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(

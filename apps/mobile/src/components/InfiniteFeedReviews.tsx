@@ -39,7 +39,7 @@ export const RecentFeedReviews = ({
 				}
 				onEndReachedThreshold={0.1}
 				onEndReached={handleLoadMore}
-				contentContainerStyle={{ flexGrow: 1, padding: 4 }}
+				contentContainerStyle={{ padding: 4 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}
 				className=" h-screen"
 			/>

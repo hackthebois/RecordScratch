@@ -111,9 +111,12 @@ const RatingPage = () => {
 	if (!profile || !rating) return <NotFoundScreen />;
 
 	return (
-		<View className="flex flex-col gap-2 flex-1">
+		<View className="flex flex-col">
 			<Stack.Screen options={{ headerTitle: `${profile.name}'s Rating` }} />
-			<Review {...rating} profile={profile} onReply={toggleOpenReply} />
+			<View className="w-full h-full">
+				<Review {...rating} profile={profile} onReply={toggleOpenReply} />
+			</View>
+
 			{/* {openReply && myProfile && (
 				<CommentForm
 					profile={myProfile}

@@ -10,8 +10,20 @@ import { Album, Track, TrackAndArtist, formatDuration } from "@recordscratch/lib
 import SongTable from "@/components/SongTable";
 import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
 import NotFoundScreen from "@/app/+not-found";
+import { RatingInfo } from "@/components/RatingInfo";
 
-const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
+const AlbumTab = ({
+	album,
+	songs,
+	resource,
+}: {
+	album: Album;
+	songs: TrackAndArtist[];
+	resource: {
+		resourceId: Resource["resourceId"];
+		category: Resource["category"];
+	};
+}) => {
 	return (
 		<ScrollView className="flex flex-col gap-6 mt-6 mb-2" nestedScrollEnabled>
 			<Metadata
@@ -23,7 +35,7 @@ const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) =
 					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
 				]}
 			>
-				<></>
+				<RatingInfo resource={resource} />
 			</Metadata>
 			<SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />
 		</ScrollView>
@@ -81,7 +93,9 @@ export default function AlbumLayout() {
 			>
 				<Tab.Screen
 					name="Album"
-					children={() => <AlbumTab album={album} songs={songs.data} />}
+					children={() => (
+						<AlbumTab album={album} songs={songs.data} resource={resource} />
+					)}
 				/>
 				<Tab.Screen
 					name="Reviews"

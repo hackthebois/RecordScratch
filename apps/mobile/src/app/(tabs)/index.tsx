@@ -5,12 +5,12 @@ import { Text } from "@/components/Text";
 import { api } from "@/utils/api";
 import { cn, formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../+not-found";
 import { getQueryOptions } from "@/utils/deezer";
+import { Link, useRouter } from "expo-router";
 
 const AlbumItem = ({
 	resourceId,
@@ -45,6 +45,7 @@ const AlbumOfTheDay = () => {
 	);
 
 	if (!album) return <NotFound />;
+	const router = useRouter();
 
 	return (
 		<Metadata
@@ -57,7 +58,15 @@ const AlbumOfTheDay = () => {
 				...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
 			]}
 		>
-			<></>
+			<Button
+				variant="secondary"
+				className=" w-1/3"
+				onPress={() => {
+					router.push(`/albums/${albumOfTheDay.albumId}`);
+				}}
+			>
+				Go to Album
+			</Button>
 		</Metadata>
 	);
 };
@@ -65,8 +74,6 @@ const AlbumOfTheDay = () => {
 const HomePage = () => {
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
-
-	const { setColorScheme, colorScheme } = useColorScheme();
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
@@ -98,11 +105,6 @@ const HomePage = () => {
 						contentContainerClassName="gap-4 px-4 pb-4"
 					/>
 				</View>
-				<Button
-					variant="secondary"
-					label="Toggle mode"
-					onPress={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
-				/>
 			</ScrollView>
 		</SafeAreaView>
 	);

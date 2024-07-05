@@ -114,7 +114,7 @@ export const ResourceItem = ({
 					<Text className={cn("w-full font-semibold", titleCss)}>{name}</Text>
 					<View className="flex gap-1">
 						<Pressable
-							onPress={() => {
+							onTouchStart={() => {
 								router.push(`/artists/${album.artist?.id}`);
 							}}
 						>

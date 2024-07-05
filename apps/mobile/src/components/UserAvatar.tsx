@@ -12,7 +12,7 @@ export const UserAvatar = ({
 }) => {
 	return (
 		<View className={cn(className, "h-auto")}>
-			<Avatar source={imageUrl} size={size ?? 100} label="🤦" />
+			<Avatar source={{ uri: imageUrl }} size={size ?? 100} label="🤦" />
 		</View>
 	);
 };

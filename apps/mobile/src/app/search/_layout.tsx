@@ -40,7 +40,7 @@ export default function SearchLayout() {
 	const debouncedQuery = useDebounce(query, 500);
 
 	return (
-		<View className="flex flex-1">
+		<ScrollView className="flex flex-1">
 			<Stack.Screen
 				options={{
 					header: () => (
@@ -104,7 +104,7 @@ export default function SearchLayout() {
 					)}
 				/>
 			</Tab.Navigator>
-		</View>
+		</ScrollView>
 	);
 }
 

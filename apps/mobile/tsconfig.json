@@ -32,7 +32,8 @@
 		"expo-env.d.ts",
 		"src/components",
 		"src/app",
-		"src/env.ts"
+		"src/env.ts",
+		"src/utils/Icons.tsx"
 	],
 	"extends": "expo/tsconfig.base"
 }

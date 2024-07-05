@@ -101,7 +101,7 @@ export const Review = ({
 }: ReviewType & { onReply?: () => void }) => {
 	//const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
-		<View className="flex flex-col gap-4 rounded-lg border border-gray-300 p-3 py-4 text-card-foreground">
+		<View className="flex flex-col gap-4 rounded-lg border border-gray-300 p-3 py-4 text-card-foreground min-h-[19rem]">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
@@ -125,7 +125,9 @@ export const Review = ({
 						</Text>
 					</View>
 				</Link>
-				<Text className="whitespace-pre-line text-lg">{content}</Text>
+				{!!content && (
+					<Text className="whitespace-pre-line text-lg min-h-7">{content}</Text>
+				)}
 				<View className="flex flex-row items-center gap-3">
 					<Suspense
 						fallback={
