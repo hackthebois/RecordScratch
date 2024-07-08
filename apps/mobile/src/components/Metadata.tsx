@@ -20,7 +20,7 @@ const Metadata = ({
 	size?: "base" | "sm";
 }) => {
 	return (
-		<View className="flex flex-col gap-4">
+		<View className="flex flex-col gap-4 mt-4">
 			{typeof cover === "string" ? (
 				<Image
 					alt={`${title} cover`}
@@ -39,7 +39,7 @@ const Metadata = ({
 					]}
 				/>
 			) : (
-				<View className={"h-[150px] w-[150px] self-center"}>{cover}</View>
+				<View className={"self-center"}>{cover}</View>
 			)}
 			<View className="flex flex-col justify-center items-center gap-4 sm:justify-center">
 				{!!type && <Text className="text-muted-foreground">{type.toUpperCase()}</Text>}

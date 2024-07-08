@@ -81,9 +81,7 @@ export const ResourceItem = ({
 	return (
 		<Link
 			onPress={() => {
-				if (onClick) {
-					onClick();
-				}
+				if (onClick) onClick();
 			}}
 			href={link}
 		>
@@ -93,9 +91,6 @@ export const ResourceItem = ({
 					className,
 					direction === "vertical" ? "flex-col" : "flex-row items-center"
 				)}
-				style={{
-					width: 128,
-				}}
 			>
 				{album.cover_big ? (
 					<Image
@@ -111,12 +106,13 @@ export const ResourceItem = ({
 					<View className="h-full w-full bg-muted"></View>
 				)}
 				<View className="flex flex-col gap-2">
-					<Text className={cn("w-full font-semibold", titleCss)}>{name}</Text>
+					<Text className={cn(" truncate font-semibold mr-3", titleCss)}>{name}</Text>
 					<View className="flex gap-1">
 						<Pressable
-							onTouchStart={() => {
-								router.push(`/artists/${album.artist?.id}`);
+							onPress={() => {
+								if (showArtist) router.push(`/artists/${album.artist?.id}`);
 							}}
+							className=" bg-red-300 w-auto whitespace-nowrap"
 						>
 							<Text className="text-muted-foreground truncate">
 								{showArtist ? album.artist?.name : ""}

@@ -13,7 +13,7 @@ export const ProfileItem = ({ profile, onClick }: { profile: Profile; onClick?: 
 	return (
 		<Link
 			href={{
-				pathname: "/profiles/[handle]",
+				pathname: "/[handle]",
 				params: { handle: String(profile.handle) },
 			}}
 			onPress={onClick}

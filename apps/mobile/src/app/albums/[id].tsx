@@ -2,7 +2,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Resource } from "@recordscratch/types";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useLayoutEffect } from "react";
 import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import Metadata from "@/components/Metadata";
@@ -12,33 +12,11 @@ import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews"
 import NotFoundScreen from "@/app/+not-found";
 import { RatingInfo } from "@/components/RatingInfo";
 
-const AlbumTab = ({
-	album,
-	songs,
-	resource,
-}: {
-	album: Album;
-	songs: TrackAndArtist[];
-	resource: {
-		resourceId: Resource["resourceId"];
-		category: Resource["category"];
-	};
-}) => {
+const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
 	return (
-		<ScrollView className="flex flex-col gap-6 mt-6 mb-2" nestedScrollEnabled>
-			<Metadata
-				title={album.title}
-				cover={album.cover_big}
-				tags={[
-					album.release_date,
-					album.duration ? `${formatDuration(album.duration)}` : undefined,
-					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
-				]}
-			>
-				<RatingInfo resource={resource} />
-			</Metadata>
+		<View className="flex flex-col gap-6 mt-6 mb-2">
 			<SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />
-		</ScrollView>
+		</View>
 	);
 };
 
@@ -53,13 +31,6 @@ export default function AlbumLayout() {
 			input: { id: albumId! },
 		})
 	);
-
-	const navigation = useNavigation();
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			title: `${album.title}`,
-		});
-	}, [navigation]);
 
 	if (!album) return <NotFoundScreen />;
 
@@ -80,7 +51,23 @@ export default function AlbumLayout() {
 	};
 
 	return (
-		<SafeAreaView className="flex flex-1">
+		<ScrollView className="flex flex-1">
+			<Stack.Screen
+				options={{
+					headerTitle: ``,
+				}}
+			/>
+			<Metadata
+				title={album.title}
+				cover={album.cover_big}
+				tags={[
+					album.release_date,
+					album.duration ? `${formatDuration(album.duration)}` : undefined,
+					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+				]}
+			>
+				<RatingInfo resource={resource} />
+			</Metadata>
 			<Tab.Navigator
 				screenOptions={{
 					tabBarContentContainerStyle: {
@@ -93,9 +80,7 @@ export default function AlbumLayout() {
 			>
 				<Tab.Screen
 					name="Album"
-					children={() => (
-						<AlbumTab album={album} songs={songs.data} resource={resource} />
-					)}
+					children={() => <AlbumTab album={album} songs={songs.data} />}
 				/>
 				<Tab.Screen
 					name="Reviews"
@@ -108,6 +93,6 @@ export default function AlbumLayout() {
 					)}
 				/>
 			</Tab.Navigator>
-		</SafeAreaView>
+		</ScrollView>
 	);
 }

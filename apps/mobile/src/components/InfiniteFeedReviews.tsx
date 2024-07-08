@@ -37,6 +37,7 @@ export const RecentFeedReviews = ({
 				ListFooterComponent={() =>
 					hasNextPage ? <ActivityIndicator size="large" /> : null
 				}
+				scrollEnabled={false}
 				onEndReachedThreshold={0.1}
 				onEndReached={handleLoadMore}
 				contentContainerStyle={{ padding: 4 }}

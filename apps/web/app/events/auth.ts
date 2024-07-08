@@ -84,7 +84,6 @@ export default eventHandler(async (event) => {
 			!storedCodeVerifier ||
 			state !== storedState
 		) {
-			console.log(code, storedState, storedCodeVerifier, state);
 			throw new Error("Invalid request Google Request");
 		}
 

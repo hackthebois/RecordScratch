@@ -111,7 +111,7 @@ export default function RootLayout() {
 								}}
 							/>
 							<Stack.Screen
-								name="auth"
+								name="(auth)/signin"
 								options={{
 									headerShown: false,
 								}}

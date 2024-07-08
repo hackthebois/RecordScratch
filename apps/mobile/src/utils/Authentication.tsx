@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 	useEffect(() => {
 		if (!loading && !sessionId) {
-			router.replace("auth");
+			router.replace("/signin");
 		}
 	}, [loading, sessionId, router]);
 

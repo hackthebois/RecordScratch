@@ -7,7 +7,7 @@ const DistributionChart = ({ distribution = [] }: { distribution?: number[] }) =
 	const maxRating = Math.max(...distribution) === 0 ? 1 : Math.max(...distribution);
 
 	return (
-		<View className="flex w-full flex-col rounded-md border border-gray-300 p-6 pt-6">
+		<View className="flex w-full flex-col rounded-md border-l border-r border-gray-300 p-6 pt-6">
 			<View className="flex flex-row h-48 w-full items-end justify-between gap-1 ">
 				{distribution?.map((ratings, index) => (
 					<TouchableOpacity className="flex h-full flex-1 flex-col-reverse" key={index}>

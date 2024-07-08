@@ -42,7 +42,7 @@ const ReplyButton = ({
 				className: "gap-2 text-muted-foreground",
 			})}
 			href={{
-				pathname: "profiles/[handle]/ratings/[id]",
+				pathname: "[handle]/ratings/[id]",
 				params: {
 					handle,
 					id: resourceId,
@@ -76,7 +76,7 @@ const CommentsButton = ({
 				})
 			)}
 			href={{
-				pathname: "profiles/[handle]/ratings/[id]",
+				pathname: "[handle]/ratings/[id]",
 				params: { handle: handle, id: resourceId },
 			}}
 		>
@@ -101,12 +101,14 @@ export const Review = ({
 }: ReviewType & { onReply?: () => void }) => {
 	//const [profileExists] = api.profiles.me.useSuspenseQuery();
 	return (
-		<View className="flex flex-col gap-4 rounded-lg border border-gray-300 p-3 py-4 text-card-foreground min-h-[19rem]">
+		<View className="flex flex-col gap-4 rounded-lg border border-gray-300 p-3 py-4 text-card-foreground min-h-[19rem] w-full truncate">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
 				imageWidthAndHeight={80}
+				titleCss="w-3/4"
 			/>
+
 			<View className="flex flex-1 flex-col items-start gap-3">
 				<View className="flex flex-row items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
@@ -116,7 +118,7 @@ export const Review = ({
 						<AntDesign name="staro" key={i} size={24} color="#ffb703" />
 					))}
 				</View>
-				<Link href={`/profiles/${String(profile.handle)}`}>
+				<Link href={`/${String(profile.handle)}`}>
 					<View className="flex flex-row flex-wrap items-center gap-2">
 						<UserAvatar size={65} imageUrl={getImageUrl(profile)} />
 						<Text className="text-lg">{profile.name}</Text>

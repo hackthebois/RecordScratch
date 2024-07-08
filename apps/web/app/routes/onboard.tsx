@@ -320,7 +320,6 @@ function Onboard() {
 				<Button
 					onClick={() => {
 						if (page === 3) {
-							console.log("CALLED ONSUBMIT");
 							form.handleSubmit(onSubmit, onInvalid)();
 						} else {
 							setPage((page) => page + 1);

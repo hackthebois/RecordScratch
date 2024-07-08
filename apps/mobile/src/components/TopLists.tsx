@@ -5,7 +5,6 @@ import { ResourceItem } from "./ResourceItem";
 import { useRef } from "react";
 import { Text } from "./Text";
 import { cn } from "@recordscratch/lib";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -59,6 +58,37 @@ const TopLists = ({
 		};
 	return (
 		<View className={cn("mt-2 flex-1", className)}>
+			<View className="flex-1 w-full justify-start items-center">
+				<FlatList
+					horizontal
+					data={["Top Albums", "Top Songs", "Top Artists"]}
+					keyExtractor={(_, index) => index.toString()}
+					renderItem={({ item, index }) => {
+						const inputRange = [
+							(index - 1) * width,
+							index * width,
+							(index + 1) * width,
+						];
+						const colorOutputRange = ["#000", "#ffb703", "#000"];
+						const scaleOutputRange = [1, 2, 1];
+						const dotScale = animatedValue.interpolate({
+							inputRange,
+							outputRange: scaleOutputRange,
+							extrapolate: "clamp",
+						});
+						const color = animatedValue.interpolate({
+							inputRange,
+							outputRange: colorOutputRange,
+							extrapolate: "clamp",
+						});
+						return (
+							<View className=" w-40 p-2">
+								<PagingTitle color={color} scale={dotScale} title={item} />
+							</View>
+						);
+					}}
+				/>
+			</View>
 			<View>
 				<Animated.FlatList
 					data={[album, song, artist]}
@@ -79,59 +109,27 @@ const TopLists = ({
 					}}
 				/>
 			</View>
-			<View className="flex-1 w-full justify-start items-center">
-				<FlatList
-					horizontal
-					data={[album, song, artist]}
-					keyExtractor={(_, index) => index.toString()}
-					renderItem={({ index }) => {
-						const inputRange = [
-							(index - 1) * width,
-							index * width,
-							(index + 1) * width,
-						];
-						const colorOutputRange = ["#000", "#ffb703", "#000"];
-						const scaleOutputRange = [1, 2, 1];
-						const dotScale = animatedValue.interpolate({
-							inputRange,
-							outputRange: scaleOutputRange,
-							extrapolate: "clamp",
-						});
-						const color = animatedValue.interpolate({
-							inputRange,
-							outputRange: colorOutputRange,
-							extrapolate: "clamp",
-						});
-						return (
-							<View className="w-12 p-2">
-								<PagingDot color={color} scale={dotScale} />
-							</View>
-						);
-					}}
-				/>
-			</View>
 		</View>
 	);
 };
 
-const ResourceList = ({ data, category }: { data?: UserListItem[]; category: Category }) => {
+export const ResourceList = ({
+	data,
+	category,
+}: {
+	data?: UserListItem[] | undefined;
+	category: Category;
+}) => {
 	let renderItem;
-	let label: string;
 	if (category === "ALBUM") {
-		label = "Top 6 Albums";
 		renderItem = renderAlbumItem;
 	} else if (category === "SONG") {
-		label = "Top 6 Songs";
 		renderItem = renderSongItem;
 	} else {
-		label = "Top 6 Artists";
 		renderItem = renderArtistItem;
 	}
 	return (
-		<View className="flex w-full gap-2 justify-center">
-			<Text variant="h2" className="text-center mt-3">
-				{label}
-			</Text>
+		<View className="flex w-full gap-2 justify-center mt-4">
 			<FlatList
 				data={data}
 				renderItem={renderItem}
@@ -187,26 +185,28 @@ const renderArtistItem = ({ item: resource }: { item: UserListItem }) => (
 	</View>
 );
 
-const PagingDot = ({
+const PagingTitle = ({
 	scale,
 	color,
+	title,
 }: {
 	scale: Animated.AnimatedInterpolation<number>;
 	color: Animated.AnimatedInterpolation<string>;
+	title: string;
 }) => {
 	return (
-		<Animated.View
-			style={[
-				{
-					width: 6,
-					height: 6,
-					borderRadius: 6,
-					borderWidth: 0,
-					borderColor: "#000",
-				},
-				{ backgroundColor: color, transform: [{ scale }] },
-			]}
-		/>
+		<Animated.Text
+			style={{
+				transform: [{ scale }],
+				color,
+				marginHorizontal: 10,
+				fontSize: 13,
+				textAlign: "center",
+			}}
+			className="text-center"
+		>
+			{title}
+		</Animated.Text>
 	);
 };
 

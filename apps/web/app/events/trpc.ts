@@ -29,7 +29,6 @@ export default eventHandler(async (event) => {
 	headers &&
 		Object.keys(headers).forEach((key) => {
 			if (headers.get(key)) {
-				console.log(headers.get(key));
 				setHeader(event, key, headers.get(key)!);
 			}
 		});

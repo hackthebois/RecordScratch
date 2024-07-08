@@ -90,8 +90,6 @@ const RatingPage = () => {
 		authorId: profile!.userId,
 	});
 
-	console.log(rating?.rating);
-
 	const [openReply, setOpenReply] = useState(false);
 	const toggleOpenReply = () => {
 		setOpenReply((open: boolean) => {

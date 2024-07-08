@@ -1,6 +1,7 @@
 import { View, ActivityIndicator, FlatList, Text, ScrollView } from "react-native";
 import { RouterInputs, api } from "@/utils/api";
 import { Review } from "./Review";
+import { useEffect, useState } from "react";
 
 export const InfiniteProfileReviews = ({
 	input,
@@ -15,6 +16,14 @@ export const InfiniteProfileReviews = ({
 			getNextPageParam: (lastPage) => lastPage.nextCursor,
 		}
 	);
+
+	const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+	useEffect(() => {
+		if (isInitialLoad && data) {
+			setIsInitialLoad(false);
+		}
+	}, [data]);
 
 	const handleLoadMore = () => {
 		if (hasNextPage) {
@@ -36,7 +45,7 @@ export const InfiniteProfileReviews = ({
 					hasNextPage ? <ActivityIndicator size="large" /> : null
 				}
 				scrollEnabled={false}
-				onEndReachedThreshold={0.5}
+				onEndReachedThreshold={0}
 				onEndReached={handleLoadMore}
 				contentContainerStyle={{ padding: 4, flexGrow: 1 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}

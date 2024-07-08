@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native";
-import { ProfilePage } from "../profiles/[handle]";
+import { ProfilePage } from "../(users)/[handle]/index";
 import { api } from "@/utils/api";
 
 const Profile = () => {
