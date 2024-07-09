@@ -129,7 +129,7 @@ export const ResourceList = ({
 		renderItem = renderArtistItem;
 	}
 	return (
-		<View className="flex w-full gap-2 justify-center mt-4">
+		<View className="flex w-full gap-2 justify-center mt-4 ml-2">
 			<FlatList
 				data={data}
 				renderItem={renderItem}
@@ -143,7 +143,7 @@ export const ResourceList = ({
 };
 
 const renderAlbumItem = ({ item: resource }: { item: UserListItem }) => (
-	<View className="mx-2">
+	<View className="ml-2">
 		<ResourceItem
 			resource={{
 				parentId: resource.parentId!,
@@ -151,7 +151,7 @@ const renderAlbumItem = ({ item: resource }: { item: UserListItem }) => (
 				category: "ALBUM",
 			}}
 			direction="vertical"
-			titleCss="font-medium line-clamp-2"
+			titleCss="font-medium line-clamp-2 w-36"
 			showArtist={false}
 			imageWidthAndHeight={125}
 		/>
@@ -159,7 +159,7 @@ const renderAlbumItem = ({ item: resource }: { item: UserListItem }) => (
 );
 
 const renderSongItem = ({ item: resource }: { item: UserListItem }) => (
-	<View className="mx-2">
+	<View className="ml-2">
 		<ResourceItem
 			resource={{
 				parentId: resource.parentId!,
@@ -167,7 +167,7 @@ const renderSongItem = ({ item: resource }: { item: UserListItem }) => (
 				category: "SONG",
 			}}
 			direction="vertical"
-			titleCss="font-medium line-clamp-2"
+			titleCss="font-medium line-clamp-2 w-36"
 			showArtist={false}
 			imageWidthAndHeight={125}
 		/>
@@ -179,8 +179,8 @@ const renderArtistItem = ({ item: resource }: { item: UserListItem }) => (
 		<ArtistItem
 			artistId={resource.resourceId}
 			direction="vertical"
-			textCss="font-medium line-clamp-2 text-center w-32"
-			imageWidthAndHeight={115}
+			textCss="font-medium line-clamp-2 text-center w-36"
+			imageWidthAndHeight={125}
 		/>
 	</View>
 );

@@ -12,7 +12,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 
-import { generateId } from "lucia";
+import { v4 as uuidv4 } from "uuid";
 
 const dates = {
 	createdAt: timestamp("created_at", {
@@ -190,7 +190,7 @@ export const listResourcesRelations = relations(listResources, ({ one }) => ({
 export const likes = pgTable("likes", {
 	id: text("id")
 		.primaryKey()
-		.$default(() => generateId(15)),
+		.$default(() => uuidv4()),
 	userId: text("user_id").notNull(),
 	resourceId: text("resource_id").notNull(),
 	authorId: text("author_id").notNull(),
@@ -211,7 +211,7 @@ export const notifications = pgTable(
 	{
 		id: text("id")
 			.primaryKey()
-			.$default(() => generateId(15)),
+			.$default(() => uuidv4()),
 		userId: text("user_id").notNull(),
 		resourceId: text("resource_id"),
 		fromId: text("from_id").notNull(),
@@ -240,7 +240,7 @@ const notificationOutline = {
 export const commentNotifications = pgTable("comment_notifications", {
 	id: text("id")
 		.primaryKey()
-		.$default(() => generateId(15)),
+		.$default(() => uuidv4()),
 	commentId: text("comment_id").notNull(),
 	type: commentEnum("type").notNull(),
 	...notificationOutline,
@@ -288,7 +288,7 @@ export const comments = pgTable("comments", {
 	id: text("id")
 		.primaryKey()
 		.notNull()
-		.$default(() => generateId(15)),
+		.$default(() => uuidv4()),
 	userId: text("user_id").notNull(),
 	resourceId: text("resource_id").notNull(),
 	authorId: text("author_id").notNull(),

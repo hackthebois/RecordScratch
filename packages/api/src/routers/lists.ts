@@ -10,7 +10,7 @@ import {
 	updateListSchema,
 } from "@recordscratch/types";
 import { and, asc, desc, eq } from "drizzle-orm/sql";
-import { generateId } from "lucia";
+import { v4 as uuidv4 } from "uuid";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const listsRouter = router({
@@ -94,7 +94,7 @@ export const listsRouter = router({
 	create: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-			await db.insert(lists).values({ id: generateId(15), userId, ...inputs });
+			await db.insert(lists).values({ id: uuidv4(), userId, ...inputs });
 		}),
 
 	update: protectedProcedure

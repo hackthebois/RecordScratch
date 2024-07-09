@@ -19,6 +19,7 @@ export const ResourceItem = ({
 	showArtist = true,
 	className,
 	imageWidthAndHeight = 150,
+	artistNameCss,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
@@ -29,6 +30,7 @@ export const ResourceItem = ({
 	imageCss?: string;
 	imageWidthAndHeight?: number;
 	titleCss?: string;
+	artistNameCss?: string;
 	showArtist?: boolean;
 	className?: string;
 }) => {
@@ -107,14 +109,15 @@ export const ResourceItem = ({
 				)}
 				<View className="flex flex-col gap-2">
 					<Text className={cn(" truncate font-semibold mr-3", titleCss)}>{name}</Text>
-					<View className="flex gap-1">
+					<View className="flex gap-1 self-baseline">
 						<Pressable
 							onPress={() => {
 								if (showArtist) router.push(`/artists/${album.artist?.id}`);
 							}}
-							className=" bg-red-300 w-auto whitespace-nowrap"
+							className={cn("", artistNameCss)}
+							style={{ maxWidth: "100%" }}
 						>
-							<Text className="text-muted-foreground truncate">
+							<Text className={cn("text-muted-foreground", artistNameCss)}>
 								{showArtist ? album.artist?.name : ""}
 							</Text>
 						</Pressable>

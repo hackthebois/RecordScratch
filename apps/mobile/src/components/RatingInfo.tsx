@@ -23,13 +23,14 @@ export const RatingInfo = ({
 		initialData: initialRating,
 		staleTime: Infinity,
 	});
-	const { utilsColor } = useColorScheme();
+
+	if (isLoading) return <AntDesign name="star" size={30} color="#ffb703" />;
 
 	return (
-		<View className="flex min-h-12 gap-4 w-full">
+		<View className="flex min-h-12 gap-4">
 			{!(size === "sm" && !rating?.average) && (
-				<View className="flex items-center justify-center gap-2 flex-row w-full">
-					<AntDesign name="star" size={30} color="#ffb703" />
+				<View className="flex items-center justify-center gap-2 flex-row">
+					<AntDesign name="star" size={40} color="#ffb703" />
 					<View className="flex flex-col items-center">
 						{rating?.average && (
 							<Text
@@ -42,7 +43,7 @@ export const RatingInfo = ({
 							</Text>
 						)}
 						{size === "lg" && (
-							<Text className="text-sm text-muted-foreground">
+							<Text className="text-lg text-muted-foreground">
 								{rating?.total && Number(rating.total) !== 0
 									? rating.total
 									: resource.category === "ARTIST"

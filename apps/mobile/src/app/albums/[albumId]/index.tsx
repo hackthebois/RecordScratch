@@ -2,15 +2,17 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Resource } from "@recordscratch/types";
 import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import { Stack, router, useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useLayoutEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, ScrollView, SafeAreaView, Pressable } from "react-native";
 import Metadata from "@/components/Metadata";
 import { Album, Track, TrackAndArtist, formatDuration } from "@recordscratch/lib";
 import SongTable from "@/components/SongTable";
 import { InfiniteCommunityReviews } from "@/components/InfiniteCommunityReviews";
 import NotFoundScreen from "@/app/+not-found";
 import { RatingInfo } from "@/components/RatingInfo";
+import RatingDialog from "@/components/RatingDialog";
+import { api } from "@/utils/api";
 
 const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
 	return (
@@ -22,22 +24,24 @@ const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) =
 
 export default function AlbumLayout() {
 	const Tab = createMaterialTopTabNavigator();
-	const { id } = useLocalSearchParams<{ id: string }>();
-	const albumId = id!;
+	const { albumId } = useLocalSearchParams<{ albumId: string }>();
+	const id = albumId!;
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
-			input: { id: albumId! },
+			input: { id },
 		})
 	);
 
 	if (!album) return <NotFoundScreen />;
 
+	const [profile] = api.profiles.me.useSuspenseQuery();
+
 	const { data: songs } = useSuspenseQuery({
 		...getQueryOptions({
 			route: "/album/{id}/tracks",
-			input: { id: albumId, limit: 1000 },
+			input: { id, limit: 1000 },
 		}),
 		initialData: {
 			data: album?.tracks?.data ?? [],
@@ -51,7 +55,7 @@ export default function AlbumLayout() {
 	};
 
 	return (
-		<ScrollView className="flex flex-1">
+		<ScrollView className="flex flex-1" nestedScrollEnabled>
 			<Stack.Screen
 				options={{
 					headerTitle: ``,
@@ -66,7 +70,18 @@ export default function AlbumLayout() {
 					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
 				]}
 			>
-				<RatingInfo resource={resource} />
+				<Pressable
+					onPress={() => {
+						router.push(`/artists/${album.artist?.id}`);
+					}}
+					style={{ maxWidth: "100%" }}
+				>
+					<Text className="text-muted-foreground">{album.artist?.name}</Text>
+				</Pressable>
+				<View className="flex flex-row items-center gap-10">
+					<RatingInfo resource={resource} size="lg" />
+					<RatingDialog resource={resource} name={album.title} userId={profile!.userId} />
+				</View>
 			</Metadata>
 			<Tab.Navigator
 				screenOptions={{

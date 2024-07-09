@@ -106,7 +106,8 @@ export const Review = ({
 				resource={{ parentId, resourceId, category }}
 				showType
 				imageWidthAndHeight={80}
-				titleCss="w-3/4"
+				titleCss=""
+				artistNameCss="bg-red-400"
 			/>
 
 			<View className="flex flex-1 flex-col items-start gap-3">

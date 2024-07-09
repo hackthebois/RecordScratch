@@ -29,7 +29,8 @@ const AlbumItem = ({
 					category: "ALBUM",
 					parentId: "",
 				}}
-				titleCss="line-clamp-2"
+				titleCss="line-clamp-2 w-40"
+				artistNameCss="w-40 line-clamp-1"
 			/>
 		</View>
 	);
