@@ -20,7 +20,7 @@ const AuthPage = () => {
 
 	useLayoutEffect(() => {
 		if (isMounted && sessionId) {
-			router.replace("");
+			router.replace("(tabs)/index");
 		}
 	}, [isMounted, sessionId, router]);
 
@@ -50,7 +50,7 @@ const AuthPage = () => {
 				label="Sign In"
 				variant="secondary"
 			/>
-			<Text className="mt-6 font-bold text-xl">{result}</Text>
+			{/* <Text className="mt-6 font-bold text-xl">{result}</Text> */}
 		</View>
 	);
 };

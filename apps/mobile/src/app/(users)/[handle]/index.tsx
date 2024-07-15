@@ -14,6 +14,7 @@ import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-rout
 import { FlatList, ScrollView, TouchableOpacity, View, ViewBase } from "react-native";
 import { useColorScheme } from "@/utils/useColorScheme";
 import ListsItem from "@/components/ListItem";
+import { FollowButton } from "@/components/FollowButton";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -34,15 +35,15 @@ const ReviewsTab = ({ userId }: { userId: string }) => {
 		category?: "ALBUM" | "SONG";
 		rating?: number;
 	}) => (
-		// <InfiniteProfileReviews
-		// 	input={{
-		// 		profileId: userId,
-		// 		limit: 10,
-		// 		category,
-		// 		rating,
-		// 	}}
-		// />
-		<></>
+		<InfiniteProfileReviews
+			input={{
+				profileId: userId,
+				limit: 3,
+				category,
+				rating,
+			}}
+		/>
+		// <></>
 	);
 
 	return (
@@ -177,6 +178,7 @@ export const ProfilePage = ({
 }) => {
 	const { utilsColor } = useColorScheme();
 	const [profile] = api.profiles.get.useSuspenseQuery(handleId);
+	const { data: myProfile } = api.profiles.me.useQuery();
 
 	if (!profile) return <NotFoundScreen />;
 
@@ -190,6 +192,8 @@ export const ProfilePage = ({
 
 	const Tab = createMaterialTopTabNavigator();
 	const router = useRouter();
+
+	const showButton = profile.userId !== myProfile?.userId;
 
 	return (
 		<>
@@ -224,6 +228,10 @@ export const ProfilePage = ({
 								<Text className="pl-4 pt-4 w-full">
 									{profile.bio || "No bio yet"}
 								</Text>
+							</View>
+
+							<View className=" my-3">
+								{showButton ? <FollowButton profileId={profile.userId} /> : null}
 							</View>
 						</View>
 					</View>

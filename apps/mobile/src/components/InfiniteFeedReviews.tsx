@@ -25,25 +25,21 @@ export const RecentFeedReviews = ({
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
-			<FlatList
-				data={data?.pages.flatMap((page) => page.items)}
-				keyExtractor={(item, index) => `review-${item.userId}-${index}`}
-				renderItem={({ item }) => (
-					<View className="my-1">
-						<Review {...item} />
-					</View>
-				)}
-				ListFooterComponent={() =>
-					hasNextPage ? <ActivityIndicator size="large" /> : null
-				}
-				scrollEnabled={true}
-				onEndReachedThreshold={0.1}
-				onEndReached={handleLoadMore}
-				contentContainerStyle={{ padding: 4 }}
-				ListEmptyComponent={<Text>No reviews available</Text>}
-				className=" h-screen"
-			/>
-		</View>
+		<FlatList
+			data={data?.pages.flatMap((page) => page.items)}
+			keyExtractor={(item, index) => `review-${item.userId}-${index}`}
+			renderItem={({ item }) => (
+				<View className="my-1">
+					<Review {...item} />
+				</View>
+			)}
+			ListFooterComponent={() => (hasNextPage ? <ActivityIndicator size="large" /> : null)}
+			scrollEnabled={true}
+			onEndReachedThreshold={0.1}
+			onEndReached={handleLoadMore}
+			contentContainerStyle={{ padding: 4 }}
+			ListEmptyComponent={<Text>No reviews available</Text>}
+			className=" h-screen"
+		/>
 	);
 };

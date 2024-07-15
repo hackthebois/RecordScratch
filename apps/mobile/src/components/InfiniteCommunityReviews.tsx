@@ -3,6 +3,8 @@ import { api } from "@/utils/api";
 import { Review } from "./Review";
 import { Resource } from "@recordscratch/types";
 
+import { Tabs } from "react-native-collapsible-tab-view";
+
 export const InfiniteCommunityReviews = ({
 	pageLimit,
 	resource,
@@ -29,24 +31,20 @@ export const InfiniteCommunityReviews = ({
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
-			<FlatList
-				data={data?.pages.flatMap((page) => page.items)}
-				keyExtractor={(item, index) => `review-${item.userId}-${index}`}
-				renderItem={({ item }) => (
-					<View className="my-3">
-						<Review {...item} />
-					</View>
-				)}
-				ListFooterComponent={() =>
-					hasNextPage ? <ActivityIndicator size="large" /> : null
-				}
-				onEndReachedThreshold={0.1}
-				onEndReached={handleLoadMore}
-				contentContainerStyle={{ flexGrow: 1, padding: 10 }}
-				ListEmptyComponent={<Text>No reviews available</Text>}
-				className=" h-screen"
-			/>
-		</View>
+		<Tabs.FlatList
+			data={data?.pages.flatMap((page) => page.items)}
+			keyExtractor={(item, index) => `review-${item.userId}-${index}`}
+			renderItem={({ item }) => (
+				<View className="my-0.5">
+					<Review {...item} />
+				</View>
+			)}
+			ListFooterComponent={() => (hasNextPage ? <ActivityIndicator size="large" /> : null)}
+			onEndReachedThreshold={0.1}
+			onEndReached={handleLoadMore}
+			contentContainerStyle={{ flexGrow: 1, padding: 10, paddingBottom: 62 }}
+			ListEmptyComponent={<Text>No reviews available</Text>}
+			className=" h-screen"
+		/>
 	);
 };

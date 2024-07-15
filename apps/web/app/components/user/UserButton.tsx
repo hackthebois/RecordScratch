@@ -12,17 +12,18 @@ import {
 } from "../ui/AlertDialog";
 import { buttonVariants } from "../ui/Button";
 import { UserAvatar } from "./UserAvatar";
+import { useEffect } from "react";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
 	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
-	if (needsOnboarding) {
-		navigate({
-			to: "/onboard",
-		});
-	}
+	useEffect(() => {
+		if (needsOnboarding) {
+			navigate({ to: "/onboard" });
+		}
+	}, [needsOnboarding, navigate]);
 
 	if (!profile) {
 		if (navigator.userAgent.includes("Instagram")) {

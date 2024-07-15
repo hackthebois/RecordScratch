@@ -4,7 +4,7 @@ import { getQueryOptions } from "@/utils/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, router, useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useLayoutEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView, Pressable } from "react-native";
+import { View, Text, ScrollView, SafeAreaView, Pressable, Dimensions } from "react-native";
 import Metadata from "@/components/Metadata";
 import { Album, Track, TrackAndArtist, formatDuration } from "@recordscratch/lib";
 import SongTable from "@/components/SongTable";
@@ -13,13 +13,10 @@ import NotFoundScreen from "@/app/+not-found";
 import { RatingInfo } from "@/components/RatingInfo";
 import RatingDialog from "@/components/RatingDialog";
 import { api } from "@/utils/api";
+import { Tabs, MaterialTabBar } from "react-native-collapsible-tab-view";
 
 const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
-	return (
-		<View className="flex flex-col gap-6 mt-6 mb-2">
-			<SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />
-		</View>
-	);
+	return <SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />;
 };
 
 export default function AlbumLayout() {
@@ -54,36 +51,74 @@ export default function AlbumLayout() {
 		category: "ALBUM",
 	};
 
+	const Header = () => (
+		<Metadata
+			title={album.title}
+			cover={album.cover_big}
+			tags={[
+				album.release_date,
+				album.duration ? `${formatDuration(album.duration)}` : undefined,
+				...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+			]}
+		>
+			<Pressable
+				onPress={() => {
+					router.push(`/artists/${album.artist?.id}`);
+				}}
+				style={{ maxWidth: "100%" }}
+			>
+				<Text className="text-muted-foreground">{album.artist?.name}</Text>
+			</Pressable>
+			<View className="flex flex-row items-center gap-10">
+				<RatingInfo resource={resource} size="lg" />
+				<RatingDialog resource={resource} name={album.title} userId={profile!.userId} />
+			</View>
+		</Metadata>
+	);
+
 	return (
-		<ScrollView className="flex flex-1" nestedScrollEnabled>
+		<View className="flex flex-1">
 			<Stack.Screen
 				options={{
 					headerTitle: ``,
 				}}
 			/>
-			<Metadata
-				title={album.title}
-				cover={album.cover_big}
-				tags={[
-					album.release_date,
-					album.duration ? `${formatDuration(album.duration)}` : undefined,
-					...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
-				]}
+			<Tabs.Container
+				renderHeader={Header}
+				renderTabBar={(props) => (
+					<MaterialTabBar
+						{...props}
+						contentContainerStyle={{
+							flexDirection: "row",
+							justifyContent: "space-around",
+							padding: 16,
+						}}
+						labelStyle={{ fontSize: 16 }}
+						indicatorStyle={{
+							left: (Dimensions.get("window").width / 2 - 225) / 2,
+							backgroundColor: "orange",
+						}}
+					/>
+				)}
 			>
-				<Pressable
-					onPress={() => {
-						router.push(`/artists/${album.artist?.id}`);
-					}}
-					style={{ maxWidth: "100%" }}
-				>
-					<Text className="text-muted-foreground">{album.artist?.name}</Text>
-				</Pressable>
-				<View className="flex flex-row items-center gap-10">
-					<RatingInfo resource={resource} size="lg" />
-					<RatingDialog resource={resource} name={album.title} userId={profile!.userId} />
-				</View>
-			</Metadata>
-			<Tab.Navigator
+				<Tabs.Tab name="Album">
+					<Tabs.ScrollView>
+						<AlbumTab album={album} songs={songs.data} />
+					</Tabs.ScrollView>
+				</Tabs.Tab>
+				<Tabs.Tab name="Reviews">
+					<InfiniteCommunityReviews
+						resource={resource}
+						pageLimit={2}
+						name={album.title}
+					/>
+				</Tabs.Tab>
+			</Tabs.Container>
+		</View>
+	);
+}
+{
+	/* <Tab.Navigator
 				screenOptions={{
 					tabBarContentContainerStyle: {
 						justifyContent: "space-around",
@@ -107,7 +142,5 @@ export default function AlbumLayout() {
 						/>
 					)}
 				/>
-			</Tab.Navigator>
-		</ScrollView>
-	);
+			</Tab.Navigator> */
 }

@@ -32,7 +32,7 @@ export const InfiniteProfileReviews = ({
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View>
 			<FlatList
 				data={data?.pages.flatMap((page) => page.items)}
 				keyExtractor={(item, index) => `review-${item.userId}-${index}`}
@@ -45,9 +45,9 @@ export const InfiniteProfileReviews = ({
 					hasNextPage ? <ActivityIndicator size="large" /> : null
 				}
 				scrollEnabled={false}
-				onEndReachedThreshold={0}
-				onEndReached={handleLoadMore}
-				contentContainerStyle={{ padding: 4, flexGrow: 1 }}
+				onEndReachedThreshold={1}
+				// onEndReached={handleLoadMore}
+				contentContainerStyle={{ padding: 4 }}
 				ListEmptyComponent={<Text>No reviews available</Text>}
 			/>
 		</View>

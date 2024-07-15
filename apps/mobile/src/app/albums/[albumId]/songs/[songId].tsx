@@ -7,7 +7,8 @@ import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { ScrollView } from "react-native";
+import { Dimensions, View } from "react-native";
+import { Tabs, MaterialTabBar } from "react-native-collapsible-tab-view";
 
 const SongPage = () => {
 	const { albumId, songId } = useLocalSearchParams<{ albumId: string; songId: string }>();
@@ -34,26 +35,49 @@ const SongPage = () => {
 		category: "SONG",
 	};
 
+	const Header = () => (
+		<Metadata
+			title={song.title}
+			cover={album.cover_big}
+			tags={[
+				album.release_date,
+				song.explicit_lyrics ? "Explicit" : undefined,
+				formatDuration(song.duration),
+			]}
+		>
+			<RatingInfo resource={resource} />
+		</Metadata>
+	);
+
 	return (
-		<ScrollView className="flex flex-1">
+		<View>
 			<Stack.Screen
 				options={{
 					headerTitle: ``,
 				}}
 			/>
-			<Metadata
-				title={song.title}
-				cover={album.cover_big}
-				tags={[
-					album.release_date,
-					song.explicit_lyrics ? "Explicit" : undefined,
-					formatDuration(song.duration),
-				]}
+			<Tabs.Container
+				renderHeader={Header}
+				containerStyle={{ flex: 1 }}
+				renderTabBar={(props) => (
+					<MaterialTabBar
+						{...props}
+						labelStyle={{ textAlign: "center" }}
+						contentContainerStyle={{
+							justifyContent: "space-around",
+							padding: 16,
+						}}
+						indicatorStyle={{
+							backgroundColor: "transparent",
+						}}
+					/>
+				)}
 			>
-				<RatingInfo resource={resource} />
-			</Metadata>
-			<InfiniteCommunityReviews name={song.title} pageLimit={2} resource={resource} />
-		</ScrollView>
+				<Tabs.Tab name="Album">
+					<InfiniteCommunityReviews name={song.title} pageLimit={2} resource={resource} />
+				</Tabs.Tab>
+			</Tabs.Container>
+		</View>
 	);
 };
 

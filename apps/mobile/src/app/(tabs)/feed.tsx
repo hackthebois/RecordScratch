@@ -1,9 +1,7 @@
 import { RecentFeedReviews } from "@/components/InfiniteFeedReviews";
-import { ScrollView } from "react-native";
-import { View } from "react-native-ui-lib";
 
 const FeedPage = () => {
-	return <RecentFeedReviews input={{ limit: 3 }} />;
+	return <RecentFeedReviews input={{ limit: 5 }} />;
 };
 
 export default FeedPage;

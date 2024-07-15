@@ -73,11 +73,13 @@ function Onboard() {
 	const { name, image, handle, bio } = form.watch();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
-	if (!needsOnboarding) {
-		navigate({
-			to: "/",
-		});
-	}
+	useEffect(() => {
+		if (!needsOnboarding) {
+			navigate({
+				to: "/",
+			});
+		}
+	}, [needsOnboarding, navigate]);
 
 	const { mutate: createProfile, isPending } =
 		api.profiles.create.useMutation({

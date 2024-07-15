@@ -107,7 +107,6 @@ export const Review = ({
 				showType
 				imageWidthAndHeight={80}
 				titleCss=""
-				artistNameCss="bg-red-400"
 			/>
 
 			<View className="flex flex-1 flex-col items-start gap-3">

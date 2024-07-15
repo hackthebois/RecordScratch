@@ -20,7 +20,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import { AuthProvider, useAuth } from "@/utils/Authentication";
+import { AuthProvider } from "@/utils/Authentication";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
