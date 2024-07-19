@@ -1,11 +1,9 @@
 import { Resource, ResourceRating } from "@recordscratch/types";
 import { cn } from "@recordscratch/lib";
-import { Star } from "lucide-react";
-import { api } from "@/utils/api";
+import { api } from "#/utils/api";
 import { View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { Text } from "./Text";
-import { useColorScheme } from "@/utils/useColorScheme";
+import { Text } from "#/components/CoreComponents/Text";
 
 export const RatingInfo = ({
 	initialRating,

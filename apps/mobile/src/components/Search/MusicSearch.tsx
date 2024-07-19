@@ -1,6 +1,6 @@
-import { ArtistItem } from "./ArtistItem";
-import { ResourceItem } from "./ResourceItem";
-import { deezer } from "../utils/deezer";
+import { ArtistItem } from "#/components/Item/ArtistItem";
+import { ResourceItem } from "#/components/Item/ResourceItem";
+import { deezer } from "#/utils/deezer";
 import { Album, Artist, Track } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { View } from "react-native-ui-lib";

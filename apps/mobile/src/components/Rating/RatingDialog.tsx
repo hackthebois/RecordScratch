@@ -1,17 +1,16 @@
 import { RateForm, RateFormSchema, Rating, Resource } from "@recordscratch/types";
-import { Alert, GestureResponderEvent, Pressable, TouchableOpacity, View } from "react-native";
-import { Dialog, Modal, PanningProvider } from "react-native-ui-lib";
-import { Text } from "./Text";
+import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
+import { Text } from "#/components/CoreComponents/Text";
 import React, { useEffect, useState } from "react";
-import { Button } from "./Button";
+import { Button } from "#/components/CoreComponents/Button";
 import { AntDesign } from "@expo/vector-icons";
-import { api } from "@/utils/api";
+import { api } from "#/utils/api";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Skeleton from "./Skeleton";
+import Skeleton from "#/components/CoreComponents/Skeleton";
 import { RatingInput } from "./RatingInput";
-import AlertDialog from "./AlertDialog";
-import DialogComponent from "./DialogComponent";
+import AlertDialog from "#/components/CoreComponents/AlertDialog";
+import Dialog from "#/components/CoreComponents/Dialog";
 
 const RatingDialog = ({
 	initialUserRating,
@@ -73,7 +72,7 @@ const RatingDialog = ({
 	}
 	return (
 		<View className="">
-			<DialogComponent setOpen={setOpen} open={open}>
+			<Dialog setOpen={setOpen} open={open}>
 				<View>
 					<Text variant="h2" className=" text-center">
 						{name}
@@ -134,7 +133,7 @@ const RatingDialog = ({
 						</View>
 					</View>
 				</View>
-			</DialogComponent>
+			</Dialog>
 			<Button
 				variant="secondary"
 				size="default"

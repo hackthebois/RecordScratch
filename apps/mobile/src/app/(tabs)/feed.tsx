@@ -1,4 +1,4 @@
-import { RecentFeedReviews } from "@/components/InfiniteFeedReviews";
+import { RecentFeedReviews } from "#/components/Infinite/InfiniteFeedReviews";
 
 const FeedPage = () => {
 	return <RecentFeedReviews input={{ limit: 5 }} />;

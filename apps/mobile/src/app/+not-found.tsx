@@ -2,8 +2,8 @@ import { Stack, useRouter } from "expo-router";
 
 import React from "react";
 import { View } from "react-native";
-import { Text } from "@/components/Text";
-import { Button } from "@/components/Button";
+import { Text } from "#/components/CoreComponents/Text";
+import { Button } from "#/components/CoreComponents/Button";
 
 export default function NotFoundScreen() {
 	const router = useRouter();
@@ -15,7 +15,7 @@ export default function NotFoundScreen() {
 				<Button
 					variant="secondary"
 					label="Return to Home Screen"
-					onPress={() => router.replace("/home")}
+					onPress={() => router.replace("/")}
 				/>
 			</View>
 		</>

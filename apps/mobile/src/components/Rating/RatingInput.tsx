@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import { Text } from "./Text";
+import { Text } from "#/components/CoreComponents/Text";
 import { TouchableOpacity, View } from "react-native";
 
 export const RatingInput = ({

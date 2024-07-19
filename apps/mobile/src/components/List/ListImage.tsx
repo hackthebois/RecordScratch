@@ -2,11 +2,10 @@ import { Feather } from "@expo/vector-icons";
 import { Deezer } from "@recordscratch/lib";
 import { Category, ListItem, UserListItem } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense } from "react";
-import { getQueryOptions } from "@/utils/deezer";
+import { Suspense, useEffect, useState } from "react";
+import { getQueryOptions } from "#/utils/deezer";
 import { Image } from "expo-image";
 import { View } from "react-native";
-import { Text } from "./Text";
 
 const ListSquare = ({
 	image,
@@ -142,37 +141,15 @@ const ListImage = ({
 	return (
 		<Suspense fallback={noImage}>
 			<View style={{ flexWrap: "wrap", flexDirection: "row", width: size }}>
-				<GetItemImage
-					key="section-0"
-					resourceId={listItems[0]?.resourceId ?? ""}
-					category={category}
-					section={0}
-					imageSize={size / 2}
-				/>
-
-				<GetItemImage
-					key="section-1"
-					resourceId={listItems[1]?.resourceId ?? ""}
-					category={category}
-					section={1}
-					imageSize={size / 2}
-				/>
-
-				<GetItemImage
-					key="section-2"
-					resourceId={listItems[2]?.resourceId ?? ""}
-					category={category}
-					section={2}
-					imageSize={size / 2}
-				/>
-
-				<GetItemImage
-					key="section-3"
-					resourceId={listItems[3]?.resourceId ?? ""}
-					category={category}
-					section={3}
-					imageSize={size / 2}
-				/>
+				{listItems.slice(0, 4).map((item, index) => (
+					<GetItemImage
+						key={`section-${index}`}
+						resourceId={item.resourceId}
+						category={category}
+						section={index}
+						imageSize={size / 2}
+					/>
+				))}
 			</View>
 		</Suspense>
 	);

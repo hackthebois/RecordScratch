@@ -10,7 +10,21 @@ dayjs.extend(TimezonePlugin);
 dayjs.extend(utc);
 
 export const timeAgo = (date: Date): string => {
-	return dayjs(date).tz(dayjs.tz.guess()).fromNow();
+	// Parse the date string into a dayjs object with UTC
+	const parsedDate = dayjs.utc(date);
+
+	// Ensure parsed date is valid
+	if (!parsedDate.isValid()) {
+		console.error("Invalid Date");
+		return "Invalid Date";
+	}
+
+	const guessedTimezone = dayjs.tz.guess();
+
+	// Use dayjs.tz to convert the parsedDate to the guessed timezone
+	const formattedDate = dayjs.tz(parsedDate, guessedTimezone);
+
+	return formattedDate.fromNow();
 };
 
 export const isToday = (date: Date, tz: string): boolean => {

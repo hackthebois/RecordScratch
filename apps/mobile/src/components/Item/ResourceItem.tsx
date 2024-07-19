@@ -1,11 +1,11 @@
-import { getQueryOptions } from "@/utils/deezer";
+import { getQueryOptions } from "#/utils/deezer";
 import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
-import { Text } from "./Text";
+import { Text } from "#/components/CoreComponents/Text";
 
 export const ResourceItem = ({
 	initialAlbum,

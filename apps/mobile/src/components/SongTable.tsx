@@ -1,7 +1,7 @@
 import { Track, cn } from "@recordscratch/lib";
 import { Link } from "expo-router";
 import { View } from "react-native";
-import { Text } from "./Text";
+import { Text } from "#/components/CoreComponents/Text";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (

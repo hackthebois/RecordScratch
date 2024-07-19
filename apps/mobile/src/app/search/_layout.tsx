@@ -3,8 +3,8 @@ import { ScrollView, TextInput, View, StyleSheet } from "react-native";
 import { Stack, useNavigation } from "expo-router";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useDebounce } from "@recordscratch/lib";
-import MusicSearch from "@/components/MusicSearch";
-import ProfileSearch from "@/components/ProfileSearch";
+import MusicSearch from "#/components/Search/MusicSearch";
+import ProfileSearch from "#/components/Search/ProfileSearch";
 import { TouchableOpacity } from "react-native-ui-lib";
 import { AntDesign } from "@expo/vector-icons";
 

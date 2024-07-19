@@ -1,5 +1,5 @@
-import { ProfileItem } from "./ProfileItem";
-import { api } from "../utils/api";
+import { ProfileItem } from "#/components/Item/ProfileItem";
+import { api } from "#/utils/api";
 import SearchState from "./SearchState";
 import { useRecents } from "&/recents";
 
@@ -12,6 +12,8 @@ const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () =>
 		refetchOnMount: false,
 		enabled: query.length > 0,
 	});
+
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 
 	return (
 		<SearchState
@@ -35,6 +37,7 @@ const ProfileSearch = ({ query, onNavigate }: { query: string; onNavigate: () =>
 								});
 								onNavigate();
 							}}
+							isUser={myProfile!.userId === profile.userId}
 						/>
 					))}
 				</>

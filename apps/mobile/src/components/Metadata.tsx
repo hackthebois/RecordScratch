@@ -1,8 +1,8 @@
 import { Image } from "expo-image";
 import React from "react";
 import { View } from "react-native";
-import { Tag } from "./Tag";
-import { Text } from "./Text";
+import { Tag } from "#/components/CoreComponents/Tag";
+import { Text } from "#/components/CoreComponents/Text";
 
 const Metadata = ({
 	title,

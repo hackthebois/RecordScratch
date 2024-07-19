@@ -1,7 +1,7 @@
-import NotFoundScreen from "@/app/+not-found";
-import Comment from "@/components/Comment";
-import { Review } from "@/components/Review";
-import { api } from "@/utils/api";
+import NotFoundScreen from "#/app/+not-found";
+import Comment from "#/components/Comment";
+import { Review } from "#/components/Review";
+import { api } from "#/utils/api";
 import { CommentAndProfile, CommentAndProfileAndParent, Profile } from "@recordscratch/types";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ const CommentLayout = ({
 				{isOpen &&
 					replies.map((reply) => {
 						return (
-							<View className=" ml-10 mt-2" key={reply.id}>
+							<View className=" flex ml-10 mt-2 flex-1" key={reply.id}>
 								<Comment
 									{...reply}
 									myProfile={myProfile}
@@ -111,7 +111,7 @@ const RatingPage = () => {
 	return (
 		<View className="flex flex-col">
 			<Stack.Screen options={{ headerTitle: `${profile.name}'s Rating` }} />
-			<View className="w-full h-full">
+			<View className="my-1">
 				<Review {...rating} profile={profile} onReply={toggleOpenReply} />
 			</View>
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
-import { Button } from "@/components/Button";
+import { Button } from "#/components/CoreComponents/Button";
 import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import { Text } from "@/components/Text";
-import { useAuth } from "@/utils/Authentication";
+import { Text } from "#/components/CoreComponents/Text";
+import { useAuth } from "#/utils/Authentication";
 import { useRouter } from "expo-router";
 
 Browser.maybeCompleteAuthSession();
@@ -20,7 +20,7 @@ const AuthPage = () => {
 
 	useLayoutEffect(() => {
 		if (isMounted && sessionId) {
-			router.replace("(tabs)/index");
+			router.replace("/");
 		}
 	}, [isMounted, sessionId, router]);
 

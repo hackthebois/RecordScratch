@@ -1,20 +1,23 @@
-import NotFoundScreen from "@/app/+not-found";
-import DistributionChart from "@/components/DistributionChart";
-import FollowerMenu from "@/components/FollowersMenu";
-import { InfiniteProfileReviews } from "@/components/InfiniteProfileReviews";
-import { Text } from "@/components/Text";
-import TopLists, { ResourceList } from "@/components/TopLists";
-import { UserAvatar } from "@/components/UserAvatar";
-import { api } from "@/utils/api";
-import { getImageUrl } from "@/utils/image";
+import NotFoundScreen from "#/app/+not-found";
+import DistributionChart from "#/components/DistributionChart";
+import FollowerMenu from "#/components/Followers/FollowersMenu";
+import { InfiniteProfileReviews } from "#/components/Infinite/InfiniteProfileReviews";
+import { Text } from "#/components/CoreComponents/Text";
+import { UserAvatar } from "#/components/UserAvatar";
+import { api } from "#/utils/api";
+import { getImageUrl } from "#/utils/image";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Category, ListWithResources, ListsType, Profile } from "@recordscratch/types";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { FlatList, ScrollView, TouchableOpacity, View, ViewBase } from "react-native";
-import { useColorScheme } from "@/utils/useColorScheme";
-import ListsItem from "@/components/ListItem";
-import { FollowButton } from "@/components/FollowButton";
+import { Dimensions, FlatList, ScrollView, TouchableOpacity, View, ViewBase } from "react-native";
+import { useColorScheme } from "#/utils/useColorScheme";
+import { FollowButton } from "#/components/Followers/FollowButton";
+import { ResourceList } from "#/components/List/TopLists";
+import ListsItem from "#/components/Item/ListItem";
+import { Tabs, MaterialTabBar, useHeaderMeasurements } from "react-native-collapsible-tab-view";
+import { useState } from "react";
+import ColumnItem from "#/components/CoreComponents/ColumnItem";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -22,12 +25,11 @@ const HandlePage = () => {
 	return <ProfilePage handleId={handle!} />;
 };
 
-const ReviewsTab = ({ userId }: { userId: string }) => {
+const ReviewsTab = ({ userId, headerHeight }: { userId: string; headerHeight: number }) => {
 	const { data: distribution } = api.profiles.distribution.useQuery({
 		userId,
 	});
 
-	const Tab = createMaterialTopTabNavigator();
 	const RenderInfiniteProfileReviews = ({
 		category,
 		rating,
@@ -42,53 +44,72 @@ const ReviewsTab = ({ userId }: { userId: string }) => {
 				category,
 				rating,
 			}}
+			distribution={distribution}
 		/>
-		// <></>
 	);
 
 	return (
-		<ScrollView className="flex-1 mt-2">
-			<DistributionChart distribution={distribution} />
-			<Tab.Navigator
-				screenOptions={{
-					tabBarContentContainerStyle: {
-						justifyContent: "space-around",
-					},
-					tabBarLabelStyle: {
-						textAlign: "center",
-						fontSize: 12,
-					},
+		// <Tab.Navigator
+		// 	screenOptions={{
+		// 		tabBarContentContainerStyle: {
+		// 			justifyContent: "space-around",
+		// 		},
+		// 		tabBarLabelStyle: {
+		// 			textAlign: "center",
+		// 			fontSize: 12,
+		// 		},
 
-					tabBarStyle: {
-						width: "auto",
-						elevation: 0, // Remove shadow on Android
-						shadowOpacity: 0, // Remove shadow on iOS
-						backgroundColor: "#F2F2F2", // Background color of the tab bar
-						borderRadius: 10,
-						margin: 10,
-					},
-					tabBarIndicatorStyle: {
-						backgroundColor: "white", // Set the indicator background color to white
-						height: "90%", // Adjust the height as needed
-						width: "33%", // Adjust the width to make it fit within the tabs
-						paddingHorizontal: 10,
-						marginBottom: "5%",
-						borderRadius: 10,
-					},
-					tabBarPressColor: "transparent",
-				}}
-			>
-				<Tab.Screen name="All" children={() => <RenderInfiniteProfileReviews />} />
-				<Tab.Screen
-					name="Albums"
-					children={() => <RenderInfiniteProfileReviews category="ALBUM" />}
+		// 		tabBarStyle: {
+		// 			width: "auto",
+		// 			elevation: 0, // Remove shadow on Android
+		// 			shadowOpacity: 0, // Remove shadow on iOS
+		// 			backgroundColor: "#F2F2F2", // Background color of the tab bar
+		// 			borderRadius: 10,
+		// 			margin: 10,
+		// 		},
+		// 		tabBarIndicatorStyle: {
+		// 			backgroundColor: "white", // Set the indicator background color to white
+		// 			height: "90%", // Adjust the height as needed
+		// 			width: "33%", // Adjust the width to make it fit within the tabs
+		// 			paddingHorizontal: 10,
+		// 			marginBottom: "5%",
+		// 			borderRadius: 10,
+		// 		},
+		// 		tabBarPressColor: "transparent",
+		// 	}}
+		// >
+		<Tabs.Container
+			renderHeader={() => (
+				<View style={{ marginTop: headerHeight }}>
+					<DistributionChart distribution={distribution} />
+				</View>
+			)}
+			renderTabBar={(props) => (
+				<MaterialTabBar
+					{...props}
+					contentContainerStyle={{
+						flexDirection: "row",
+						justifyContent: "space-around",
+						padding: 16,
+					}}
+					labelStyle={{ fontSize: 16 }}
+					indicatorStyle={{
+						left: (Dimensions.get("window").width / 2 - 225) / 3,
+						backgroundColor: "orange",
+					}}
 				/>
-				<Tab.Screen
-					name="Songs"
-					children={() => <RenderInfiniteProfileReviews category="SONG" />}
-				/>
-			</Tab.Navigator>
-		</ScrollView>
+			)}
+		>
+			<Tabs.Tab name="All">
+				<RenderInfiniteProfileReviews />
+			</Tabs.Tab>
+			<Tabs.Tab name="Albums">
+				<RenderInfiniteProfileReviews category="ALBUM" />
+			</Tabs.Tab>
+			<Tabs.Tab name="Songs">
+				<RenderInfiniteProfileReviews category="SONG" />
+			</Tabs.Tab>
+		</Tabs.Container>
 	);
 };
 
@@ -96,76 +117,68 @@ const TopListsTab = ({
 	album,
 	song,
 	artist,
+	headerHeight,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
+	headerHeight: number;
 }) => {
-	const Tab = createMaterialTopTabNavigator();
+	const tabHeight = headerHeight + 75;
 
 	return (
-		<View className="flex flex-1 mt-4">
-			<Tab.Navigator
-				screenOptions={{
-					tabBarContentContainerStyle: {
+		<Tabs.Container
+			renderHeader={() => <View style={{ marginTop: headerHeight }}></View>}
+			renderTabBar={(props) => (
+				<MaterialTabBar
+					{...props}
+					contentContainerStyle={{
+						flexDirection: "row",
 						justifyContent: "space-around",
-					},
-					tabBarLabelStyle: {
-						textAlign: "center",
-						fontSize: 15,
-					},
-
-					tabBarStyle: {
-						width: "auto",
-						elevation: 0, // Remove shadow on Android
-						shadowOpacity: 0, // Remove shadow on iOS
-						backgroundColor: "#F2F2F2", // Background color of the tab bar
-						borderRadius: 10,
-						margin: 10,
-					},
-					tabBarIndicatorStyle: {
-						backgroundColor: "white", // Set the indicator background color to white
-						height: "90%", // Adjust the height as needed
-						width: "33%", // Adjust the width to make it fit within the tabs
-						marginBottom: "5%",
-						borderRadius: 10,
-					},
-					tabBarPressColor: "transparent",
-				}}
-			>
-				<Tab.Screen
-					name="Albums"
-					children={() => <ResourceList data={album?.resources} category="ALBUM" />}
+						padding: 16,
+					}}
+					labelStyle={{ fontSize: 16 }}
+					indicatorStyle={{
+						left: (Dimensions.get("window").width / 2 - 225) / 3,
+						backgroundColor: "orange",
+					}}
 				/>
-				<Tab.Screen
-					name="Songs"
-					children={() => <ResourceList data={song?.resources} category="SONG" />}
-				/>
-				<Tab.Screen
-					name="Artists"
-					children={() => <ResourceList data={artist?.resources} category="ARTIST" />}
-				/>
-			</Tab.Navigator>
-		</View>
+			)}
+		>
+			<Tabs.Tab name="Albums">
+				<View style={{ marginTop: tabHeight }}>
+					<ResourceList data={album?.resources} category="ALBUM" />
+				</View>
+			</Tabs.Tab>
+			<Tabs.Tab name="Songs">
+				<View style={{ marginTop: tabHeight }}>
+					<ResourceList data={song?.resources} category="SONG" />
+				</View>
+			</Tabs.Tab>
+			<Tabs.Tab name="Artists">
+				<View style={{ marginTop: tabHeight }}>
+					<ResourceList data={artist?.resources} category="ARTIST" />
+				</View>
+			</Tabs.Tab>
+		</Tabs.Container>
 	);
 };
 
 const ListTab = ({ lists }: { lists: ListsType[] }) => {
 	return (
-		<ScrollView className="flex flex-1 mt-6">
-			<FlatList
-				data={lists}
-				renderItem={({ item }) => <ListsItem listsItem={item} />}
-				numColumns={2}
-				columnWrapperStyle={{
-					flex: 1,
-					justifyContent: "space-around",
-				}}
-				horizontal={false}
-				contentContainerClassName="gap-4 px-4 pb-4 mt-3"
-				scrollEnabled={false}
-			/>
-		</ScrollView>
+		<Tabs.FlashList
+			className="w-full"
+			data={lists}
+			renderItem={({ index, item }) => (
+				<ColumnItem index={index} numColumns={2} className="px-8 py-4">
+					<ListsItem listsItem={item} />
+				</ColumnItem>
+			)}
+			numColumns={2}
+			style={{ flex: 1, justifyContent: "space-around" }}
+			contentContainerClassName="gap-4 px-4 pb-4 mt-3"
+			estimatedItemSize={350}
+		/>
 	);
 };
 
@@ -178,7 +191,7 @@ export const ProfilePage = ({
 }) => {
 	const { utilsColor } = useColorScheme();
 	const [profile] = api.profiles.get.useSuspenseQuery(handleId);
-	const { data: myProfile } = api.profiles.me.useQuery();
+	const [headerHeight, setHeaderHeight] = useState<number>(0);
 
 	if (!profile) return <NotFoundScreen />;
 
@@ -190,10 +203,35 @@ export const ProfilePage = ({
 		userId: profile.userId,
 	});
 
-	const Tab = createMaterialTopTabNavigator();
 	const router = useRouter();
 
-	const showButton = profile.userId !== myProfile?.userId;
+	const Header = () => (
+		<View
+			className="mt-4"
+			onLayout={(event) => {
+				setHeaderHeight(event.nativeEvent.layout.height + 75);
+			}}
+		>
+			<View className="flex flex-col justify-start ml-5">
+				<View className="flex flex-col">
+					<View className="flex flex-row justify-around items-center w-full">
+						<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
+						<FollowerMenu profileId={profile.userId} handleId={handleId} />
+					</View>
+					<View className="flex flex-row w-full">
+						<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
+							@{profile.handle}
+						</Text>
+						<Text className="pl-4 pt-4 w-full">{profile.bio || "No bio yet"}</Text>
+					</View>
+
+					<View className=" my-3">
+						{!isProfile ? <FollowButton profileId={profile.userId} /> : null}
+					</View>
+				</View>
+			</View>
+		</View>
+	);
 
 	return (
 		<>
@@ -214,47 +252,34 @@ export const ProfilePage = ({
 				}}
 			/>
 			<View className="flex flex-col gap-6 flex-1 mt-5">
-				<View className="">
-					<View className="flex flex-col justify-start ml-5">
-						<View className="flex flex-col">
-							<View className="flex flex-row justify-around w-full">
-								<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
-								<FollowerMenu profileId={profile.userId} />
-							</View>
-							<View className="flex flex-row w-full">
-								<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
-									@{profile.handle}
-								</Text>
-								<Text className="pl-4 pt-4 w-full">
-									{profile.bio || "No bio yet"}
-								</Text>
-							</View>
-
-							<View className=" my-3">
-								{showButton ? <FollowButton profileId={profile.userId} /> : null}
-							</View>
-						</View>
-					</View>
-				</View>
-				<Tab.Navigator
-					screenOptions={{
-						tabBarContentContainerStyle: {
-							justifyContent: "space-around",
-						},
-						tabBarLabelStyle: {
-							textAlign: "center",
-							marginTop: -5,
-						},
-						swipeEnabled: false,
-					}}
+				<Tabs.Container
+					renderHeader={Header}
+					renderTabBar={(props) => (
+						<MaterialTabBar
+							{...props}
+							contentContainerStyle={{
+								flexDirection: "row",
+								justifyContent: "space-around",
+								padding: 16,
+							}}
+							labelStyle={{ fontSize: 16 }}
+							indicatorStyle={{
+								left: (Dimensions.get("window").width / 2 - 225) / 3,
+								backgroundColor: "orange",
+							}}
+						/>
+					)}
 				>
-					<Tab.Screen
-						name="Reviews"
-						children={() => <ReviewsTab userId={profile.userId} />}
-					/>
-					<Tab.Screen name="Top 6" children={() => <TopListsTab {...topLists} />} />
-					<Tab.Screen name="Lists" children={() => <ListTab lists={lists} />} />
-				</Tab.Navigator>
+					<Tabs.Tab name="Reviews">
+						<ReviewsTab userId={profile.userId} headerHeight={headerHeight} />
+					</Tabs.Tab>
+					<Tabs.Tab name="Top 6">
+						<TopListsTab {...topLists} headerHeight={headerHeight} />
+					</Tabs.Tab>
+					<Tabs.Tab name="Lists">
+						<ListTab lists={lists} />
+					</Tabs.Tab>
+				</Tabs.Container>
 			</View>
 		</>
 	);

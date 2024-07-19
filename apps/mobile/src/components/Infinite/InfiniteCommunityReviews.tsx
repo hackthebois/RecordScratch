@@ -1,9 +1,9 @@
-import { View, ActivityIndicator, FlatList, Text } from "react-native";
-import { api } from "@/utils/api";
-import { Review } from "./Review";
+import { View, ActivityIndicator, Text, useWindowDimensions } from "react-native";
+import { api } from "#/utils/api";
+import { Review } from "#/components/Review";
 import { Resource } from "@recordscratch/types";
 
-import { Tabs } from "react-native-collapsible-tab-view";
+import { Tabs, useHeaderMeasurements } from "react-native-collapsible-tab-view";
 
 export const InfiniteCommunityReviews = ({
 	pageLimit,
@@ -42,9 +42,8 @@ export const InfiniteCommunityReviews = ({
 			ListFooterComponent={() => (hasNextPage ? <ActivityIndicator size="large" /> : null)}
 			onEndReachedThreshold={0.1}
 			onEndReached={handleLoadMore}
-			contentContainerStyle={{ flexGrow: 1, padding: 10, paddingBottom: 62 }}
+			contentContainerStyle={{ padding: 5 }}
 			ListEmptyComponent={<Text>No reviews available</Text>}
-			className=" h-screen"
 		/>
 	);
 };

@@ -14,7 +14,7 @@ export default eventHandler(async (event) => {
 	const path = url.pathname.replace(/^\/trpc/, "").slice(1);
 	const req = getWebRequest(event);
 	const sessionId =
-		getCookie(event, "auth_session") ?? req.headers.get("Authorization");
+		req.headers.get("Authorization") ?? getCookie(event, "auth_session");
 
 	const { status, headers, body } = await resolveResponse({
 		router: appRouter,

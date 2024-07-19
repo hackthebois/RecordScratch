@@ -1,5 +1,5 @@
-import { api } from "@/utils/api";
-import { Button } from "./Button";
+import { api } from "#/utils/api";
+import { Button } from "#/components/CoreComponents/Button";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
 	const utils = api.useUtils();

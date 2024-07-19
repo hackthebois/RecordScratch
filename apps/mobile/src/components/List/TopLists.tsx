@@ -1,9 +1,8 @@
 import { Category, ListWithResources, UserListItem } from "@recordscratch/types";
-import { ArtistItem } from "./ArtistItem";
+import { ArtistItem } from "#/components/Item/ArtistItem";
 import { Animated, Dimensions, FlatList, View } from "react-native";
-import { ResourceItem } from "./ResourceItem";
+import { ResourceItem } from "#/components/Item/ResourceItem";
 import { useRef } from "react";
-import { Text } from "./Text";
 import { cn } from "@recordscratch/lib";
 
 const { width } = Dimensions.get("window");
@@ -116,9 +115,11 @@ const TopLists = ({
 export const ResourceList = ({
 	data,
 	category,
+	className,
 }: {
 	data?: UserListItem[] | undefined;
 	category: Category;
+	className?: string;
 }) => {
 	let renderItem;
 	if (category === "ALBUM") {
@@ -129,7 +130,7 @@ export const ResourceList = ({
 		renderItem = renderArtistItem;
 	}
 	return (
-		<View className="flex w-full gap-2 justify-center mt-4 ml-2">
+		<View className={cn("flex w-full gap-2 justify-center mt-4 ml-2", className)}>
 			<FlatList
 				data={data}
 				renderItem={renderItem}

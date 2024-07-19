@@ -1,12 +1,11 @@
-import { api } from "@/utils/api";
+import { api } from "#/utils/api";
 import React from "react";
 import { View } from "react-native";
-import { Button } from "./Button";
-import { Text } from "./Text";
+import { Button } from "#/components/CoreComponents/Button";
+import { Text } from "#/components/CoreComponents/Text";
+import { router } from "expo-router";
 
-const FollowersPopup = React.lazy(() => import("./FollowersPopup"));
-
-const FollowerMenu = ({ profileId }: { profileId: string }) => {
+const FollowerMenu = ({ profileId, handleId }: { profileId: string; handleId: string }) => {
 	const [totalRatings] = api.profiles.getTotalRatings.useSuspenseQuery({
 		userId: profileId,
 	});
@@ -28,18 +27,20 @@ const FollowerMenu = ({ profileId }: { profileId: string }) => {
 					<Text className="text-lg font-medium">Ratings</Text>
 				</View>
 				<View className="flex flex-col items-center gap-1">
-					<FollowersPopup
-						profileId={profileId}
-						type="followers"
-						followerCount={followerCount}
+					<Button
+						variant={"secondary"}
+						label={`${followerCount}`}
+						onPress={() => router.push(`${handleId}/followers`)}
 					/>
+					<Text className="text-lg font-medium">Followers</Text>
 				</View>
 				<View className="flex flex-col items-center gap-1">
-					<FollowersPopup
-						profileId={profileId}
-						type="following"
-						followerCount={followingCount}
+					<Button
+						variant={"secondary"}
+						label={`${followingCount}`}
+						onPress={() => router.push(`${handleId}/followers?type=following`)}
 					/>
+					<Text className="text-lg font-medium">Following</Text>
 				</View>
 			</View>
 		</View>

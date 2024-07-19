@@ -1,11 +1,12 @@
 import { View } from "react-native";
-import { Dialog, PanningProvider } from "react-native-ui-lib";
+import { Dialog as UILibDialog, PanningProvider } from "react-native-ui-lib";
 import { Button } from "./Button";
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { cn } from "@recordscratch/lib";
+import { useColorScheme } from "#/utils/useColorScheme";
 
-const DialogComponent = ({
+const Dialog = ({
 	open,
 	setOpen,
 	children,
@@ -18,8 +19,10 @@ const DialogComponent = ({
 	className?: string;
 	ignoreBackgroundPress?: boolean;
 }) => {
+	const { utilsColor } = useColorScheme();
+
 	return (
-		<Dialog
+		<UILibDialog
 			visible={open}
 			panDirection={PanningProvider.Directions.RIGHT ?? null}
 			onDismiss={() => setOpen(!open)}
@@ -31,13 +34,13 @@ const DialogComponent = ({
 					onPress={() => setOpen(!open)}
 				>
 					<View>
-						<AntDesign name="closecircleo" size={24} color="black" />
+						<AntDesign name="closecircleo" size={24} color={utilsColor} />
 					</View>
 				</Button>
 				<View className={cn(className)}>{children}</View>
 			</View>
-		</Dialog>
+		</UILibDialog>
 	);
 };
 
-export default DialogComponent;
+export default Dialog;

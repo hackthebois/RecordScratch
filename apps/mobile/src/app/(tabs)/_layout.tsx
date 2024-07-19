@@ -1,9 +1,9 @@
-import { SearchBar } from "@/components/SearchBar";
+import { SearchBar } from "#/components/Search/SearchBar";
 import { Tabs } from "expo-router";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { TextStyle } from "react-native";
-import { useColorScheme } from "@/utils/useColorScheme";
+import { useColorScheme } from "#/utils/useColorScheme";
 
 export default function TabLayout() {
 	const iconSize = 30;

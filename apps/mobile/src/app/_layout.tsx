@@ -1,6 +1,6 @@
-import { TRPCProvider } from "@/utils/api";
-import { NAV_THEME } from "@/utils/contants";
-import { useColorScheme } from "@/utils/useColorScheme";
+import { TRPCProvider } from "#/utils/api";
+import { NAV_THEME } from "#/utils/contants";
+import { useColorScheme } from "#/utils/useColorScheme";
 import {
 	Montserrat_100Thin,
 	Montserrat_200ExtraLight,
@@ -20,7 +20,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import { AuthProvider } from "@/utils/Authentication";
+import { AuthProvider } from "#/utils/Authentication";
 
 const LIGHT_THEME: Theme = {
 	dark: false,

@@ -1,40 +1,18 @@
-import { Button } from "@/components/Button";
-import Metadata from "@/components/Metadata";
-import { ResourceItem } from "@/components/ResourceItem";
-import { Text } from "@/components/Text";
-import { api } from "@/utils/api";
+import { Button } from "#/components/CoreComponents/Button";
+import Metadata from "#/components/Metadata";
+import { ResourceItem } from "#/components/Item/ResourceItem";
+import { Text } from "#/components/CoreComponents/Text";
+import { api } from "#/utils/api";
 import { cn, formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../+not-found";
-import { getQueryOptions } from "@/utils/deezer";
-import { Link, useRouter } from "expo-router";
-
-const AlbumItem = ({
-	resourceId,
-	className,
-}: {
-	total: number;
-	resourceId: string;
-	className?: string;
-}) => {
-	return (
-		<View className={cn(className)}>
-			<ResourceItem
-				direction="vertical"
-				resource={{
-					resourceId: resourceId,
-					category: "ALBUM",
-					parentId: "",
-				}}
-				titleCss="line-clamp-2 w-40"
-				artistNameCss="w-40 line-clamp-1"
-			/>
-		</View>
-	);
-};
+import { getQueryOptions } from "#/utils/deezer";
+import { useRouter } from "expo-router";
+import AlbumItem from "#/components/Item/AlbumItem";
+import { useColorScheme } from "#/utils/useColorScheme";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();

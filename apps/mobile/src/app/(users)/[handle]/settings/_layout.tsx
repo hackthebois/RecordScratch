@@ -1,9 +1,9 @@
-import NotFoundScreen from "@/app/+not-found";
-import { Button } from "@/components/Button";
-import { api } from "@/utils/api";
+import NotFoundScreen from "#/app/+not-found";
+import { Button } from "#/components/CoreComponents/Button";
+import { api } from "#/utils/api";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { View } from "react-native";
-import { useAuth } from "@/utils/Authentication";
+import { useAuth } from "#/utils/Authentication";
 import { useColorScheme } from "nativewind";
 
 const SettingsPage = () => {

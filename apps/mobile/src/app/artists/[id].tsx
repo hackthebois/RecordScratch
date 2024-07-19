@@ -1,30 +1,30 @@
-import Metadata from "@/components/Metadata";
-import { getQueryOptions } from "@/utils/deezer";
+import Metadata from "#/components/Metadata";
+import { getQueryOptions } from "#/utils/deezer";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { TouchableOpacity, View } from "react-native-ui-lib";
 import { Album, Artist, Track } from "@recordscratch/lib";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react-native";
-import SongTable from "@/components/SongTable";
-import { Text } from "@/components/Text";
+import SongTable from "#/components/SongTable";
+import { Text } from "#/components/CoreComponents/Text";
 import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
-import { ArtistItem } from "@/components/ArtistItem";
-import { ResourceItem } from "@/components/ResourceItem";
+import { ArtistItem } from "#/components/Item/ArtistItem";
+import { ResourceItem } from "#/components/Item/ResourceItem";
+import { RatingInfo } from "#/components/Rating/RatingInfo";
 
 const ArtistMetadata = ({ artist }: { artist: Artist }) => {
 	return (
 		<View className="flex flex-row mt-4 justify-center">
 			<Metadata title={artist.name} cover={artist.picture_big ?? ""}>
 				<View className="flex flex-row items-center justify-center gap-3">
-					{/* <RatingInfo
-					resource={{
-						resourceId: String(artist.id),
-						category: "ARTIST",
-					}}
-				/>
-
+					<RatingInfo
+						resource={{
+							resourceId: String(artist.id),
+							category: "ARTIST",
+						}}
+					/>
+					{/*
 				<AddToList
 					resourceId={String(artist.id)}
 					category="ARTIST"
@@ -66,10 +66,7 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 const Discography = ({ data }: { data: Album[] }) => {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<Text
-				variant="h2"
-				className="dark:text-white px-4 mt-4 flex text-center items-center justify-center"
-			>
+			<Text variant="h2" className="px-4 mt-4 flex text-center items-center justify-center">
 				Album Discography
 			</Text>
 			<FlatList

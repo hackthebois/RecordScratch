@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { View, ActivityIndicator, FlatList, Text } from "react-native";
-import { api } from "@/utils/api";
-import { RouterInputs } from "@/utils/shared";
-import { Review } from "./Review";
+import { View, ActivityIndicator, Text } from "react-native";
+import { api } from "#/utils/api";
+import { RouterInputs } from "#/utils/shared";
+import { Review } from "#/components/Review";
+import { FlashList } from "@shopify/flash-list";
 
 export const RecentFeedReviews = ({
 	input,
@@ -25,7 +25,7 @@ export const RecentFeedReviews = ({
 	};
 
 	return (
-		<FlatList
+		<FlashList
 			data={data?.pages.flatMap((page) => page.items)}
 			keyExtractor={(item, index) => `review-${item.userId}-${index}`}
 			renderItem={({ item }) => (
@@ -40,6 +40,7 @@ export const RecentFeedReviews = ({
 			contentContainerStyle={{ padding: 4 }}
 			ListEmptyComponent={<Text>No reviews available</Text>}
 			className=" h-screen"
+			estimatedItemSize={380}
 		/>
 	);
 };

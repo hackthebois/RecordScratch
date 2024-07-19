@@ -2,10 +2,11 @@ import { useRecents } from "&/recents";
 import { Loader2 } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { View } from "react-native-ui-lib";
-import { Text } from "./Text";
-import { ArtistItem } from "./ArtistItem";
-import { ResourceItem } from "./ResourceItem";
-import { ProfileItem } from "./ProfileItem";
+import { Text } from "#/components/CoreComponents/Text";
+import { ArtistItem } from "#/components/Item/ArtistItem";
+import { ResourceItem } from "#/components/Item/ResourceItem";
+import { ProfileItem } from "#/components/Item/ProfileItem";
+import { api } from "#/utils/api";
 
 export const SearchState = ({
 	isError,
@@ -31,6 +32,7 @@ export const SearchState = ({
 }) => {
 	const recentStore = useRecents("SEARCH");
 	const { recents, addRecent } = recentStore();
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 
 	if (isError) {
 		return (
@@ -137,6 +139,7 @@ export const SearchState = ({
 										onNavigate();
 									}}
 									key={index}
+									isUser={myProfile!.userId === recent.data.userId}
 								/>
 							) : null
 						)}
