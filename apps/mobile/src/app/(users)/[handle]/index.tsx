@@ -44,40 +44,10 @@ const ReviewsTab = ({ userId, headerHeight }: { userId: string; headerHeight: nu
 				category,
 				rating,
 			}}
-			distribution={distribution}
 		/>
 	);
 
 	return (
-		// <Tab.Navigator
-		// 	screenOptions={{
-		// 		tabBarContentContainerStyle: {
-		// 			justifyContent: "space-around",
-		// 		},
-		// 		tabBarLabelStyle: {
-		// 			textAlign: "center",
-		// 			fontSize: 12,
-		// 		},
-
-		// 		tabBarStyle: {
-		// 			width: "auto",
-		// 			elevation: 0, // Remove shadow on Android
-		// 			shadowOpacity: 0, // Remove shadow on iOS
-		// 			backgroundColor: "#F2F2F2", // Background color of the tab bar
-		// 			borderRadius: 10,
-		// 			margin: 10,
-		// 		},
-		// 		tabBarIndicatorStyle: {
-		// 			backgroundColor: "white", // Set the indicator background color to white
-		// 			height: "90%", // Adjust the height as needed
-		// 			width: "33%", // Adjust the width to make it fit within the tabs
-		// 			paddingHorizontal: 10,
-		// 			marginBottom: "5%",
-		// 			borderRadius: 10,
-		// 		},
-		// 		tabBarPressColor: "transparent",
-		// 	}}
-		// >
 		<Tabs.Container
 			renderHeader={() => (
 				<View style={{ marginTop: headerHeight }}>
@@ -222,7 +192,9 @@ export const ProfilePage = ({
 						<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
 							@{profile.handle}
 						</Text>
-						<Text className="pl-4 pt-4 w-full">{profile.bio || "No bio yet"}</Text>
+						<Text className="px-4 pt-4 text-wrap truncate w-2/3">
+							{profile.bio || "No bio yet"}
+						</Text>
 					</View>
 
 					<View className=" my-3">
@@ -286,3 +258,32 @@ export const ProfilePage = ({
 };
 
 export default HandlePage;
+// <Tab.Navigator
+// 	screenOptions={{
+// 		tabBarContentContainerStyle: {
+// 			justifyContent: "space-around",
+// 		},
+// 		tabBarLabelStyle: {
+// 			textAlign: "center",
+// 			fontSize: 12,
+// 		},
+
+// 		tabBarStyle: {
+// 			width: "auto",
+// 			elevation: 0, // Remove shadow on Android
+// 			shadowOpacity: 0, // Remove shadow on iOS
+// 			backgroundColor: "#F2F2F2", // Background color of the tab bar
+// 			borderRadius: 10,
+// 			margin: 10,
+// 		},
+// 		tabBarIndicatorStyle: {
+// 			backgroundColor: "white", // Set the indicator background color to white
+// 			height: "90%", // Adjust the height as needed
+// 			width: "33%", // Adjust the width to make it fit within the tabs
+// 			paddingHorizontal: 10,
+// 			marginBottom: "5%",
+// 			borderRadius: 10,
+// 		},
+// 		tabBarPressColor: "transparent",
+// 	}}
+// >

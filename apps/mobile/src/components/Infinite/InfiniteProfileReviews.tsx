@@ -4,14 +4,11 @@ import { Review } from "#/components/Review";
 import { useEffect, useState } from "react";
 import { FlashList } from "react-native-collapsible-tab-view";
 import { Tabs } from "react-native-collapsible-tab-view";
-import DistributionChart from "#/components/DistributionChart";
 
 export const InfiniteProfileReviews = ({
 	input,
-	distribution,
 }: {
 	input: RouterInputs["ratings"]["user"]["recent"];
-	distribution?: number[];
 }) => {
 	const { data, fetchNextPage, hasNextPage } = api.ratings.user.recent.useInfiniteQuery(
 		{
@@ -50,7 +47,6 @@ export const InfiniteProfileReviews = ({
 			onEndReached={handleLoadMore}
 			contentContainerStyle={{ padding: 4 }}
 			ListEmptyComponent={<Text>No reviews available</Text>}
-			// estimatedItemSize={380}
 		/>
 	);
 };

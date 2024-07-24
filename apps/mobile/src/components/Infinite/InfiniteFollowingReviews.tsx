@@ -5,12 +5,12 @@ import { Review } from "#/components/Review";
 import { FlashList } from "@shopify/flash-list";
 import { Tabs } from "react-native-collapsible-tab-view";
 
-export const RecentFeedReviews = ({
+export const InfiniteFollowingReviews = ({
 	input,
 }: {
-	input?: RouterInputs["ratings"]["feed"]["recent"];
+	input?: RouterInputs["ratings"]["feed"]["following"];
 }) => {
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.recent.useInfiniteQuery(
+	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.following.useInfiniteQuery(
 		{
 			...input,
 		},
@@ -40,7 +40,6 @@ export const RecentFeedReviews = ({
 			onEndReached={handleLoadMore}
 			contentContainerStyle={{ padding: 4 }}
 			ListEmptyComponent={<Text>No reviews available</Text>}
-			className="h-screen"
 			estimatedItemSize={380}
 		/>
 	);

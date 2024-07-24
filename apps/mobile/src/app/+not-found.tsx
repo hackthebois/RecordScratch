@@ -15,7 +15,7 @@ export default function NotFoundScreen() {
 				<Button
 					variant="secondary"
 					label="Return to Home Screen"
-					onPress={() => router.replace("/")}
+					onPress={() => router.replace("/home")}
 				/>
 			</View>
 		</>

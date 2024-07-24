@@ -8,10 +8,12 @@ import { Album, Artist, Track } from "@recordscratch/lib";
 import { useEffect, useLayoutEffect, useState } from "react";
 import SongTable from "#/components/SongTable";
 import { Text } from "#/components/CoreComponents/Text";
-import { FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { Dimensions, FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
 import { ArtistItem } from "#/components/Item/ArtistItem";
 import { ResourceItem } from "#/components/Item/ResourceItem";
 import { RatingInfo } from "#/components/Rating/RatingInfo";
+import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
+import ColumnItem from "#/components/CoreComponents/ColumnItem";
 
 const ArtistMetadata = ({ artist }: { artist: Artist }) => {
 	return (
@@ -37,12 +39,15 @@ const ArtistMetadata = ({ artist }: { artist: Artist }) => {
 
 const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => {
 	return (
-		<View>
-			<Text variant="h2" className="px-4 my-4">
+		<Tabs.ScrollView>
+			<Text variant="h1" className="px-4 my-8">
 				Top Songs
 			</Text>
-			<SongTable songs={data} />
-			<Text variant="h2" className="px-4 my-6">
+			<View>
+				<SongTable songs={data} />
+			</View>
+
+			<Text variant="h1" className="px-4 my-8">
 				Related Artists
 			</Text>
 			<FlatList
@@ -59,38 +64,32 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 				horizontal
 				contentContainerClassName="gap-2 pb-4"
 			/>
-		</View>
+		</Tabs.ScrollView>
 	);
 };
 
 const Discography = ({ data }: { data: Album[] }) => {
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Text variant="h2" className="px-4 mt-4 flex text-center items-center justify-center">
-				Album Discography
-			</Text>
-			<FlatList
-				data={data}
-				renderItem={({ item }) => (
-					<ResourceItem
-						direction="vertical"
-						resource={{
-							resourceId: String(item.id),
-							category: "ALBUM",
-							parentId: String(item.artist?.id),
-						}}
-					/>
-				)}
-				numColumns={2}
-				columnWrapperStyle={{
-					flex: 1,
-					justifyContent: "space-around",
-				}}
-				horizontal={false}
-				contentContainerClassName="gap-4 px-4 pb-4 mt-3"
-				scrollEnabled={false}
-			/>
-		</SafeAreaView>
+		<Tabs.FlatList
+			data={data}
+			renderItem={({ item }) => (
+				<ResourceItem
+					direction="vertical"
+					resource={{
+						resourceId: String(item.id),
+						category: "ALBUM",
+						parentId: String(item.artist?.id),
+					}}
+					titleCss="w-40 truncate line-clamp-2"
+				/>
+			)}
+			numColumns={2}
+			columnWrapperStyle={{
+				flex: 1,
+				justifyContent: "space-around",
+			}}
+			contentContainerClassName=" gap-4 px-4 pb-4 mt-3"
+		/>
 	);
 };
 
@@ -139,36 +138,32 @@ const ArtistPage = () => {
 	return (
 		<>
 			<Stack.Screen options={{ headerTitle: `${artist.name}` }} />
-			<ScrollView>
-				<ArtistMetadata artist={artist} />
-				<Tab.Navigator
-					screenOptions={() => ({
-						tabBarContentContainerStyle: {
+
+			<Tabs.Container
+				renderHeader={() => <ArtistMetadata artist={artist} />}
+				renderTabBar={(props) => (
+					<MaterialTabBar
+						{...props}
+						contentContainerStyle={{
+							flexDirection: "row",
 							justifyContent: "space-around",
-						},
-						tabBarLabelStyle: {
-							textAlign: "center",
-						},
-						swipeEnabled: false,
-					})}
-					screenListeners={{
-						state: (e) => {
-							setTabIndex(e.data.state.index);
-						},
-					}}
-				>
-					<Tab.Screen
-						name="Top Songs"
-						children={() => <TopResults data={top.data} artists={artists.data} />}
+							padding: 16,
+						}}
+						labelStyle={{ fontSize: 16 }}
+						indicatorStyle={{
+							left: (Dimensions.get("window").width / 2 - 225) / 2,
+							backgroundColor: "orange",
+						}}
 					/>
-					<Tab.Screen
-						name="Discography"
-						children={() =>
-							tabIndex === 1 ? <Discography data={albums.data} /> : null
-						}
-					/>
-				</Tab.Navigator>
-			</ScrollView>
+				)}
+			>
+				<Tabs.Tab name="Artist">
+					<TopResults data={top.data} artists={artists.data} />
+				</Tabs.Tab>
+				<Tabs.Tab name="Discography">
+					<Discography data={albums.data} />
+				</Tabs.Tab>
+			</Tabs.Container>
 		</>
 	);
 };

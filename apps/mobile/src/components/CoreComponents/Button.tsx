@@ -11,11 +11,13 @@ const buttonVariants = cva("flex flex-row items-center justify-center rounded-md
 			destructive: "bg-destructive",
 			ghost: "bg-slate-700",
 			link: "text-primary underline-offset-4",
+			disabled: "bg-secondary",
 		},
 		size: {
 			default: "h-10 px-4",
 			sm: "h-8 px-2",
 			lg: "h-12 px-8",
+			auto: "h-auto",
 		},
 	},
 	defaultVariants: {
@@ -32,11 +34,13 @@ const buttonTextVariants = cva("text-center font-medium", {
 			destructive: "text-destructive-foreground",
 			ghost: "text-foreground",
 			link: "text-foreground underline",
+			disabled: "text-gray-400",
 		},
 		size: {
 			default: "text-base",
 			sm: "text-sm",
 			lg: "text-xl",
+			auto: "",
 		},
 	},
 	defaultVariants: {
@@ -58,11 +62,26 @@ function Button({
 	variant,
 	size,
 	children,
+	disabled,
 	...props
 }: ButtonProps) {
 	return (
-		<TouchableOpacity className={cn(buttonVariants({ variant, size, className }))} {...props}>
-			<Text className={cn(buttonTextVariants({ variant, size, className: labelClasses }))}>
+		<TouchableOpacity
+			className={cn(
+				buttonVariants({ variant: disabled ? "disabled" : variant, size, className })
+			)}
+			{...props}
+			disabled={disabled}
+		>
+			<Text
+				className={cn(
+					buttonTextVariants({
+						variant: disabled ? "disabled" : variant,
+						size,
+						className: labelClasses,
+					})
+				)}
+			>
 				{label}
 				{children}
 			</Text>

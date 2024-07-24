@@ -11,14 +11,52 @@ import { UserAvatar } from "#/components/UserAvatar";
 import { AntDesign } from "@expo/vector-icons";
 import { Suspense } from "react";
 
-const PublicLikeButton = (props: SelectLike) => {
+const IconSize = 30;
+
+const LikeButton = (props: SelectLike) => {
+	const utils = api.useUtils();
 	const [likes] = api.likes.getLikes.useSuspenseQuery(props);
+	const [like] = api.likes.get.useSuspenseQuery(props);
+
+	const { mutate: likeMutation, isPending: isLiking } = api.likes.like.useMutation({
+		onSettled: async () => {
+			await utils.likes.get.invalidate(props);
+			await utils.likes.getLikes.invalidate(props);
+		},
+	});
+
+	const { mutate: unlikeMutation, isPending: isUnLiking } = api.likes.unlike.useMutation({
+		onSettled: async () => {
+			await utils.likes.get.invalidate(props);
+			await utils.likes.getLikes.invalidate(props);
+		},
+	});
+
+	const liked = isLiking ? true : isUnLiking ? false : like;
+	const likesCount = isLiking ? likes + 1 : isUnLiking ? likes - 1 : likes;
 
 	return (
-		<Button variant="secondary" size="sm" label="">
-			<View className="flex flex-row gap-2 text-muted-foreground items-center">
-				<AntDesign name="hearto" size={24} color="black" />
-				<Text className="font-bold">{likes}</Text>
+		<Button
+			className=" text-muted-foreground"
+			variant="secondary"
+			size="auto"
+			onPress={() => {
+				if (isLiking || isUnLiking) return;
+				if (like) {
+					unlikeMutation(props);
+				} else {
+					likeMutation(props);
+				}
+			}}
+		>
+			<View className="flex flex-row gap-2 text-muted-foreground items-center p-1">
+				{liked ? (
+					<AntDesign name="heart" size={IconSize} color="#ff4d4f" />
+				) : (
+					<AntDesign name="hearto" size={IconSize} color="black" />
+				)}
+
+				<Text className="font-bold">{likesCount}</Text>
 			</View>
 		</Button>
 	);
@@ -37,8 +75,8 @@ const ReplyButton = ({
 		<Link
 			className={buttonVariants({
 				variant: "secondary",
-				size: "sm",
-				className: "gap-2 text-muted-foreground",
+				size: "auto",
+				className: "text-muted-foreground p-1",
 			})}
 			href={{
 				pathname: "[handle]/ratings/[id]",
@@ -49,7 +87,7 @@ const ReplyButton = ({
 			}}
 			onPress={onClick}
 		>
-			<AntDesign name="back" size={24} color="black" />
+			<AntDesign name="back" size={IconSize} color="black" />
 		</Link>
 	);
 };
@@ -71,7 +109,7 @@ const CommentsButton = ({
 			className={cn(
 				buttonVariants({
 					variant: "secondary",
-					size: "sm",
+					size: "auto",
 				})
 			)}
 			href={{
@@ -79,8 +117,8 @@ const CommentsButton = ({
 				params: { handle: handle, id: resourceId },
 			}}
 		>
-			<View className="flex flex-row gap-2 text-muted-foreground items-center">
-				<AntDesign name="message1" size={24} color="black" />
+			<View className="flex flex-row gap-2 text-muted-foreground items-center p-1">
+				<AntDesign name="message1" size={IconSize} color="black" />
 				<Text className="font-bold">{comments}</Text>
 			</View>
 		</Link>
@@ -132,31 +170,24 @@ export const Review = ({
 					<Suspense
 						fallback={
 							<Button
-								variant="default"
-								size="sm"
+								variant="secondary"
+								size="auto"
 								className="gap-2 text-muted-foreground"
-								label={""}
 							>
-								<AntDesign name="hearto" size={24} color="black" />
-								{/* <Skeleton className="h-6 w-8" /> */}
+								<AntDesign name="hearto" size={IconSize} color="black" />
 							</Button>
 						}
 					>
-						{/* {profileExists ? (
-							<LikeButton resourceId={resourceId} authorId={userId} />
-						) : */}
-						<PublicLikeButton resourceId={resourceId} authorId={userId} />
+						<LikeButton resourceId={resourceId} authorId={userId} />
 					</Suspense>
 					<Suspense
 						fallback={
 							<Button
 								variant="secondary"
-								size="sm"
+								size="auto"
 								className="gap-2 text-muted-foreground"
-								label={""}
 							>
-								<AntDesign name="message1" size={24} color="black" />
-								{/* <Skeleton className="h-6 w-8" /> */}
+								<AntDesign name="message1" size={IconSize} color="black" />
 							</Button>
 						}
 					>
