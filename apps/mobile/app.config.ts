@@ -1,4 +1,4 @@
-import type { ConfigContext, ExpoConfig } from "expo/config";
+import type { ConfigContext, ExpoConfig } from "@expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
@@ -38,5 +38,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		typedRoutes: true,
 	},
 	jsEngine: "hermes",
-	platforms: ["ios", "android", "web"],
+	platforms: ["ios", "android"],
 });

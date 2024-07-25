@@ -1,6 +1,8 @@
-import { TRPCProvider } from "#/utils/api";
-import { NAV_THEME } from "#/utils/contants";
-import { useColorScheme } from "#/utils/useColorScheme";
+import { PortalHost } from "@rn-primitives/portal";
+import { TRPCProvider } from "~/lib/api";
+import { NAV_THEME } from "~/lib/constants";
+import { useColorScheme } from "~/lib/useColorScheme";
+import { AuthProvider } from "~/lib/Authentication";
 import {
 	Montserrat_100Thin,
 	Montserrat_200ExtraLight,
@@ -20,7 +22,6 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import { AuthProvider } from "#/utils/Authentication";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -117,6 +118,7 @@ export default function RootLayout() {
 								}}
 							/>
 						</Stack>
+						<PortalHost />
 					</ThemeProvider>
 				</SafeAreaProvider>
 			</TRPCProvider>

@@ -1,11 +1,12 @@
 import NotFoundScreen from "#/app/+not-found";
-import Comment from "#/components/Comment";
-import { Review } from "#/components/Review";
-import { api } from "#/utils/api";
 import { CommentAndProfile, CommentAndProfileAndParent, Profile } from "@recordscratch/types";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
+import { Review } from "~/components/Review";
+import { Comment } from "~/components/Comments/Comment";
+import { api } from "~/lib/api";
+import { CommentForm } from "~/components/Comments/CommentForm";
 
 const CommentLayout = ({
 	comment,
@@ -16,8 +17,7 @@ const CommentLayout = ({
 	comment: CommentAndProfile;
 	myProfile: Profile | null;
 	openCommentFormId: string | null;
-	// eslint-disable-next-line no-unused-vars
-	toggleCommentForm: (commentId: string | null) => void;
+	toggleCommentForm: (_commentId: string | null) => void;
 }) => {
 	const [replies, setReplies] = useState<CommentAndProfileAndParent[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +58,7 @@ const CommentLayout = ({
 				{isOpen &&
 					replies.map((reply) => {
 						return (
-							<View className=" flex ml-10 mt-2 flex-1" key={reply.id}>
+							<View className=" flex ml-5 mt-1 flex-1" key={reply.id}>
 								<Comment
 									{...reply}
 									myProfile={myProfile}
@@ -79,8 +79,7 @@ const RatingPage = () => {
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle!);
 
-	//const [myProfile] = api.profiles.me.useSuspenseQuery();
-	const myProfile = null;
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
 		userId: profile!.userId,
 		resourceId: id!,
@@ -109,19 +108,18 @@ const RatingPage = () => {
 	if (!profile || !rating) return <NotFoundScreen />;
 
 	return (
-		<View className="flex flex-col">
+		<ScrollView className="flex flex-col pb-40 px-1">
 			<Stack.Screen options={{ headerTitle: `${profile.name}'s Rating` }} />
 			<View className="my-1">
 				<Review {...rating} profile={profile} onReply={toggleOpenReply} />
 			</View>
-
-			{/* {openReply && myProfile && (
+			{openReply && myProfile && (
 				<CommentForm
 					profile={myProfile}
 					authorId={profile.userId}
 					onSubmitForm={toggleOpenReply}
 				/>
-			)} */}
+			)}
 			{comments.map((comment: CommentAndProfile) => (
 				<CommentLayout
 					comment={comment}
@@ -131,7 +129,7 @@ const RatingPage = () => {
 					toggleCommentForm={toggleCommentForm}
 				/>
 			))}
-		</View>
+		</ScrollView>
 	);
 };
 export default RatingPage;

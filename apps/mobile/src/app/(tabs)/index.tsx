@@ -1,8 +1,8 @@
-import { api } from "#/utils/api";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
+import { api } from "~/lib/api";
 
 const IndexPage = () => {
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();

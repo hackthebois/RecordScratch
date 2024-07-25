@@ -1,16 +1,15 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
-import { Button } from "#/components/CoreComponents/Button";
 import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import { Text } from "#/components/CoreComponents/Text";
-import { useAuth } from "#/utils/Authentication";
 import { useRouter } from "expo-router";
+import { useAuth } from "~/lib/Authentication";
+import { Button } from "~/components/CoreComponents/Button";
+import { Text } from "~/components/CoreComponents/Text";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
 	const { sessionId, login } = useAuth();
-	const [result, setResult] = useState("Null");
 	const router = useRouter();
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -26,11 +25,9 @@ const AuthPage = () => {
 
 	const _handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
-			`https://recordscratch.app/auth/google?mobile=true`,
-			`exp://10.0.0.62:8081`
+			`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/google?mobile=true`,
+			`${process.env.EXPO_PUBLIC_URL}`
 		);
-		setResult(result.type);
-
 		if (result.type !== "success") return;
 
 		const url = Linking.parse(result.url);
@@ -50,7 +47,6 @@ const AuthPage = () => {
 				label="Sign In"
 				variant="secondary"
 			/>
-			{/* <Text className="mt-6 font-bold text-xl">{result}</Text> */}
 		</View>
 	);
 };

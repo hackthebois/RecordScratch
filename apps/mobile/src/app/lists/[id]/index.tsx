@@ -1,17 +1,16 @@
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-import { api } from "#/utils/api";
-import NotFoundScreen from "../../+not-found";
+import { api } from "~/lib/api";
+import NotFoundScreen from "#/app/+not-found";
 import { AntDesign } from "@expo/vector-icons";
-import { useColorScheme } from "#/utils/useColorScheme";
-import Metadata from "#/components/Metadata";
+import { useColorScheme } from "~/lib/useColorScheme";
+import Metadata from "~/components/Metadata";
 import { timeAgo } from "@recordscratch/lib";
-import { getImageUrl } from "#/utils/image";
-import { Text } from "#/components/CoreComponents/Text";
-import { UserAvatar } from "#/components/UserAvatar";
-import ListImage from "#/components/List/ListImage";
-import ListResources from "#/components/List/ListResources";
+import { getImageUrl } from "~/lib/image";
+import { Text } from "~/components/CoreComponents/Text";
+import { UserAvatar } from "~/components/UserAvatar";
+import ListImage from "~/components/List/ListImage";
+import ListResources from "~/components/List/ListResources";
 
 const ListPage = () => {
 	const { utilsColor } = useColorScheme();

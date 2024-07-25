@@ -1,7 +1,6 @@
 import NotFoundScreen from "#/app/+not-found";
-import { Text } from "#/components/CoreComponents/Text";
-import { ProfileItem } from "#/components/Item/ProfileItem";
-import { api } from "#/utils/api";
+import { ProfileItem } from "~/components/Item/ProfileItem";
+import { api } from "~/lib/api";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Dimensions, View } from "react-native";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";

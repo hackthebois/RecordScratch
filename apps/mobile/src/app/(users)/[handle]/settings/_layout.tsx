@@ -1,10 +1,10 @@
 import NotFoundScreen from "#/app/+not-found";
-import { Button } from "#/components/CoreComponents/Button";
-import { api } from "#/utils/api";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { View } from "react-native";
-import { useAuth } from "#/utils/Authentication";
 import { useColorScheme } from "nativewind";
+import { useAuth } from "~/lib/Authentication";
+import { api } from "~/lib/api";
+import { Button } from "~/components/CoreComponents/Button";
 
 const SettingsPage = () => {
 	const { handle } = useLocalSearchParams<{ id: string; handle: string }>();

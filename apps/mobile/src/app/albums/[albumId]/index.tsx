@@ -1,19 +1,18 @@
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Resource } from "@recordscratch/types";
-import { getQueryOptions } from "#/utils/deezer";
+import { getQueryOptions } from "~/lib/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Stack, router, useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useLayoutEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView, Pressable, Dimensions } from "react-native";
-import Metadata from "#/components/Metadata";
-import { Album, Track, TrackAndArtist, formatDuration } from "@recordscratch/lib";
-import SongTable from "#/components/SongTable";
-import { InfiniteCommunityReviews } from "#/components/Infinite/InfiniteCommunityReviews";
+import { Stack, router, useLocalSearchParams } from "expo-router";
+import React from "react";
+import { View, Text, Pressable, Dimensions } from "react-native";
+import Metadata from "~/components/Metadata";
+import { Album, TrackAndArtist, formatDuration } from "@recordscratch/lib";
+import SongTable from "~/components/SongTable";
+import { InfiniteCommunityReviews } from "~/components/Infinite/InfiniteCommunityReviews";
 import NotFoundScreen from "#/app/+not-found";
-import { RatingInfo } from "#/components/Rating/RatingInfo";
-import { api } from "#/utils/api";
+import { RatingInfo } from "~/components/Rating/RatingInfo";
+import { api } from "~/lib/api";
 import { Tabs, MaterialTabBar } from "react-native-collapsible-tab-view";
-import RatingDialog from "#/components/Rating/RatingDialog";
+import RatingDialog from "~/components/Rating/RatingDialog";
 
 const AlbumTab = ({ album, songs }: { album: Album; songs: TrackAndArtist[] }) => {
 	return <SongTable songs={songs.map((song) => ({ ...song, album })) ?? []} />;

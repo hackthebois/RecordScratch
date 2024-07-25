@@ -1,8 +1,8 @@
 import NotFoundScreen from "#/app/+not-found";
-import { InfiniteCommunityReviews } from "#/components/Infinite/InfiniteCommunityReviews";
-import Metadata from "#/components/Metadata";
-import { RatingInfo } from "#/components/Rating/RatingInfo";
-import { getQueryOptions } from "#/utils/deezer";
+import { InfiniteCommunityReviews } from "~/components/Infinite/InfiniteCommunityReviews";
+import Metadata from "~/components/Metadata";
+import { RatingInfo } from "~/components/Rating/RatingInfo";
+import { getQueryOptions } from "~/lib/deezer";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";

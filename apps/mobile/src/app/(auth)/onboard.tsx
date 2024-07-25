@@ -1,4 +1,3 @@
-import { api } from "#/utils/api";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { cn, useDebounce } from "@recordscratch/lib";
 import { handleRegex, OnboardSchema } from "@recordscratch/types";
@@ -8,11 +7,11 @@ import type { Onboard } from "@recordscratch/types";
 import { useForm, Controller } from "react-hook-form";
 import { router, Stack } from "expo-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "#/components/CoreComponents/Button";
-import { Text } from "#/components/CoreComponents/Text";
-import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
-import { UserAvatar } from "#/components/UserAvatar";
+import { api } from "~/lib/api";
+import { UserAvatar } from "~/components/UserAvatar";
+import { Text } from "~/components/CoreComponents/Text";
+import { Button } from "~/components/CoreComponents/Button";
 
 const SlideWrapper = ({
 	page,

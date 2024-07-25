@@ -22,8 +22,13 @@
 		"@react-navigation/native": "^6.0.2",
 		"@recordscratch/api": "workspace:*",
 		"@recordscratch/lib": "workspace:*",
+		"@rn-primitives/popover": "^1.0.3",
+		"@rn-primitives/slot": "^1.0.3",
+		"@rn-primitives/types": "^1.0.3",
 		"@shopify/flash-list": "1.6.4",
 		"@tanstack/react-query": "latest",
+		"class-variance-authority": "^0.7.0",
+		"clsx": "^2.1.1",
 		"expo": "~51.0.22",
 		"expo-font": "~12.0.9",
 		"expo-image": "~1.12.13",
@@ -35,7 +40,7 @@
 		"expo-status-bar": "~1.12.1",
 		"expo-system-ui": "~3.0.6",
 		"expo-web-browser": "~13.0.3",
-		"lucide-react-native": "^0.364.0",
+		"lucide-react-native": "^0.414.0",
 		"nativewind": "^4.0.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
@@ -50,7 +55,8 @@
 		"react-native-svg": "15.2.0",
 		"react-native-tab-view": "^3.5.2",
 		"react-native-ui-lib": "^7.22.0",
-		"react-native-web": "~0.19.6"
+		"react-native-web": "~0.19.6",
+		"tailwind-merge": "^2.4.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.20.0",

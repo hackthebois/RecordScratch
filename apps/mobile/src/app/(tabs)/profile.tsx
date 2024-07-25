@@ -1,6 +1,5 @@
-import { SafeAreaView } from "react-native";
 import { ProfilePage } from "../(users)/[handle]/index";
-import { api } from "#/utils/api";
+import { api } from "~/lib/api";
 
 const Profile = () => {
 	const [profile] = api.profiles.me.useSuspenseQuery();

@@ -18,8 +18,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"#/*": ["./src/*"],
-			"@/*": ["app/*"],
-			"&/*": ["./components/*"]
+			"~/*": ["*"]
 		},
 		"jsx": "react-native",
 		"tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
@@ -31,10 +30,23 @@
 		"*.js",
 		".expo/types/**/*.ts",
 		"expo-env.d.ts",
-		"src/components",
+		"components",
 		"src/app",
 		"src/env.ts",
-		"src/utils/Icons.tsx"
+		"lib/icons.tsx",
+		"components/Search",
+		"components/DistributionChart.tsx",
+		"components/Review.tsx",
+		"components/Metadata.tsx",
+		"components/SongTable.tsx",
+		"components/UserAvatar.tsx",
+		"components/List",
+		"components/Rating",
+		"components/Comments",
+		"components/CoreComponents",
+		"components/Item",
+		"components/Infinite",
+		"components/Followers"
 	],
 	"extends": "expo/tsconfig.base"
 }

@@ -1,23 +1,22 @@
 import NotFoundScreen from "#/app/+not-found";
-import DistributionChart from "#/components/DistributionChart";
-import FollowerMenu from "#/components/Followers/FollowersMenu";
-import { InfiniteProfileReviews } from "#/components/Infinite/InfiniteProfileReviews";
-import { Text } from "#/components/CoreComponents/Text";
-import { UserAvatar } from "#/components/UserAvatar";
-import { api } from "#/utils/api";
-import { getImageUrl } from "#/utils/image";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Category, ListWithResources, ListsType, Profile } from "@recordscratch/types";
+import DistributionChart from "~/components/DistributionChart";
+import FollowerMenu from "~/components/Followers/FollowersMenu";
+import { InfiniteProfileReviews } from "~/components/Infinite/InfiniteProfileReviews";
+import { Text } from "~/components/CoreComponents/Text";
+import { UserAvatar } from "~/components/UserAvatar";
+import { api } from "~/lib/api";
+import { getImageUrl } from "~/lib/image";
+import { ListWithResources, ListsType } from "@recordscratch/types";
 import { AntDesign } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { Dimensions, FlatList, ScrollView, TouchableOpacity, View, ViewBase } from "react-native";
-import { useColorScheme } from "#/utils/useColorScheme";
-import { FollowButton } from "#/components/Followers/FollowButton";
-import { ResourceList } from "#/components/List/TopLists";
-import ListsItem from "#/components/Item/ListItem";
-import { Tabs, MaterialTabBar, useHeaderMeasurements } from "react-native-collapsible-tab-view";
+import { Dimensions, TouchableOpacity, View, ViewBase } from "react-native";
+import { useColorScheme } from "~/lib/useColorScheme";
+import { FollowButton } from "~/components/Followers/FollowButton";
+import { ResourceList } from "~/components/List/TopLists";
+import ListsItem from "~/components/Item/ListItem";
+import { Tabs, MaterialTabBar } from "react-native-collapsible-tab-view";
 import { useState } from "react";
-import ColumnItem from "#/components/CoreComponents/ColumnItem";
+import ColumnItem from "~/components/CoreComponents/ColumnItem";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();

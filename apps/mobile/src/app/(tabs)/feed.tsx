@@ -1,7 +1,7 @@
-import { RecentFeedReviews } from "#/components/Infinite/InfiniteFeedReviews";
-import { InfiniteFollowingReviews } from "#/components/Infinite/InfiniteFollowingReviews";
 import { Dimensions } from "react-native";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
+import { RecentFeedReviews } from "~/components/Infinite/InfiniteFeedReviews";
+import { InfiniteFollowingReviews } from "~/components/Infinite/InfiniteFollowingReviews";
 
 const FeedPage = () => {
 	return (
@@ -25,11 +25,9 @@ const FeedPage = () => {
 			)}
 		>
 			<Tabs.Tab name="For You">
-				<></>
 				<RecentFeedReviews input={{ limit: 5 }} />
 			</Tabs.Tab>
 			<Tabs.Tab name="Friends">
-				<></>
 				<InfiniteFollowingReviews input={{ limit: 5 }} />
 			</Tabs.Tab>
 		</Tabs.Container>

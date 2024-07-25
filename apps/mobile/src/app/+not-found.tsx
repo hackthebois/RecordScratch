@@ -1,9 +1,8 @@
 import { Stack, useRouter } from "expo-router";
-
 import React from "react";
 import { View } from "react-native";
-import { Text } from "#/components/CoreComponents/Text";
-import { Button } from "#/components/CoreComponents/Button";
+import { Text } from "~/components/CoreComponents/Text";
+import { Button } from "~/components/CoreComponents/Button";
 
 export default function NotFoundScreen() {
 	const router = useRouter();

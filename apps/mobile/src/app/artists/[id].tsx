@@ -1,19 +1,18 @@
-import Metadata from "#/components/Metadata";
-import { getQueryOptions } from "#/utils/deezer";
+import Metadata from "~/components/Metadata";
+import { getQueryOptions } from "~/lib/deezer";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { TouchableOpacity, View } from "react-native-ui-lib";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { View } from "react-native-ui-lib";
 import { Album, Artist, Track } from "@recordscratch/lib";
-import { useEffect, useLayoutEffect, useState } from "react";
-import SongTable from "#/components/SongTable";
-import { Text } from "#/components/CoreComponents/Text";
-import { Dimensions, FlatList, SafeAreaView, ScrollView, StyleSheet } from "react-native";
-import { ArtistItem } from "#/components/Item/ArtistItem";
-import { ResourceItem } from "#/components/Item/ResourceItem";
-import { RatingInfo } from "#/components/Rating/RatingInfo";
+import { useState } from "react";
+import SongTable from "~/components/SongTable";
+import { Text } from "~/components/CoreComponents/Text";
+import { Dimensions, FlatList } from "react-native";
+import { ArtistItem } from "~/components/Item/ArtistItem";
+import { ResourceItem } from "~/components/Item/ResourceItem";
+import { RatingInfo } from "~/components/Rating/RatingInfo";
 import { MaterialTabBar, Tabs } from "react-native-collapsible-tab-view";
-import ColumnItem from "#/components/CoreComponents/ColumnItem";
 
 const ArtistMetadata = ({ artist }: { artist: Artist }) => {
 	return (
