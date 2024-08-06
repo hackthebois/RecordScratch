@@ -1,4 +1,3 @@
-import { getQueryOptions } from "~/lib/deezer";
 import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
@@ -6,6 +5,8 @@ import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import { Text } from "~/components/CoreComponents/Text";
+import { getQueryOptions } from "~/lib/deezer";
+import Skeleton from "../CoreComponents/Skeleton";
 
 export const ResourceItem = ({
 	initialAlbum,
@@ -61,11 +62,11 @@ export const ResourceItem = ({
 	if (isLoading || !album || (resource.category === "SONG" && isLoadingTracks)) {
 		return (
 			<View className="flex flex-row items-center gap-4 rounded">
-				{/* <Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
+				<Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
 				<View className="flex flex-col gap-2">
 					<Skeleton className="mb-1 h-4 w-32" />
 					<Skeleton className="h-4 w-24" />
-				</View> */}
+				</View>
 			</View>
 		);
 	}

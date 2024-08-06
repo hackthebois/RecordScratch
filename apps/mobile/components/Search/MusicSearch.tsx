@@ -1,12 +1,12 @@
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-import { deezer } from "~/lib/deezer";
 import { Album, Artist, Track } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
-import { View } from "react-native-ui-lib";
-import SearchState from "./SearchState";
 import React from "react";
+import { View } from "react-native-ui-lib";
+import { ArtistItem } from "~/components/Item/ArtistItem";
+import { ResourceItem } from "~/components/Item/ResourceItem";
 import { useRecents } from "~/components/recents";
+import { deezer } from "~/lib/deezer";
+import SearchState from "./SearchState";
 
 const SearchResults = ({ children }: { children: React.ReactNode }) => {
 	return <View className=" border-b border-gray-400 p-1">{children}</View>;
@@ -111,7 +111,6 @@ export const MusicSearch = ({
 							/>
 						</SearchResults>
 					))}
-
 					{data.artists.map((artist, index) => (
 						<SearchResults key={index}>
 							<ArtistItem

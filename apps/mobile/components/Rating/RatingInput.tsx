@@ -1,6 +1,6 @@
-import { AntDesign } from "@expo/vector-icons";
-import { Text } from "~/components/CoreComponents/Text";
 import { TouchableOpacity, View } from "react-native";
+import { Text } from "~/components/CoreComponents/Text";
+import { Star } from "~/lib/icons/Star";
 
 export const RatingInput = ({
 	value: rating,
@@ -20,12 +20,12 @@ export const RatingInput = ({
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<AntDesign name="star" size={24} color="orange" />
+								<Star size={24} color="#ffb703" fill="#ffb703" />
 							) : (
-								<AntDesign name="staro" size={24} color="orange" />
+								<Star size={24} color="#ffb703" />
 							)
 						) : (
-							<AntDesign name="staro" size={24} color="orange" />
+							<Star size={24} color="#ffb703" />
 						)}
 						<Text className=" text-muted-foreground">{index}</Text>
 					</View>

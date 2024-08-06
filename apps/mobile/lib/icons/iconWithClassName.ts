@@ -1,8 +1,5 @@
-import { cssInterop } from "nativewind";
 import { AlertCircle, CheckCircle, LucideIcon, XCircle } from "lucide-react-native";
-import { useColorScheme } from "../useColorScheme";
-
-const { utilsColor } = useColorScheme();
+import { cssInterop } from "nativewind";
 
 export function iconWithClassName(icon: LucideIcon) {
 	cssInterop(icon, {

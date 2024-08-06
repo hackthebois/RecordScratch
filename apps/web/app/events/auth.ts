@@ -18,6 +18,8 @@ export default eventHandler(async (event) => {
 	const query = getQuery(event);
 	const isMobile = query.mobile === "true";
 
+	console.log("Logging in");
+
 	const callBackUrl = `${process.env.CF_PAGES_URL}/auth/google/callback${
 		isMobile ? `?mobile=true` : ""
 	}`;
@@ -132,7 +134,7 @@ export default eventHandler(async (event) => {
 		const sessionCookie = lucia.createSessionCookie(session.id);
 
 		if (isMobile)
-			redirect = `exp://10.0.0.62:8081?session_id=${session.id}`;
+			redirect = `exp://192.168.2.254:8081?session_id=${session.id}`;
 		else
 			setCookie(
 				event,

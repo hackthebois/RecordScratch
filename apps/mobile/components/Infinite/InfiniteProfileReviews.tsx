@@ -1,8 +1,8 @@
-import { View, ActivityIndicator, Text } from "react-native";
-import { RouterInputs, api } from "~/lib/api";
-import { Review } from "~/components/Review";
+import { FlashList } from "@shopify/flash-list";
 import { useEffect, useState } from "react";
-import { Tabs } from "react-native-collapsible-tab-view";
+import { ActivityIndicator, Text, View } from "react-native";
+import { Review } from "~/components/Review";
+import { RouterInputs, api } from "~/lib/api";
 
 export const InfiniteProfileReviews = ({
 	input,
@@ -33,19 +33,16 @@ export const InfiniteProfileReviews = ({
 	};
 
 	return (
-		<Tabs.FlatList
+		<FlashList
 			data={data?.pages.flatMap((page) => page.items)}
 			keyExtractor={(item, index) => `review-${item.userId}-${index}`}
-			renderItem={({ item }) => (
-				<View className="my-0.5">
-					<Review {...item} />
-				</View>
-			)}
+			renderItem={({ item }) => <Review {...item} />}
+			ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 			ListFooterComponent={() => (hasNextPage ? <ActivityIndicator size="large" /> : null)}
 			onEndReachedThreshold={1}
 			onEndReached={handleLoadMore}
-			contentContainerStyle={{ padding: 4 }}
 			ListEmptyComponent={<Text>No reviews available</Text>}
+			estimatedItemSize={380}
 		/>
 	);
 };

@@ -1,12 +1,12 @@
 import { cn } from "@recordscratch/lib";
 import { TouchableOpacity, View } from "react-native";
-import { Text } from "~/components/CoreComponents/Text";
+import { Text } from "~/components/ui/text";
 
 const DistributionChart = ({ distribution = [] }: { distribution?: number[] }) => {
 	const maxRating = Math.max(...distribution) === 0 ? 1 : Math.max(...distribution);
 
 	return (
-		<View className="flex w-full flex-col rounded-md border-l border-r border-t border-gray-300 p-3">
+		<View className="flex w-full flex-col p-3">
 			<View className="flex flex-row h-48 w-full gap-1 ">
 				{distribution?.map((ratings, index) => (
 					<TouchableOpacity className="flex h-full flex-1 flex-col-reverse" key={index}>
@@ -25,9 +25,7 @@ const DistributionChart = ({ distribution = [] }: { distribution?: number[] }) =
 						className="flex flex-1 flex-row items-center justify-center gap-0.5"
 						key={index}
 					>
-						<Text className="text-center text-sm text-muted-foreground text-star-orange">
-							{index + 1}
-						</Text>
+						<Text>{index + 1}</Text>
 					</View>
 				))}
 			</View>

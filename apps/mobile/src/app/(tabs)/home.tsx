@@ -1,16 +1,16 @@
-import Metadata from "~/components/Metadata";
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react";
-import { Alert, BackHandler, FlatList, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import NotFound from "../+not-found";
-import { getQueryOptions } from "~/lib/deezer";
 import { useRouter } from "expo-router";
+import React from "react";
+import { FlatList, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import AlbumItem from "~/components/Item/AlbumItem";
-import { api } from "~/lib/api";
+import Metadata from "~/components/Metadata";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
+import { getQueryOptions } from "~/lib/deezer";
+import NotFound from "../+not-found";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
@@ -53,35 +53,31 @@ const HomePage = () => {
 	const [top] = api.ratings.top.useSuspenseQuery();
 
 	return (
-		<SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
 			<ScrollView
-				contentContainerClassName="flex flex-col gap-3"
+				contentContainerClassName="flex flex-col gap-6"
 				nestedScrollEnabled
 				style={{ flex: 1 }}
 			>
 				<AlbumOfTheDay />
-				<View className="flex flex-col gap-2">
-					<Text variant="h1" className="px-4">
-						Trending
-					</Text>
-					<FlatList
-						data={trending}
-						renderItem={({ item }) => <AlbumItem {...item} className="p-4" />}
-						horizontal
-						contentContainerClassName="gap-4 px-4 pb-4"
-					/>
-				</View>
-				<View className="flex flex-col gap-2">
-					<Text variant="h1" className="py-2 px-4">
-						Top Albums
-					</Text>
-					<FlatList
-						data={top}
-						renderItem={({ item }) => <AlbumItem {...item} className="p-4" />}
-						horizontal
-						contentContainerClassName="gap-4 px-4 pb-4"
-					/>
-				</View>
+				<Text variant="h2" className="px-4">
+					Trending
+				</Text>
+				<FlatList
+					data={trending}
+					renderItem={({ item }) => <AlbumItem {...item} />}
+					horizontal
+					contentContainerClassName="px-4 gap-3 pb-4"
+				/>
+				<Text variant="h2" className="py-2 px-4">
+					Top Albums
+				</Text>
+				<FlatList
+					data={top}
+					renderItem={({ item }) => <AlbumItem {...item} />}
+					horizontal
+					contentContainerClassName="px-4 gap-3 pb-4"
+				/>
 			</ScrollView>
 		</SafeAreaView>
 	);

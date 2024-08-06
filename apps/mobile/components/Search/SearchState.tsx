@@ -1,11 +1,11 @@
-import { useRecents } from "~/components/recents";
 import { Loader2 } from "lucide-react-native";
 import { ScrollView } from "react-native";
 import { View } from "react-native-ui-lib";
-import { Text } from "~/components/CoreComponents/Text";
 import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ResourceItem } from "~/components/Item/ResourceItem";
 import { ProfileItem } from "~/components/Item/ProfileItem";
+import { ResourceItem } from "~/components/Item/ResourceItem";
+import { useRecents } from "~/components/recents";
+import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 
 export const SearchState = ({
@@ -38,7 +38,6 @@ export const SearchState = ({
 		return (
 			<View className="flex flex-1 items-center justify-center">
 				<Text className="text-muted-foreground">An error occurred</Text>
-				<Text className="text-muted-foreground">An error occurred</Text>
 			</View>
 		);
 	}
@@ -54,7 +53,6 @@ export const SearchState = ({
 	if (noResults) {
 		return (
 			<View className="flex flex-1 items-center justify-center">
-				<Text className="text-muted-foreground">No results found</Text>
 				<Text className="text-muted-foreground">No results found</Text>
 			</View>
 		);

@@ -1,11 +1,11 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View } from "react-native";
-import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
-import { useAuth } from "~/lib/Authentication";
+import * as Browser from "expo-web-browser";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { View } from "react-native";
 import { Button } from "~/components/CoreComponents/Button";
 import { Text } from "~/components/CoreComponents/Text";
+import { useAuth } from "~/lib/Authentication";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {

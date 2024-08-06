@@ -1,16 +1,16 @@
-import { RateForm, RateFormSchema, Rating, Resource } from "@recordscratch/types";
-import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
-import { Text } from "~/components/CoreComponents/Text";
-import React, { useEffect, useState } from "react";
-import { Button } from "~/components/CoreComponents/Button";
-import { AntDesign } from "@expo/vector-icons";
-import { api } from "~/lib/api";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Skeleton from "~/components/CoreComponents/Skeleton";
-import { RatingInput } from "./RatingInput";
+import { RateForm, RateFormSchema, Rating, Resource } from "@recordscratch/types";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 import AlertDialog from "~/components/CoreComponents/AlertDialog";
 import Dialog from "~/components/CoreComponents/Dialog";
+import Skeleton from "~/components/CoreComponents/Skeleton";
+import { Text } from "~/components/CoreComponents/Text";
+import { api } from "~/lib/api";
+import { Star } from "~/lib/icons/Star";
+import { Button } from "../ui/button";
+import { RatingInput } from "./RatingInput";
 
 const RatingDialog = ({
 	initialUserRating,
@@ -100,12 +100,13 @@ const RatingDialog = ({
 							}}
 						>
 							<Button
-								label="Rate"
 								variant="secondary"
 								onPress={handleSubmit(onSubmit)}
 								disabled={!formState.isValid}
 								className="mb-4 w-5/6"
-							/>
+							>
+								<Text>Rate</Text>
+							</Button>
 							{userRating &&
 								(userRating.content ? (
 									<AlertDialog
@@ -134,22 +135,17 @@ const RatingDialog = ({
 					</View>
 				</View>
 			</Dialog>
-			<Button
-				variant="secondary"
-				size="default"
-				className=" w-auto ml-2 h-auto py-3"
-				onPress={() => setOpen(true)}
-			>
+			<Button variant="secondary" onPress={() => setOpen(true)} className="flex-row gap-2">
 				{!userRating ? (
-					<View className="flex flex-row items-center justify-center">
-						<AntDesign name="staro" size={25} color="#fb8500" className="mr-2" />
-						<Text className="font-semibold w-full text-lg">Rate</Text>
-					</View>
+					<>
+						<Star size={25} className="mr-2" color="#fb8500" />
+						<Text>Rate</Text>
+					</>
 				) : (
-					<View className="flex flex-row items-center h-full">
-						<AntDesign name="star" size={25} color="#fb8500" className="mr-1" />
-						<Text className="font-semibold w-full text-lg">{userRating.rating}</Text>
-					</View>
+					<>
+						<Star size={25} className="mr-2" color="#fb8500" />
+						<Text>{userRating.rating}</Text>
+					</>
 				)}
 			</Button>
 		</View>

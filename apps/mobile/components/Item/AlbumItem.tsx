@@ -1,6 +1,6 @@
+import { cn } from "@recordscratch/lib";
 import { View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
-import { cn } from "@recordscratch/lib";
 
 const AlbumItem = ({
 	resourceId,
@@ -19,7 +19,7 @@ const AlbumItem = ({
 					category: "ALBUM",
 					parentId: "",
 				}}
-				titleCss="line-clamp-2 w-40"
+				titleCss="line-clamp-1 w-40"
 				artistNameCss="w-40 line-clamp-1"
 			/>
 		</View>

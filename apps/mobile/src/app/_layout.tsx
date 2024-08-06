@@ -1,8 +1,3 @@
-import { PortalHost } from "@rn-primitives/portal";
-import { TRPCProvider } from "~/lib/api";
-import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/lib/useColorScheme";
-import { AuthProvider } from "~/lib/Authentication";
 import {
 	Montserrat_100Thin,
 	Montserrat_200ExtraLight,
@@ -17,10 +12,15 @@ import {
 } from "@expo-google-fonts/montserrat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
+import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AuthProvider } from "~/lib/Authentication";
+import { TRPCProvider } from "~/lib/api";
+import { NAV_THEME } from "~/lib/constants";
+import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
 
 const LIGHT_THEME: Theme = {
@@ -103,6 +103,7 @@ export default function RootLayout() {
 							screenOptions={{
 								animation: "slide_from_right",
 								headerTitleAlign: "center",
+								headerBackTitleVisible: false,
 							}}
 						>
 							<Stack.Screen

@@ -11,7 +11,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 					key={song.id}
 					href={`/albums/${String(song.album.id)}/songs/${String(song.id)}`}
 					className={cn(
-						" w-full transition-colors border-gray-300",
+						"w-full transition-colors border-gray-300",
 						index != songs.length - 1 && " border-b "
 					)}
 				>

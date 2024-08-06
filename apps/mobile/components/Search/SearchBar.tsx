@@ -1,7 +1,7 @@
-import { View } from "react-native-ui-lib";
 import { useRouter } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
+import { Search } from "lucide-react-native";
 import { TouchableOpacity } from "react-native";
+import { View } from "react-native-ui-lib";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 export const SearchBar = () => {
@@ -10,7 +10,7 @@ export const SearchBar = () => {
 	return (
 		<View className="mr-5">
 			<TouchableOpacity onPress={() => router.push("/search")} className="mr-4">
-				<AntDesign name="search1" size={24} color={utilsColor} />
+				<Search size={24} color={utilsColor} />
 			</TouchableOpacity>
 		</View>
 	);

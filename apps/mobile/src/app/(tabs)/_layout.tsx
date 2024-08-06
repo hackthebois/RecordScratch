@@ -1,24 +1,32 @@
+import { cn } from "@recordscratch/lib";
 import { Tabs } from "expo-router";
 import React from "react";
-import { AntDesign } from "@expo/vector-icons";
-import { TextStyle } from "react-native";
 import { SearchBar } from "~/components/Search/SearchBar";
-import { useColorScheme } from "~/lib/useColorScheme";
+import { Text } from "~/components/ui/text";
+import { Home } from "~/lib/icons/Home";
+import { Star } from "~/lib/icons/Star";
+import { User } from "~/lib/icons/User";
 
 export default function TabLayout() {
-	const iconSize = 30;
-	const tabBarLabelStyle: TextStyle = {
-		fontSize: 14,
-		fontWeight: "bold",
-	};
-	const { utilsColor } = useColorScheme();
-
 	return (
 		<Tabs
 			screenOptions={{
 				tabBarActiveTintColor: "#ffb703",
 				headerTitleAlign: "center",
-				tabBarLabelStyle: tabBarLabelStyle,
+				tabBarLabel: ({ focused, children }) => (
+					<Text
+						className={cn(
+							focused ? "text-primary" : "text-muted-foreground",
+							"text-sm font-semibold"
+						)}
+					>
+						{children}
+					</Text>
+				),
+				tabBarStyle: {
+					height: 90,
+					paddingTop: 12,
+				},
 			}}
 		>
 			<Tabs.Screen
@@ -35,7 +43,13 @@ export default function TabLayout() {
 				options={{
 					title: "Home",
 					headerShown: true,
-					tabBarIcon: () => <AntDesign name="home" size={iconSize} color={utilsColor} />,
+					tabBarIcon: ({ focused }) => (
+						<Home
+							size={28}
+							className={cn(focused ? "text-primary" : "text-muted-foreground")}
+						/>
+					),
+					headerLeftLabelVisible: false,
 					headerRight: () => {
 						return <SearchBar />;
 					},
@@ -46,7 +60,12 @@ export default function TabLayout() {
 				options={{
 					title: "Feed",
 					headerShown: true,
-					tabBarIcon: () => <AntDesign name="staro" size={iconSize} color={utilsColor} />,
+					tabBarIcon: ({ focused }) => (
+						<Star
+							size={28}
+							className={cn(focused ? "text-primary" : "text-muted-foreground")}
+						/>
+					),
 				}}
 			/>
 			<Tabs.Screen
@@ -54,7 +73,12 @@ export default function TabLayout() {
 				options={{
 					title: "Profile",
 					headerShown: true,
-					tabBarIcon: () => <AntDesign name="user" size={iconSize} color={utilsColor} />,
+					tabBarIcon: ({ focused }) => (
+						<User
+							size={28}
+							className={cn(focused ? "text-primary" : "text-muted-foreground")}
+						/>
+					),
 				}}
 			/>
 		</Tabs>

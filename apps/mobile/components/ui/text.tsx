@@ -1,9 +1,9 @@
-import * as Slot from "~/components/primitives/slot";
-import { SlottableTextProps, TextRef } from "~/components/primitives/types";
+import { cn } from "@recordscratch/lib";
+import { VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 import { Text as RNText } from "react-native";
-import { cn } from "@recordscratch/lib";
-import { cva, VariantProps } from "class-variance-authority";
+import * as Slot from "~/components/primitives/slot";
+import { SlottableTextProps, TextRef } from "~/components/primitives/types";
 
 const TextClassContext = React.createContext<string | undefined>(undefined);
 
@@ -12,8 +12,9 @@ export const textVariants = cva("text-foreground", {
 		variant: {
 			text: "text-foreground font-regular",
 			h1: "text-4xl font-bold",
-			h2: "text-2xl font-bold",
-			h3: "text-xl font-bold",
+			h2: "text-3xl font-bold",
+			h3: "text-2xl font-bold",
+			h4: "text-xl font-bold",
 		},
 	},
 	defaultVariants: {

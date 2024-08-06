@@ -1,10 +1,10 @@
-import { getImageUrl } from "~/lib/image";
 import { Profile } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
-import { Text } from "~/components/CoreComponents/Text";
 import { UserAvatar } from "~/components//UserAvatar";
 import { FollowButton } from "~/components/Followers/FollowButton";
+import { Text } from "~/components/ui/text";
+import { getImageUrl } from "~/lib/image";
 
 export const ProfileItem = ({
 	profile,

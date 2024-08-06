@@ -1,9 +1,9 @@
-import { Resource, ResourceRating } from "@recordscratch/types";
 import { cn } from "@recordscratch/lib";
-import { api } from "~/lib/api";
+import { Resource, ResourceRating } from "@recordscratch/types";
 import { View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import { Text } from "~/components/CoreComponents/Text";
+import { api } from "~/lib/api";
+import { Star } from "~/lib/icons/Star";
 
 export const RatingInfo = ({
 	initialRating,
@@ -22,13 +22,13 @@ export const RatingInfo = ({
 		staleTime: Infinity,
 	});
 
-	if (isLoading) return <AntDesign name="star" size={30} color="#ffb703" />;
+	if (isLoading) return <Star size={30} color="#ffb703" />;
 
 	return (
 		<View className="flex min-h-12 gap-4">
 			{!(size === "sm" && !rating?.average) && (
 				<View className="flex items-center justify-center gap-2 flex-row">
-					<AntDesign name="star" size={40} color="#ffb703" />
+					<Star size={30} color="#ffb703" />
 					<View className="flex flex-col items-center">
 						{rating?.average && (
 							<Text
