@@ -22,6 +22,7 @@
 		"@react-navigation/native": "^6.0.2",
 		"@recordscratch/api": "workspace:*",
 		"@recordscratch/lib": "workspace:*",
+		"@rn-primitives/dialog": "^1.0.3",
 		"@rn-primitives/popover": "^1.0.3",
 		"@rn-primitives/slot": "^1.0.3",
 		"@rn-primitives/types": "^1.0.3",

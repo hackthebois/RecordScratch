@@ -11,7 +11,7 @@ export const ResourceItem = ({
 	initialAlbum,
 	resource,
 	showType,
-	onClick,
+	onPress,
 	showLink = true,
 	direction = "horizontal",
 	imageCss,
@@ -24,7 +24,7 @@ export const ResourceItem = ({
 	initialAlbum?: Album;
 	resource: Resource;
 	showType?: boolean;
-	onClick?: () => void;
+	onPress?: () => void;
 	showLink?: boolean;
 	direction?: "horizontal" | "vertical";
 	imageCss?: string;
@@ -81,11 +81,11 @@ export const ResourceItem = ({
 			: `/albums/${resource.resourceId}`;
 
 	return (
-		<Link
+		<Pressable
 			onPress={() => {
-				if (onClick) onClick();
+				if (showLink) router.push(link);
+				if (onPress) onPress();
 			}}
-			href={link}
 		>
 			<View
 				className={cn(
@@ -112,7 +112,8 @@ export const ResourceItem = ({
 					<View className="flex gap-1 self-baseline">
 						<Pressable
 							onPress={() => {
-								if (showArtist) router.push(`/artists/${album.artist?.id}`);
+								if (showArtist && showLink)
+									router.push(`/artists/${album.artist?.id}`);
 							}}
 							className={cn("", artistNameCss)}
 							style={{ maxWidth: "100%" }}
@@ -127,6 +128,6 @@ export const ResourceItem = ({
 					</View>
 				</View>
 			</View>
-		</Link>
+		</Pressable>
 	);
 };

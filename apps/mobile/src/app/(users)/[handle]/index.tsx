@@ -87,11 +87,15 @@ const TopListsTab = ({
 	song,
 	artist,
 	headerHeight,
+	isProfile,
+	userId,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
 	headerHeight: number;
+	isProfile: boolean;
+	userId: string;
 }) => {
 	const tabHeight = headerHeight + 75;
 
@@ -116,17 +120,35 @@ const TopListsTab = ({
 		>
 			<Tabs.Tab name="Albums">
 				<View style={{ marginTop: tabHeight }}>
-					<ResourceList data={album?.resources} category="ALBUM" />
+					<ResourceList
+						data={album?.resources}
+						userId={userId}
+						listId={album?.id}
+						category="ALBUM"
+						isProfile={isProfile}
+					/>
 				</View>
 			</Tabs.Tab>
 			<Tabs.Tab name="Songs">
 				<View style={{ marginTop: tabHeight }}>
-					<ResourceList data={song?.resources} category="SONG" />
+					<ResourceList
+						data={song?.resources}
+						userId={userId}
+						listId={song?.id}
+						category="SONG"
+						isProfile={isProfile}
+					/>
 				</View>
 			</Tabs.Tab>
 			<Tabs.Tab name="Artists">
 				<View style={{ marginTop: tabHeight }}>
-					<ResourceList data={artist?.resources} category="ARTIST" />
+					<ResourceList
+						data={artist?.resources}
+						userId={userId}
+						listId={artist?.id}
+						category="ARTIST"
+						isProfile={isProfile}
+					/>
 				</View>
 			</Tabs.Tab>
 		</Tabs.Container>
@@ -151,18 +173,15 @@ const ListTab = ({ lists }: { lists: ListsType[] }) => {
 	);
 };
 
-export const ProfilePage = ({
-	handleId,
-	isProfile = false,
-}: {
-	handleId: string;
-	isProfile?: boolean;
-}) => {
+export const ProfilePage = ({ handleId }: { handleId: string }) => {
 	const { utilsColor } = useColorScheme();
 	const [profile] = api.profiles.get.useSuspenseQuery(handleId);
 	const [headerHeight, setHeaderHeight] = useState<number>(0);
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 
 	if (!profile) return <NotFoundScreen />;
+
+	const isProfile = myProfile?.userId === profile.userId;
 
 	const [topLists] = api.lists.topLists.useSuspenseQuery({
 		userId: profile.userId,
@@ -245,7 +264,12 @@ export const ProfilePage = ({
 						<ReviewsTab userId={profile.userId} headerHeight={headerHeight} />
 					</Tabs.Tab>
 					<Tabs.Tab name="Top 6">
-						<TopListsTab {...topLists} headerHeight={headerHeight} />
+						<TopListsTab
+							{...topLists}
+							headerHeight={headerHeight}
+							isProfile={isProfile}
+							userId={profile.userId}
+						/>
 					</Tabs.Tab>
 					<Tabs.Tab name="Lists">
 						<ListTab lists={lists} />

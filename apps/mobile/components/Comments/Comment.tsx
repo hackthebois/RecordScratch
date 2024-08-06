@@ -118,8 +118,7 @@ export const Comment = ({
 								toggleCommentForm(id);
 							}}
 						>
-							<Reply size={20} />
-							<Text>Hi</Text>
+							<Reply size={20} color="black" />
 						</Button>
 					)}
 				</View>

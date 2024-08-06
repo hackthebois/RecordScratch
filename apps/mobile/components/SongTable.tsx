@@ -5,7 +5,7 @@ import { Text } from "./ui/text";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (
-		<View className="flex w-full flex-col flex-1 mb-2 mt-4">
+		<View className="flex w-full flex-col mb-2 mt-4">
 			{songs.map((song, index) => (
 				<Link
 					key={song.id}

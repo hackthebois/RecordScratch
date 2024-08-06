@@ -3,7 +3,7 @@ import { api } from "~/lib/api";
 
 const Profile = () => {
 	const [profile] = api.profiles.me.useSuspenseQuery();
-	return <ProfilePage handleId={profile!.handle!} isProfile={true} />;
+	return <ProfilePage handleId={profile!.handle!} />;
 };
 
 export default Profile;

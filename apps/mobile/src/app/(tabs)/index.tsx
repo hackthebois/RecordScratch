@@ -1,6 +1,6 @@
 import { FontAwesome6 } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
 import { api } from "~/lib/api";
 
@@ -12,13 +12,10 @@ const IndexPage = () => {
 		setIsMounted(true);
 	}, []);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (isMounted) {
-			if (!needsOnboarding) {
-				router.replace("/home");
-			} else {
-				router.replace("/onboard");
-			}
+			if (!needsOnboarding) router.replace("/home");
+			else router.replace("/onboard");
 		}
 	}, [isMounted, needsOnboarding, router]);
 
@@ -29,7 +26,7 @@ const IndexPage = () => {
 					headerTitle: ``,
 				}}
 			/>
-			<FontAwesome6 name="compact-disc" size={24} color="black" />
+			<FontAwesome6 name="compact-disc" size={200} color="black" />
 		</View>
 	);
 };

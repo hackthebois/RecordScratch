@@ -16,10 +16,14 @@ export const MusicSearch = ({
 	query,
 	onNavigate,
 	hide,
+	onPress,
+	showLink,
 }: {
 	query: string;
 	onNavigate: () => void;
 	hide?: { artists?: boolean; albums?: boolean; songs?: boolean };
+	onPress?: (_: any) => void;
+	showLink?: boolean;
 }) => {
 	const recentStore = useRecents("SEARCH");
 	const { addRecent } = recentStore();
@@ -98,16 +102,22 @@ export const MusicSearch = ({
 									resourceId: String(album.id),
 									category: "ALBUM",
 								}}
-								onClick={() => {
+								onPress={() => {
 									addRecent({
 										id: String(album.id),
 										type: "ALBUM",
 										data: album,
 									});
 									onNavigate();
+									if (onPress)
+										onPress({
+											resourceId: String(album.id),
+											parentId: String(album.artist?.id),
+										});
 								}}
 								showType={true}
 								imageWidthAndHeight={imageWidthAndHeight}
+								showLink={showLink}
 							/>
 						</SearchResults>
 					))}
@@ -122,11 +132,14 @@ export const MusicSearch = ({
 										data: artist,
 									});
 									onNavigate();
+									if (onPress)
+										onPress({ resourceId: String(artist.id), parentId: null });
 								}}
 								artistId={String(artist.id)}
 								initialArtist={artist}
 								imageWidthAndHeight={imageWidthAndHeight}
 								showType={true}
+								showLink={showLink}
 							/>
 						</SearchResults>
 					))}
@@ -138,16 +151,22 @@ export const MusicSearch = ({
 									resourceId: String(song.id),
 									category: "SONG",
 								}}
-								onClick={() => {
+								onPress={() => {
 									addRecent({
 										id: String(song.id),
 										type: "SONG",
 										data: song,
 									});
 									onNavigate();
+									if (onPress)
+										onPress({
+											resourceId: String(song.id),
+											paerntId: String(song.album.id),
+										});
 								}}
 								showType={true}
 								imageWidthAndHeight={imageWidthAndHeight}
+								showLink={showLink}
 							/>
 						</SearchResults>
 					))}

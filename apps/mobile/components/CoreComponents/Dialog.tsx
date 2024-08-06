@@ -1,44 +1,45 @@
-import { View } from "react-native";
-import { Dialog as UILibDialog, PanningProvider } from "react-native-ui-lib";
 import { Button } from "./Button";
-import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { cn } from "@recordscratch/lib";
-import { useColorScheme } from "~/lib/useColorScheme";
+import { Dialog as UILibDialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
+import { Text } from "~/components/ui/text";
 
 const Dialog = ({
 	open,
 	setOpen,
+	onOpen,
+	triggerOutline,
 	children,
 	className,
-	ignoreBackgroundPress,
+	contentClassName,
 }: {
 	open: boolean;
 	setOpen: (_: boolean) => void;
+	onOpen?: () => void;
 	children: React.ReactNode;
+	triggerOutline?: React.ReactNode;
 	className?: string;
-	ignoreBackgroundPress?: boolean;
+	contentClassName?: string;
 }) => {
-	const { utilsColor } = useColorScheme();
+	const trigger = triggerOutline ? (
+		triggerOutline
+	) : (
+		<Button className="h-10 gap-1 rounded pb-5 pr-3 pt-5" variant="secondary">
+			<Text>Open</Text>
+		</Button>
+	);
 
 	return (
 		<UILibDialog
-			visible={open}
-			panDirection={PanningProvider.Directions.RIGHT ?? null}
-			onDismiss={() => setOpen(!open)}
-			ignoreBackgroundPress={ignoreBackgroundPress}
+			onOpenChange={(open) => {
+				if (onOpen) onOpen();
+				setOpen(open);
+			}}
+			open={open}
+			className={cn(className)}
 		>
-			<View className=" flex flex-col bg-white rounded-lg justify-center">
-				<Button
-					className="w-full flex justify-end bg-white mt-3 -mb-2"
-					onPress={() => setOpen(!open)}
-				>
-					<View>
-						<AntDesign name="closecircleo" size={24} color={utilsColor} />
-					</View>
-				</Button>
-				<View className={cn(className)}>{children}</View>
-			</View>
+			<DialogTrigger asChild>{trigger}</DialogTrigger>
+			<DialogContent className={cn(contentClassName)}>{children}</DialogContent>
 		</UILibDialog>
 	);
 };

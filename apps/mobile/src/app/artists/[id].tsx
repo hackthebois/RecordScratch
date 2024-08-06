@@ -42,11 +42,9 @@ const TopResults = ({ data, artists }: { data: Track[]; artists: Artist[] }) => 
 			<Text variant="h1" className="px-4 my-8">
 				Top Songs
 			</Text>
-			<View>
-				<SongTable songs={data} />
-			</View>
+			<SongTable songs={data} />
 
-			<Text variant="h1" className="px-4 my-8">
+			<Text variant="h1" className="px-4 my-12 pt-8">
 				Related Artists
 			</Text>
 			<FlatList
