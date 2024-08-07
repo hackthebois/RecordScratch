@@ -1,5 +1,4 @@
 import NotFoundScreen from "#/app/+not-found";
-import { AntDesign } from "@expo/vector-icons";
 import { ListWithResources } from "@recordscratch/types";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -17,6 +16,7 @@ import { UserAvatar } from "~/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
+import { Settings } from "~/lib/icons/Settings";
 import { getImageUrl } from "~/lib/image";
 import { useColorScheme } from "~/lib/useColorScheme";
 
@@ -188,12 +188,7 @@ export const ProfilePage = ({
 					headerRight: () =>
 						isProfile ? (
 							<TouchableOpacity onPress={() => router.push(`${handleId}/settings`)}>
-								<AntDesign
-									name="setting"
-									size={22}
-									color={utilsColor}
-									className="mr-6"
-								/>
+								<Settings size={22} className="mr-6 text-foreground" />
 							</TouchableOpacity>
 						) : null,
 				}}

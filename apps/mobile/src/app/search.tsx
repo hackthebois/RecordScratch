@@ -1,31 +1,24 @@
-import React, { useState } from "react";
-import { ScrollView, TextInput, View, StyleSheet } from "react-native";
-import { Stack, useNavigation } from "expo-router";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useDebounce } from "@recordscratch/lib";
+import { Stack } from "expo-router";
+import React, { useState } from "react";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import MusicSearch from "~/components/Search/MusicSearch";
 import ProfileSearch from "~/components/Search/ProfileSearch";
-import { TouchableOpacity } from "react-native-ui-lib";
-import { AntDesign } from "@expo/vector-icons";
+import { Search } from "~/lib/icons/Search";
 
 const SearchInput = ({ query, setQuery }: { query: string; setQuery: (_: string) => void }) => {
-	const navigation = useNavigation();
 	return (
-		<View className="flex-row items-center ml-4 mt-10">
-			<TouchableOpacity onPress={() => navigation.goBack()} className="mr-4">
-				<AntDesign name="arrowleft" size={24} color="black" />
-			</TouchableOpacity>
-			<View className="flex-row items-center border border-gray-300 rounded-md w-5/6 pt-2">
-				<AntDesign name="search1" size={20} color="grey" className="ml-2" />
-				<TextInput
-					id="name"
-					autoComplete="off"
-					placeholder="Search"
-					value={query}
-					className="flex-1 bg-transparent p-2 text-lg outline-none"
-					onChangeText={(text) => setQuery(text)}
-				/>
-			</View>
+		<View className="flex-row items-center border border-gray-300 rounded-md flex-1 h-12">
+			<Search size={20} className="mx-2 text-foreground" />
+			<TextInput
+				id="name"
+				autoComplete="off"
+				placeholder="Search"
+				value={query}
+				className="flex-1 h-full text-lg outline-none"
+				onChangeText={(text) => setQuery(text)}
+			/>
 		</View>
 	);
 };
@@ -43,11 +36,7 @@ export default function SearchLayout() {
 		<ScrollView className="flex flex-1">
 			<Stack.Screen
 				options={{
-					header: () => (
-						<View className="mt-8">
-							<SearchInput query={query} setQuery={setQuery} />
-						</View>
-					),
+					headerTitle: () => <SearchInput query={query} setQuery={setQuery} />,
 				}}
 			/>
 			<Tab.Navigator screenOptions={searchBarOptions}>
