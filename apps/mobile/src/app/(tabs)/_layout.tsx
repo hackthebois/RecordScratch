@@ -23,6 +23,7 @@ export default function TabLayout() {
 						{children}
 					</Text>
 				),
+				headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
 				tabBarStyle: {
 					height: 90,
 					paddingTop: 12,
@@ -33,7 +34,6 @@ export default function TabLayout() {
 				name="index"
 				options={{
 					title: "Onboard",
-					headerShown: true,
 					tabBarIcon: () => null,
 					href: null,
 				}}
@@ -42,14 +42,12 @@ export default function TabLayout() {
 				name="home"
 				options={{
 					title: "Home",
-					headerShown: true,
 					tabBarIcon: ({ focused }) => (
 						<Home
 							size={28}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
-					headerLeftLabelVisible: false,
 					headerRight: () => {
 						return <SearchBar />;
 					},
@@ -59,7 +57,6 @@ export default function TabLayout() {
 				name="feed"
 				options={{
 					title: "Feed",
-					headerShown: true,
 					tabBarIcon: ({ focused }) => (
 						<Star
 							size={28}
@@ -72,7 +69,6 @@ export default function TabLayout() {
 				name="profile"
 				options={{
 					title: "Profile",
-					headerShown: true,
 					tabBarIcon: ({ focused }) => (
 						<User
 							size={28}

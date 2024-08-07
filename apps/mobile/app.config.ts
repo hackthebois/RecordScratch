@@ -39,4 +39,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	jsEngine: "hermes",
 	platforms: ["ios", "android"],
+	extra: {
+		eas: {
+			projectId: "7cef8d5a-7c74-45d8-909d-5202b9c533e3",
+		},
+	},
+	owner: "recordscratch",
 });

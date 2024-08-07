@@ -19,8 +19,7 @@ const SettingsPage = () => {
 		<View className="p-4 gap-4">
 			<Stack.Screen
 				options={{
-					headerTitle: "Settings",
-					headerShown: true,
+					title: "Settings",
 				}}
 			/>
 			<Button

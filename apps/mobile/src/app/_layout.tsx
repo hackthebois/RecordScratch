@@ -17,6 +17,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Text } from "~/components/ui/text";
 import { AuthProvider } from "~/lib/Authentication";
 import { TRPCProvider } from "~/lib/api";
 import { NAV_THEME } from "~/lib/constants";
@@ -101,9 +102,9 @@ export default function RootLayout() {
 					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
 						<Stack
 							screenOptions={{
-								animation: "slide_from_right",
-								headerTitleAlign: "center",
+								animation: "fade",
 								headerBackTitleVisible: false,
+								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
 							}}
 						>
 							<Stack.Screen

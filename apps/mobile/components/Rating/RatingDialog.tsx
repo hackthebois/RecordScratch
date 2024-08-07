@@ -86,7 +86,7 @@ const RatingDialog = ({
 							</>
 						) : (
 							<>
-								<Star size={25} className="mr-2" color="#fb8500" />
+								<Star size={25} className="mr-2" color="#fb8500" fill="#fb8500" />
 								<Text>{userRating.rating}</Text>
 							</>
 						)}

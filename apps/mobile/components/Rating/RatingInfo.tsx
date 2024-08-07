@@ -28,7 +28,7 @@ export const RatingInfo = ({
 		<View className="flex min-h-12 gap-4">
 			{!(size === "sm" && !rating?.average) && (
 				<View className="flex items-center justify-center gap-2 flex-row">
-					<Star size={30} color="#ffb703" />
+					<Star size={30} color="#ffb703" fill="#fb8500" />
 					<View className="flex flex-col items-center">
 						{rating?.average && (
 							<Text

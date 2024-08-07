@@ -48,13 +48,14 @@ const SongPage = () => {
 			<View className="flex flex-1">
 				<Stack.Screen
 					options={{
-						headerTitle: () => <Text variant="h4">{song.title}</Text>,
+						title: song.title,
 					}}
 				/>
 				<ScrollView>
 					<Metadata
 						title={song.title}
 						cover={album.cover_big}
+						type="SONG"
 						tags={[
 							album.release_date,
 							song.explicit_lyrics ? "Explicit" : undefined,

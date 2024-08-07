@@ -55,12 +55,13 @@ export default function AlbumLayout() {
 			<View className="flex flex-1">
 				<Stack.Screen
 					options={{
-						headerTitle: () => <Text variant="h4">{album.title}</Text>,
+						title: album.title,
 					}}
 				/>
 				<ScrollView>
 					<Metadata
 						title={album.title}
+						type="ALBUM"
 						cover={album.cover_big}
 						tags={[
 							album.release_date,
@@ -96,7 +97,7 @@ export default function AlbumLayout() {
 								</TabsTrigger>
 							</TabsList>
 						</View>
-						<TabsContent value="album">
+						<TabsContent value="album" className="p-4">
 							<SongTable
 								songs={songs.data?.map((song) => ({ ...song, album })) ?? []}
 							/>

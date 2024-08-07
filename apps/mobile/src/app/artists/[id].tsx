@@ -79,7 +79,7 @@ const ArtistPage = () => {
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
 			<View className="flex-1">
-				<Stack.Screen options={{ headerTitle: artist.name }} />
+				<Stack.Screen options={{ title: artist.name }} />
 				<ScrollView>
 					<ArtistMetadata artist={artist} />
 					<Tabs value={value} onValueChange={setValue} className="w-full flex-1">

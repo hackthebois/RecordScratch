@@ -184,7 +184,7 @@ export const ProfilePage = ({
 		<View className="flex flex-1">
 			<Stack.Screen
 				options={{
-					headerTitle: `${handleId ? profile.name.toLocaleUpperCase() : "Profile"}`,
+					title: `${handleId ? profile.name.toLocaleUpperCase() : "Profile"}`,
 					headerRight: () =>
 						isProfile ? (
 							<TouchableOpacity onPress={() => router.push(`${handleId}/settings`)}>

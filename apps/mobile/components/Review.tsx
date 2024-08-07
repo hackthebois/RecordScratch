@@ -128,7 +128,7 @@ export const Review = ({
 	onReply,
 }: ReviewType & { onReply?: () => void }) => {
 	return (
-		<View className="flex bg-background flex-col gap-4 p-4 text-card-foreground">
+		<View className="flex bg-background flex-col gap-4 px-4 py-8 text-card-foreground">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
