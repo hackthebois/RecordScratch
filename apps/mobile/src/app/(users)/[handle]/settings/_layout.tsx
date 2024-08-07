@@ -1,10 +1,11 @@
 import NotFoundScreen from "#/app/+not-found";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { View } from "react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
+import { View } from "react-native";
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/Authentication";
 import { api } from "~/lib/api";
-import { Button } from "~/components/CoreComponents/Button";
 
 const SettingsPage = () => {
 	const { handle } = useLocalSearchParams<{ id: string; handle: string }>();
@@ -15,7 +16,7 @@ const SettingsPage = () => {
 	if (!profile || profile.handle != handle) return <NotFoundScreen />;
 
 	return (
-		<View>
+		<View className="p-4 gap-4">
 			<Stack.Screen
 				options={{
 					headerTitle: "Settings",
@@ -29,14 +30,15 @@ const SettingsPage = () => {
 					logout();
 				}}
 			>
-				Sign out
+				<Text>Sign out</Text>
 			</Button>
 
 			<Button
 				variant="secondary"
-				label="Toggle mode"
 				onPress={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
-			/>
+			>
+				<Text>Toggle mode</Text>
+			</Button>
 		</View>
 	);
 };

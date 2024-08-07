@@ -10,7 +10,7 @@ const TextClassContext = React.createContext<string | undefined>(undefined);
 export const textVariants = cva("text-foreground", {
 	variants: {
 		variant: {
-			text: "text-foreground font-regular",
+			text: "font-normal",
 			h1: "text-4xl font-bold",
 			h2: "text-3xl font-bold",
 			h3: "text-2xl font-bold",
@@ -28,13 +28,13 @@ const Text = React.forwardRef<TextRef, TextProps>(
 	({ className, asChild = false, variant, ...props }, ref) => {
 		const textClass = React.useContext(TextClassContext);
 		const Component = asChild ? Slot.Text : RNText;
+
 		return (
 			<Component
 				className={cn(
 					"text-base text-foreground web:select-text",
-					textVariants({ variant }),
 					textClass,
-					className
+					textVariants({ variant, className })
 				)}
 				ref={ref}
 				{...props}

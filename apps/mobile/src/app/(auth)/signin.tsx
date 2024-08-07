@@ -3,8 +3,8 @@ import { useRouter } from "expo-router";
 import * as Browser from "expo-web-browser";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
-import { Button } from "~/components/CoreComponents/Button";
-import { Text } from "~/components/CoreComponents/Text";
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/Authentication";
 
 Browser.maybeCompleteAuthSession();
@@ -44,9 +44,10 @@ const AuthPage = () => {
 			<Button
 				className=" rounded-md px-4 py-2"
 				onPress={_handlePressButtonAsync}
-				label="Sign In"
 				variant="secondary"
-			/>
+			>
+				<Text>Sign In</Text>
+			</Button>
 		</View>
 	);
 };

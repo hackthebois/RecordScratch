@@ -1,7 +1,7 @@
 import { cn } from "@recordscratch/lib";
 import { Resource, ResourceRating } from "@recordscratch/types";
 import { View } from "react-native";
-import { Text } from "~/components/CoreComponents/Text";
+import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { Star } from "~/lib/icons/Star";
 

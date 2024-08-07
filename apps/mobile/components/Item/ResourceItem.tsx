@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
-import { Text } from "~/components/CoreComponents/Text";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Text } from "~/components/ui/text";
 import { getQueryOptions } from "~/lib/deezer";
-import Skeleton from "../CoreComponents/Skeleton";
 
 export const ResourceItem = ({
 	initialAlbum,

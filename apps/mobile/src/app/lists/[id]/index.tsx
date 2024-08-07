@@ -1,16 +1,16 @@
-import { Link, Stack, router, useLocalSearchParams } from "expo-router";
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import { api } from "~/lib/api";
 import NotFoundScreen from "#/app/+not-found";
 import { AntDesign } from "@expo/vector-icons";
-import { useColorScheme } from "~/lib/useColorScheme";
-import Metadata from "~/components/Metadata";
 import { timeAgo } from "@recordscratch/lib";
-import { getImageUrl } from "~/lib/image";
-import { Text } from "~/components/CoreComponents/Text";
-import { UserAvatar } from "~/components/UserAvatar";
+import { Link, Stack, router, useLocalSearchParams } from "expo-router";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import ListImage from "~/components/List/ListImage";
 import ListResources from "~/components/List/ListResources";
+import Metadata from "~/components/Metadata";
+import { UserAvatar } from "~/components/UserAvatar";
+import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
+import { getImageUrl } from "~/lib/image";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 const ListPage = () => {
 	const { utilsColor } = useColorScheme();

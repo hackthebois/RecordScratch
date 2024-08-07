@@ -1,5 +1,5 @@
 import { TouchableOpacity, View } from "react-native";
-import { Text } from "~/components/CoreComponents/Text";
+import { Text } from "~/components/ui/text";
 import { Star } from "~/lib/icons/Star";
 
 export const RatingInput = ({
@@ -10,7 +10,7 @@ export const RatingInput = ({
 	onChange: (_rating: number | null) => void;
 }) => {
 	return (
-		<View className="flex justify-between flex-row mx-8">
+		<View className="flex justify-between flex-row">
 			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
 				<TouchableOpacity
 					key={index}

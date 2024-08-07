@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 import AlertDialog from "~/components/CoreComponents/AlertDialog";
-import Dialog from "~/components/CoreComponents/Dialog";
-import Skeleton from "~/components/CoreComponents/Skeleton";
-import { Text } from "~/components/CoreComponents/Text";
+import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { Star } from "~/lib/icons/Star";
 import { Button } from "../ui/button";
@@ -68,16 +68,35 @@ const RatingDialog = ({
 	}, [userRating, reset, resource]);
 
 	if (isLoading) {
-		return <Skeleton style={{ height: 48, width: 80 }} />;
+		return <Skeleton className="w-[80px] h-[48px]" />;
 	}
 	return (
 		<View className="">
-			<Dialog setOpen={setOpen} open={open}>
-				<View>
-					<Text variant="h2" className=" text-center">
+			<Dialog onOpenChange={setOpen} open={open}>
+				<DialogTrigger asChild>
+					<Button
+						variant="secondary"
+						onPress={() => setOpen(true)}
+						className="flex-row gap-2"
+					>
+						{!userRating ? (
+							<>
+								<Star size={25} className="mr-2" color="#fb8500" />
+								<Text>Rate</Text>
+							</>
+						) : (
+							<>
+								<Star size={25} className="mr-2" color="#fb8500" />
+								<Text>{userRating.rating}</Text>
+							</>
+						)}
+					</Button>
+				</DialogTrigger>
+				<DialogContent className="min-w-[90%]">
+					<Text variant="h1" className="text-center">
 						{name}
 					</Text>
-					<Text className=" text-center my-2">
+					<Text className="text-center">
 						{resource.category === "ALBUM"
 							? "Rate this album"
 							: resource.category === "ARTIST"
@@ -92,18 +111,12 @@ const RatingDialog = ({
 								<RatingInput value={value ?? 0} onChange={onChange} />
 							)}
 						/>
-						<View
-							style={{
-								flexDirection: "column",
-								alignItems: "center",
-								marginTop: 16,
-							}}
-						>
+						<View className="mt-4">
 							<Button
 								variant="secondary"
 								onPress={handleSubmit(onSubmit)}
 								disabled={!formState.isValid}
-								className="mb-4 w-5/6"
+								className="mb-4"
 							>
 								<Text>Rate</Text>
 							</Button>
@@ -133,21 +146,8 @@ const RatingDialog = ({
 								))}
 						</View>
 					</View>
-				</View>
+				</DialogContent>
 			</Dialog>
-			<Button variant="secondary" onPress={() => setOpen(true)} className="flex-row gap-2">
-				{!userRating ? (
-					<>
-						<Star size={25} className="mr-2" color="#fb8500" />
-						<Text>Rate</Text>
-					</>
-				) : (
-					<>
-						<Star size={25} className="mr-2" color="#fb8500" />
-						<Text>{userRating.rating}</Text>
-					</>
-				)}
-			</Button>
 		</View>
 	);
 };
