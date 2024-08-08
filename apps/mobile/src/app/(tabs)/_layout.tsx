@@ -1,9 +1,9 @@
 import { cn } from "@recordscratch/lib";
 import { Tabs } from "expo-router";
 import React from "react";
-import { SearchBar } from "~/components/Search/SearchBar";
 import { Text } from "~/components/ui/text";
 import { Home } from "~/lib/icons/Home";
+import { Search } from "~/lib/icons/Search";
 import { Star } from "~/lib/icons/Star";
 import { User } from "~/lib/icons/User";
 
@@ -48,9 +48,19 @@ export default function TabLayout() {
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
-					headerRight: () => {
-						return <SearchBar />;
-					},
+				}}
+			/>
+			<Tabs.Screen
+				name="search"
+				options={{
+					title: "Search",
+					tabBarIcon: ({ focused }) => (
+						<Search
+							size={28}
+							className={cn(focused ? "text-primary" : "text-muted-foreground")}
+						/>
+					),
+					headerShown: false,
 				}}
 			/>
 			<Tabs.Screen

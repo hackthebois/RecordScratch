@@ -72,9 +72,9 @@ export const ArtistItem = ({
 						<View className="h-full w-full bg-muted"></View>
 					)}
 				</View>
-				<View className="flex flex-col gap-1">
-					<Text className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</Text>
-					{showType && <Text>{"• Artist"}</Text>}
+				<View className="justify-center gap-1">
+					<Text className={cn("flex font-medium", textCss)}>{artist.name}</Text>
+					{showType && <Text className="text-muted-foreground">{"Artist"}</Text>}
 				</View>
 			</View>
 		</Link>

@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 // Define the context type
 interface AuthContextType {
@@ -10,7 +10,7 @@ interface AuthContextType {
 }
 
 // Create the Auth context with a default value of undefined
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
 	const context = useContext(AuthContext);

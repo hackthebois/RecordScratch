@@ -3,7 +3,7 @@ import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Text } from "~/components/ui/text";
 import { getQueryOptions } from "~/lib/deezer";
@@ -62,7 +62,13 @@ export const ResourceItem = ({
 	if (isLoading || !album || (resource.category === "SONG" && isLoadingTracks)) {
 		return (
 			<View className="flex flex-row items-center gap-4 rounded">
-				<Skeleton className="relative h-16 w-16 min-w-[64px] rounded" />
+				<Skeleton
+					className="relative min-w-[64px] rounded"
+					style={{
+						width: imageWidthAndHeight,
+						height: imageWidthAndHeight,
+					}}
+				/>
 				<View className="flex flex-col gap-2">
 					<Skeleton className="mb-1 h-4 w-32" />
 					<Skeleton className="h-4 w-24" />
@@ -110,21 +116,15 @@ export const ResourceItem = ({
 				)}
 				<View className="flex flex-col gap-2">
 					<Text className={cn(" truncate font-semibold mr-3", titleCss)}>{name}</Text>
-					<View className="flex gap-1 self-baseline">
-						<Pressable
-							onPress={() => {
-								if (showArtist) router.push(`/artists/${album.artist?.id}`);
-							}}
-							className={cn("", artistNameCss)}
-							style={{ maxWidth: "100%" }}
-						>
-							<Text className={cn("text-muted-foreground", artistNameCss)}>
-								{showArtist ? album.artist?.name : ""}
-							</Text>
-						</Pressable>
+					<View className="flex flex-row gap-1 self-baseline">
 						{showType && (
-							<Text>{resource.category === "SONG" ? "• Song" : "• Album"}</Text>
+							<Text className="text-muted-foreground">
+								{resource.category === "SONG" ? "Song" : "Album"}
+							</Text>
 						)}
+						<Text className={cn("text-muted-foreground", artistNameCss)}>
+							{showArtist ? `• ${album.artist?.name}` : ""}
+						</Text>
 					</View>
 				</View>
 			</View>
