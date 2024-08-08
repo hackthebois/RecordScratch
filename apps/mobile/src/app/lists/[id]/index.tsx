@@ -1,16 +1,16 @@
+import NotFoundScreen from "#/app/+not-found";
+import { timeAgo } from "@recordscratch/lib";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-import { api } from "~/lib/api";
-import NotFoundScreen from "#/app/+not-found";
-import { AntDesign } from "@expo/vector-icons";
-import { useColorScheme } from "~/lib/useColorScheme";
-import Metadata from "~/components/Metadata";
-import { timeAgo } from "@recordscratch/lib";
-import { getImageUrl } from "~/lib/image";
-import { Text } from "~/components/CoreComponents/Text";
-import { UserAvatar } from "~/components/UserAvatar";
 import ListImage from "~/components/List/ListImage";
 import ListResources from "~/components/List/ListResources";
+import Metadata from "~/components/Metadata";
+import { UserAvatar } from "~/components/UserAvatar";
+import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
+import { Settings } from "~/lib/icons/Settings";
+import { getImageUrl } from "~/lib/image";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 const ListPage = () => {
 	const { utilsColor } = useColorScheme();
@@ -40,12 +40,7 @@ const ListPage = () => {
 							<TouchableOpacity
 								onPress={() => router.push(`lists/${listId}/settings`)}
 							>
-								<AntDesign
-									name="setting"
-									size={30}
-									color={utilsColor}
-									className="mr-6"
-								/>
+								<Settings size={30} className="mr-6 text-foreground" />
 							</TouchableOpacity>
 						) : null,
 				}}

@@ -1,11 +1,11 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View } from "react-native";
-import * as Browser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
+import * as Browser from "expo-web-browser";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { View } from "react-native";
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/Authentication";
-import { Button } from "~/components/CoreComponents/Button";
-import { Text } from "~/components/CoreComponents/Text";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
@@ -44,9 +44,10 @@ const AuthPage = () => {
 			<Button
 				className=" rounded-md px-4 py-2"
 				onPress={_handlePressButtonAsync}
-				label="Sign In"
 				variant="secondary"
-			/>
+			>
+				<Text>Sign In</Text>
+			</Button>
 		</View>
 	);
 };

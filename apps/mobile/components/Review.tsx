@@ -1,15 +1,18 @@
-import { api } from "~/lib/api";
-import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
-import { getImageUrl } from "~/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
+import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "expo-router";
-import { View } from "react-native";
-import { Button, buttonVariants } from "~/components/CoreComponents/Button";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-import { Text } from "~/components/CoreComponents/Text";
-import { UserAvatar } from "~/components/UserAvatar";
-import { AntDesign } from "@expo/vector-icons";
 import { Suspense } from "react";
+import { View } from "react-native";
+import { ResourceItem } from "~/components/Item/ResourceItem";
+import { UserAvatar } from "~/components/UserAvatar";
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
+import { Heart } from "~/lib/icons/Heart";
+import { MessageCircle } from "~/lib/icons/MessageCircle";
+import { Reply } from "~/lib/icons/Reply";
+import { Star } from "~/lib/icons/Star";
+import { getImageUrl } from "~/lib/image";
 
 const IconSize = 30;
 
@@ -37,9 +40,7 @@ const LikeButton = (props: SelectLike) => {
 
 	return (
 		<Button
-			className=" text-muted-foreground"
 			variant="secondary"
-			size="auto"
 			onPress={() => {
 				if (isLiking || isUnLiking) return;
 				if (like) {
@@ -48,16 +49,13 @@ const LikeButton = (props: SelectLike) => {
 					likeMutation(props);
 				}
 			}}
+			className="flex-row gap-2"
 		>
-			<View className="flex flex-row gap-2 text-muted-foreground items-center p-1">
-				{liked ? (
-					<AntDesign name="heart" size={IconSize} color="#ff4d4f" />
-				) : (
-					<AntDesign name="hearto" size={IconSize} color="black" />
-				)}
-
-				<Text className="font-bold">{likesCount}</Text>
-			</View>
+			<Heart
+				size={25}
+				className={cn(liked ? "text-red-500 fill-red-500" : "text-muted-foreground")}
+			/>
+			<Text className="font-bold">{likesCount}</Text>
 		</Button>
 	);
 };
@@ -73,11 +71,6 @@ const ReplyButton = ({
 }) => {
 	return (
 		<Link
-			className={buttonVariants({
-				variant: "secondary",
-				size: "auto",
-				className: "text-muted-foreground p-1",
-			})}
 			href={{
 				pathname: "[handle]/ratings/[id]",
 				params: {
@@ -86,8 +79,11 @@ const ReplyButton = ({
 				},
 			}}
 			onPress={onClick}
+			asChild
 		>
-			<AntDesign name="back" size={IconSize} color="black" />
+			<Button variant="secondary">
+				<Reply size={25} className="text-muted-foreground" />
+			</Button>
 		</Link>
 	);
 };
@@ -106,21 +102,16 @@ const CommentsButton = ({
 
 	return (
 		<Link
-			className={cn(
-				buttonVariants({
-					variant: "secondary",
-					size: "auto",
-				})
-			)}
 			href={{
 				pathname: "[handle]/ratings/[id]",
 				params: { handle: handle, id: resourceId },
 			}}
+			asChild
 		>
-			<View className="flex flex-row gap-2 text-muted-foreground items-center p-1">
-				<AntDesign name="message1" size={IconSize} color="black" />
+			<Button variant="secondary" className="flex-row gap-2">
+				<MessageCircle size={25} className="text-muted-foreground" />
 				<Text className="font-bold">{comments}</Text>
-			</View>
+			</Button>
 		</Link>
 	);
 };
@@ -137,58 +128,45 @@ export const Review = ({
 	onReply,
 }: ReviewType & { onReply?: () => void }) => {
 	return (
-		<View className="flex flex-col gap-4 rounded-lg border border-gray-300 p-3 py-4 text-card-foreground">
+		<View className="flex bg-background flex-col gap-4 px-4 py-8 text-card-foreground">
 			<ResourceItem
 				resource={{ parentId, resourceId, category }}
 				showType
 				imageWidthAndHeight={80}
 				titleCss=""
 			/>
-
 			<View className="flex flex-col items-start gap-3">
 				<View className="flex flex-row items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
-						<AntDesign name="star" key={i} size={24} color="#ffb703" />
+						<Star key={i} size={24} color="#ffb703" fill={"#ffb703"} />
 					))}
 					{Array.from(Array(10 - rating)).map((_, i) => (
-						<AntDesign name="staro" key={i} size={24} color="#ffb703" />
+						<Star key={i} size={24} color="#ffb703" />
 					))}
 				</View>
-				<Link href={`/${String(profile.handle)}`}>
+				<Link href={`/${String(profile.handle)}`} asChild>
 					<View className="flex flex-row flex-wrap items-center gap-2">
-						<UserAvatar size={65} imageUrl={getImageUrl(profile)} />
+						<UserAvatar size={40} imageUrl={getImageUrl(profile)} />
 						<Text className="text-lg">{profile.name}</Text>
 						<Text className="text-left text-muted-foreground text-lg">
 							@{profile.handle} • {timeAgo(updatedAt)}
 						</Text>
 					</View>
 				</Link>
-				{!!content && (
-					<Text className="whitespace-pre-line text-lg min-h-7">{content}</Text>
-				)}
+				{!!content && <Text className="text-lg">{content}</Text>}
 				<View className="flex flex-row items-center gap-3">
 					<Suspense
 						fallback={
-							<Button
-								variant="secondary"
-								size="auto"
-								className="gap-2 text-muted-foreground"
-							>
-								<AntDesign name="hearto" size={IconSize} color="black" />
-							</Button>
+							<></>
+							// TODO
 						}
 					>
 						<LikeButton resourceId={resourceId} authorId={userId} />
 					</Suspense>
 					<Suspense
 						fallback={
-							<Button
-								variant="secondary"
-								size="auto"
-								className="gap-2 text-muted-foreground"
-							>
-								<AntDesign name="message1" size={IconSize} color="black" />
-							</Button>
+							<></>
+							// TODO
 						}
 					>
 						<CommentsButton

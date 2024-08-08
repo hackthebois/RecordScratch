@@ -1,10 +1,10 @@
-import { getQueryOptions } from "~/lib/deezer";
 import { Artist, cn } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
-import { Text } from "~/components/CoreComponents/Text";
+import { Text } from "~/components/ui/text";
+import { getQueryOptions } from "~/lib/deezer";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -72,9 +72,9 @@ export const ArtistItem = ({
 						<View className="h-full w-full bg-muted"></View>
 					)}
 				</View>
-				<View className="flex flex-col gap-1">
-					<Text className={cn("flex flex-1 font-medium", textCss)}>{artist.name}</Text>
-					{showType && <Text>{"• Artist"}</Text>}
+				<View className="justify-center gap-1">
+					<Text className={cn("flex font-medium", textCss)}>{artist.name}</Text>
+					{showType && <Text className="text-muted-foreground">{"Artist"}</Text>}
 				</View>
 			</View>
 		</Link>

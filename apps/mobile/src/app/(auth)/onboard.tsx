@@ -1,17 +1,17 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import { cn, useDebounce } from "@recordscratch/lib";
-import { handleRegex, OnboardSchema } from "@recordscratch/types";
-import { useEffect, useState } from "react";
-import { TextInput, View } from "react-native";
-import type { Onboard } from "@recordscratch/types";
-import { useForm, Controller } from "react-hook-form";
-import { router, Stack } from "expo-router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cn, useDebounce } from "@recordscratch/lib";
+import type { Onboard } from "@recordscratch/types";
+import { OnboardSchema, handleRegex } from "@recordscratch/types";
 import * as ImagePicker from "expo-image-picker";
-import { api } from "~/lib/api";
+import { Stack, router } from "expo-router";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { TextInput, View } from "react-native";
 import { UserAvatar } from "~/components/UserAvatar";
-import { Text } from "~/components/CoreComponents/Text";
-import { Button } from "~/components/CoreComponents/Button";
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
 
 const SlideWrapper = ({
 	page,
@@ -328,10 +328,11 @@ function Onboard() {
 						<View>
 							<Button
 								variant="secondary"
-								label="Pick an image"
 								onPress={() => handleImagePick(onChange)}
 								className="mt-8"
-							/>
+							>
+								<Text>Pick an image</Text>
+							</Button>
 							{form.formState.errors.image && (
 								<Text style={{ color: "red", marginTop: 5, textAlign: "center" }}>
 									{`${form.formState.errors.image.message}`}
@@ -343,23 +344,12 @@ function Onboard() {
 			</SlideWrapper>
 			<View className="mt-8 flex flex-row gap-4">
 				{page !== 0 && (
-					<Button
-						label="Back"
-						variant="secondary"
-						onPress={() => setPage((page) => page - 1)}
-					/>
+					<Button variant="secondary" onPress={() => setPage((page) => page - 1)}>
+						<Text>Back</Text>
+					</Button>
 				)}
 				<Button
 					variant="secondary"
-					label={
-						page === 2 && !bio
-							? "Skip"
-							: page === 3 && !image
-								? `Skip`
-								: page === 3
-									? "Finish"
-									: "Next"
-					}
 					onPress={() => {
 						if (page === 3) {
 							form.handleSubmit(onSubmit, onInvalid)();
@@ -368,7 +358,15 @@ function Onboard() {
 						}
 					}}
 					disabled={!pageValid(page)}
-				/>
+				>
+					{page === 2 && !bio
+						? "Skip"
+						: page === 3 && !image
+							? `Skip`
+							: page === 3
+								? "Finish"
+								: "Next"}
+				</Button>
 			</View>
 		</View>
 	);

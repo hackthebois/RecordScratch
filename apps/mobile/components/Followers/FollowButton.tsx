@@ -1,5 +1,6 @@
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
-import { Button } from "~/components/CoreComponents/Button";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
 	const utils = api.useUtils();
@@ -55,7 +56,7 @@ export const FollowButton = ({ profileId }: { profileId: string }) => {
 				else followUser(profileId);
 			}}
 		>
-			{following ? "Unfollow" : "Follow"}
+			<Text>{following ? "Unfollow" : "Follow"}</Text>
 		</Button>
 	);
 };

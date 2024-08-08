@@ -1,8 +1,8 @@
 import { Image } from "expo-image";
 import React from "react";
 import { View } from "react-native";
-import { Tag } from "~/components/CoreComponents/Tag";
-import { Text } from "~/components/CoreComponents/Text";
+import { Pill } from "~/components/ui/pill";
+import { Text } from "~/components/ui/text";
 
 const Metadata = ({
 	title,
@@ -43,7 +43,7 @@ const Metadata = ({
 			)}
 			<View className="flex flex-col justify-center items-center gap-4 sm:justify-center">
 				{!!type && <Text className="text-muted-foreground">{type.toUpperCase()}</Text>}
-				<Text variant={"h1"} className={"text-center sm:text-left"}>
+				<Text variant={"h1"} className="text-center">
 					{title}
 				</Text>
 				{tags && (
@@ -51,7 +51,7 @@ const Metadata = ({
 						{tags
 							.filter((tag) => Boolean(tag))
 							.map((tag, index) => (
-								<Tag key={index}>{tag}</Tag>
+								<Pill key={index}>{tag}</Pill>
 							))}
 					</View>
 				)}

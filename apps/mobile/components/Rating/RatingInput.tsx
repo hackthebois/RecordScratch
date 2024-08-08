@@ -1,6 +1,5 @@
-import { AntDesign } from "@expo/vector-icons";
-import { Text } from "~/components/CoreComponents/Text";
 import { TouchableOpacity, View } from "react-native";
+import { Text } from "~/components/ui/text";
 import { Star } from "~/lib/icons/Star";
 
 export const RatingInput = ({
@@ -11,7 +10,7 @@ export const RatingInput = ({
 	onChange: (_rating: number | null) => void;
 }) => {
 	return (
-		<View className="flex justify-between flex-row gap-1">
+		<View className="flex justify-between flex-row">
 			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
 				<TouchableOpacity
 					key={index}
@@ -19,11 +18,15 @@ export const RatingInput = ({
 					className="flex flex-row items-center justify-center pt-2"
 				>
 					<View className="flex flex-col items-center">
-						<Star
-							color="orange"
-							fill={rating ? (index <= rating ? "orange" : "none") : "none"}
-							size={35}
-						/>
+						{rating ? (
+							index <= rating ? (
+								<Star size={24} color="#ffb703" fill="#ffb703" />
+							) : (
+								<Star size={24} color="#ffb703" />
+							)
+						) : (
+							<Star size={24} color="#ffb703" />
+						)}
 						<Text className=" text-muted-foreground">{index}</Text>
 					</View>
 				</TouchableOpacity>

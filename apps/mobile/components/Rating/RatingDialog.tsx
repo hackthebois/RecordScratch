@@ -1,17 +1,16 @@
-import { RateForm, RateFormSchema, Rating, Resource } from "@recordscratch/types";
-import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
-import { Text } from "~/components/CoreComponents/Text";
-import React, { useEffect, useState } from "react";
-import { Button } from "~/components/CoreComponents/Button";
-import { Star } from "~/lib/icons/Star";
-
-import { api } from "~/lib/api";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Skeleton from "~/components/CoreComponents/Skeleton";
-import { RatingInput } from "./RatingInput";
+import { RateForm, RateFormSchema, Rating, Resource } from "@recordscratch/types";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 import AlertDialog from "~/components/CoreComponents/AlertDialog";
-import Dialog from "~/components/CoreComponents/Dialog";
+import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
+import { Star } from "~/lib/icons/Star";
+import { Button } from "../ui/button";
+import { RatingInput } from "./RatingInput";
 
 const RatingDialog = ({
 	initialUserRating,
@@ -69,97 +68,87 @@ const RatingDialog = ({
 	}, [userRating, reset, resource]);
 
 	if (isLoading) {
-		return <Skeleton style={{ height: 48, width: 80 }} />;
+		return <Skeleton className="w-[80px] h-[48px]" />;
 	}
 	return (
-		<Dialog
-			contentClassName="flex flex-col p-6"
-			setOpen={setOpen}
-			open={open}
-			triggerOutline={
-				<Button
-					variant="secondary"
-					size="default"
-					className=" w-auto ml-2 h-auto py-3"
-					onPress={() => setOpen(true)}
-				>
-					{!userRating ? (
-						<View className="flex flex-row items-center justify-center">
-							<Star size={25} color="#fb8500" className="mr-2" fill="none" />
-							<Text className="font-semibold w-full text-lg">Rate</Text>
-						</View>
-					) : (
-						<View className="flex flex-row items-center h-full">
-							<Star size={25} color="#fb8500" className="mr-1" fill="#fb8500" />
-							<Text className="font-semibold w-full text-lg">
-								{userRating.rating}
-							</Text>
-						</View>
-					)}
-				</Button>
-			}
-		>
-			<>
-				<Text variant="h2" className=" text-center">
-					{name}
-				</Text>
-				<Text className=" text-center my-2">
-					{resource.category === "ALBUM"
-						? "Rate this album"
-						: resource.category === "ARTIST"
-							? "Rate this artist"
-							: "Rate this song"}
-				</Text>
-				<View>
-					<Controller
-						control={control}
-						name="rating"
-						render={({ field: { onChange, value } }) => (
-							<RatingInput value={value ?? 0} onChange={onChange} />
-						)}
-					/>
-					<View
-						style={{
-							flexDirection: "column",
-							alignItems: "center",
-							marginTop: 16,
-						}}
+		<View className="">
+			<Dialog onOpenChange={setOpen} open={open}>
+				<DialogTrigger asChild>
+					<Button
+						variant="secondary"
+						onPress={() => setOpen(true)}
+						className="flex-row gap-2"
 					>
-						<Button
-							label="Rate"
-							variant="secondary"
-							onPress={handleSubmit(onSubmit)}
-							disabled={!formState.isValid}
-							className="mb-4 w-5/6"
+						{!userRating ? (
+							<>
+								<Star size={25} className="mr-2" color="#fb8500" />
+								<Text>Rate</Text>
+							</>
+						) : (
+							<>
+								<Star size={25} className="mr-2" color="#fb8500" fill="#fb8500" />
+								<Text>{userRating.rating}</Text>
+							</>
+						)}
+					</Button>
+				</DialogTrigger>
+				<DialogContent className="min-w-[90%]">
+					<Text variant="h1" className="text-center">
+						{name}
+					</Text>
+					<Text className="text-center">
+						{resource.category === "ALBUM"
+							? "Rate this album"
+							: resource.category === "ARTIST"
+								? "Rate this artist"
+								: "Rate this song"}
+					</Text>
+					<View>
+						<Controller
+							control={control}
+							name="rating"
+							render={({ field: { onChange, value } }) => (
+								<RatingInput value={value ?? 0} onChange={onChange} />
+							)}
 						/>
-						{userRating &&
-							(userRating.content ? (
-								<AlertDialog
-									trigger={
-										<TouchableOpacity className="mb-6 w-5/6 flex items-center">
-											<Text className=" text-gray-800 font-semibold">
-												Remove rating
-											</Text>
-										</TouchableOpacity>
-									}
-									title="Remove your review?"
-									description="This action will remove your current review"
-									onConfirm={clearRating}
-								/>
-							) : (
-								<TouchableOpacity
-									onPress={clearRating}
-									className="mb-6 w-5/6 flex items-center"
-								>
-									<Text className=" text-gray-800 font-semibold">
-										Remove rating
-									</Text>
-								</TouchableOpacity>
-							))}
+						<View className="mt-4">
+							<Button
+								variant="secondary"
+								onPress={handleSubmit(onSubmit)}
+								disabled={!formState.isValid}
+								className="mb-4"
+							>
+								<Text>Rate</Text>
+							</Button>
+							{userRating &&
+								(userRating.content ? (
+									<AlertDialog
+										trigger={
+											<TouchableOpacity className="mb-6 w-5/6 flex items-center">
+												<Text className=" text-gray-800 font-semibold">
+													Remove rating
+												</Text>
+											</TouchableOpacity>
+										}
+										title="Remove your review?"
+										description="This action will remove your current review"
+										onConfirm={clearRating}
+									/>
+								) : (
+									<TouchableOpacity
+										onPress={clearRating}
+										className="mb-6 w-5/6 flex items-center"
+									>
+										<Text className=" text-gray-800 font-semibold">
+											Remove rating
+										</Text>
+									</TouchableOpacity>
+								))}
+						</View>
 					</View>
-				</View>
-			</>
-		</Dialog>
+				</DialogContent>
+			</Dialog>
+		</View>
 	);
 };
 

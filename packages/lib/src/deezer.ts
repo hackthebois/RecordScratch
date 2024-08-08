@@ -238,3 +238,72 @@ export const getQueryOptions = <TRoute extends keyof Deezer>({
 		},
 	};
 };
+
+export type SearchOptions = {
+	query: string;
+	filters: {
+		artists: boolean;
+		albums: boolean;
+		songs: boolean;
+	};
+	limit?: number;
+};
+
+export const deezerHelpers = (baseUrl: string) => {
+	const search = async ({
+		query,
+		filters: { artists = true, albums = true, songs = true },
+		limit = 6,
+	}: SearchOptions) => {
+		const results = {
+			artists: [] as Artist[],
+			albums: [] as Album[],
+			songs: [] as Track[],
+		};
+
+		const promises = [];
+
+		if (artists) {
+			promises.push(
+				deezer({
+					route: "/search/artist",
+					input: { q: query, limit },
+					baseUrl,
+				}).then((response) => {
+					results.artists = response.data;
+				})
+			);
+		}
+
+		if (albums) {
+			promises.push(
+				deezer({
+					route: "/search/album",
+					input: { q: query, limit },
+					baseUrl,
+				}).then((response) => {
+					results.albums = response.data;
+				})
+			);
+		}
+
+		if (songs) {
+			promises.push(
+				deezer({
+					route: "/search/track",
+					input: { q: query, limit },
+					baseUrl,
+				}).then((response) => {
+					results.songs = response.data;
+				})
+			);
+		}
+
+		await Promise.all(promises);
+		return results;
+	};
+
+	return {
+		search,
+	};
+};
