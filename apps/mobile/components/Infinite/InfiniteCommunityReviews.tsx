@@ -39,6 +39,7 @@ export const InfiniteCommunityReviews = ({
 			onEndReachedThreshold={0.1}
 			onEndReached={handleLoadMore}
 			estimatedItemSize={380}
+			scrollEnabled={true}
 			ListEmptyComponent={<Text>No reviews available</Text>}
 		/>
 	);

@@ -26,32 +26,16 @@ const HandlePage = () => {
 	return <ProfilePage handleId={handle!} />;
 };
 
-const ReviewsTab = ({ userId, headerHeight }: { userId: string; headerHeight: number }) => {
+const ReviewsTab = ({ userId }: { userId: string }) => {
 	const [value, setValue] = useState("all");
+	const [rating, setRating] = useState<number | undefined>(undefined);
 	const { data: distribution } = api.profiles.distribution.useQuery({
 		userId,
 	});
 
-	const RenderInfiniteProfileReviews = ({
-		category,
-		rating,
-	}: {
-		category?: "ALBUM" | "SONG";
-		rating?: number;
-	}) => (
-		<InfiniteProfileReviews
-			input={{
-				profileId: userId,
-				limit: 3,
-				category,
-				rating,
-			}}
-		/>
-	);
-
 	return (
 		<>
-			<DistributionChart distribution={distribution} />
+			<DistributionChart distribution={distribution} value={rating} onChange={setRating} />
 			<Tabs value={value} onValueChange={setValue} className="w-full">
 				<View className="px-4">
 					<TabsList className="flex-row w-full">
@@ -67,13 +51,33 @@ const ReviewsTab = ({ userId, headerHeight }: { userId: string; headerHeight: nu
 					</TabsList>
 				</View>
 				<TabsContent value="all">
-					<RenderInfiniteProfileReviews />
+					<InfiniteProfileReviews
+						input={{
+							profileId: userId,
+							limit: 5,
+							rating,
+						}}
+					/>
 				</TabsContent>
 				<TabsContent value="albums">
-					<RenderInfiniteProfileReviews category="ALBUM" />
+					<InfiniteProfileReviews
+						input={{
+							profileId: userId,
+							limit: 5,
+							category: "ALBUM",
+							rating,
+						}}
+					/>
 				</TabsContent>
 				<TabsContent value="songs">
-					<RenderInfiniteProfileReviews category="SONG" />
+					<InfiniteProfileReviews
+						input={{
+							profileId: userId,
+							limit: 5,
+							category: "SONG",
+							rating,
+						}}
+					/>
 				</TabsContent>
 			</Tabs>
 		</>
@@ -230,7 +234,7 @@ export const ProfilePage = ({
 						</TabsList>
 					</View>
 					<TabsContent value="reviews">
-						<ReviewsTab userId={profile.userId} headerHeight={headerHeight} />
+						<ReviewsTab userId={profile.userId} />
 					</TabsContent>
 					<TabsContent value="top">
 						<TopListsTab {...topLists} headerHeight={headerHeight} />

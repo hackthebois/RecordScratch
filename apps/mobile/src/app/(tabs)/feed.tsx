@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { RecentFeedReviews } from "~/components/Infinite/InfiniteFeedReviews";
+import { InfiniteFeedReviews } from "~/components/Infinite/InfiniteFeedReviews";
 import { InfiniteFollowingReviews } from "~/components/Infinite/InfiniteFollowingReviews";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
@@ -20,7 +20,7 @@ const FeedPage = () => {
 				</TabsList>
 			</View>
 			<TabsContent value="for-you" className="flex-1">
-				<RecentFeedReviews input={{ limit: 5 }} />
+				<InfiniteFeedReviews input={{ limit: 5 }} />
 			</TabsContent>
 			<TabsContent value="friends" className="flex-1">
 				<InfiniteFollowingReviews input={{ limit: 5 }} />

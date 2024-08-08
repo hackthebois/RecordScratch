@@ -7,7 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	version: "1.0.0",
 	orientation: "portrait",
 	icon: "./assets/logo.png",
-	scheme: "myapp",
+	scheme: "recordscratch",
 	userInterfaceStyle: "automatic",
 	splash: {
 		image: "./assets/logo.png",
@@ -17,6 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	assetBundlePatterns: ["**/*"],
 	ios: {
 		supportsTablet: true,
+		bundleIdentifier: "app.recordscratch.mobile",
 	},
 	android: {
 		adaptiveIcon: {
@@ -24,15 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			backgroundColor: "#ffffff",
 		},
 	},
-	plugins: [
-		"expo-router",
-		[
-			"expo-font",
-			{
-				fonts: ["./assets/Montserrat_Variable.ttf"],
-			},
-		],
-	],
+	plugins: ["expo-router"],
 	experiments: {
 		tsconfigPaths: true,
 		typedRoutes: true,

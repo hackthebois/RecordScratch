@@ -1,5 +1,4 @@
 import { FlashList } from "@shopify/flash-list";
-import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { Review } from "~/components/Review";
 import { RouterInputs, api } from "~/lib/api";
@@ -18,14 +17,6 @@ export const InfiniteProfileReviews = ({
 		}
 	);
 
-	const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-	useEffect(() => {
-		if (isInitialLoad && data) {
-			setIsInitialLoad(false);
-		}
-	}, [data]);
-
 	const handleLoadMore = () => {
 		if (hasNextPage) {
 			fetchNextPage();
@@ -39,7 +30,8 @@ export const InfiniteProfileReviews = ({
 			renderItem={({ item }) => <Review {...item} />}
 			ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 			ListFooterComponent={() => (hasNextPage ? <ActivityIndicator size="large" /> : null)}
-			onEndReachedThreshold={1}
+			scrollEnabled={true}
+			onEndReachedThreshold={0.1}
 			onEndReached={handleLoadMore}
 			ListEmptyComponent={<Text>No reviews available</Text>}
 			estimatedItemSize={380}

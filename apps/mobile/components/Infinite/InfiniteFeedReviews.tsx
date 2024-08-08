@@ -4,7 +4,7 @@ import { Review } from "~/components/Review";
 import { api } from "~/lib/api";
 import { RouterInputs } from "~/lib/shared";
 
-export const RecentFeedReviews = ({
+export const InfiniteFeedReviews = ({
 	input,
 }: {
 	input?: RouterInputs["ratings"]["feed"]["recent"];
