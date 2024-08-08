@@ -2,8 +2,8 @@ import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Link, useRouter } from "expo-router";
-import { View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, View } from "react-native";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Text } from "~/components/ui/text";
 import { getQueryOptions } from "~/lib/deezer";
@@ -12,7 +12,7 @@ export const ResourceItem = ({
 	initialAlbum,
 	resource,
 	showType,
-	onClick,
+	onPress,
 	showLink = true,
 	direction = "horizontal",
 	imageCss,
@@ -25,7 +25,7 @@ export const ResourceItem = ({
 	initialAlbum?: Album;
 	resource: Resource;
 	showType?: boolean;
-	onClick?: () => void;
+	onPress?: () => void;
 	showLink?: boolean;
 	direction?: "horizontal" | "vertical";
 	imageCss?: string;
@@ -88,11 +88,11 @@ export const ResourceItem = ({
 			: `/albums/${resource.resourceId}`;
 
 	return (
-		<Link
+		<Pressable
 			onPress={() => {
-				if (onClick) onClick();
+				if (showLink) router.push(link);
+				if (onPress) onPress();
 			}}
-			href={link}
 		>
 			<View
 				className={cn(
@@ -128,6 +128,6 @@ export const ResourceItem = ({
 					</View>
 				</View>
 			</View>
-		</Link>
+		</Pressable>
 	);
 };

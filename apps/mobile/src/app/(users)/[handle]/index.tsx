@@ -89,11 +89,15 @@ const TopListsTab = ({
 	song,
 	artist,
 	headerHeight,
+	isProfile,
+	userId,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
 	headerHeight: number;
+	isProfile: boolean;
+	userId: string;
 }) => {
 	const [value, setValue] = useState("albums");
 
@@ -160,19 +164,16 @@ const TopListsTab = ({
 	);
 };
 
-export const ProfilePage = ({
-	handleId,
-	isProfile = false,
-}: {
-	handleId: string;
-	isProfile?: boolean;
-}) => {
+export const ProfilePage = ({ handleId }: { handleId: string }) => {
 	const [value, setValue] = useState("reviews");
 	const { utilsColor } = useColorScheme();
 	const [profile] = api.profiles.get.useSuspenseQuery(handleId);
 	const [headerHeight, setHeaderHeight] = useState<number>(0);
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 
 	if (!profile) return <NotFoundScreen />;
+
+	const isProfile = myProfile?.userId === profile.userId;
 
 	const [topLists] = api.lists.topLists.useSuspenseQuery({
 		userId: profile.userId,

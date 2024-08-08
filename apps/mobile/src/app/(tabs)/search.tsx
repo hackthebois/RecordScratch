@@ -141,7 +141,7 @@ export default function SearchPage() {
 									resourceId: String(song.id),
 									category: "SONG" as const,
 								}}
-								onClick={() => {
+								onPress={() => {
 									addRecent({
 										id: String(song.id),
 										type: "SONG",
@@ -160,7 +160,7 @@ export default function SearchPage() {
 									resourceId: String(album.id),
 									category: "ALBUM" as const,
 								}}
-								onClick={() => {
+								onPress={() => {
 									addRecent({
 										id: String(album.id),
 										type: "ALBUM",
