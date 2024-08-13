@@ -131,28 +131,32 @@ const albums: {
 		date: dayjs.tz("2024-08-15", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "6893935",
+		albumId: "190809862",
 		date: dayjs.tz("2024-08-16", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "71318",
+		albumId: "6893935",
 		date: dayjs.tz("2024-08-17", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "2908271",
+		albumId: "71318",
 		date: dayjs.tz("2024-08-18", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "5946143",
+		albumId: "2908271",
 		date: dayjs.tz("2024-08-19", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "708674",
+		albumId: "5946143",
 		date: dayjs.tz("2024-08-20", "YYYY-MM-DD", "America/Toronto"),
 	},
 	{
-		albumId: "1435446",
+		albumId: "708674",
 		date: dayjs.tz("2024-08-21", "YYYY-MM-DD", "America/Toronto"),
+	},
+	{
+		albumId: "1435446",
+		date: dayjs.tz("2024-08-22", "YYYY-MM-DD", "America/Toronto"),
 	},
 ];
 
