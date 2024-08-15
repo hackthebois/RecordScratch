@@ -20,6 +20,7 @@ import {
 import { Label } from "@/components/ui/Label";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tag } from "@/components/ui/Tag";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
@@ -163,7 +164,24 @@ function Handle() {
 		userId: profile.userId,
 	});
 
+	const [streak] = api.ratings.user.streak.useSuspenseQuery({
+		userId: profile.userId,
+	});
+	const [total] = api.ratings.user.total.useSuspenseQuery({
+		userId: profile.userId,
+	});
+	const [likes] = api.ratings.user.totalLikes.useSuspenseQuery({
+		userId: profile.userId,
+	});
+
 	const isUser = myProfile?.userId === profile.userId;
+
+	const tags = [
+		`@${profile.handle}`,
+		`Streak: ${streak}`,
+		`Ratings: ${total}`,
+		`Likes: ${likes}`,
+	];
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -180,9 +198,15 @@ function Handle() {
 					<h1 className="pb-2 text-center sm:text-left">
 						{profile.name}
 					</h1>
-					<p className="pb-3 text-center text-muted-foreground">
-						@{profile.handle}
-					</p>
+					<div className="flex flex-wrap justify-center gap-3 pb-3 sm:justify-start">
+						{tags
+							.filter((tag) => Boolean(tag))
+							.map((tag, index) => (
+								<Tag variant="outline" key={index}>
+									{tag}
+								</Tag>
+							))}
+					</div>
 					<p className="pb-3 text-center text-sm sm:text-left sm:text-base">
 						{profile.bio || "No bio yet"}
 					</p>
