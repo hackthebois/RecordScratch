@@ -1,6 +1,6 @@
 import { followers, ratings } from "@recordscratch/db";
 import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@recordscratch/types";
-import { and, avg, count, desc, eq, gt, inArray, isNotNull } from "drizzle-orm";
+import { and, avg, count, desc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { posthog } from "../posthog";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -66,18 +66,26 @@ export const ratingsRouter = router({
 			.limit(20);
 	}),
 	top: publicProcedure.query(async ({ ctx: { db } }) => {
-		return await db
+		const total = await db
+			.select({
+				total: count(ratings),
+			})
+			.from(ratings)
+			.where(eq(ratings.category, "ALBUM"));
+		const data = await db
 			.select({
 				total: count(ratings.rating),
 				average: avg(ratings.rating),
 				resourceId: ratings.resourceId,
+				sortValue: sql`${avg(ratings.rating)} + (${count(ratings.rating)} / (${total[0].total} / 100))`,
 			})
 			.from(ratings)
 			.where(eq(ratings.category, "ALBUM"))
 			.groupBy(ratings.resourceId)
-			.orderBy(({ average }) => desc(average))
-			.having(({ total }) => gt(total, 2))
+			.orderBy(({ sortValue }) => desc(sortValue))
+			.having(({ total }) => gt(total, 5))
 			.limit(20);
+		return data;
 	}),
 	feed: router({
 		recent: publicProcedure
