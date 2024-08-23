@@ -67,18 +67,12 @@ export const ratingsRouter = router({
 			.limit(20);
 	}),
 	top: publicProcedure.query(async ({ ctx: { db } }) => {
-		const total = await db
-			.select({
-				total: count(ratings),
-			})
-			.from(ratings)
-			.where(eq(ratings.category, "ALBUM"));
 		const data = await db
 			.select({
 				total: count(ratings.rating),
 				average: avg(ratings.rating),
 				resourceId: ratings.resourceId,
-				sortValue: sql`${avg(ratings.rating)} + (${count(ratings.rating)} / (${total[0].total} / 100))`,
+				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 100`,
 			})
 			.from(ratings)
 			.where(eq(ratings.category, "ALBUM"))
