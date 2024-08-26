@@ -177,7 +177,7 @@ export const ratingsRouter = router({
 				});
 				return userRating ? userRating : null;
 			}),
-		streak: protectedProcedure
+		streak: publicProcedure
 			.input(z.object({ userId: z.string() }))
 			.query(async ({ input: { userId }, ctx: { db } }) => {
 				const ratingsList = await db.query.ratings.findMany({
@@ -235,7 +235,7 @@ export const ratingsRouter = router({
 
 				return streak;
 			}),
-		total: protectedProcedure
+		total: publicProcedure
 			.input(z.object({ userId: z.string() }))
 			.query(async ({ input: { userId }, ctx: { db } }) => {
 				const total = await db.query.ratings.findMany({
@@ -243,7 +243,7 @@ export const ratingsRouter = router({
 				});
 				return total.length;
 			}),
-		totalLikes: protectedProcedure
+		totalLikes: publicProcedure
 			.input(z.object({ userId: z.string() }))
 			.query(async ({ input: { userId }, ctx: { db } }) => {
 				const total = await db.query.likes.findMany({
