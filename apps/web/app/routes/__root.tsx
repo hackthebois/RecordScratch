@@ -1,5 +1,4 @@
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { env } from "@/env";
 import { TRPCReactProvider, api } from "@/trpc/react";
 import {
 	Outlet,
@@ -70,10 +69,10 @@ function Root() {
 							<Outlet />
 						</div>
 						<Suspense>
-							<PostHogPageView />
 							<PostHogIdentify />
-							<TanStackRouterDevtools />
 						</Suspense>
+						<PostHogPageView />
+						<TanStackRouterDevtools />
 					</ThemeProvider>
 				</HelmetProvider>
 			</TRPCReactProvider>

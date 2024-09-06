@@ -46,6 +46,9 @@ export default createApp({
 						"process.env.CF_PAGES_URL": JSON.stringify(
 							process.env.CF_PAGES_URL
 						),
+						"process.env.VITE_POSTHOG_KEY": JSON.stringify(
+							process.env.VITE_POSTHOG_KEY
+						),
 					},
 				}),
 				tsconfigPaths(),
