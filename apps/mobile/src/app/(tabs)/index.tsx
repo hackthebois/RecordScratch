@@ -3,10 +3,13 @@ import { router, Stack } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
 import { api } from "~/lib/api";
+import { useAuth } from "~/lib/Authentication";
 
 const IndexPage = () => {
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [isMounted, setIsMounted] = useState(false);
+	const { setProfile } = useAuth();
 
 	useEffect(() => {
 		setIsMounted(true);
@@ -14,8 +17,10 @@ const IndexPage = () => {
 
 	useLayoutEffect(() => {
 		if (isMounted) {
-			if (!needsOnboarding) router.replace("/home");
-			else router.replace("/onboard");
+			if (!needsOnboarding) {
+				setProfile(myProfile!);
+				router.replace("/home");
+			} else router.replace("/onboard");
 		}
 	}, [isMounted, needsOnboarding, router]);
 

@@ -31,7 +31,7 @@ export const InfiniteProfileReviews = ({
 			ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 			ListFooterComponent={() => (hasNextPage ? <ActivityIndicator size="large" /> : null)}
 			scrollEnabled={true}
-			onEndReachedThreshold={0.1}
+			onEndReachedThreshold={0.4}
 			onEndReached={handleLoadMore}
 			ListEmptyComponent={<Text>No reviews available</Text>}
 			estimatedItemSize={380}

@@ -16,12 +16,10 @@ import { z } from "zod";
 export default eventHandler(async (event) => {
 	const url = getRequestURL(event);
 	const query = getQuery(event);
-	const isMobile = query.mobile === "true";
-
-	console.log("Logging in");
+	const expoAddress = query.expoAddress;
 
 	const callBackUrl = `${process.env.CF_PAGES_URL}/auth/google/callback${
-		isMobile ? `?mobile=true` : ""
+		expoAddress ? `?expoAddress=${expoAddress}` : ""
 	}`;
 
 	const google = new Google(
@@ -133,8 +131,8 @@ export default eventHandler(async (event) => {
 		});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 
-		if (isMobile)
-			redirect = `exp://192.168.2.254:8081?session_id=${session.id}`;
+		if (expoAddress)
+			redirect = `exp://${expoAddress}?session_id=${session.id}`;
 		else
 			setCookie(
 				event,

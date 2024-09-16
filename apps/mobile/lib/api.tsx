@@ -6,7 +6,6 @@ import superjson from "superjson";
 
 import type { AppRouter } from "@recordscratch/api";
 import { useAuth } from "./Authentication";
-
 import { Platform } from "react-native";
 
 /**
@@ -35,8 +34,6 @@ export const getBaseUrl = () => {
 		Platform.OS === "ios"
 			? process.env.EXPO_PUBLIC_CF_PAGES_URL_IOS
 			: process.env.EXPO_PUBLIC_CF_PAGES_URL_ANDROID;
-
-	console.log("localhost", localhost);
 
 	if (!localhost) {
 		// return "https://turbo.t3.gg";

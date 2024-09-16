@@ -15,6 +15,7 @@ import { ResourceItem } from "~/components/Item/ResourceItem";
 import { UserAvatar } from "~/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
+import { useAuth } from "~/lib/Authentication";
 import { api } from "~/lib/api";
 import { Settings } from "~/lib/icons/Settings";
 import { getImageUrl } from "~/lib/image";
@@ -88,16 +89,10 @@ const TopListsTab = ({
 	album,
 	song,
 	artist,
-	headerHeight,
-	isProfile,
-	userId,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
-	headerHeight: number;
-	isProfile: boolean;
-	userId: string;
 }) => {
 	const [value, setValue] = useState("albums");
 
@@ -164,12 +159,10 @@ const TopListsTab = ({
 	);
 };
 
-export const ProfilePage = ({ handleId }: { handleId: string }) => {
+export const ProfilePage = ({ handleId }: { handleId?: string }) => {
 	const [value, setValue] = useState("reviews");
-	const { utilsColor } = useColorScheme();
-	const [profile] = api.profiles.get.useSuspenseQuery(handleId);
-	const [headerHeight, setHeaderHeight] = useState<number>(0);
-	const [myProfile] = api.profiles.me.useSuspenseQuery();
+	const { myProfile } = useAuth();
+	const [profile] = handleId ? api.profiles.get.useSuspenseQuery(handleId) : [myProfile];
 
 	if (!profile) return <NotFoundScreen />;
 
@@ -192,7 +185,7 @@ export const ProfilePage = ({ handleId }: { handleId: string }) => {
 					title: `${handleId ? profile.name.toLocaleUpperCase() : "Profile"}`,
 					headerRight: () =>
 						isProfile ? (
-							<TouchableOpacity onPress={() => router.push(`${handleId}/settings`)}>
+							<TouchableOpacity onPress={() => router.push(`(users)/settings`)}>
 								<Settings size={22} className="mr-6 text-foreground" />
 							</TouchableOpacity>
 						) : null,
@@ -204,7 +197,10 @@ export const ProfilePage = ({ handleId }: { handleId: string }) => {
 						<View className="flex flex-col">
 							<View className="flex flex-row justify-around items-center w-full">
 								<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
-								<FollowerMenu profileId={profile.userId} handleId={handleId} />
+								<FollowerMenu
+									profileId={profile.userId}
+									handleId={profile.handle}
+								/>
 							</View>
 							<View className="flex flex-row w-full">
 								<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
@@ -238,7 +234,7 @@ export const ProfilePage = ({ handleId }: { handleId: string }) => {
 						<ReviewsTab userId={profile.userId} />
 					</TabsContent>
 					<TabsContent value="top">
-						<TopListsTab {...topLists} headerHeight={headerHeight} />
+						<TopListsTab {...topLists} />
 					</TabsContent>
 					<TabsContent value="lists">
 						<FlashList

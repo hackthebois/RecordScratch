@@ -211,8 +211,6 @@ export const ratingsRouter = router({
 					}
 				});
 
-				console.log(userId, groupedDays);
-
 				const days = Array.from(groupedDays.keys());
 
 				let streak = 1;

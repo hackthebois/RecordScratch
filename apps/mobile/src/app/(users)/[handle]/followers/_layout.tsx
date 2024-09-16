@@ -21,7 +21,6 @@ const FollowerPage = ({ handleId, type }: { handleId: string; type?: string }) =
 	const [userProfile] = api.profiles.get.useSuspenseQuery(handleId);
 
 	const tabIndex = useSharedValue(type === "following" ? 2 : 1);
-	console.log(type, tabIndex);
 
 	if (!userProfile) return <NotFoundScreen />;
 

@@ -11,6 +11,7 @@ import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
 import NotFound from "../+not-found";
+import { useAuth } from "~/lib/Authentication";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
@@ -51,6 +52,8 @@ const AlbumOfTheDay = () => {
 const HomePage = () => {
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
+
+	const { sessionId } = useAuth();
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>

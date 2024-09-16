@@ -5,7 +5,7 @@ import { Text } from "./ui/text";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (
-		<View className="flex w-full flex-col flex-1">
+		<View>
 			{songs.map((song, index) => (
 				<Link
 					key={index}
@@ -20,7 +20,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 						)}
 					>
 						<Text className="ml-4 text-muted-foreground font-bold">{index + 1}</Text>
-						<Text className="w-full truncate text-lg">
+						<Text className="w-full text-lg" numberOfLines={1} ellipsizeMode="tail">
 							{song.title.replace(/ *\([^)]*\) */g, "")}
 						</Text>
 					</Pressable>

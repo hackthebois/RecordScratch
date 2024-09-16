@@ -42,8 +42,6 @@ export default function AlbumLayout() {
 		},
 	});
 
-	console.log("SONGS", songs);
-
 	const resource: Resource = {
 		parentId: String(album.artist?.id),
 		resourceId: String(album.id),
@@ -98,9 +96,7 @@ export default function AlbumLayout() {
 							</TabsList>
 						</View>
 						<TabsContent value="album" className="p-4">
-							<SongTable
-								songs={songs.data?.map((song) => ({ ...song, album })) ?? []}
-							/>
+							<SongTable songs={songs.data!.map((song) => ({ ...song, album }))} />
 						</TabsContent>
 						<TabsContent value="reviews">
 							<InfiniteCommunityReviews

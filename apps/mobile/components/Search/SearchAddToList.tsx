@@ -43,7 +43,6 @@ export const SearchAddToList = ({
 		resourceId: string;
 		parentId: string | null | undefined;
 	}) => {
-		console.log(resourceId, parentId, listId);
 		mutate({
 			resourceId,
 			parentId,

@@ -1,3 +1,4 @@
+import { Profile } from "@recordscratch/types";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -5,8 +6,11 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 // Define the context type
 interface AuthContextType {
 	sessionId: string | null;
-	login: (id: string) => Promise<void>;
-	logout: () => Promise<void>;
+	myProfile: Profile | null;
+	setSessionId: (id: string) => Promise<void>;
+	clearSessionId: () => Promise<void>;
+	setProfile: (profile: Profile) => void;
+	clearProfile: () => void;
 }
 
 // Create the Auth context with a default value of undefined
@@ -25,14 +29,15 @@ const getSessionId = async () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [sessionId, setSessionId] = useState<string | null>(null);
+	const [sessionId, setId] = useState<string | null>(null);
+	const [myProfile, setMyProfile] = useState<Profile | null>(null);
 	const [loading, setLoading] = useState(true);
 	const router = useRouter();
 
 	useEffect(() => {
 		const fetchSessionId = async () => {
 			const id = await getSessionId();
-			setSessionId(id);
+			setId(id);
 			setLoading(false);
 		};
 
@@ -40,19 +45,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	}, []);
 
 	useEffect(() => {
-		if (!loading && !sessionId) {
-			router.replace("/signin");
+		if (!loading) {
+			if (!sessionId) router.replace("/signin");
+			else if (!myProfile) router.replace("");
 		}
-	}, [loading, sessionId, router]);
+	}, [loading, sessionId, myProfile, router]);
 
-	const login = async (id: string) => {
+	const setSessionId = async (id: string) => {
 		await SecureStore.setItemAsync("sessionId", id);
-		setSessionId(id);
+		setId(id);
 	};
 
-	const logout = async () => {
+	const clearSessionId = async () => {
 		await SecureStore.deleteItemAsync("sessionId");
-		setSessionId(null);
+		setId(null);
+	};
+
+	const setProfile = (profile: Profile) => {
+		setMyProfile(profile);
+	};
+	const clearProfile = () => {
+		setMyProfile(null);
 	};
 
 	if (loading) {
@@ -60,6 +73,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	}
 
 	return (
-		<AuthContext.Provider value={{ sessionId, login, logout }}>{children}</AuthContext.Provider>
+		<AuthContext.Provider
+			value={{ sessionId, setSessionId, clearSessionId, myProfile, setProfile, clearProfile }}
+		>
+			{children}
+		</AuthContext.Provider>
 	);
 };

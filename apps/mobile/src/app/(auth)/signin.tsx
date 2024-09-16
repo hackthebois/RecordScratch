@@ -9,7 +9,7 @@ import { useAuth } from "~/lib/Authentication";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
-	const { sessionId, login } = useAuth();
+	const { sessionId, setSessionId } = useAuth();
 	const router = useRouter();
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -25,7 +25,7 @@ const AuthPage = () => {
 
 	const _handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
-			`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/google?mobile=true`,
+			`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/google?expoAddress=${process.env.EXPO_PUBLIC_URL}`,
 			`${process.env.EXPO_PUBLIC_URL}`
 		);
 		if (result.type !== "success") return;
@@ -33,7 +33,7 @@ const AuthPage = () => {
 		const url = Linking.parse(result.url);
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
-		login(sessionId);
+		setSessionId(sessionId);
 	};
 
 	return (

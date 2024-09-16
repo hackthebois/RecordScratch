@@ -8,12 +8,10 @@ import { useAuth } from "~/lib/Authentication";
 import { api } from "~/lib/api";
 
 const SettingsPage = () => {
-	const { handle } = useLocalSearchParams<{ id: string; handle: string }>();
-	const [profile] = api.profiles.me.useSuspenseQuery();
-	const { logout } = useAuth();
+	const { clearSessionId, myProfile } = useAuth();
 	const { setColorScheme, colorScheme } = useColorScheme();
 
-	if (!profile || profile.handle != handle) return <NotFoundScreen />;
+	if (!myProfile) return <NotFoundScreen />;
 
 	return (
 		<View className="p-4 gap-4">
@@ -26,7 +24,7 @@ const SettingsPage = () => {
 				variant="destructive"
 				onPress={async () => {
 					fetch("https://recordscratch.app/auth/signout");
-					logout();
+					clearSessionId();
 				}}
 			>
 				<Text>Sign out</Text>
