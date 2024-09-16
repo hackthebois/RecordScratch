@@ -51,6 +51,7 @@
 		"react-native": "0.74.3",
 		"react-native-chart-kit": "^6.12.0",
 		"react-native-collapsible-tab-view": "^8.0.0",
+		"react-native-draggable-flatlist": "^4.0.1",
 		"react-native-gesture-handler": "2.16.1",
 		"react-native-pager-view": "6.3.0",
 		"react-native-reanimated": "~3.10.1",

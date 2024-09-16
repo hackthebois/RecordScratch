@@ -90,7 +90,7 @@ const SignOutButton = () => {
 			onClick={() => {
 				fetch("/auth/signout").then(() => {
 					navigate({
-						to: "/$handle",
+						to: "/",
 						search: {
 							tab: undefined,
 						},
