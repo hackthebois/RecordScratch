@@ -131,8 +131,7 @@ export default eventHandler(async (event) => {
 		});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 
-		if (expoAddress)
-			redirect = `exp://${expoAddress}?session_id=${session.id}`;
+		if (expoAddress) redirect = `${expoAddress}?session_id=${session.id}`;
 		else
 			setCookie(
 				event,
