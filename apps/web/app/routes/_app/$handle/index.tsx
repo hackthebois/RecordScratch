@@ -91,9 +91,6 @@ const SignOutButton = () => {
 				fetch("/auth/signout").then(() => {
 					navigate({
 						to: "/",
-						search: {
-							tab: undefined,
-						},
 					});
 					posthog.reset();
 					queryClient.clear();
