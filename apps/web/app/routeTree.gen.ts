@@ -201,22 +201,145 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  AppRoute: AppRoute.addChildren({
-    AppNotificationsRoute,
-    AppPrivacyPolicyLazyRoute,
-    AppRoadmapLazyRoute,
-    AppTermsLazyRoute,
-    AppIndexRoute,
-    AppHandleIndexRoute,
-    AppAlbumsAlbumIdIndexRoute,
-    AppArtistsArtistIdIndexRoute,
-    AppListsListIdIndexRoute,
-    AppHandleRatingsResourceIdIndexRoute,
-    AppAlbumsAlbumIdSongsSongIdIndexRoute,
-  }),
-  OnboardRoute,
-})
+interface AppRouteChildren {
+  AppNotificationsRoute: typeof AppNotificationsRoute
+  AppPrivacyPolicyLazyRoute: typeof AppPrivacyPolicyLazyRoute
+  AppRoadmapLazyRoute: typeof AppRoadmapLazyRoute
+  AppTermsLazyRoute: typeof AppTermsLazyRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppHandleIndexRoute: typeof AppHandleIndexRoute
+  AppAlbumsAlbumIdIndexRoute: typeof AppAlbumsAlbumIdIndexRoute
+  AppArtistsArtistIdIndexRoute: typeof AppArtistsArtistIdIndexRoute
+  AppListsListIdIndexRoute: typeof AppListsListIdIndexRoute
+  AppHandleRatingsResourceIdIndexRoute: typeof AppHandleRatingsResourceIdIndexRoute
+  AppAlbumsAlbumIdSongsSongIdIndexRoute: typeof AppAlbumsAlbumIdSongsSongIdIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppNotificationsRoute: AppNotificationsRoute,
+  AppPrivacyPolicyLazyRoute: AppPrivacyPolicyLazyRoute,
+  AppRoadmapLazyRoute: AppRoadmapLazyRoute,
+  AppTermsLazyRoute: AppTermsLazyRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppHandleIndexRoute: AppHandleIndexRoute,
+  AppAlbumsAlbumIdIndexRoute: AppAlbumsAlbumIdIndexRoute,
+  AppArtistsArtistIdIndexRoute: AppArtistsArtistIdIndexRoute,
+  AppListsListIdIndexRoute: AppListsListIdIndexRoute,
+  AppHandleRatingsResourceIdIndexRoute: AppHandleRatingsResourceIdIndexRoute,
+  AppAlbumsAlbumIdSongsSongIdIndexRoute: AppAlbumsAlbumIdSongsSongIdIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+export interface FileRoutesByFullPath {
+  '': typeof AppRouteWithChildren
+  '/onboard': typeof OnboardRoute
+  '/notifications': typeof AppNotificationsRoute
+  '/privacy-policy': typeof AppPrivacyPolicyLazyRoute
+  '/roadmap': typeof AppRoadmapLazyRoute
+  '/terms': typeof AppTermsLazyRoute
+  '/': typeof AppIndexRoute
+  '/$handle': typeof AppHandleIndexRoute
+  '/albums/$albumId': typeof AppAlbumsAlbumIdIndexRoute
+  '/artists/$artistId': typeof AppArtistsArtistIdIndexRoute
+  '/lists/$listId': typeof AppListsListIdIndexRoute
+  '/$handle/ratings/$resourceId': typeof AppHandleRatingsResourceIdIndexRoute
+  '/albums/$albumId/songs/$songId': typeof AppAlbumsAlbumIdSongsSongIdIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '/onboard': typeof OnboardRoute
+  '/notifications': typeof AppNotificationsRoute
+  '/privacy-policy': typeof AppPrivacyPolicyLazyRoute
+  '/roadmap': typeof AppRoadmapLazyRoute
+  '/terms': typeof AppTermsLazyRoute
+  '/': typeof AppIndexRoute
+  '/$handle': typeof AppHandleIndexRoute
+  '/albums/$albumId': typeof AppAlbumsAlbumIdIndexRoute
+  '/artists/$artistId': typeof AppArtistsArtistIdIndexRoute
+  '/lists/$listId': typeof AppListsListIdIndexRoute
+  '/$handle/ratings/$resourceId': typeof AppHandleRatingsResourceIdIndexRoute
+  '/albums/$albumId/songs/$songId': typeof AppAlbumsAlbumIdSongsSongIdIndexRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/_app': typeof AppRouteWithChildren
+  '/onboard': typeof OnboardRoute
+  '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/privacy-policy': typeof AppPrivacyPolicyLazyRoute
+  '/_app/roadmap': typeof AppRoadmapLazyRoute
+  '/_app/terms': typeof AppTermsLazyRoute
+  '/_app/': typeof AppIndexRoute
+  '/_app/$handle/': typeof AppHandleIndexRoute
+  '/_app/albums/$albumId/': typeof AppAlbumsAlbumIdIndexRoute
+  '/_app/artists/$artistId/': typeof AppArtistsArtistIdIndexRoute
+  '/_app/lists/$listId/': typeof AppListsListIdIndexRoute
+  '/_app/$handle/ratings/$resourceId/': typeof AppHandleRatingsResourceIdIndexRoute
+  '/_app/albums/$albumId/songs/$songId/': typeof AppAlbumsAlbumIdSongsSongIdIndexRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | ''
+    | '/onboard'
+    | '/notifications'
+    | '/privacy-policy'
+    | '/roadmap'
+    | '/terms'
+    | '/'
+    | '/$handle'
+    | '/albums/$albumId'
+    | '/artists/$artistId'
+    | '/lists/$listId'
+    | '/$handle/ratings/$resourceId'
+    | '/albums/$albumId/songs/$songId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/onboard'
+    | '/notifications'
+    | '/privacy-policy'
+    | '/roadmap'
+    | '/terms'
+    | '/'
+    | '/$handle'
+    | '/albums/$albumId'
+    | '/artists/$artistId'
+    | '/lists/$listId'
+    | '/$handle/ratings/$resourceId'
+    | '/albums/$albumId/songs/$songId'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/onboard'
+    | '/_app/notifications'
+    | '/_app/privacy-policy'
+    | '/_app/roadmap'
+    | '/_app/terms'
+    | '/_app/'
+    | '/_app/$handle/'
+    | '/_app/albums/$albumId/'
+    | '/_app/artists/$artistId/'
+    | '/_app/lists/$listId/'
+    | '/_app/$handle/ratings/$resourceId/'
+    | '/_app/albums/$albumId/songs/$songId/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  AppRoute: typeof AppRouteWithChildren
+  OnboardRoute: typeof OnboardRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  AppRoute: AppRouteWithChildren,
+  OnboardRoute: OnboardRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
