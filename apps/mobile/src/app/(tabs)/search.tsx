@@ -38,7 +38,7 @@ export default function SearchPage() {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
-			<View className="flex-row w-full items-center border pr-4 border-border h-14">
+			<View className="flex-row w-full items-center pr-4 h-14">
 				<Search size={20} className="mx-4 text-foreground" />
 				<TextInput
 					id="name"
@@ -57,58 +57,59 @@ export default function SearchPage() {
 				/>
 			</View>
 			<Tabs value={tab} onValueChange={setTab}>
-				<TabsList className="flex-row w-full">
-					<TabsTrigger
-						value="top"
-						className="flex-1"
-						onPress={() =>
-							setOptions({
-								filters: { albums: true, artists: true, songs: true },
-							})
-						}
-					>
-						<Text>Top</Text>
-					</TabsTrigger>
-					<TabsTrigger value="profiles" className="flex-1">
-						<Text>Profiles</Text>
-					</TabsTrigger>
-					<TabsTrigger
-						value="albums"
-						className="flex-1"
-						onPress={() =>
-							setOptions({
-								filters: { albums: true, artists: false, songs: false },
-								limit: 12,
-							})
-						}
-					>
-						<Text>Albums</Text>
-					</TabsTrigger>
-					<TabsTrigger
-						value="artists"
-						className="flex-1"
-						onPress={() =>
-							setOptions({
-								filters: { albums: false, artists: true, songs: false },
-								limit: 12,
-							})
-						}
-					>
-						<Text>Artists</Text>
-					</TabsTrigger>
-					<TabsTrigger
-						value="songs"
-						className="flex-1"
-						onPress={() =>
-							setOptions({
-								filters: { albums: false, artists: false, songs: true },
-								limit: 12,
-							})
-						}
-					>
-						<Text>Songs</Text>
-					</TabsTrigger>
-				</TabsList>
+				<View className="px-4">
+					<TabsList className="flex-row">
+						<TabsTrigger
+							value="top"
+							onPress={() =>
+								setOptions({
+									filters: { albums: true, artists: true, songs: true },
+								})
+							}
+						>
+							<Text>Top</Text>
+						</TabsTrigger>
+						<TabsTrigger value="profiles" className="flex-1">
+							<Text>Profiles</Text>
+						</TabsTrigger>
+						<TabsTrigger
+							value="albums"
+							className="flex-1"
+							onPress={() =>
+								setOptions({
+									filters: { albums: true, artists: false, songs: false },
+									limit: 12,
+								})
+							}
+						>
+							<Text>Albums</Text>
+						</TabsTrigger>
+						<TabsTrigger
+							value="artists"
+							className="flex-1"
+							onPress={() =>
+								setOptions({
+									filters: { albums: false, artists: true, songs: false },
+									limit: 12,
+								})
+							}
+						>
+							<Text>Artists</Text>
+						</TabsTrigger>
+						<TabsTrigger
+							value="songs"
+							className="flex-1"
+							onPress={() =>
+								setOptions({
+									filters: { albums: false, artists: false, songs: true },
+									limit: 12,
+								})
+							}
+						>
+							<Text>Songs</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
 			</Tabs>
 			{isLoading || isLoadingProfiles ? (
 				<View className="flex items-center justify-center flex-1">

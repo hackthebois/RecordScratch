@@ -6,10 +6,10 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { InfiniteCommunityReviews } from "~/components/Infinite/InfiniteCommunityReviews";
 import Metadata from "~/components/Metadata";
 import RatingDialog from "~/components/Rating/RatingDialog";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
+import { ReviewsList } from "~/components/ReviewsList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
@@ -42,6 +42,16 @@ const SongPage = () => {
 		resourceId: String(songId),
 		category: "SONG",
 	};
+
+	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.community.useInfiniteQuery(
+		{
+			limit: 5,
+			resource,
+		},
+		{
+			getNextPageParam: (lastPage) => lastPage.nextCursor,
+		}
+	);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
@@ -80,10 +90,10 @@ const SongPage = () => {
 							</TabsList>
 						</View>
 						<TabsContent value="reviews">
-							<InfiniteCommunityReviews
-								name={song.title}
-								pageLimit={2}
-								resource={resource}
+							<ReviewsList
+								pages={data?.pages}
+								fetchNextPage={fetchNextPage}
+								hasNextPage={hasNextPage}
 							/>
 						</TabsContent>
 					</Tabs>

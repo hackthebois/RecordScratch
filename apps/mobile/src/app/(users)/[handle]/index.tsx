@@ -3,15 +3,15 @@ import { ListWithResources } from "@recordscratch/types";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import ColumnItem from "~/components/CoreComponents/ColumnItem";
 import DistributionChart from "~/components/DistributionChart";
 import { FollowButton } from "~/components/Followers/FollowButton";
 import FollowerMenu from "~/components/Followers/FollowersMenu";
-import { InfiniteProfileReviews } from "~/components/Infinite/InfiniteProfileReviews";
 import { ArtistItem } from "~/components/Item/ArtistItem";
 import ListsItem from "~/components/Item/ListItem";
 import { ResourceItem } from "~/components/Item/ResourceItem";
+import { ReviewsList } from "~/components/ReviewsList";
 import { UserAvatar } from "~/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
@@ -19,7 +19,6 @@ import { useAuth } from "~/lib/Authentication";
 import { api } from "~/lib/api";
 import { Settings } from "~/lib/icons/Settings";
 import { getImageUrl } from "~/lib/image";
-import { useColorScheme } from "~/lib/useColorScheme";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -33,6 +32,18 @@ const ReviewsTab = ({ userId }: { userId: string }) => {
 	const { data: distribution } = api.profiles.distribution.useQuery({
 		userId,
 	});
+
+	const { data, fetchNextPage, hasNextPage } = api.ratings.user.recent.useInfiniteQuery(
+		{
+			limit: 5,
+			profileId: userId,
+			rating,
+			category: value === "albums" ? "ALBUM" : value === "songs" ? "SONG" : undefined,
+		},
+		{
+			getNextPageParam: (lastPage) => lastPage.nextCursor,
+		}
+	);
 
 	return (
 		<>
@@ -51,36 +62,12 @@ const ReviewsTab = ({ userId }: { userId: string }) => {
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent value="all">
-					<InfiniteProfileReviews
-						input={{
-							profileId: userId,
-							limit: 5,
-							rating,
-						}}
-					/>
-				</TabsContent>
-				<TabsContent value="albums">
-					<InfiniteProfileReviews
-						input={{
-							profileId: userId,
-							limit: 5,
-							category: "ALBUM",
-							rating,
-						}}
-					/>
-				</TabsContent>
-				<TabsContent value="songs">
-					<InfiniteProfileReviews
-						input={{
-							profileId: userId,
-							limit: 5,
-							category: "SONG",
-							rating,
-						}}
-					/>
-				</TabsContent>
 			</Tabs>
+			<ReviewsList
+				pages={data?.pages}
+				fetchNextPage={fetchNextPage}
+				hasNextPage={hasNextPage}
+			/>
 		</>
 	);
 };
@@ -191,66 +178,61 @@ export const ProfilePage = ({ handleId }: { handleId?: string }) => {
 						) : null,
 				}}
 			/>
-			<ScrollView>
-				<View className="mt-4">
-					<View className="flex flex-col justify-start ml-5">
-						<View className="flex flex-col">
-							<View className="flex flex-row justify-around items-center w-full">
-								<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
-								<FollowerMenu
-									profileId={profile.userId}
-									handleId={profile.handle}
-								/>
-							</View>
-							<View className="flex flex-row w-full">
-								<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
-									@{profile.handle}
-								</Text>
-								<Text className="px-4 pt-4 text-wrap truncate w-2/3">
-									{profile.bio || "No bio yet"}
-								</Text>
-							</View>
-							<View className=" my-3">
-								{!isProfile ? <FollowButton profileId={profile.userId} /> : null}
-							</View>
+			<View className="mt-4">
+				<View className="flex flex-col justify-start ml-5">
+					<View className="flex flex-col">
+						<View className="flex flex-row justify-around items-center w-full">
+							<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
+							<FollowerMenu profileId={profile.userId} handleId={profile.handle} />
+						</View>
+						<View className="flex flex-row w-full">
+							<Text className="text-muted-foreground text-lg mt-4 w-1/3 text-center">
+								@{profile.handle}
+							</Text>
+							<Text className="px-4 pt-4 text-wrap truncate w-2/3">
+								{profile.bio || "No bio yet"}
+							</Text>
+						</View>
+						<View className=" my-3">
+							{!isProfile ? <FollowButton profileId={profile.userId} /> : null}
 						</View>
 					</View>
 				</View>
-				<Tabs value={value} onValueChange={setValue} className="w-full flex-1">
-					<View className="px-4">
-						<TabsList className="flex-row w-full">
-							<TabsTrigger value="reviews" className="flex-1">
-								<Text>Reviews</Text>
-							</TabsTrigger>
-							<TabsTrigger value="top" className="flex-1">
-								<Text>Top 6</Text>
-							</TabsTrigger>
-							<TabsTrigger value="lists" className="flex-1">
-								<Text>Lists</Text>
-							</TabsTrigger>
-						</TabsList>
-					</View>
-					<TabsContent value="reviews">
-						<ReviewsTab userId={profile.userId} />
-					</TabsContent>
-					<TabsContent value="top">
-						<TopListsTab {...topLists} />
-					</TabsContent>
-					<TabsContent value="lists">
-						<FlashList
-							data={lists}
-							renderItem={({ index, item }) => (
-								<ColumnItem index={index} numColumns={2} className="px-8 py-4">
-									<ListsItem listsItem={item} />
-								</ColumnItem>
-							)}
-							numColumns={2}
-							contentContainerClassName="w-full gap-4 px-4 pb-4 mt-3"
-							estimatedItemSize={350}
-						/>
-					</TabsContent>
-				</Tabs>
-			</ScrollView>
+			</View>
+			<Tabs value={value} onValueChange={setValue} className="w-full flex-1">
+				<View className="px-4">
+					<TabsList className="flex-row w-full">
+						<TabsTrigger value="reviews" className="flex-1">
+							<Text>Reviews</Text>
+						</TabsTrigger>
+						<TabsTrigger value="top" className="flex-1">
+							<Text>Top 6</Text>
+						</TabsTrigger>
+						<TabsTrigger value="lists" className="flex-1">
+							<Text>Lists</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
+				<TabsContent value="reviews">
+					<ReviewsTab userId={profile.userId} />
+				</TabsContent>
+				<TabsContent value="top">
+					<TopListsTab {...topLists} />
+				</TabsContent>
+				<TabsContent value="lists">
+					<FlashList
+						data={lists}
+						renderItem={({ index, item }) => (
+							<ColumnItem index={index} numColumns={2} className="px-8 py-4">
+								<ListsItem listsItem={item} />
+							</ColumnItem>
+						)}
+						numColumns={2}
+						contentContainerClassName="w-full gap-4 px-4 pb-4 mt-3"
+						estimatedItemSize={350}
+					/>
+				</TabsContent>
+			</Tabs>
 		</View>
 	);
 };
