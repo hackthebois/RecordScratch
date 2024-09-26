@@ -6,11 +6,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	slug: "recordscratch",
 	version: "1.0.0",
 	orientation: "portrait",
-	icon: "./assets/logo.png",
+	icon: "./assets/icon.png",
 	scheme: "recordscratch",
 	userInterfaceStyle: "automatic",
 	splash: {
-		image: "./assets/logo.png",
+		image: "./assets/splash.png",
 		resizeMode: "contain",
 		backgroundColor: "#ffffff",
 	},
@@ -21,7 +21,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	android: {
 		adaptiveIcon: {
-			foregroundImage: "./assets/logo.png",
+			foregroundImage: "./assets/adaptive-icon.png",
 			backgroundColor: "#ffffff",
 		},
 	},

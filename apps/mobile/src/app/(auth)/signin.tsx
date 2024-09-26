@@ -29,7 +29,6 @@ const AuthPage = () => {
 			`${process.env.EXPO_PUBLIC_URL}`
 		);
 		if (result.type !== "success") return;
-
 		const url = Linking.parse(result.url);
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
