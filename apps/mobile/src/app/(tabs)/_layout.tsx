@@ -50,7 +50,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="home"
+				name="(home)"
 				options={{
 					title: "Home",
 					tabBarIcon: ({ focused }) => (
@@ -63,7 +63,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="search"
+				name="(search)"
 				options={{
 					title: "Search",
 					tabBarIcon: ({ focused }) => (
@@ -76,7 +76,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="feed"
+				name="(feed)"
 				options={{
 					title: "Feed",
 					tabBarIcon: ({ focused }) => (
@@ -89,7 +89,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="profile"
+				name="(profile)"
 				options={{
 					title: "Profile",
 					tabBarIcon: ({ focused }) => (

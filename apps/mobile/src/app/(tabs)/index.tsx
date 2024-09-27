@@ -21,7 +21,7 @@ const IndexPage = () => {
 		if (isMounted) {
 			if (!needsOnboarding) {
 				setProfile(myProfile!);
-				router.navigate("/home");
+				router.navigate("(home)/home");
 			} else router.navigate("/onboard");
 		}
 	}, [isMounted, needsOnboarding, router]);
