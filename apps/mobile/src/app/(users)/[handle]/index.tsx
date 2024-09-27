@@ -15,8 +15,8 @@ import { ReviewsList } from "~/components/ReviewsList";
 import { UserAvatar } from "~/components/UserAvatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
-import { useAuth } from "~/lib/Authentication";
 import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
 import { Settings } from "~/lib/icons/Settings";
 import { getImageUrl } from "~/lib/image";
 
@@ -148,8 +148,9 @@ const TopListsTab = ({
 
 export const ProfilePage = ({ handleId }: { handleId?: string }) => {
 	const [value, setValue] = useState("reviews");
-	const { myProfile } = useAuth();
-	const [profile] = handleId ? api.profiles.get.useSuspenseQuery(handleId) : [myProfile];
+	const myProfile = useAuth((s) => s.profile);
+
+	const [profile] = api.profiles.get.useSuspenseQuery(handleId ? handleId : myProfile!.handle);
 
 	if (!profile) return <NotFoundScreen />;
 

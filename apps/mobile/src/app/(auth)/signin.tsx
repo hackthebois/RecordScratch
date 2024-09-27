@@ -5,11 +5,12 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { useAuth } from "~/lib/Authentication";
+import { useAuth } from "~/lib/auth";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
-	const { sessionId, setSessionId } = useAuth();
+	const sessionId = useAuth((s) => s.sessionId);
+	const setSessionId = useAuth((s) => s.setSessionId);
 	const router = useRouter();
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -23,7 +24,7 @@ const AuthPage = () => {
 		}
 	}, [isMounted, sessionId, router]);
 
-	const _handlePressButtonAsync = async () => {
+	const handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
 			`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/google?expoAddress=${process.env.EXPO_PUBLIC_URL}`,
 			`${process.env.EXPO_PUBLIC_URL}`
@@ -42,7 +43,7 @@ const AuthPage = () => {
 			</Text>
 			<Button
 				className=" rounded-md px-4 py-2"
-				onPress={_handlePressButtonAsync}
+				onPress={handlePressButtonAsync}
 				variant="secondary"
 			>
 				<Text>Sign In</Text>

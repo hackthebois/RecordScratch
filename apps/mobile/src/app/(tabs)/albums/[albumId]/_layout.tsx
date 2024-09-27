@@ -10,7 +10,7 @@ const Layout = () => {
 				headerShadowVisible: false,
 				animation: "fade",
 			}}
-		></Stack>
+		/>
 	);
 };
 

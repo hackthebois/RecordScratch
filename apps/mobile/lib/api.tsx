@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react";
 import superjson from "superjson";
 
 import type { AppRouter } from "@recordscratch/api";
-import { useAuth } from "./Authentication";
 import { Platform } from "react-native";
+import { useAuth } from "./auth";
 
 /**
  * A set of typesafe hooks for consuming your API.
@@ -46,7 +46,7 @@ export const getBaseUrl = () => {
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
  */ export function TRPCProvider(props: { children: React.ReactNode }) {
-	const { sessionId } = useAuth();
+	const sessionId = useAuth((s) => s.sessionId);
 	const [queryClient] = useState(() => new QueryClient());
 	const [trpcClient, setTrpcClient] = useState(() =>
 		api.createClient({

@@ -1,10 +1,11 @@
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
 
 export const FollowButton = ({ profileId }: { profileId: string }) => {
 	const utils = api.useUtils();
-	const [profile] = api.profiles.get.useSuspenseQuery(profileId);
+	const profile = useAuth((s) => s.profile);
 	const [isFollowing] = api.profiles.isFollowing.useSuspenseQuery(profileId);
 
 	const revalidate = async () => {

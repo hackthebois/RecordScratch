@@ -11,13 +11,15 @@ import RatingDialog from "~/components/Rating/RatingDialog";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
 import SongTable from "~/components/SongTable";
 import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
 import { getQueryOptions } from "~/lib/deezer";
 import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 export default function AlbumLayout() {
 	const { albumId } = useLocalSearchParams<{ albumId: string }>();
 	const id = albumId!;
+
+	const profile = useAuth((s) => s.profile);
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -27,8 +29,6 @@ export default function AlbumLayout() {
 	);
 
 	if (!album) return <NotFoundScreen />;
-
-	const [profile] = api.profiles.me.useSuspenseQuery();
 
 	const { data: songs } = useSuspenseQuery({
 		...getQueryOptions({

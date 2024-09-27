@@ -3,7 +3,6 @@ import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Metadata from "~/components/Metadata";
@@ -11,12 +10,13 @@ import RatingDialog from "~/components/Rating/RatingDialog";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
 import { getQueryOptions } from "~/lib/deezer";
 import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 const SongPage = () => {
-	const [value, setValue] = useState("reviews");
 	const { albumId, songId } = useLocalSearchParams<{ albumId: string; songId: string }>();
+	const profile = useAuth((s) => s.profile);
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -31,8 +31,6 @@ const SongPage = () => {
 			input: { id: songId! },
 		})
 	);
-
-	const [profile] = api.profiles.me.useSuspenseQuery();
 
 	if (!album || !song) return <NotFoundScreen />;
 

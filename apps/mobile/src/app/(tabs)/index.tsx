@@ -1,15 +1,16 @@
 import { FontAwesome6 } from "@expo/vector-icons";
-import { router, Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { View } from "react-native";
 import { api } from "~/lib/api";
-import { useAuth } from "~/lib/Authentication";
+import { useAuth } from "~/lib/auth";
 
 const IndexPage = () => {
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [isMounted, setIsMounted] = useState(false);
-	const { setProfile } = useAuth();
+	const router = useRouter();
+	const setProfile = useAuth((s) => s.setProfile);
 
 	useEffect(() => {
 		setIsMounted(true);

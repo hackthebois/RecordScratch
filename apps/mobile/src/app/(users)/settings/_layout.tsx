@@ -1,17 +1,13 @@
-import NotFoundScreen from "#/app/+not-found";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { useAuth } from "~/lib/Authentication";
-import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
 
 const SettingsPage = () => {
-	const { clearSessionId, myProfile } = useAuth();
+	const { logout, profile } = useAuth((s) => ({ logout: s.logout, profile: s.profile }));
 	const { setColorScheme, colorScheme } = useColorScheme();
-
-	if (!myProfile) return <NotFoundScreen />;
 
 	return (
 		<View className="p-4 gap-4">
@@ -24,7 +20,7 @@ const SettingsPage = () => {
 				variant="destructive"
 				onPress={async () => {
 					fetch("https://recordscratch.app/auth/signout");
-					clearSessionId();
+					logout();
 				}}
 			>
 				<Text>Sign out</Text>
