@@ -10,21 +10,27 @@ import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
 
 const Reviews = () => {
-	const { albumId } = useLocalSearchParams<{ albumId: string }>();
 	const [value, setValue] = useState("for-you");
-	const id = albumId!;
+	const { albumId, songId } = useLocalSearchParams<{ albumId: string; songId: string }>();
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
-			input: { id },
+			input: { id: albumId! },
+		})
+	);
+
+	const { data: song } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/track/{id}",
+			input: { id: songId! },
 		})
 	);
 
 	const resource: Resource = {
-		parentId: String(album.artist?.id),
-		resourceId: String(album.id),
-		category: "ALBUM",
+		parentId: String(albumId),
+		resourceId: String(songId),
+		category: "SONG",
 	};
 
 	const {
@@ -57,7 +63,7 @@ const Reviews = () => {
 
 	return (
 		<>
-			<Stack.Screen options={{ title: album.title + " Reviews", headerBackVisible: true }} />
+			<Stack.Screen options={{ title: song.title + " Reviews", headerBackVisible: true }} />
 			<Tabs value={value} onValueChange={setValue} className="flex-1">
 				<View className="px-4">
 					<TabsList className="flex-row w-full">

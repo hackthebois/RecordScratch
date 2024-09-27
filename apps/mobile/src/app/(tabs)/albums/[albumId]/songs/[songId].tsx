@@ -2,18 +2,17 @@ import NotFoundScreen from "#/app/+not-found";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Metadata from "~/components/Metadata";
 import RatingDialog from "~/components/Rating/RatingDialog";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
-import { ReviewsList } from "~/components/ReviewsList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
+import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 const SongPage = () => {
 	const [value, setValue] = useState("reviews");
@@ -80,23 +79,17 @@ const SongPage = () => {
 								userId={profile!.userId}
 							/>
 						</View>
-					</Metadata>
-					<Tabs value={value} onValueChange={setValue}>
-						<View className="px-4">
-							<TabsList className="flex-row w-full">
-								<TabsTrigger value="reviews" className="flex-1">
-									<Text>Reviews</Text>
-								</TabsTrigger>
-							</TabsList>
+						<View className="flex-row w-full px-4 pb-4">
+							<Link href={`/albums/${album.id}/songs/${song.id}/reviews`} asChild>
+								<Pressable className="rounded-xl p-4 flex-1 bg-secondary">
+									<MessageSquareText className="text-secondary-foreground" />
+									<Text className="text-lg font-semibold text-secondary-foreground">
+										Reviews
+									</Text>
+								</Pressable>
+							</Link>
 						</View>
-						<TabsContent value="reviews">
-							<ReviewsList
-								pages={data?.pages}
-								fetchNextPage={fetchNextPage}
-								hasNextPage={hasNextPage}
-							/>
-						</TabsContent>
-					</Tabs>
+					</Metadata>
 				</ScrollView>
 			</View>
 		</SafeAreaView>

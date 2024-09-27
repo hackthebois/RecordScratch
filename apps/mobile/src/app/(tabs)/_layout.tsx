@@ -88,14 +88,9 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="albums/[albumId]/index"
+				name="albums/[albumId]"
 				options={{
-					href: null,
-				}}
-			/>
-			<Tabs.Screen
-				name="albums/[albumId]/reviews"
-				options={{
+					headerShown: false,
 					href: null,
 				}}
 			/>

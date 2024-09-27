@@ -2,7 +2,7 @@ import NotFoundScreen from "#/app/+not-found";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, Tabs, router, useLocalSearchParams } from "expo-router";
+import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +13,7 @@ import SongTable from "~/components/SongTable";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
+import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 export default function AlbumLayout() {
 	const { albumId } = useLocalSearchParams<{ albumId: string }>();
@@ -46,11 +47,12 @@ export default function AlbumLayout() {
 	};
 
 	return (
-		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
+		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
 			<View className="flex flex-1">
-				<Tabs.Screen
+				<Stack.Screen
 					options={{
 						title: album.title,
+						headerBackVisible: true,
 					}}
 				/>
 				<SongTable
@@ -82,9 +84,16 @@ export default function AlbumLayout() {
 									userId={profile!.userId}
 								/>
 							</View>
-							<Link href={`/albums/${album.id}/reviews`}>
-								<Text className="text-muted-foreground">Reviews</Text>
-							</Link>
+							<View className="flex-row w-full px-4 pb-4">
+								<Link href={`/albums/${album.id}/reviews`} asChild>
+									<Pressable className="rounded-xl p-4 flex-1 bg-secondary">
+										<MessageSquareText className="text-secondary-foreground" />
+										<Text className="text-lg font-semibold text-secondary-foreground">
+											Reviews
+										</Text>
+									</Pressable>
+								</Link>
+							</View>
 						</Metadata>
 					}
 					songs={songs.data!.map((song) => ({ ...song, album }))}
