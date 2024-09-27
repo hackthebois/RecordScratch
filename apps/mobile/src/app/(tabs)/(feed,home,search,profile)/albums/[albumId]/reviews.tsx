@@ -57,7 +57,7 @@ const Reviews = () => {
 
 	return (
 		<>
-			<Stack.Screen options={{ title: album.title + " Reviews", headerBackVisible: true }} />
+			<Stack.Screen options={{ title: album.title + " Reviews" }} />
 			<Tabs value={value} onValueChange={setValue} className="flex-1">
 				<View className="px-4">
 					<TabsList className="flex-row w-full">

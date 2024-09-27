@@ -85,7 +85,7 @@ export const ResourceItem = ({
 	const link =
 		resource.category === "SONG"
 			? `/albums/${resource.parentId}/songs/${resource.resourceId}`
-			: `/albums/${resource.resourceId}`;
+			: `(home)/albums/${resource.resourceId}`;
 
 	return (
 		<Pressable

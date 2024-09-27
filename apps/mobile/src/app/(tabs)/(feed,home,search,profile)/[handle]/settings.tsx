@@ -6,7 +6,7 @@ import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/auth";
 
 const SettingsPage = () => {
-	const { logout, profile } = useAuth((s) => ({ logout: s.logout, profile: s.profile }));
+	const logout = useAuth((s) => s.logout);
 	const { setColorScheme, colorScheme } = useColorScheme();
 
 	return (

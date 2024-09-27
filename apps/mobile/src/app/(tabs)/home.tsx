@@ -39,7 +39,7 @@ const AlbumOfTheDay = () => {
 				variant="secondary"
 				className="w-1/3"
 				onPress={() => {
-					router.push(`/albums/${albumOfTheDay.albumId}`);
+					router.navigate(`/albums/${albumOfTheDay.albumId}`);
 				}}
 			>
 				<Text>Go to Album</Text>

@@ -1,7 +1,9 @@
-import { ProfilePage } from "../(users)/[handle]/index";
+import { useAuth } from "~/lib/auth";
+import { ProfilePage } from "./(feed,home,search,profile)/[handle]";
 
 const Profile = () => {
-	return <ProfilePage />;
+	const profile = useAuth((s) => s.profile);
+	return <ProfilePage handle={profile!.handle} />;
 };
 
 export default Profile;
