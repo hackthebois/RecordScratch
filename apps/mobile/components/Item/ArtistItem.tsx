@@ -61,11 +61,12 @@ export const ArtistItem = ({
 					direction === "vertical" ? "flex-col" : "flex-row"
 				)}
 			>
-				<View className="items-center justify-center overflow-hidden rounded-full">
+				<View className="items-center justify-center rounded-full overflow-hidden">
 					{artistImage ? (
 						<Image
 							source={artistImage}
-							className={cn("h-full w-full rounded-full", imageCss)}
+							className={cn("w-full border-2", imageCss)}
+							contentFit="cover"
 							style={{ width: imageWidthAndHeight, height: imageWidthAndHeight }}
 						/>
 					) : (

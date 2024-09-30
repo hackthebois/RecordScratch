@@ -1,8 +1,9 @@
 import { formatDuration } from "@recordscratch/lib";
+import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import React from "react";
-import { FlatList, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AlbumItem from "~/components/Item/AlbumItem";
 import Metadata from "~/components/Metadata";
@@ -60,28 +61,34 @@ const HomePage = () => {
 				}}
 			/>
 			<ScrollView
-				contentContainerClassName="flex flex-col gap-6"
+				contentContainerClassName="flex flex-col"
 				nestedScrollEnabled
 				style={{ flex: 1 }}
 			>
 				<AlbumOfTheDay />
-				<Text variant="h2" className="px-4">
+				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Trending
 				</Text>
-				<FlatList
+				<FlashList
 					data={trending}
 					renderItem={({ item }) => <AlbumItem {...item} />}
 					horizontal
-					contentContainerClassName="px-4 gap-3 pb-4"
+					contentContainerClassName="px-4"
+					ItemSeparatorComponent={() => <View className="w-4" />}
+					estimatedItemSize={160}
+					showsHorizontalScrollIndicator={false}
 				/>
-				<Text variant="h2" className="py-2 px-4">
+				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Top Albums
 				</Text>
-				<FlatList
+				<FlashList
 					data={top}
 					renderItem={({ item }) => <AlbumItem {...item} />}
 					horizontal
-					contentContainerClassName="px-4 gap-3 pb-4"
+					contentContainerClassName="px-4"
+					ItemSeparatorComponent={() => <View className="w-4" />}
+					estimatedItemSize={160}
+					showsHorizontalScrollIndicator={false}
 				/>
 			</ScrollView>
 		</SafeAreaView>

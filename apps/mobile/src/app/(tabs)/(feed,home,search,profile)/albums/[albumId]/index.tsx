@@ -4,7 +4,7 @@ import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Metadata from "~/components/Metadata";
 import RatingDialog from "~/components/Rating/RatingDialog";
@@ -49,55 +49,52 @@ export default function AlbumLayout() {
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
 			<View className="flex flex-1">
-				<Stack.Screen
-					options={{
-						title: album.title,
-						headerBackVisible: true,
-					}}
-				/>
-				<SongTable
-					ListHeaderComponent={
-						<Metadata
-							title={album.title}
-							type="ALBUM"
-							cover={album.cover_big}
-							tags={[
-								album.release_date,
-								album.duration ? `${formatDuration(album.duration)}` : undefined,
-								...(album.genres?.data.map((genre: { name: any }) => genre.name) ??
-									[]),
-							]}
+				<ScrollView contentContainerClassName="pb-4">
+					<Stack.Screen
+						options={{
+							title: album.title,
+							headerBackVisible: true,
+						}}
+					/>
+					<Metadata
+						title={album.title}
+						type="ALBUM"
+						cover={album.cover_big}
+						tags={[
+							album.release_date,
+							album.duration ? `${formatDuration(album.duration)}` : undefined,
+							...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+						]}
+					>
+						<Pressable
+							onPress={() => {
+								router.navigate(`/artists/${album.artist?.id}`);
+							}}
+							style={{ maxWidth: "100%" }}
 						>
-							<Pressable
-								onPress={() => {
-									router.navigate(`/artists/${album.artist?.id}`);
-								}}
-								style={{ maxWidth: "100%" }}
-							>
-								<Text className="text-muted-foreground">{album.artist?.name}</Text>
-							</Pressable>
-							<View className="flex-row gap-4 my-4">
-								<RatingInfo resource={resource} size="lg" />
-								<RatingDialog
-									resource={resource}
-									name={album.title}
-									userId={profile!.userId}
-								/>
-							</View>
-							<View className="flex-row w-full px-4 pb-4">
-								<Link href={`/albums/${album.id}/reviews`} asChild>
-									<Pressable className="rounded-xl p-4 flex-1 bg-secondary">
-										<MessageSquareText className="text-secondary-foreground" />
-										<Text className="text-lg font-semibold text-secondary-foreground">
-											Reviews
-										</Text>
-									</Pressable>
-								</Link>
-							</View>
-						</Metadata>
-					}
-					songs={songs.data!.map((song) => ({ ...song, album }))}
-				/>
+							<Text className="text-muted-foreground">{album.artist?.name}</Text>
+						</Pressable>
+						<View className="flex-row gap-4 my-4">
+							<RatingInfo resource={resource} size="lg" />
+							<RatingDialog
+								resource={resource}
+								name={album.title}
+								userId={profile!.userId}
+							/>
+						</View>
+						<View className="flex-row w-full px-4 pb-4">
+							<Link href={`/albums/${album.id}/reviews`} asChild>
+								<Pressable className="rounded-xl p-4 flex-1 bg-secondary">
+									<MessageSquareText className="text-secondary-foreground" />
+									<Text className="text-lg font-semibold text-secondary-foreground">
+										Reviews
+									</Text>
+								</Pressable>
+							</Link>
+						</View>
+					</Metadata>
+					<SongTable songs={songs.data!.map((song) => ({ ...song, album }))} />
+				</ScrollView>
 			</View>
 		</SafeAreaView>
 	);

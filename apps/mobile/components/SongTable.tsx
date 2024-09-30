@@ -1,38 +1,31 @@
-import { Track } from "@recordscratch/lib";
-import { FlashList } from "@shopify/flash-list";
+import { Track, cn } from "@recordscratch/lib";
 import { Link } from "expo-router";
 import { Pressable, View } from "react-native";
 import { Text } from "./ui/text";
 
-const SongTable = ({
-	songs,
-	ListHeaderComponent,
-}: {
-	songs: Track[];
-	ListHeaderComponent?: JSX.Element;
-}) => {
+const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (
-		<FlashList
-			data={songs}
-			keyExtractor={(item, index) => `song-${item.id}-${index}`}
-			estimatedItemSize={40}
-			renderItem={({ item: song, index }) => (
+		<View>
+			{songs.map((song, index) => (
 				<Link
 					key={index}
 					href={`/albums/${String(song.album.id)}/songs/${String(song.id)}`}
 					asChild
 				>
-					<Pressable className={"flex flex-row p-3 items-center gap-6 w-full"}>
+					<Pressable
+						className={cn(
+							"flex flex-row p-3 items-center gap-6 w-full border-muted",
+							index != songs.length - 1 && "border-b-[4px]"
+						)}
+					>
 						<Text className="ml-4 text-muted-foreground font-bold">{index + 1}</Text>
 						<Text className="w-full text-lg" numberOfLines={1} ellipsizeMode="tail">
 							{song.title.replace(/ *\([^)]*\) */g, "")}
 						</Text>
 					</Pressable>
 				</Link>
-			)}
-			ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
-			ListHeaderComponent={ListHeaderComponent}
-		/>
+			))}
+		</View>
 	);
 };
 

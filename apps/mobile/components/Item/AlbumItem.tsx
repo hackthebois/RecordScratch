@@ -2,14 +2,7 @@ import { cn } from "@recordscratch/lib";
 import { View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
 
-const AlbumItem = ({
-	resourceId,
-	className,
-}: {
-	total: number;
-	resourceId: string;
-	className?: string;
-}) => {
+const AlbumItem = ({ resourceId, className }: { resourceId: string; className?: string }) => {
 	return (
 		<View className={cn(className)}>
 			<ResourceItem
