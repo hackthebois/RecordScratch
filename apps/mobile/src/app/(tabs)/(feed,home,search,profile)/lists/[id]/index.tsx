@@ -38,7 +38,7 @@ const ListPage = () => {
 					headerRight: () =>
 						isProfile ? (
 							<TouchableOpacity
-								onPress={() => router.push(`lists/${listId}/settings`)}
+								onPress={() => router.navigate(`lists/${listId}/settings`)}
 							>
 								<Settings size={30} className="mr-6 text-foreground" />
 							</TouchableOpacity>

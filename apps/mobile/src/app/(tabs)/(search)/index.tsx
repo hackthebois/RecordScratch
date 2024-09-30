@@ -1,12 +1,13 @@
 import { SearchOptions, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
+import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "~/components/Item/ArtistItem";
 import { ProfileItem } from "~/components/Item/ProfileItem";
 import { ResourceItem } from "~/components/Item/ResourceItem";
-import { useRecents } from "~/components/recents";
+// import { useRecents } from "~/components/recents";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
@@ -14,7 +15,7 @@ import { deezerHelpers } from "~/lib/deezer";
 import { Search } from "~/lib/icons/Search";
 
 export default function SearchPage() {
-	const { addRecent } = useRecents("SEARCH");
+	// const { addRecent } = useRecents("SEARCH");
 	const [tab, setTab] = useState("top");
 	const [query, setQuery] = useState("");
 	const [options, setOptions] = useState<Omit<SearchOptions, "query">>({
@@ -39,6 +40,11 @@ export default function SearchPage() {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
+			<Stack.Screen
+				options={{
+					headerShown: false,
+				}}
+			/>
 			<View className="flex-row w-full items-center pr-4 h-14">
 				<Search size={20} className="mx-4 text-foreground" />
 				<TextInput
@@ -124,11 +130,11 @@ export default function SearchPage() {
 							profile={profile}
 							key={index}
 							onClick={() => {
-								addRecent({
-									id: profile.userId,
-									type: "PROFILE",
-									data: profile,
-								});
+								// addRecent({
+								// 	id: profile.userId,
+								// 	type: "PROFILE",
+								// 	data: profile,
+								// });
 							}}
 							isUser
 						/>
@@ -144,11 +150,11 @@ export default function SearchPage() {
 									category: "SONG" as const,
 								}}
 								onPress={() => {
-									addRecent({
-										id: String(song.id),
-										type: "SONG",
-										data: song,
-									});
+									// addRecent({
+									// 	id: String(song.id),
+									// 	type: "SONG",
+									// 	data: song,
+									// });
 								}}
 								imageWidthAndHeight={80}
 								showType
@@ -163,11 +169,11 @@ export default function SearchPage() {
 									category: "ALBUM" as const,
 								}}
 								onPress={() => {
-									addRecent({
-										id: String(album.id),
-										type: "ALBUM",
-										data: album,
-									});
+									// addRecent({
+									// 	id: String(album.id),
+									// 	type: "ALBUM",
+									// 	data: album,
+									// });
 								}}
 								imageWidthAndHeight={80}
 								showType
@@ -179,11 +185,11 @@ export default function SearchPage() {
 								artistId={String(artist.id)}
 								initialArtist={artist}
 								onClick={() => {
-									addRecent({
-										id: String(artist.id),
-										type: "ARTIST",
-										data: artist,
-									});
+									// addRecent({
+									// 	id: String(artist.id),
+									// 	type: "ARTIST",
+									// 	data: artist,
+									// });
 								}}
 								imageWidthAndHeight={80}
 								showType

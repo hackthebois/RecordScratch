@@ -70,7 +70,7 @@ export default function AlbumLayout() {
 						>
 							<Pressable
 								onPress={() => {
-									router.push(`/artists/${album.artist?.id}`);
+									router.navigate(`/artists/${album.artist?.id}`);
 								}}
 								style={{ maxWidth: "100%" }}
 							>

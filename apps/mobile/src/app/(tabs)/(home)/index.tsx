@@ -1,6 +1,6 @@
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import React from "react";
 import { FlatList, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,7 +10,7 @@ import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
-import NotFound from "../+not-found";
+import NotFound from "../../+not-found";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
@@ -39,7 +39,7 @@ const AlbumOfTheDay = () => {
 				variant="secondary"
 				className="w-1/3"
 				onPress={() => {
-					router.push(`/albums/${albumOfTheDay.albumId}`);
+					router.navigate(`/albums/${albumOfTheDay.albumId}`);
 				}}
 			>
 				<Text>Go to Album</Text>
@@ -54,6 +54,11 @@ const HomePage = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+			<Stack.Screen
+				options={{
+					title: "Home",
+				}}
+			/>
 			<ScrollView
 				contentContainerClassName="flex flex-col gap-6"
 				nestedScrollEnabled

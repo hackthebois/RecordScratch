@@ -2,7 +2,6 @@ import { Profile } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { View } from "react-native-ui-lib";
 import { UserAvatar } from "~/components//UserAvatar";
-import { FollowButton } from "~/components/Followers/FollowButton";
 import { Text } from "~/components/ui/text";
 import { getImageUrl } from "~/lib/image";
 
@@ -25,7 +24,7 @@ export const ProfileItem = ({
 		>
 			<View className="flex flex-row justify-between items-center gap-4 rounded w-full">
 				<View className="flex flex-row items-center">
-					<UserAvatar imageUrl={getImageUrl(profile)} size={85} />
+					<UserAvatar imageUrl={getImageUrl(profile)} size={60} />
 					<View className="min-w-0 truncate px-3">
 						<Text className="truncate font-medium">{profile.name}</Text>
 						<Text className="truncate py-1 text-sm text-muted-foreground">
@@ -33,7 +32,7 @@ export const ProfileItem = ({
 						</Text>
 					</View>
 				</View>
-				{!isUser ? <FollowButton profileId={profile.userId} /> : null}
+				{/* {!isUser ? <FollowButton profileId={profile.userId} /> : null} */}
 			</View>
 		</Link>
 	);

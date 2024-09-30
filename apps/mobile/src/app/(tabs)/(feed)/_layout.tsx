@@ -6,7 +6,7 @@ const Layout = () => {
 		<Stack
 			screenOptions={{
 				headerBackTitleVisible: false,
-				headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+				headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
 				headerShadowVisible: false,
 				animation: "fade",
 			}}

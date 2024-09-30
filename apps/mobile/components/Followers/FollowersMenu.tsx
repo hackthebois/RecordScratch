@@ -1,7 +1,6 @@
-import { router } from "expo-router";
+import { Link } from "expo-router";
 import React from "react";
-import { View } from "react-native";
-import { Button } from "~/components/ui/button";
+import { Pressable, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 
@@ -9,7 +8,6 @@ const FollowerMenu = ({ profileId, handleId }: { profileId: string; handleId: st
 	const [totalRatings] = api.profiles.getTotalRatings.useSuspenseQuery({
 		userId: profileId,
 	});
-
 	const [followerCount] = api.profiles.followCount.useSuspenseQuery({
 		profileId,
 		type: "followers",
@@ -19,33 +17,37 @@ const FollowerMenu = ({ profileId, handleId }: { profileId: string; handleId: st
 		type: "following",
 	});
 
+	const links = [
+		{
+			label: "Ratings",
+			value: totalRatings,
+			to: `${handleId}/ratings`,
+		},
+		{
+			label: "Followers",
+			value: followerCount,
+			to: `${handleId}/followers`,
+		},
+		{
+			label: "Following",
+			value: followingCount,
+			to: `${handleId}/followers?type=following`,
+		},
+	];
+
 	return (
 		<View className="flex flex-col items-center">
-			<View className="flex flex-row items-center justify-center gap-6 sm:justify-start">
-				<View className="flex flex-col items-center gap-1">
-					<Button variant={"secondary"}>
-						<Text>{totalRatings}</Text>
-					</Button>
-					<Text className="text-lg font-medium">Ratings</Text>
-				</View>
-				<View className="flex flex-col items-center gap-1">
-					<Button
-						variant={"secondary"}
-						onPress={() => router.push(`${handleId}/followers`)}
-					>
-						<Text>{followerCount}</Text>
-					</Button>
-					<Text className="text-lg font-medium">Followers</Text>
-				</View>
-				<View className="flex flex-col items-center gap-1">
-					<Button
-						variant={"secondary"}
-						onPress={() => router.push(`${handleId}/followers?type=following`)}
-					>
-						<Text>{followingCount}</Text>
-					</Button>
-					<Text className="text-lg font-medium">Following</Text>
-				</View>
+			<View className="flex flex-row w-full gap-2">
+				{links.map((link) => (
+					<Link key={link.to} href={link.to} asChild>
+						<Pressable className="flex flex-col flex-1 bg-secondary p-4 rounded-xl">
+							<Text className="text-secondary-foreground font-semibold text-lg">
+								{link.label}
+							</Text>
+							<Text className="text-secondary-foreground text-lg">{link.value}</Text>
+						</Pressable>
+					</Link>
+				))}
 			</View>
 		</View>
 	);
