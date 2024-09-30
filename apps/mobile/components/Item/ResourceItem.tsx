@@ -122,9 +122,12 @@ export const ResourceItem = ({
 								{resource.category === "SONG" ? "Song" : "Album"}
 							</Text>
 						)}
-						<Text className={cn("text-muted-foreground", artistNameCss)}>
-							{showArtist ? `• ${album.artist?.name}` : ""}
-						</Text>
+						{showArtist ? (
+							<Text className={cn("text-muted-foreground", artistNameCss)}>
+								{showType ? "• " : ""}
+								{album.artist?.name}
+							</Text>
+						) : null}
 					</View>
 				</View>
 			</View>
