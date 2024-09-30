@@ -1,6 +1,6 @@
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import React from "react";
 import { FlatList, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -54,6 +54,11 @@ const HomePage = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+			<Stack.Screen
+				options={{
+					title: "Home",
+				}}
+			/>
 			<ScrollView
 				contentContainerClassName="flex flex-col gap-6"
 				nestedScrollEnabled

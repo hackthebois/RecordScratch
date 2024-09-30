@@ -1,5 +1,5 @@
 import { useAuth } from "~/lib/auth";
-import { ProfilePage } from "./[handle]";
+import { ProfilePage } from "../(feed,home,search,profile)/[handle]";
 
 const Profile = () => {
 	const profile = useAuth((s) => s.profile);

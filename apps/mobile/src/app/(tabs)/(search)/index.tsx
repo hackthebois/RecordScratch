@@ -1,5 +1,6 @@
 import { SearchOptions, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
+import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -39,6 +40,11 @@ export default function SearchPage() {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
+			<Stack.Screen
+				options={{
+					headerShown: false,
+				}}
+			/>
 			<View className="flex-row w-full items-center pr-4 h-14">
 				<Search size={20} className="mx-4 text-foreground" />
 				<TextInput

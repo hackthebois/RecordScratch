@@ -60,6 +60,7 @@ export default function TabLayout() {
 						/>
 					),
 					headerLeft: () => null,
+					headerShown: false,
 				}}
 			/>
 			<Tabs.Screen
@@ -85,7 +86,7 @@ export default function TabLayout() {
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
-					headerLeft: () => null,
+					headerShown: false,
 				}}
 			/>
 			<Tabs.Screen
@@ -98,7 +99,7 @@ export default function TabLayout() {
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
-					headerLeft: () => null,
+					headerShown: false,
 				}}
 			/>
 		</Tabs>

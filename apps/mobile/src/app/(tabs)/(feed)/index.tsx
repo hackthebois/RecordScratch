@@ -1,3 +1,4 @@
+import { Stack } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { ReviewsList } from "~/components/ReviewsList";
@@ -37,32 +38,39 @@ const FeedPage = () => {
 	);
 
 	return (
-		<Tabs value={value} onValueChange={setValue} className="flex-1">
-			<View className="px-4">
-				<TabsList className="flex-row w-full">
-					<TabsTrigger value="for-you" className="flex-1">
-						<Text>For You</Text>
-					</TabsTrigger>
-					<TabsTrigger value="friends" className="flex-1">
-						<Text>Friends</Text>
-					</TabsTrigger>
-				</TabsList>
-			</View>
-			<TabsContent value="for-you" className="flex-1">
-				<ReviewsList
-					pages={feed?.pages}
-					fetchNextPage={feedNextPage}
-					hasNextPage={feedHasNextPage}
-				/>
-			</TabsContent>
-			<TabsContent value="friends" className="flex-1">
-				<ReviewsList
-					pages={following?.pages}
-					fetchNextPage={followingNextPage}
-					hasNextPage={followingHasNextPage}
-				/>
-			</TabsContent>
-		</Tabs>
+		<>
+			<Stack.Screen
+				options={{
+					title: "Feed",
+				}}
+			/>
+			<Tabs value={value} onValueChange={setValue} className="flex-1">
+				<View className="px-4">
+					<TabsList className="flex-row w-full">
+						<TabsTrigger value="for-you" className="flex-1">
+							<Text>For You</Text>
+						</TabsTrigger>
+						<TabsTrigger value="friends" className="flex-1">
+							<Text>Friends</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
+				<TabsContent value="for-you" className="flex-1">
+					<ReviewsList
+						pages={feed?.pages}
+						fetchNextPage={feedNextPage}
+						hasNextPage={feedHasNextPage}
+					/>
+				</TabsContent>
+				<TabsContent value="friends" className="flex-1">
+					<ReviewsList
+						pages={following?.pages}
+						fetchNextPage={followingNextPage}
+						hasNextPage={followingHasNextPage}
+					/>
+				</TabsContent>
+			</Tabs>
+		</>
 	);
 };
 
