@@ -48,7 +48,7 @@ const ListsItem = ({
 			{showProfile && (
 				<Link href={`/${String(profile.handle)}`}>
 					<View className="flex flex-row space-x-1 py-1 text-sm text-muted-foreground hover:underline">
-						<UserAvatar imageUrl={getImageUrl(profile)} className="h-8 w-8" />
+						<UserAvatar imageUrl={getImageUrl(profile)} size={40} />
 						<Text className="flex">{profile.name}</Text>
 					</View>
 				</Link>

@@ -1,18 +1,19 @@
-import { cn } from "@recordscratch/lib";
-import { View } from "react-native";
-import { Avatar } from "react-native-ui-lib";
-export const UserAvatar = ({
-	imageUrl,
-	size,
-	className,
-}: {
-	imageUrl?: string;
-	size?: number;
-	className?: String;
-}) => {
+import { User } from "~/lib/icons/User";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+
+export const UserAvatar = ({ imageUrl, size }: { imageUrl?: string; size?: number }) => {
 	return (
-		<View className={cn(className, "h-auto")}>
-			<Avatar source={{ uri: imageUrl }} size={size ?? 100} label="🤦" />
-		</View>
+		<Avatar
+			alt="Avatar"
+			style={{
+				width: size,
+				height: size,
+			}}
+		>
+			<AvatarImage source={{ uri: imageUrl }} />
+			<AvatarFallback>
+				<User />
+			</AvatarFallback>
+		</Avatar>
 	);
 };
