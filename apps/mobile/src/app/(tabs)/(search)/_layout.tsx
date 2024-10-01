@@ -9,6 +9,7 @@ const Layout = () => {
 				headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
 				headerShadowVisible: false,
 				animation: "fade",
+				title: "",
 			}}
 		/>
 	);
