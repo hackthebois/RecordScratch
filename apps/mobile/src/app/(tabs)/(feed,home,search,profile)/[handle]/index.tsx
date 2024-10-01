@@ -132,7 +132,9 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 							<Link href={`(users)/settings`}>
 								<Settings size={22} className="mr-6 text-foreground" />
 							</Link>
-						) : null,
+						) : (
+							<FollowButton profileId={profile.userId} size={"sm"} />
+						),
 				}}
 			/>
 			<ScrollView>
@@ -155,9 +157,6 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 								</View>
 							</View>
 							<FollowerMenu profileId={profile.userId} handleId={profile.handle} />
-							<View className="">
-								{!isProfile ? <FollowButton profileId={profile.userId} /> : null}
-							</View>
 						</View>
 					</View>
 				</View>

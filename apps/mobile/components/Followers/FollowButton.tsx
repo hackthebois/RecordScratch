@@ -3,10 +3,16 @@ import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
 
-export const FollowButton = ({ profileId }: { profileId: string }) => {
+export const FollowButton = ({
+	profileId,
+	size = "default",
+}: {
+	profileId: string;
+	size: "sm" | "default";
+}) => {
 	const utils = api.useUtils();
 	const profile = useAuth((s) => s.profile);
-	const [isFollowing] = api.profiles.isFollowing.useSuspenseQuery(profileId);
+	const { data: isFollowing } = api.profiles.isFollowing.useQuery(profileId);
 
 	const revalidate = async () => {
 		await utils.profiles.isFollowing.invalidate(profileId);
@@ -44,11 +50,11 @@ export const FollowButton = ({ profileId }: { profileId: string }) => {
 	});
 
 	const following = isFollow ? true : isUnFollow ? false : isFollowing;
-	const buttonVariant = following ? "secondary" : "default";
+
 	return (
 		<Button
-			className=" mr-4 h-10 w-auto"
-			variant={buttonVariant}
+			variant={"secondary"}
+			size={size}
 			onPress={(e) => {
 				e.stopPropagation();
 				e.preventDefault();

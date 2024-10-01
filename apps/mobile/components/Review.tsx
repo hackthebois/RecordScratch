@@ -2,7 +2,7 @@ import { cn, timeAgo } from "@recordscratch/lib";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { Suspense } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { ResourceItem } from "~/components/Item/ResourceItem";
 import { UserAvatar } from "~/components/UserAvatar";
 import { Button } from "~/components/ui/button";
@@ -145,13 +145,13 @@ export const Review = ({
 					))}
 				</View>
 				<Link href={`/${String(profile.handle)}`} asChild>
-					<View className="flex flex-row flex-wrap items-center gap-2">
+					<Pressable className="flex flex-row flex-wrap items-center gap-2">
 						<UserAvatar size={40} imageUrl={getImageUrl(profile)} />
 						<Text className="text-lg">{profile.name}</Text>
 						<Text className="text-left text-muted-foreground text-lg">
 							@{profile.handle} • {timeAgo(updatedAt)}
 						</Text>
-					</View>
+					</Pressable>
 				</Link>
 				{!!content && <Text className="text-lg">{content}</Text>}
 				<View className="flex flex-row items-center gap-3">
