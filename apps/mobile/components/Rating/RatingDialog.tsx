@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RateForm, RateFormSchema, Rating, Resource } from "@recordscratch/types";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
+import { GestureResponderEvent, Pressable, View } from "react-native";
 import AlertDialog from "~/components/CoreComponents/AlertDialog";
 import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -124,25 +124,18 @@ const RatingDialog = ({
 								(userRating.content ? (
 									<AlertDialog
 										trigger={
-											<TouchableOpacity className="mb-6 w-5/6 flex items-center">
-												<Text className=" text-gray-800 font-semibold">
-													Remove rating
-												</Text>
-											</TouchableOpacity>
+											<Pressable className="flex items-center">
+												<Text>Remove rating</Text>
+											</Pressable>
 										}
 										title="Remove your review?"
 										description="This action will remove your current review"
 										onConfirm={clearRating}
 									/>
 								) : (
-									<TouchableOpacity
-										onPress={clearRating}
-										className="mb-6 w-5/6 flex items-center"
-									>
-										<Text className=" text-gray-800 font-semibold">
-											Remove rating
-										</Text>
-									</TouchableOpacity>
+									<Pressable onPress={clearRating} className="flex items-center">
+										<Text>Remove rating</Text>
+									</Pressable>
 								))}
 						</View>
 					</View>
