@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
@@ -6,6 +6,7 @@ import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/auth";
 
 const SettingsPage = () => {
+	const router = useRouter();
 	const logout = useAuth((s) => s.logout);
 	const { setColorScheme, colorScheme } = useColorScheme();
 
@@ -19,8 +20,8 @@ const SettingsPage = () => {
 			<Button
 				variant="destructive"
 				onPress={async () => {
-					fetch("https://recordscratch.app/auth/signout");
 					logout();
+					router.push("(auth)/signin");
 				}}
 			>
 				<Text>Sign out</Text>

@@ -1,9 +1,10 @@
+import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import * as Browser from "expo-web-browser";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View } from "react-native";
-import { Button } from "~/components/ui/button";
+import React, { useEffect } from "react";
+import { Pressable, View } from "react-native";
+// import googleLogo from "~/assets/google-logo.svg";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/auth";
 
@@ -12,17 +13,12 @@ const AuthPage = () => {
 	const sessionId = useAuth((s) => s.sessionId);
 	const setSessionId = useAuth((s) => s.setSessionId);
 	const router = useRouter();
-	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
-		setIsMounted(true);
-	}, []);
-
-	useLayoutEffect(() => {
-		if (isMounted && sessionId) {
+		if (sessionId) {
 			router.replace("/");
 		}
-	}, [isMounted, sessionId, router]);
+	}, [sessionId]);
 
 	const handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
@@ -33,21 +29,35 @@ const AuthPage = () => {
 		const url = Linking.parse(result.url);
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
-		setSessionId(sessionId);
+		await setSessionId(sessionId);
 	};
 
 	return (
-		<View className="flex-1 justify-center items-center bg-white">
-			<Text className="font-semibold mb-4" variant="h2">
+		<View className="flex-1 justify-center items-center gap-6">
+			<Image
+				source={require("../../../assets/icon.png")}
+				style={{
+					width: 150,
+					height: 150,
+					borderRadius: 75,
+				}}
+			/>
+			<Text variant="h1" className="text-center">
 				Welcome to RecordScratch!
 			</Text>
-			<Button
-				className=" rounded-md px-4 py-2"
+			<Pressable
 				onPress={handlePressButtonAsync}
-				variant="secondary"
+				className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
 			>
-				<Text>Sign In</Text>
-			</Button>
+				<Image
+					source={require("../../../assets/google-logo.svg")}
+					style={{
+						width: 30,
+						height: 30,
+					}}
+				/>
+				<Text className="text-lg font-medium">Sign in with Google</Text>
+			</Pressable>
 		</View>
 	);
 };

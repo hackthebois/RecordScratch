@@ -8,7 +8,7 @@ type Auth = {
 	status: "loading" | "authenticated" | "unauthenticated";
 	sessionId: string | null;
 	profile: Profile | null;
-	logout: () => void;
+	logout: () => Promise<void>;
 	login: () => Promise<void>;
 	setSessionId: (sessionId: string) => void;
 	setProfile: (profile: Profile) => void;
@@ -21,7 +21,10 @@ export const createAuthStore = () =>
 		status: "loading",
 		sessionId: null,
 		profile: null,
-		logout: () => set({ sessionId: null, profile: null }),
+		logout: async () => {
+			set({ sessionId: null, profile: null });
+			await SecureStore.deleteItemAsync("sessionId");
+		},
 		login: async () => {
 			const sessionId = await SecureStore.getItemAsync("sessionId");
 			if (!sessionId) {

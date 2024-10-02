@@ -18,10 +18,13 @@ export default function TabLayout() {
 	const [myProfile] = api.profiles.me.useSuspenseQuery();
 
 	const setProfile = useAuth((s) => s.setProfile);
+	const logout = useAuth((s) => s.logout);
 
 	useEffect(() => {
 		if (myProfile) {
 			setProfile(myProfile!);
+		} else {
+			logout().then(() => router.push("(auth)/signin"));
 		}
 	}, [myProfile]);
 
