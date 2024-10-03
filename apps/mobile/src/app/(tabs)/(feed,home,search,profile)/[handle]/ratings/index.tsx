@@ -9,25 +9,14 @@ const Reviews = () => {
 
 	if (!profile) return <NotFoundScreen />;
 
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.useInfiniteQuery(
-		{
-			limit: 5,
-			filters: {
-				profileId: profile.userId,
-			},
-		},
-		{
-			getNextPageParam: (lastPage) => lastPage.nextCursor,
-		}
-	);
-
 	return (
 		<>
 			<Stack.Screen options={{ title: handle + " Ratings", headerBackVisible: true }} />
 			<ReviewsList
-				pages={data?.pages}
-				fetchNextPage={fetchNextPage}
-				hasNextPage={hasNextPage}
+				limit={20}
+				filters={{
+					profileId: profile.userId,
+				}}
 			/>
 		</>
 	);

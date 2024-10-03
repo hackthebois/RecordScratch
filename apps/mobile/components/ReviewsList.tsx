@@ -1,24 +1,22 @@
-import { ReviewType } from "@recordscratch/types";
+import { RouterInputs } from "@recordscratch/api";
 import { FlashList } from "@shopify/flash-list";
 import { ActivityIndicator, View } from "react-native";
+import { api } from "~/lib/api";
 import { Review } from "./Review";
 
-export const ReviewsList = ({
-	pages,
-	hasNextPage,
-	fetchNextPage,
-	ListHeaderComponent,
-}: {
-	pages?: {
-		items: ReviewType[];
-	}[];
-	hasNextPage: boolean;
-	fetchNextPage: () => void;
-	ListHeaderComponent?: JSX.Element;
-}) => {
+export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
+	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.useInfiniteQuery(
+		{
+			...input,
+		},
+		{
+			getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
+		}
+	);
+
 	return (
 		<FlashList
-			data={pages?.flatMap((page) => page.items)}
+			data={data?.pages?.flatMap((page) => page.items)}
 			keyExtractor={(item, index) => `review-${item.userId}-${index}`}
 			ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 			renderItem={({ item }) => <Review {...item} />}
@@ -33,7 +31,6 @@ export const ReviewsList = ({
 				}
 			}}
 			estimatedItemSize={380}
-			ListHeaderComponent={ListHeaderComponent}
 		/>
 	);
 };
