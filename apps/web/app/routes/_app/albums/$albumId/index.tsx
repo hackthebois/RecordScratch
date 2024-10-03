@@ -1,12 +1,14 @@
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import SongTable from "@/components/SongTable";
-import { InfiniteCommunityReviews } from "@/components/infinite/InfiniteCommunityReviews";
 import { AddToList } from "@/components/lists/AddToList";
 import { RatingDialog } from "@/components/rating/RatingDialog";
+import { ReviewDialog } from "@/components/review/ReviewDialog";
+import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { SignInRateButton } from "@/components/signIn/SignInRateButton";
+import { SignInReviewButton } from "@/components/signIn/SignInReviewButton";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
@@ -144,10 +146,23 @@ function Album() {
 					/>
 				</TabsContent>
 				<TabsContent value="reviews">
-					<InfiniteCommunityReviews
-						resource={resource}
-						pageLimit={20}
-						name={album.title}
+					<div className="flex w-full gap-2">
+						{profile ? (
+							<ReviewDialog
+								userId={profile.userId}
+								resource={resource}
+								name={album.title}
+							/>
+						) : (
+							<SignInReviewButton />
+						)}
+					</div>
+					<ReviewsList
+						filters={{
+							resourceId: resource.resourceId,
+							category: resource.category,
+						}}
+						limit={20}
 					/>
 				</TabsContent>
 			</Tabs>

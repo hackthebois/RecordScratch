@@ -9,10 +9,12 @@ const Reviews = () => {
 
 	if (!profile) return <NotFoundScreen />;
 
-	const { data, fetchNextPage, hasNextPage } = api.ratings.user.recent.useInfiniteQuery(
+	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.useInfiniteQuery(
 		{
 			limit: 5,
-			profileId: profile.userId,
+			filters: {
+				profileId: profile.userId,
+			},
 		},
 		{
 			getNextPageParam: (lastPage) => lastPage.nextCursor,

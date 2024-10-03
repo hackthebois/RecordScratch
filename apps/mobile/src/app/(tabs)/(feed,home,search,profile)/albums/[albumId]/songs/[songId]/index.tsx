@@ -9,7 +9,6 @@ import Metadata from "~/components/Metadata";
 import RateButton from "~/components/Rating/RateButton";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
 import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
 import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
@@ -37,16 +36,6 @@ const SongPage = () => {
 		resourceId: String(songId),
 		category: "SONG",
 	};
-
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.community.useInfiniteQuery(
-		{
-			limit: 5,
-			resource,
-		},
-		{
-			getNextPageParam: (lastPage) => lastPage.nextCursor,
-		}
-	);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>

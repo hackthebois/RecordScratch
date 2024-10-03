@@ -3,17 +3,13 @@ import { RouterInputs } from "@/trpc/shared";
 import { Disc3 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Review } from "../review/Review";
+import { Review } from "./Review";
 
-export const InfiniteProfileReviews = ({
-	input,
-}: {
-	input: RouterInputs["ratings"]["user"]["recent"];
-}) => {
+export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
 	const { ref, inView } = useInView();
 
 	const { data, fetchNextPage, hasNextPage } =
-		api.ratings.user.recent.useInfiniteQuery(
+		api.ratings.feed.useInfiniteQuery(
 			{
 				...input,
 			},

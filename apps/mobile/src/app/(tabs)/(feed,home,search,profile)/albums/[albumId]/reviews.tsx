@@ -4,16 +4,15 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { ReviewsList } from "~/components/ReviewsList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
 
 const Reviews = () => {
 	const { albumId } = useLocalSearchParams<{ albumId: string }>();
-	const [value, setValue] = useState("for-you");
+	const [tab, setTab] = useState("everyone");
 	const id = albumId!;
-	const [review, setReview] = useState("");
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -28,41 +27,27 @@ const Reviews = () => {
 		category: "ALBUM",
 	};
 
-	const {
-		data: all,
-		fetchNextPage: allNextPage,
-		hasNextPage: allHasNextPage,
-	} = api.ratings.feed.community.useInfiniteQuery(
+	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.useInfiniteQuery(
 		{
 			limit: 5,
-			resource,
-		},
-		{
-			getNextPageParam: (lastPage) => lastPage.nextCursor,
-		}
-	);
-
-	const {
-		data: following,
-		fetchNextPage: followingNextPage,
-		hasNextPage: followingHasNextPage,
-	} = api.ratings.feed.following.useInfiniteQuery(
-		{
-			limit: 5,
+			filters: {
+				following: tab === "friends",
+				resourceId: resource.resourceId,
+				category: resource.category,
+			},
 		},
 		{
 			getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
-			enabled: value === "friends",
 		}
 	);
 
 	return (
 		<View className="flex-1">
 			<Stack.Screen options={{ title: album.title + " Reviews" }} />
-			<Tabs value={value} onValueChange={setValue} className="flex-1">
+			<Tabs value={tab} onValueChange={setTab}>
 				<View className="px-4">
 					<TabsList className="flex-row w-full">
-						<TabsTrigger value="for-you" className="flex-1">
+						<TabsTrigger value="everyone" className="flex-1">
 							<Text>Everyone</Text>
 						</TabsTrigger>
 						<TabsTrigger value="friends" className="flex-1">
@@ -70,21 +55,12 @@ const Reviews = () => {
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent value="for-you" className="flex-1">
-					<ReviewsList
-						pages={all?.pages}
-						fetchNextPage={allNextPage}
-						hasNextPage={allHasNextPage}
-					/>
-				</TabsContent>
-				<TabsContent value="friends" className="flex-1">
-					<ReviewsList
-						pages={following?.pages}
-						fetchNextPage={followingNextPage}
-						hasNextPage={followingHasNextPage}
-					/>
-				</TabsContent>
 			</Tabs>
+			<ReviewsList
+				pages={data?.pages}
+				fetchNextPage={fetchNextPage}
+				hasNextPage={hasNextPage}
+			/>
 		</View>
 	);
 };

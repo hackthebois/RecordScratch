@@ -42,7 +42,12 @@ export const ReviewDialog = ({
 	});
 	const { mutate: reviewMutation } = api.ratings.review.useMutation({
 		onSettled: () => {
-			utils.ratings.feed.community.invalidate({ resource });
+			utils.ratings.feed.invalidate({
+				filters: {
+					resourceId: resource.resourceId,
+					category: resource.category,
+				},
+			});
 			utils.ratings.user.get.invalidate({
 				resourceId: resource.resourceId,
 				userId,

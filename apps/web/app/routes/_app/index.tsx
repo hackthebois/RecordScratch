@@ -1,15 +1,12 @@
 import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import AlbumList from "@/components/album/AlbumList";
-import {
-	FollowingFeedReviews,
-	RecentFeedReviews,
-} from "@/components/infinite/InfiniteFeedReviews";
+import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
 import { NotFound } from "@/components/ui/NotFound";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
 import { api, apiUtils } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
@@ -112,38 +109,40 @@ function Index() {
 			)}
 			<h2 className="-mb-6">Feed</h2>
 			{profile && (
-				<Tabs value={feed} className="w-full">
-					<TabsList>
-						<TabsTrigger value="recent" asChild>
-							<Link
-								to={Route.fullPath}
-								search={{
-									feed: undefined,
-								}}
-							>
-								Recent
-							</Link>
-						</TabsTrigger>
-						<TabsTrigger value="following" asChild>
-							<Link
-								to={Route.fullPath}
-								search={{
-									feed: "following",
-								}}
-							>
-								Following
-							</Link>
-						</TabsTrigger>
-					</TabsList>
-					<TabsContent value="recent">
-						<RecentFeedReviews input={{ limit: 20 }} />
-					</TabsContent>
-					<TabsContent value="following">
-						<FollowingFeedReviews input={{ limit: 20 }} />
-					</TabsContent>
-				</Tabs>
+				<>
+					<Tabs value={feed} className="w-full">
+						<TabsList>
+							<TabsTrigger value="recent" asChild>
+								<Link
+									to={Route.fullPath}
+									search={{
+										feed: undefined,
+									}}
+								>
+									Recent
+								</Link>
+							</TabsTrigger>
+							<TabsTrigger value="following" asChild>
+								<Link
+									to={Route.fullPath}
+									search={{
+										feed: "following",
+									}}
+								>
+									Following
+								</Link>
+							</TabsTrigger>
+						</TabsList>
+						<ReviewsList
+							limit={20}
+							filters={{
+								following: feed === "following",
+							}}
+						/>
+					</Tabs>
+				</>
 			)}
-			{!profile && <RecentFeedReviews input={{ limit: 20 }} />}
+			{!profile && <ReviewsList limit={20} />}
 		</div>
 	);
 }

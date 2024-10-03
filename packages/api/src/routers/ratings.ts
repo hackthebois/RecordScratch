@@ -82,29 +82,24 @@ export const ratingsRouter = router({
 			.limit(20);
 		return data;
 	}),
-	feed: router({
-		recent: publicProcedure
-			.input(PaginatedInput)
-			.query(async ({ ctx: { db }, input: { limit = 20, cursor = 0 } }) => {
-				const items = await db.query.ratings.findMany({
-					where: isNotNull(ratings.content),
-					limit: limit + 1,
-					offset: cursor,
-					orderBy: (ratings, { desc }) => [desc(ratings.updatedAt)],
-					with: {
-						profile: true,
-					},
-				});
-				let nextCursor: typeof cursor | undefined = undefined;
-				if (items.length > limit) {
-					items.pop();
-					nextCursor = cursor + items.length;
-				}
-				return { items, nextCursor };
-			}),
-		following: protectedProcedure
-			.input(PaginatedInput)
-			.query(async ({ ctx: { db, userId }, input: { limit = 20, cursor = 0 } }) => {
+	feed: publicProcedure
+		.input(
+			PaginatedInput.extend({
+				filters: z
+					.object({
+						profileId: z.string().optional(),
+						resourceId: ResourceSchema.shape.resourceId.optional(),
+						category: ResourceSchema.shape.category.optional(),
+						rating: z.number().optional(),
+						following: z.boolean().optional(),
+						hasReview: z.boolean().optional(),
+					})
+					.optional(),
+			})
+		)
+		.query(async ({ ctx: { db, userId }, input: { limit = 20, cursor = 0, filters } }) => {
+			let followingWhere = undefined;
+			if (filters?.following && userId) {
 				const following = await db.query.followers.findMany({
 					where: eq(followers.userId, userId),
 				});
@@ -115,59 +110,35 @@ export const ratingsRouter = router({
 						nextCursor: undefined,
 					};
 
-				const items = await db.query.ratings.findMany({
-					where: and(
-						inArray(
-							ratings.userId,
-							following.map((f) => f.followingId)
-						),
-						isNotNull(ratings.content)
-					),
-					limit: limit + 1,
-					offset: cursor,
-					orderBy: (ratings, { desc }) => [desc(ratings.updatedAt)],
-					with: {
-						profile: true,
-					},
-				});
-				let nextCursor: typeof cursor | undefined = undefined;
-				if (items.length > limit) {
-					items.pop();
-					nextCursor = cursor + items.length;
-				}
-				return { items, nextCursor };
-			}),
-		community: publicProcedure.input(PaginatedInput.extend({ resource: ResourceSchema })).query(
-			async ({
-				ctx: { db },
-				input: {
-					limit = 20,
-					cursor = 0,
-					resource: { resourceId, category },
-				},
-			}) => {
-				const items = await db.query.ratings.findMany({
-					where: and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.category, category),
-						isNotNull(ratings.content)
-					),
-					limit: limit + 1,
-					offset: cursor,
-					orderBy: (ratings, { desc }) => [desc(ratings.updatedAt)],
-					with: {
-						profile: true,
-					},
-				});
-				let nextCursor: typeof cursor | undefined = undefined;
-				if (items.length > limit) {
-					items.pop();
-					nextCursor = cursor + items.length;
-				}
-				return { items, nextCursor };
+				followingWhere = inArray(
+					ratings.userId,
+					following.map((f) => f.followingId)
+				);
 			}
-		),
-	}),
+
+			const items = await db.query.ratings.findMany({
+				where: and(
+					followingWhere,
+					filters?.profileId ? eq(ratings.userId, filters.profileId) : undefined,
+					filters?.resourceId ? eq(ratings.resourceId, filters.resourceId) : undefined,
+					filters?.category ? eq(ratings.category, filters.category) : undefined,
+					filters?.rating ? eq(ratings.rating, filters.rating) : undefined,
+					filters?.hasReview ? isNotNull(ratings.content) : undefined
+				),
+				limit: limit + 1,
+				offset: cursor,
+				orderBy: (ratings, { desc }) => [desc(ratings.updatedAt)],
+				with: {
+					profile: true,
+				},
+			});
+			let nextCursor: typeof cursor | undefined = undefined;
+			if (items.length > limit) {
+				items.pop();
+				nextCursor = cursor + items.length;
+			}
+			return { items, nextCursor };
+		}),
 	user: router({
 		get: publicProcedure
 			.input(z.object({ resourceId: z.string(), userId: z.string() }))
@@ -265,49 +236,6 @@ export const ratingsRouter = router({
 					),
 				});
 			}),
-		recent: publicProcedure
-			.input(
-				PaginatedInput.extend({
-					profileId: z.string(),
-					rating: z.number().optional(),
-					category: z.enum(["ALBUM", "SONG"]).optional(),
-				})
-			)
-			.query(
-				async ({
-					ctx: { db },
-					input: { limit = 20, cursor = 0, rating, category, profileId },
-				}) => {
-					let where;
-					if (rating && category)
-						where = and(
-							eq(ratings.userId, profileId),
-							eq(ratings.rating, rating),
-							eq(ratings.category, category)
-						);
-					else if (category)
-						where = and(eq(ratings.userId, profileId), eq(ratings.category, category));
-					else if (rating)
-						where = and(eq(ratings.userId, profileId), eq(ratings.rating, rating));
-					else where = eq(ratings.userId, profileId);
-
-					const items = await db.query.ratings.findMany({
-						limit: limit + 1,
-						offset: cursor,
-						orderBy: desc(ratings.updatedAt),
-						where,
-						with: {
-							profile: true,
-						},
-					});
-					let nextCursor: typeof cursor | undefined = undefined;
-					if (items.length > limit) {
-						items.pop();
-						nextCursor = cursor + items.length;
-					}
-					return { items, nextCursor };
-				}
-			),
 	}),
 	rate: protectedProcedure
 		.input(RateFormSchema)

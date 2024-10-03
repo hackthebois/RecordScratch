@@ -2,12 +2,12 @@
 import { Head } from "@/components/Head";
 import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
-import { InfiniteProfileReviews } from "@/components/infinite/InfiniteProfileReviews";
 import { CreateList } from "@/components/lists/CreateList";
 import { EditTopLists } from "@/components/lists/EditTopLists";
 import ListList from "@/components/lists/ListList";
 import { ResourcesList } from "@/components/lists/TopLists";
 import { EditProfile } from "@/components/profile/EditProfile";
+import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -430,13 +430,13 @@ function Handle() {
 							</TabsList>
 						</Tabs>
 					</div>
-					<InfiniteProfileReviews
-						input={{
+					<ReviewsList
+						filters={{
 							profileId: profile.userId,
 							rating,
 							category: category === "all" ? undefined : category,
-							limit: 20,
 						}}
+						limit={20}
 					/>
 				</TabsContent>
 				{isUser && (
