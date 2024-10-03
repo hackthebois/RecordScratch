@@ -7,19 +7,16 @@ import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Metadata from "~/components/Metadata";
-import RatingDialog from "~/components/Rating/RatingDialog";
+import RateButton from "~/components/Rating/RateButton";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
 import SongTable from "~/components/SongTable";
 import { Text } from "~/components/ui/text";
-import { useAuth } from "~/lib/auth";
 import { getQueryOptions } from "~/lib/deezer";
 import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 export default function AlbumLayout() {
 	const { albumId } = useLocalSearchParams<{ albumId: string }>();
 	const id = albumId!;
-
-	const profile = useAuth((s) => s.profile);
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -76,10 +73,10 @@ export default function AlbumLayout() {
 						</Pressable>
 						<View className="flex-row gap-4 my-4">
 							<RatingInfo resource={resource} size="lg" />
-							<RatingDialog
+							<RateButton
+								imageUrl={album.cover_big}
 								resource={resource}
 								name={album.title}
-								userId={profile!.userId}
 							/>
 						</View>
 						<View className="flex-row w-full px-4 pb-4">

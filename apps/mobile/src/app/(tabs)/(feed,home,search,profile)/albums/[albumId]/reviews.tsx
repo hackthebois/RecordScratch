@@ -2,7 +2,7 @@ import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Platform, TextInput, View } from "react-native";
+import { View } from "react-native";
 import { ReviewsList } from "~/components/ReviewsList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
@@ -85,23 +85,6 @@ const Reviews = () => {
 					/>
 				</TabsContent>
 			</Tabs>
-			<View className="absolute bottom-0 bg-background p-4 border-t border-border w-full">
-				<TextInput
-					id="review"
-					autoComplete="off"
-					placeholder="Write a review"
-					value={review}
-					cursorColor={"#ffb703"}
-					style={{
-						paddingTop: 0,
-						paddingBottom: Platform.OS === "ios" ? 4 : 0,
-						textAlignVertical: "center",
-					}}
-					autoFocus
-					className="flex-1 h-full text-lg outline-none p-0"
-					onChangeText={(text) => setReview(text)}
-				/>
-			</View>
 		</View>
 	);
 };

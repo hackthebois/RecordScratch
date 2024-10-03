@@ -28,8 +28,10 @@ export const RateFormSchema = RatingSchema.pick({
 	resourceId: true,
 	category: true,
 	rating: true,
+	content: true,
 }).extend({
 	rating: RatingSchema.shape.rating.nullable(),
+	content: RatingSchema.shape.content.nullish(),
 });
 export type RateForm = z.infer<typeof RateFormSchema>;
 

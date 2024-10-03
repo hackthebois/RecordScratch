@@ -83,6 +83,7 @@ export const RatingDialog = ({
 		if (!userRating) return;
 		rateMutation({
 			...resource,
+			content: null,
 			rating: null,
 		});
 		setOpen(false);

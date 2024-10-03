@@ -312,7 +312,7 @@ export const ratingsRouter = router({
 	rate: protectedProcedure
 		.input(RateFormSchema)
 		.mutation(async ({ ctx: { db, userId }, input }) => {
-			const { rating, resourceId, parentId, category } = input;
+			const { rating, resourceId, parentId, category, content } = input;
 			if (rating === null) {
 				await db
 					.delete(ratings)
@@ -332,6 +332,7 @@ export const ratingsRouter = router({
 						category,
 						userId,
 						parentId,
+						content,
 					})
 					.onConflictDoUpdate({
 						target: [ratings.resourceId, ratings.userId],
@@ -341,6 +342,7 @@ export const ratingsRouter = router({
 							category,
 							userId,
 							parentId,
+							content,
 						},
 					});
 			}

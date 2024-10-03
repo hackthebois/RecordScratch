@@ -6,17 +6,15 @@ import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Metadata from "~/components/Metadata";
-import RatingDialog from "~/components/Rating/RatingDialog";
+import RateButton from "~/components/Rating/RateButton";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
 import { getQueryOptions } from "~/lib/deezer";
 import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 const SongPage = () => {
 	const { albumId, songId } = useLocalSearchParams<{ albumId: string; songId: string }>();
-	const profile = useAuth((s) => s.profile);
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -71,10 +69,10 @@ const SongPage = () => {
 					>
 						<View className="flex-row gap-4 my-4">
 							<RatingInfo resource={resource} />
-							<RatingDialog
+							<RateButton
+								imageUrl={album.cover_big}
 								resource={resource}
 								name={song.title}
-								userId={profile!.userId}
 							/>
 						</View>
 						<View className="flex-row w-full px-4 pb-4">
