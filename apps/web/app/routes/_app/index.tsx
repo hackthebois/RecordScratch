@@ -137,12 +137,20 @@ function Index() {
 							limit={20}
 							filters={{
 								following: feed === "following",
+								hasReview: true,
 							}}
 						/>
 					</Tabs>
 				</>
 			)}
-			{!profile && <ReviewsList limit={20} />}
+			{!profile && (
+				<ReviewsList
+					limit={20}
+					filters={{
+						hasReview: true,
+					}}
+				/>
+			)}
 		</div>
 	);
 }

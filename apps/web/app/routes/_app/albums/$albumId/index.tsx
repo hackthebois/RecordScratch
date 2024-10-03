@@ -161,6 +161,7 @@ function Album() {
 						filters={{
 							resourceId: resource.resourceId,
 							category: resource.category,
+							hasReview: true,
 						}}
 						limit={20}
 					/>
