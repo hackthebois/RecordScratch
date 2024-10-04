@@ -307,6 +307,10 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 		fields: [comments.userId],
 		references: [profile.userId],
 	}),
+	author: one(profile, {
+		fields: [comments.authorId],
+		references: [profile.userId],
+	}),
 }));
 
 export const tableSchemas = {

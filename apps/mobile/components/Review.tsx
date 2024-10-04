@@ -60,25 +60,13 @@ const LikeButton = (props: SelectLike) => {
 	);
 };
 
-const ReplyButton = ({
-	handle,
-	resourceId,
-	onClick,
-}: {
-	resourceId: string;
-	handle: string;
-	onClick: () => void;
-}) => {
+const ReplyButton = ({ handle, resourceId }: { resourceId: string; handle: string }) => {
 	return (
 		<Link
 			href={{
-				pathname: "[handle]/ratings/[id]",
-				params: {
-					handle,
-					id: resourceId,
-				},
+				pathname: "(modals)/reply/rating",
+				params: { resourceId, handle },
 			}}
-			onPress={onClick}
 			asChild
 		>
 			<Button variant="secondary">
@@ -125,8 +113,10 @@ export const Review = ({
 	resourceId,
 	category,
 	updatedAt,
-	onReply,
-}: ReviewType & { onReply?: () => void }) => {
+	hideActions = false,
+}: ReviewType & {
+	hideActions?: boolean;
+}) => {
 	return (
 		<View className="flex bg-background flex-col gap-4 px-4 py-8 text-card-foreground">
 			<ResourceItem
@@ -135,7 +125,7 @@ export const Review = ({
 				imageWidthAndHeight={80}
 				titleCss=""
 			/>
-			<View className="flex flex-col items-start gap-3">
+			<View className="flex flex-col items-start gap-4">
 				<View className="flex flex-row items-center gap-1">
 					{Array.from(Array(rating)).map((_, i) => (
 						<Star key={i} size={24} color="#ffb703" fill={"#ffb703"} />
@@ -154,35 +144,31 @@ export const Review = ({
 					</Pressable>
 				</Link>
 				{!!content && <Text className="text-lg">{content}</Text>}
-				<View className="flex flex-row items-center gap-3">
-					<Suspense
-						fallback={
-							<></>
-							// TODO
-						}
-					>
-						<LikeButton resourceId={resourceId} authorId={userId} />
-					</Suspense>
-					<Suspense
-						fallback={
-							<></>
-							// TODO
-						}
-					>
-						<CommentsButton
-							handle={profile.handle}
-							resourceId={resourceId}
-							authorId={userId}
-						/>
-					</Suspense>
-					<ReplyButton
-						handle={profile.handle}
-						resourceId={resourceId}
-						onClick={() => {
-							if (onReply) onReply();
-						}}
-					/>
-				</View>
+				{!hideActions ? (
+					<View className="flex flex-row items-center gap-3">
+						<Suspense
+							fallback={
+								<></>
+								// TODO
+							}
+						>
+							<LikeButton resourceId={resourceId} authorId={userId} />
+						</Suspense>
+						<Suspense
+							fallback={
+								<></>
+								// TODO
+							}
+						>
+							<CommentsButton
+								handle={profile.handle}
+								resourceId={resourceId}
+								authorId={userId}
+							/>
+						</Suspense>
+						<ReplyButton handle={profile.handle} resourceId={resourceId} />
+					</View>
+				) : null}
 			</View>
 		</View>
 	);

@@ -5,10 +5,10 @@ import {
 	SelectCommentSchema,
 	SelectReplySchema,
 } from "@recordscratch/types";
-import { and, count, desc, eq, or, getTableColumns, isNull } from "drizzle-orm";
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { and, count, desc, eq, getTableColumns, isNull, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { createCommentNotification } from "../notifications";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const commentsRouter = router({
 	getComments: publicProcedure
@@ -23,25 +23,22 @@ export const commentsRouter = router({
 			return countList[0].count;
 		}),
 	list: publicProcedure.input(SelectCommentSchema).query(async ({ ctx: { db }, input }) => {
-		return await db
-			.select({
-				...getTableColumns(comments),
-				profile: { ...getTableColumns(profile) },
-			})
-			.from(comments)
-			.innerJoin(profile, eq(comments.userId, profile.userId))
-			.where(
-				and(
-					eq(comments.resourceId, input.resourceId),
-					eq(comments.authorId, input.authorId),
-					isNull(comments.rootId)
-				)
-			)
-			.orderBy(desc(comments.createdAt));
+		return await db.query.comments.findMany({
+			where: and(
+				eq(comments.resourceId, input.resourceId),
+				eq(comments.authorId, input.authorId),
+				isNull(comments.rootId)
+			),
+			with: {
+				profile: true,
+			},
+			orderBy: (comments) => [desc(comments.createdAt)],
+		});
 	}),
 	create: protectedProcedure
 		.input(CreateCommentSchema)
-		.mutation(async ({ ctx: { db }, input }) => {
+		.mutation(async ({ ctx: { db, userId }, input: i }) => {
+			const input = { ...i, userId };
 			await db.insert(comments).values(input);
 
 			const parentCond = input.parentId

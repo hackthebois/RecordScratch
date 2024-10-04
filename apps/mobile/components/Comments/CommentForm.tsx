@@ -1,18 +1,18 @@
-import { CreateCommentSchema, Profile } from "@recordscratch/types";
-import React from "react";
-import { TextInput, View } from "react-native";
-import { api } from "~/lib/api";
-import { UserAvatar } from "~/components/UserAvatar";
-import { getImageUrl } from "~/lib/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { CreateCommentSchema, Profile } from "@recordscratch/types";
 import { useLocalSearchParams } from "expo-router";
-import { useForm, Controller } from "react-hook-form";
-import { Text } from "../ui/text";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { TextInput, View } from "react-native";
+import { z } from "zod";
+import { UserAvatar } from "~/components/UserAvatar";
+import { api } from "~/lib/api";
 import { AtSign } from "~/lib/icons/AtSign";
-import { Send } from "~/lib/icons/Send";
 import { Loader2 } from "~/lib/icons/Loader2";
+import { Send } from "~/lib/icons/Send";
+import { getImageUrl } from "~/lib/image";
 import { Button } from "../ui/button";
+import { Text } from "../ui/text";
 
 const CreateCommentFormSchema = CreateCommentSchema.pick({ content: true });
 type CreateCommentForm = z.infer<typeof CreateCommentFormSchema>;
@@ -85,7 +85,7 @@ export const CommentForm = ({
 	};
 
 	return (
-		<View className="relative flex flex-col gap-3 rounded border border-gray-300 p-3">
+		<View className="relative flex flex-col gap-3 rounded border border-gray-300 p-4">
 			<View className="flex flex-row items-center gap-2">
 				<UserAvatar size={35} imageUrl={getImageUrl(profile)} />
 				<Text>{profile.name}</Text>

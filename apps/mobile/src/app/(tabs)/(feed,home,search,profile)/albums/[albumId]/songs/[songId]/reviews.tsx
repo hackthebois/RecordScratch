@@ -45,6 +45,7 @@ const Reviews = () => {
 					following: tab === "friends",
 					resourceId: resource.resourceId,
 					category: resource.category,
+					hasReview: true,
 				}}
 				limit={20}
 			/>
