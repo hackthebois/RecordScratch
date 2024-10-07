@@ -3,7 +3,6 @@ import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@recordscratch
 import dayjs from "dayjs";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { z } from "zod";
-import { posthog } from "../posthog";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 const PaginatedInput = z.object({
@@ -239,7 +238,7 @@ export const ratingsRouter = router({
 	}),
 	rate: protectedProcedure
 		.input(RateFormSchema)
-		.mutation(async ({ ctx: { db, userId }, input }) => {
+		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
 			const { rating, resourceId, parentId, category, content } = input;
 			if (rating === null) {
 				await db
@@ -281,7 +280,7 @@ export const ratingsRouter = router({
 		}),
 	review: protectedProcedure
 		.input(ReviewFormSchema)
-		.mutation(async ({ ctx: { db, userId }, input }) => {
+		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
 			await db
 				.insert(ratings)
 				.values({ ...input, userId })

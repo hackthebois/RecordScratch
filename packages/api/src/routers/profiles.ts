@@ -6,7 +6,6 @@ import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 import { RatingSchema } from "@recordscratch/types";
 import { createFollowNotification } from "../notifications";
-import { posthog } from "../posthog";
 
 export const profilesRouter = router({
 	get: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: handle }) => {
@@ -177,7 +176,7 @@ export const profilesRouter = router({
 		}),
 	create: protectedProcedure
 		.input(CreateProfileSchema)
-		.mutation(async ({ ctx: { db, userId }, input }) => {
+		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
 			await db.insert(profile).values({ ...input, userId });
 			posthog("profile_created", {
 				distinctId: userId,

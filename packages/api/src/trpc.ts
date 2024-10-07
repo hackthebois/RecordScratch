@@ -4,6 +4,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { AwsClient } from "aws4fetch";
 import SuperJSON from "superjson";
 import { ZodError } from "zod";
+import { getPostHog } from "./posthog";
 
 export const createTRPCContext = async ({ sessionId }: { sessionId?: string | null }) => {
 	const r2 = new AwsClient({
@@ -13,6 +14,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 	});
 	const db = getDB();
 	const lucia = getLucia();
+	const posthog = getPostHog();
 
 	if (!sessionId) {
 		return {
@@ -28,6 +30,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 		return {
 			db,
 			r2,
+			posthog,
 			userId: null,
 		};
 	}
@@ -35,6 +38,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 	return {
 		db,
 		r2,
+		posthog,
 		userId: session.userId,
 	};
 };
