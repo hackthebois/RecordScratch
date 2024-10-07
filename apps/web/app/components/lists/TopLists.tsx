@@ -1,16 +1,16 @@
+import { api } from "@/trpc/react";
+import { cn } from "@recordscratch/lib/src/utils";
 import {
 	Category,
 	ListWithResources,
 	UserListItem,
 } from "@recordscratch/types/src/list";
-import React, { useState } from "react";
-import SearchAddToList from "./SearchAddToList";
-import { Button } from "../ui/Button";
-import { DeleteButton } from "./ModifyResource";
-import { api } from "@/trpc/react";
-import { cn } from "@recordscratch/lib/src/utils";
+import { useState } from "react";
 import { ResourceItem } from "../ResourceItem";
 import { ArtistItem } from "../artist/ArtistItem";
+import { Button } from "../ui/Button";
+import { DeleteButton } from "./ModifyResource";
+import SearchAddToList from "./SearchAddToList";
 
 export const ResourcesList = ({
 	category,
@@ -44,7 +44,7 @@ export const ResourcesList = ({
 
 	const [open, setOpen] = useState<boolean>(false);
 
-	let renderItem;
+	let renderItem: (resource: UserListItem) => JSX.Element;
 	const resourceOptions = {
 		imageCss: "min-w-[64px] rounded -mb-3",
 		titleCss: "font-medium line-clamp-2",

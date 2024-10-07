@@ -1,4 +1,4 @@
-import { followers, likes, ratings } from "@recordscratch/db";
+import { followers, likes, profile, ratings } from "@recordscratch/db";
 import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@recordscratch/types";
 import dayjs from "dayjs";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
@@ -293,4 +293,16 @@ export const ratingsRouter = router({
 				properties: input,
 			});
 		}),
+	leaderboard: publicProcedure.query(async ({ ctx: { db } }) => {
+		return await db
+			.select({
+				total: count(ratings.rating),
+				profile,
+			})
+			.from(ratings)
+			.leftJoin(profile, eq(ratings.userId, profile.userId))
+			.groupBy(profile.userId)
+			.orderBy(({ total }) => desc(total))
+			.limit(20);
+	}),
 });
