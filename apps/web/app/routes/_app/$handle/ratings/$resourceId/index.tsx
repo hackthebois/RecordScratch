@@ -20,6 +20,12 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/Form";
+import { Label } from "@/components/ui/Label";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/Popover";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { timeAgo } from "@recordscratch/lib";
@@ -33,15 +39,9 @@ import {
 	Send,
 	Trash2,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/Popover";
-import { useEffect, useState } from "react";
-import { Label } from "@/components/ui/Label";
 
 export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 	component: Rating,
@@ -129,7 +129,6 @@ const CommentForm = ({
 	const onSubmit = async ({ content }: CreateCommentForm) => {
 		mutate({
 			content,
-			userId: profile.userId,
 			resourceId,
 			authorId,
 			rootId,
