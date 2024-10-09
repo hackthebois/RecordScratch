@@ -19,6 +19,25 @@ export default function TabLayout() {
 
 	const setProfile = useAuth((s) => s.setProfile);
 	const logout = useAuth((s) => s.logout);
+	const sessionId = useAuth((s) => s.sessionId);
+
+	useEffect(() => {
+		const getToken = async () => {
+			try {
+				const response = await fetch(
+					`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh/=${sessionId}`
+				);
+
+				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+				console.log(`\n\nParsed Response:`, response, `\n\n`);
+			} catch (error) {
+				console.error("Error fetching token:", error);
+			}
+		};
+
+		getToken(); // Call the async function
+	}, []);
 
 	useEffect(() => {
 		if (myProfile) {

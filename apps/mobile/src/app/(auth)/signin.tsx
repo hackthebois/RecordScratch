@@ -16,7 +16,7 @@ const AuthPage = () => {
 
 	useEffect(() => {
 		if (sessionId) {
-			router.replace("/");
+			router.replace("(tabs)");
 		}
 	}, [sessionId]);
 
@@ -29,7 +29,7 @@ const AuthPage = () => {
 		const url = Linking.parse(result.url);
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
-		await setSessionId(sessionId);
+		setSessionId(sessionId);
 	};
 
 	return (

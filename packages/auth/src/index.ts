@@ -14,13 +14,3 @@ export const getLucia = () => {
 		},
 	});
 };
-
-// declare module "lucia" {
-// 	interface Register {
-// 		Lucia: getLucia;
-// 		DatabaseUserAttributes: {
-// 			email: string;
-// 			googleId: string;
-// 		};
-// 	}
-// }

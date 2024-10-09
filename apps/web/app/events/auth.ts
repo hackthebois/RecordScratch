@@ -1,5 +1,5 @@
 import { getLucia } from "@recordscratch/auth";
-import { getDB, users } from "@recordscratch/db";
+import { getDB, sessions, users } from "@recordscratch/db";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { eq } from "drizzle-orm";
 import { generateId } from "lucia";
@@ -16,7 +16,8 @@ import { z } from "zod";
 export default eventHandler(async (event) => {
 	const url = getRequestURL(event);
 	const query = getQuery(event);
-	const expoAddress = query.expoAddress;
+	const expoAddress = query.expoAddress as string;
+	const sessionId = query.sessionId as string;
 
 	const callBackUrl = `${process.env.CF_PAGES_URL}/auth/google/callback${
 		expoAddress ? `?expoAddress=${expoAddress}` : ""
@@ -29,6 +30,37 @@ export default eventHandler(async (event) => {
 	);
 	const db = getDB();
 	const lucia = getLucia();
+
+	google.validateAuthorizationCode;
+
+	if (url.pathname === "/auth/refresh" || url.pathname === "/auth/refresh/") {
+		if (!sessionId) return;
+		const googleId =
+			(
+				await db
+					.select({ googleId: users.googleId })
+					.from(sessions)
+					.innerJoin(users, eq(users.id, sessions.userId))
+					.where(eq(sessions.id, sessionId))
+			)[0]?.googleId || null;
+
+		if (!googleId) return;
+
+		//await lucia.invalidateSession(sessionId);
+
+		const existingUser = await db.query.users.findFirst({
+			where: eq(users.googleId, googleId),
+		});
+		const userId = existingUser!.id;
+		const email = existingUser!.email;
+
+		const session = await lucia.createSession(userId, {
+			email,
+			googleId,
+		});
+
+		return `session_id=${session.id}`;
+	}
 
 	if (url.pathname === "/auth/signout" || url.pathname === "/auth/signout/") {
 		const session = getCookie(event, "auth_session");
@@ -125,6 +157,7 @@ export default eventHandler(async (event) => {
 			userId = existingUser.id;
 			redirect = "/";
 		}
+
 		const session = await lucia.createSession(userId, {
 			email,
 			googleId,
