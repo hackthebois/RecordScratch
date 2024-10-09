@@ -11,6 +11,8 @@ import { Search } from "~/lib/icons/Search";
 import { Star } from "~/lib/icons/Star";
 import { User } from "~/lib/icons/User";
 
+import { z } from "zod";
+
 export default function TabLayout() {
 	const router = useRouter();
 
@@ -23,17 +25,31 @@ export default function TabLayout() {
 
 	useEffect(() => {
 		const getToken = async () => {
-			try {
-				const response = await fetch(
-					`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh/=${sessionId}`
-				);
-
-				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-				console.log(`\n\nParsed Response:`, response, `\n\n`);
-			} catch (error) {
-				console.error("Error fetching token:", error);
-			}
+			await fetch(
+				`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh?sessionId=${sessionId}`,
+				{
+					method: "GET",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+				}
+			)
+				.then(async (response) => {
+					return await response.json();
+				})
+				.then((responseData) => {
+					console.log(
+						`\n\n\nParsed Response:${z
+							.object({
+								sessionId: z.string(),
+							})
+							.parse(responseData)}`
+					);
+				})
+				.catch(function (err) {
+					console.log(err);
+				});
 		};
 
 		getToken(); // Call the async function

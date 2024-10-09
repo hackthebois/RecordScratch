@@ -59,7 +59,7 @@ export default eventHandler(async (event) => {
 			googleId,
 		});
 
-		return `session_id=${session.id}`;
+		return { session_id: session.id };
 	}
 
 	if (url.pathname === "/auth/signout" || url.pathname === "/auth/signout/") {
