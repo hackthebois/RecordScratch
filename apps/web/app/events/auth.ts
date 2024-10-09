@@ -46,7 +46,7 @@ export default eventHandler(async (event) => {
 
 		if (!googleId) return;
 
-		//await lucia.invalidateSession(sessionId);
+		await lucia.invalidateSession(sessionId);
 
 		const existingUser = await db.query.users.findFirst({
 			where: eq(users.googleId, googleId),
@@ -59,7 +59,7 @@ export default eventHandler(async (event) => {
 			googleId,
 		});
 
-		return { session_id: session.id };
+		return { sessionId: session.id };
 	}
 
 	if (url.pathname === "/auth/signout" || url.pathname === "/auth/signout/") {

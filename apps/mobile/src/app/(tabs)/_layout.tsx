@@ -10,7 +10,6 @@ import { Home } from "~/lib/icons/Home";
 import { Search } from "~/lib/icons/Search";
 import { Star } from "~/lib/icons/Star";
 import { User } from "~/lib/icons/User";
-
 import { z } from "zod";
 
 export default function TabLayout() {
@@ -22,37 +21,32 @@ export default function TabLayout() {
 	const setProfile = useAuth((s) => s.setProfile);
 	const logout = useAuth((s) => s.logout);
 	const sessionId = useAuth((s) => s.sessionId);
+	const setSessionId = useAuth((s) => s.setSessionId);
 
 	useEffect(() => {
 		const getToken = async () => {
 			await fetch(
-				`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh?sessionId=${sessionId}`,
-				{
-					method: "GET",
-					headers: {
-						Accept: "application/json",
-						"Content-Type": "application/json",
-					},
-				}
+				`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh?sessionId=${sessionId}`
 			)
 				.then(async (response) => {
-					return await response.json();
+					return z
+						.object({
+							sessionId: z.string(),
+						})
+						.safeParse(await response.json());
 				})
-				.then((responseData) => {
-					console.log(
-						`\n\n\nParsed Response:${z
-							.object({
-								sessionId: z.string(),
-							})
-							.parse(responseData)}`
-					);
+				.then((parsedData) => {
+					if (parsedData.error) console.error(parsedData.error);
+					else {
+						console.log(`Parsed Session ID: ${parsedData.data.sessionId}`);
+						setSessionId(parsedData.data.sessionId);
+					}
 				})
 				.catch(function (err) {
 					console.log(err);
 				});
 		};
-
-		getToken(); // Call the async function
+		getToken();
 	}, []);
 
 	useEffect(() => {
