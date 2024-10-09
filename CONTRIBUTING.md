@@ -29,11 +29,11 @@ Denoted by the `type:` prefix.
 ## Commit types
 
 | Commit Type | Title            | Description                                                                                                             |
-| ----------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------- | --- |
+| ----------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `feat`      | Features         | A new feature                                                                                                           |
 | `fix`       | Bug Fixes        | A solution to a bug                                                                                                     |
 | `docs`      | Documentation    | Changes to Documentation only                                                                                           |
-| `refactor`  | Code Refactoring | A code change that neither fixes a bug nor adds a feature                                                               |     |
+| `refactor`  | Code Refactoring | A code change that neither fixes a bug nor adds a feature                                                               |
 | `test`      | Tests            | Adding temporary changes, should be used with caution and should not be used to implement any new features or bug fixes |
 | `docs`      | Documentation    | Changing documentation and not modifying any src files                                                                  |
 
