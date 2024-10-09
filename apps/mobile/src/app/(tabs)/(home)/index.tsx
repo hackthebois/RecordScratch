@@ -75,7 +75,7 @@ const HomePage = () => {
 					horizontal
 					contentContainerClassName="px-4"
 					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={160}
+					estimatedItemSize={160} 
 					showsHorizontalScrollIndicator={false}
 				/>
 				<Text variant="h2" className="pt-6 pb-4 px-4">

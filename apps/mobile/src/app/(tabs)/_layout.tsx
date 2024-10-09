@@ -110,7 +110,6 @@ export default function TabLayout() {
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
-					headerLeft: () => null,
 					headerShown: false,
 				}}
 			/>
