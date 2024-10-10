@@ -18,7 +18,6 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Text } from "~/components/ui/text";
-import { TRPCProvider } from "~/lib/api";
 import { AuthProvider } from "~/lib/auth";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -97,49 +96,47 @@ export default function RootLayout() {
 
 	return (
 		<AuthProvider>
-			<TRPCProvider>
-				<SafeAreaProvider>
-					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-						<Stack
-							screenOptions={{
-								animation: "fade",
-								headerBackTitleVisible: false,
-								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+			<SafeAreaProvider>
+				<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+					<Stack
+						screenOptions={{
+							animation: "fade",
+							headerBackTitleVisible: false,
+							headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+						}}
+					>
+						<Stack.Screen
+							name="(tabs)"
+							options={{
+								headerShown: false,
 							}}
-						>
-							<Stack.Screen
-								name="(tabs)"
-								options={{
-									headerShown: false,
-								}}
-							/>
-							<Stack.Screen
-								name="(auth)/signin"
-								options={{
-									headerShown: false,
-								}}
-							/>
-							<Stack.Screen
-								name="(modals)/rating"
-								options={{
-									title: "",
-									presentation: "modal",
-									animation: "slide_from_bottom",
-								}}
-							/>
-							<Stack.Screen
-								name="(modals)/reply/rating"
-								options={{
-									title: "",
-									presentation: "modal",
-									animation: "slide_from_bottom",
-								}}
-							/>
-						</Stack>
-						<PortalHost />
-					</ThemeProvider>
-				</SafeAreaProvider>
-			</TRPCProvider>
+						/>
+						<Stack.Screen
+							name="(auth)/signin"
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name="(modals)/rating"
+							options={{
+								title: "",
+								presentation: "modal",
+								animation: "slide_from_bottom",
+							}}
+						/>
+						<Stack.Screen
+							name="(modals)/reply/rating"
+							options={{
+								title: "",
+								presentation: "modal",
+								animation: "slide_from_bottom",
+							}}
+						/>
+					</Stack>
+					<PortalHost />
+				</ThemeProvider>
+			</SafeAreaProvider>
 		</AuthProvider>
 	);
 }

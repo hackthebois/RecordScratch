@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import superjson from "superjson";
 
 import type { AppRouter } from "@recordscratch/api";
@@ -47,8 +47,9 @@ export const getBaseUrl = () => {
  * Use only in _app.tsx
  */ export function TRPCProvider(props: { children: React.ReactNode }) {
 	const sessionId = useAuth((s) => s.sessionId);
+
 	const [queryClient] = useState(() => new QueryClient());
-	const [trpcClient, setTrpcClient] = useState(() =>
+	const [trpcClient] = useState(() =>
 		api.createClient({
 			links: [
 				loggerLink({
@@ -70,31 +71,6 @@ export const getBaseUrl = () => {
 			],
 		})
 	);
-
-	useEffect(() => {
-		setTrpcClient(
-			api.createClient({
-				links: [
-					loggerLink({
-						enabled: (opts) =>
-							process.env.NODE_ENV === "development" ||
-							(opts.direction === "down" && opts.result instanceof Error),
-						colorMode: "ansi",
-					}),
-					httpBatchLink({
-						transformer: superjson,
-						url: `${getBaseUrl()}/trpc`,
-						async headers() {
-							const headers = new Map<string, string>();
-							headers.set("x-trpc-source", "expo-react");
-							headers.set("Authorization", `${sessionId}`);
-							return Object.fromEntries(headers);
-						},
-					}),
-				],
-			})
-		);
-	}, [sessionId]);
 
 	return (
 		<api.Provider client={trpcClient} queryClient={queryClient}>
