@@ -24,6 +24,20 @@ export default function TabLayout() {
 	const setSessionId = useAuth((s) => s.setSessionId);
 
 	useEffect(() => {
+		if (myProfile) {
+			setProfile(myProfile!);
+		} else {
+			logout().then(() => router.push("(auth)/signin"));
+		}
+	}, [myProfile]);
+
+	useEffect(() => {
+		if (needsOnboarding) {
+			router.push("/onboarding");
+		}
+	}, [needsOnboarding]);
+
+	useEffect(() => {
 		const getToken = async () => {
 			await fetch(
 				`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh?sessionId=${sessionId}`
@@ -48,20 +62,6 @@ export default function TabLayout() {
 		};
 		getToken();
 	}, []);
-
-	useEffect(() => {
-		if (myProfile) {
-			setProfile(myProfile!);
-		} else {
-			logout().then(() => router.push("(auth)/signin"));
-		}
-	}, [myProfile]);
-
-	useEffect(() => {
-		if (needsOnboarding) {
-			router.push("/onboarding");
-		}
-	}, [needsOnboarding]);
 
 	return (
 		<Tabs
