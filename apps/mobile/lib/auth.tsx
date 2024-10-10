@@ -35,7 +35,7 @@ export const createAuthStore = () =>
 		},
 		setSessionId: async (sessionId) => {
 			await SecureStore.setItemAsync("sessionId", sessionId);
-			set({ sessionId });
+			set({ sessionId, status: "authenticated" });
 		},
 		setProfile: (profile) => set({ profile }),
 	}));
