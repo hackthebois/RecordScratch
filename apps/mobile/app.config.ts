@@ -17,7 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	assetBundlePatterns: ["**/*"],
 	ios: {
 		supportsTablet: true,
-		bundleIdentifier: "app.recordscratch.mobile",
+		bundleIdentifier: "app.recordscratch.ios",
 	},
 	android: {
 		adaptiveIcon: {
