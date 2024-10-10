@@ -44,6 +44,7 @@ export const ResourcesList = ({
 
 	const [open, setOpen] = useState<boolean>(false);
 
+	// eslint-disable-next-line no-unused-vars
 	let renderItem: (resource: UserListItem) => JSX.Element;
 	const resourceOptions = {
 		imageCss: "min-w-[64px] rounded -mb-3",
