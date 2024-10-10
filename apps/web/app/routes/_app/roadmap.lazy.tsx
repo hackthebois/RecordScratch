@@ -20,34 +20,24 @@ type RoadmapItem = {
 	description: string;
 };
 
-const now: RoadmapItem[] = [
+const consideration: RoadmapItem[] = [
 	{
-		title: "Likes",
+		title: "Uploading and playing music",
 		description:
-			"Drop a like on your favourite reviews to show your support for others.",
-	},
-	{
-		title: "Notifications",
-		description:
-			"New integrated notifications to update you on new followers and those who have liked your reviews.",
+			"Allow artists to upload their music and users to play it directly on the site.",
 	},
 ];
 
 const planned: RoadmapItem[] = [
 	{
-		title: "List Reviews",
-		description: "Allow for other users to rate and review your lists.",
-	},
-
-	{
-		title: "Review Sharing",
+		title: "Sharing",
 		description:
-			"Allow for the option to share your reviews with others outside of recordscratch.",
+			"Allow for the option to share your reviews, lists and more",
 	},
 	{
 		title: "Badges",
 		description:
-			"New badge system that will be displayed on user profiles. These badges will detail certain accomplishments like reaching a certain amount of reviews/likes/followers and etc.",
+			"Profile badges to show off user achievements and activity.",
 	},
 	{
 		title: "Polls and Mini Games",
@@ -60,44 +50,17 @@ const planned: RoadmapItem[] = [
 			"Based on your ratings, we'll recommend new music and personalized reviews.",
 	},
 	{
-		title: "Playable Music",
+		title: "Progression",
 		description:
-			"Allow for the option to play certain songs/albums on spotify and apple music directly.",
+			"Track your progress within albums and artists, and see how you compare to others.",
 	},
 ];
 
-const released: RoadmapItem[] = [
+const now: RoadmapItem[] = [
 	{
-		title: "Ratings and Reviews",
-		description: "Rate and review songs and albums",
-	},
-	{
-		title: "Search",
-		description: "Search for songs, albums, artists, and other users.",
-	},
-	{
-		title: "User Profiles",
+		title: "Mobile App",
 		description:
-			"View users' profiles, rating distributions and recent activity.",
-	},
-	{
-		title: "Feeds",
-		description:
-			"View recent activity from everyone and users' you follow.",
-	},
-	{
-		title: "Music Information",
-		description:
-			"View detailed information about songs, albums, and artists.",
-	},
-	{
-		title: "Lists",
-		description: "Create lists of songs, albums and artists.",
-	},
-	{
-		title: "Following",
-		description:
-			"Follow your friends and see their recent activity. View your followers and following lists.",
+			"Our primary focus right now is developing a mobile app for RecordScratch",
 	},
 ];
 
@@ -109,7 +72,7 @@ const RoadmapSection = ({
 	items: RoadmapItem[];
 }) => {
 	return (
-		<div className="flex h-full min-h-0 w-[400px] min-w-[300px] flex-col gap-4 rounded-xl border p-4">
+		<div className="flex h-full min-h-0 w-full flex-col gap-4 rounded-xl border p-4">
 			<h3>{name}</h3>
 			<div className="flex flex-col gap-2 overflow-y-auto pr-2">
 				{items.map((item, index) => (
@@ -139,9 +102,12 @@ function Roadmap() {
 			/>
 			<h1 className="p-4 sm:p-6">Roadmap</h1>
 			<div className="mb-4 flex h-full min-h-0 gap-4 overflow-x-auto px-4 pb-2">
+				<RoadmapSection
+					name="Under Consideration"
+					items={consideration}
+				/>
 				<RoadmapSection name="Planned" items={planned} />
-				<RoadmapSection name="Now" items={now} />
-				<RoadmapSection name="Released" items={released} />
+				<RoadmapSection name="Current" items={now} />
 			</div>
 		</div>
 	);
