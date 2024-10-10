@@ -298,7 +298,7 @@ export const comments = pgTable("comments", {
 	...dates,
 });
 
-export const commentsRelations = relations(comments, ({ one }) => ({
+export const commentsRelations = relations(comments, ({ one, many }) => ({
 	rating: one(ratings, {
 		fields: [comments.resourceId, comments.authorId],
 		references: [ratings.resourceId, ratings.userId],
@@ -310,6 +310,14 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 	author: one(profile, {
 		fields: [comments.authorId],
 		references: [profile.userId],
+	}),
+	root: one(comments, {
+		fields: [comments.rootId],
+		references: [comments.id],
+		relationName: "replies",
+	}),
+	replies: many(comments, {
+		relationName: "replies",
 	}),
 }));
 

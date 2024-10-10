@@ -11,7 +11,32 @@ const Layout = () => {
 				animation: "fade",
 				title: "",
 			}}
-		/>
+		>
+			<Stack.Screen
+				name="(modals)/rating"
+				options={{
+					title: "",
+					presentation: "modal",
+					animation: "slide_from_bottom",
+				}}
+			/>
+			<Stack.Screen
+				name="(modals)/reply/rating"
+				options={{
+					title: "",
+					presentation: "modal",
+					animation: "slide_from_bottom",
+				}}
+			/>
+			<Stack.Screen
+				name="(modals)/reply/comment"
+				options={{
+					title: "",
+					presentation: "modal",
+					animation: "slide_from_bottom",
+				}}
+			/>
+		</Stack>
 	);
 };
 

@@ -34,9 +34,10 @@ const Reply = () => {
 	const { mutate, isPending } = api.comments.create.useMutation({
 		onSuccess: async () => {
 			form.reset();
-			router.navigate({
+			router.back();
+			router.push({
 				pathname: "[handle]/ratings/[id]",
-				params: { handle: handle, id: resourceId },
+				params: { handle, id: resourceId },
 			});
 		},
 		onSettled: () => {
@@ -44,7 +45,7 @@ const Reply = () => {
 				authorId: profile.userId,
 				resourceId,
 			});
-			utils.comments.getComments.invalidate({
+			utils.comments.count.rating.invalidate({
 				authorId: profile.userId,
 				resourceId,
 			});

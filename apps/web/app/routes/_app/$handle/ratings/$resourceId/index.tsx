@@ -118,7 +118,7 @@ const CommentForm = ({
 					rootId,
 				});
 			}
-			utils.comments.getComments.invalidate({
+			utils.comments.count.rating.invalidate({
 				authorId,
 				resourceId,
 			});
@@ -284,7 +284,7 @@ const Comment = ({
 					rootId,
 				});
 			}
-			utils.comments.getComments.invalidate({
+			utils.comments.count.rating.invalidate({
 				authorId,
 				resourceId,
 			});

@@ -85,7 +85,7 @@ const CommentsButton = ({
 }: SelectComment & {
 	handle: string;
 }) => {
-	const [comments] = api.comments.getComments.useSuspenseQuery({
+	const [comments] = api.comments.count.rating.useSuspenseQuery({
 		resourceId,
 		authorId,
 	});
