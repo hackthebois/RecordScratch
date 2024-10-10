@@ -24,6 +24,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			foregroundImage: "./assets/adaptive-icon.png",
 			backgroundColor: "#ffffff",
 		},
+		package: "com.yourcompany.yourappname",
+		versionCode: 1,
 	},
 	plugins: ["expo-router"],
 	experiments: {
