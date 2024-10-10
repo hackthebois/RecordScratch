@@ -20,8 +20,9 @@ const SettingsPage = () => {
 			<Button
 				variant="destructive"
 				onPress={async () => {
-					logout();
-					router.push("(auth)/signin");
+					logout().then(() => {
+						router.push("(auth)/signin");
+					});
 				}}
 			>
 				<Text>Sign out</Text>
