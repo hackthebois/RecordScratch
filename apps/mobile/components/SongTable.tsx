@@ -16,7 +16,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 					asChild
 				>
 					<View className="flex flex-row p-3 items-center justify-between gap-6">
-						<View className="flex flex-row items-center gap-6 max-w-52">
+						<View className="flex flex-row items-center gap-6 max-w-52 ">
 							<Text className="ml-4 text-muted-foreground font-bold w-5">
 								{index + 1}
 							</Text>
