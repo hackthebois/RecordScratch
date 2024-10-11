@@ -28,7 +28,11 @@ const DistributionChart = ({
 							}}
 							className={cn(
 								"h-full min-h-0 w-full rounded-t",
-								index + 1 === value ? "bg-[#ff8c00]" : "bg-[#ffb703]"
+								value
+									? index + 1 === value
+										? "bg-[#ff8c00]"
+										: "bg-[#ffdd85]"
+									: "bg-[#ffb703]"
 							)}
 						/>
 					</TouchableOpacity>
