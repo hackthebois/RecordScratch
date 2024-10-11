@@ -1,9 +1,10 @@
 import { Stack, useRouter } from "expo-router";
-import { useColorScheme } from "nativewind";
+import { useColorScheme } from "~/lib/useColorScheme";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/auth";
+import * as SecureStore from "expo-secure-store";
 
 const SettingsPage = () => {
 	const router = useRouter();
@@ -30,7 +31,7 @@ const SettingsPage = () => {
 
 			<Button
 				variant="secondary"
-				onPress={() => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
+				onPress={async () => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
 			>
 				<Text>Toggle mode</Text>
 			</Button>

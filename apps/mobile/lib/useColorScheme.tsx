@@ -1,4 +1,5 @@
 import { useColorScheme as useNativewindColorScheme } from "nativewind";
+import * as SecureStore from "expo-secure-store";
 
 type ColorScheme = "light" | "dark";
 
@@ -11,8 +12,15 @@ interface UseColorSchemeResult {
 }
 
 export function useColorScheme(): UseColorSchemeResult {
-	const { colorScheme, setColorScheme, toggleColorScheme } = useNativewindColorScheme();
+	const { colorScheme, setColorScheme: setColor, toggleColorScheme } = useNativewindColorScheme();
 	const adjustedColorScheme: ColorScheme = colorScheme ?? "light";
+
+	const setColorScheme = async (
+		scheme: Parameters<(value: "light" | "dark" | "system") => void>[0]
+	) => {
+		setColor(scheme);
+		await SecureStore.setItemAsync("theme", scheme);
+	};
 
 	return {
 		colorScheme: adjustedColorScheme,

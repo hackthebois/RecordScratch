@@ -10,7 +10,6 @@ import {
 	Montserrat_900Black,
 	useFonts,
 } from "@expo-google-fonts/montserrat";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
@@ -22,6 +21,7 @@ import { TRPCProvider } from "~/lib/api";
 import { AuthProvider } from "~/lib/auth";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
+import * as SecureStore from "expo-secure-store";
 import "../styles.css";
 
 const LIGHT_THEME: Theme = {
@@ -63,9 +63,9 @@ export default function RootLayout() {
 
 	useEffect(() => {
 		(async () => {
-			const theme = await AsyncStorage.getItem("theme");
+			const theme = await SecureStore.getItemAsync("theme");
 			if (!theme) {
-				AsyncStorage.setItem("theme", colorScheme);
+				await SecureStore.setItemAsync("theme", colorScheme);
 				setIsColorSchemeLoaded(true);
 				return;
 			}
