@@ -1,6 +1,7 @@
 import { Profile } from "@recordscratch/types";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useRef } from "react";
+import { z } from "zod";
 import { createStore, useStore } from "zustand";
 
 // Define the context type
@@ -31,7 +32,26 @@ export const createAuthStore = () =>
 				set({ status: "unauthenticated" });
 				return;
 			}
-			set({ sessionId, status: "authenticated" });
+			await fetch(
+				`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh?sessionId=${sessionId}`
+			)
+				.then(async (response) => {
+					return z
+						.object({
+							sessionId: z.string(),
+						})
+						.safeParse(await response.json());
+				})
+				.then((parsedData) => {
+					if (parsedData.error) console.error(parsedData.error);
+					else {
+						console.log(`Parsed Session ID: ${parsedData.data.sessionId}`);
+						set({ sessionId: parsedData.data.sessionId, status: "authenticated" });
+					}
+				})
+				.catch(function (err) {
+					console.log(err);
+				});
 		},
 		setSessionId: async (sessionId) => {
 			await SecureStore.setItemAsync("sessionId", sessionId);
