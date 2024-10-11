@@ -1,24 +1,27 @@
+import NotFoundScreen from "#/app/+not-found";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import { z } from "zod";
-import { Comment } from "~/components/Comment";
+import { Review } from "~/components/Review";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 
-const CommentModal = () => {
+const Reply = () => {
 	const router = useRouter();
-	const { id } = useLocalSearchParams<{
-		id: string;
+	const { resourceId, handle } = useLocalSearchParams<{
+		resourceId: string;
+		handle: string;
 	}>();
-
-	const [comment] = api.comments.get.useSuspenseQuery({
-		id,
+	const [profile] = api.profiles.get.useSuspenseQuery(handle);
+	const [rating] = api.ratings.user.get.useSuspenseQuery({
+		userId: profile!.userId,
+		resourceId,
 	});
 
-	if (!comment) return null;
+	if (!profile || !rating) return <NotFoundScreen />;
 
 	const utils = api.useUtils();
 	const form = useForm<{ content: string }>({
@@ -32,14 +35,19 @@ const CommentModal = () => {
 		onSuccess: async () => {
 			form.reset();
 			router.back();
-			router.push({
-				pathname: "comments/[id]",
-				params: { id },
+			router.navigate({
+				pathname: "[handle]/ratings/[id]",
+				params: { handle, id: resourceId },
 			});
 		},
 		onSettled: () => {
-			utils.comments.get.invalidate({
-				id,
+			utils.comments.list.invalidate({
+				authorId: profile.userId,
+				resourceId,
+			});
+			utils.comments.count.rating.invalidate({
+				authorId: profile.userId,
+				resourceId,
 			});
 		},
 	});
@@ -47,9 +55,8 @@ const CommentModal = () => {
 	const onSubmit = async ({ content }: { content: string }) => {
 		mutate({
 			content,
-			resourceId: comment.resourceId,
-			authorId: comment.authorId,
-			rootId: comment.id,
+			resourceId,
+			authorId: profile.userId,
 		});
 	};
 
@@ -74,7 +81,7 @@ const CommentModal = () => {
 				behavior={Platform.OS === "ios" ? "padding" : undefined}
 				keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
 			>
-				<Comment comment={comment} hideActions />
+				<Review {...rating} profile={profile} hideActions />
 				<View className="h-1 bg-muted" />
 				<Controller
 					control={form.control}
@@ -98,4 +105,4 @@ const CommentModal = () => {
 	);
 };
 
-export default CommentModal;
+export default Reply;
