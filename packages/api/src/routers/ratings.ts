@@ -1,7 +1,7 @@
 import { followers, likes, profile, ratings } from "@recordscratch/db";
 import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@recordscratch/types";
 import dayjs from "dayjs";
-import { and, avg, count, desc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, avg, count, desc, eq, gt, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
@@ -91,7 +91,7 @@ export const ratingsRouter = router({
 						category: ResourceSchema.shape.category.optional(),
 						rating: z.number().optional(),
 						following: z.boolean().optional(),
-						hasReview: z.boolean().optional(),
+						ratingType: z.enum(["REVIEW", "RATING"]).optional(),
 					})
 					.optional(),
 			})
@@ -115,6 +115,11 @@ export const ratingsRouter = router({
 				);
 			}
 
+			let ratingTypeFilter;
+			if (filters?.ratingType === "REVIEW") {
+				ratingTypeFilter = isNotNull(ratings.content);
+			} else if (filters?.ratingType === "RATING") ratingTypeFilter = isNull(ratings.content);
+
 			const items = await db.query.ratings.findMany({
 				where: and(
 					followingWhere,
@@ -122,7 +127,7 @@ export const ratingsRouter = router({
 					filters?.resourceId ? eq(ratings.resourceId, filters.resourceId) : undefined,
 					filters?.category ? eq(ratings.category, filters.category) : undefined,
 					filters?.rating ? eq(ratings.rating, filters.rating) : undefined,
-					filters?.hasReview ? isNotNull(ratings.content) : undefined
+					ratingTypeFilter
 				),
 				limit: limit + 1,
 				offset: cursor,
@@ -137,6 +142,40 @@ export const ratingsRouter = router({
 				nextCursor = cursor + items.length;
 			}
 			return { items, nextCursor };
+		}),
+	distribution: publicProcedure
+		.input(
+			z.object({
+				resourceId: ResourceSchema.shape.resourceId,
+				reviewType: z.enum(["REVIEW", "RATING"]).optional(),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { resourceId, reviewType } }) => {
+			let where;
+			if (reviewType && reviewType === "REVIEW") {
+				where = and(eq(ratings.resourceId, resourceId), isNotNull(ratings.content));
+			} else if (reviewType && reviewType === "RATING") {
+				where = and(eq(ratings.resourceId, resourceId), isNull(ratings.content));
+			} else where = eq(ratings.resourceId, resourceId);
+			const distributionRatings = await db
+				.select({
+					rating: ratings.rating,
+					rating_count: count(ratings.rating),
+				})
+				.from(ratings)
+				.where(where)
+				.groupBy(ratings.rating)
+				.orderBy(ratings.rating);
+
+			const outputList: number[] = distributionRatings.reduce(
+				(result, { rating, rating_count }) => {
+					result[rating - 1] = rating_count;
+					return result;
+				},
+				Array(10).fill(0)
+			);
+
+			return outputList;
 		}),
 	user: router({
 		get: publicProcedure

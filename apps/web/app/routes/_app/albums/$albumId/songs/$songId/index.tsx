@@ -129,7 +129,7 @@ function Song() {
 						filters={{
 							resourceId: resource.resourceId,
 							category: resource.category,
-							hasReview: true,
+							ratingType: "REVIEW",
 						}}
 						limit={20}
 					/>

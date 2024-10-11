@@ -31,7 +31,7 @@ const FeedPage = () => {
 				limit={20}
 				filters={{
 					following: tab === "friends",
-					hasReview: true,
+					ratingType: "REVIEW",
 				}}
 			/>
 		</>

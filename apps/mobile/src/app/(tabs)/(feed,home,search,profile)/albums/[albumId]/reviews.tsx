@@ -3,14 +3,63 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import DistributionChart from "~/components/DistributionChart";
 import { ReviewsList } from "~/components/ReviewsList";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
+
+const Chart = ({
+	resourceId,
+	tab,
+	filter,
+	setTab,
+	onChange,
+}: {
+	resourceId: string;
+	tab: string;
+	filter: number | undefined;
+	setTab: (_category: string) => void;
+	onChange: (_filter: number | undefined) => void;
+}) => {
+	const [values] = api.ratings.distribution.useSuspenseQuery({
+		resourceId,
+		reviewType: tab === "REVIEW" ? "REVIEW" : tab === "RATING" ? "RATING" : undefined,
+	});
+
+	return (
+		<>
+			<DistributionChart distribution={values} value={filter} onChange={onChange} />
+			<Tabs value={tab} onValueChange={setTab}>
+				<View className="px-4">
+					<TabsList className="flex-row w-full">
+						<TabsTrigger value="" className="flex-1">
+							<Text>All</Text>
+						</TabsTrigger>
+						<TabsTrigger value="REVIEW" className="flex-1">
+							<Text>Reviews</Text>
+						</TabsTrigger>
+						<TabsTrigger value="RATING" className="flex-1">
+							<Text>Ratings</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
+			</Tabs>
+		</>
+	);
+};
 
 const Reviews = () => {
 	const { albumId } = useLocalSearchParams<{ albumId: string }>();
 	const [tab, setTab] = useState("everyone");
+	const [ratingTab, setRatingTab] = useState("");
+	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
+
+	const onChange = (_filter: number | undefined) => {
+		if (ratingFilter) setRatingFilter(undefined);
+		else setRatingFilter(_filter);
+	};
 	const id = albumId!;
 
 	const { data: album } = useSuspenseQuery(
@@ -46,8 +95,23 @@ const Reviews = () => {
 					following: tab === "friends",
 					resourceId: resource.resourceId,
 					category: resource.category,
-					hasReview: true,
+					ratingType:
+						ratingTab === "REVIEW"
+							? "REVIEW"
+							: ratingTab === "RATING"
+								? "RATING"
+								: undefined,
+					rating: ratingFilter,
 				}}
+				ListHeader={
+					<Chart
+						resourceId={resource.resourceId}
+						tab={ratingTab}
+						setTab={setRatingTab}
+						onChange={onChange}
+						filter={ratingFilter}
+					/>
+				}
 			/>
 		</View>
 	);

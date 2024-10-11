@@ -137,7 +137,7 @@ function Index() {
 							limit={20}
 							filters={{
 								following: feed === "following",
-								hasReview: true,
+								ratingType: "REVIEW",
 							}}
 						/>
 					</Tabs>
@@ -147,7 +147,7 @@ function Index() {
 				<ReviewsList
 					limit={20}
 					filters={{
-						hasReview: true,
+						ratingType: "REVIEW",
 					}}
 				/>
 			)}
