@@ -102,7 +102,10 @@ const RatingModal = () => {
 					title: `Rate ${resource.category === "ALBUM" ? "Album" : "Song"}`,
 				}}
 			/>
-			<ScrollView contentContainerClassName="p-4 gap-16 justify-between">
+			<ScrollView
+				contentContainerClassName="p-4 gap-16 justify-between"
+				automaticallyAdjustKeyboardInsets
+			>
 				{imageUrl ? (
 					<Image
 						alt={`cover`}

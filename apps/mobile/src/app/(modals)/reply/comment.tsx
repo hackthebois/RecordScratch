@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
+import { ScrollView, TextInput, View } from "react-native";
 import { z } from "zod";
 import { Comment } from "~/components/Comment";
 import { Button } from "~/components/ui/button";
@@ -54,7 +54,7 @@ const CommentModal = () => {
 	};
 
 	return (
-		<ScrollView className="h-full flex-1">
+		<ScrollView className="h-full" automaticallyAdjustKeyboardInsets>
 			<Stack.Screen
 				options={{
 					title: `Reply`,
@@ -70,30 +70,25 @@ const CommentModal = () => {
 					),
 				}}
 			/>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === "ios" ? "padding" : undefined}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-			>
-				<Comment comment={comment} hideActions />
-				<View className="h-1 bg-muted" />
-				<Controller
-					control={form.control}
-					name="content"
-					render={({ field }) => (
-						<View className="p-4 flex-1">
-							<TextInput
-								placeholder="Create a new comment..."
-								autoFocus
-								multiline
-								className="text-lg"
-								scrollEnabled={false}
-								onChangeText={field.onChange}
-								{...field}
-							/>
-						</View>
-					)}
-				/>
-			</KeyboardAvoidingView>
+			<Comment comment={comment} hideActions />
+			<View className="h-1 bg-muted" />
+			<Controller
+				control={form.control}
+				name="content"
+				render={({ field }) => (
+					<View className="p-4 flex-1">
+						<TextInput
+							placeholder="Create a new comment..."
+							autoFocus
+							multiline
+							className="text-lg"
+							scrollEnabled={false}
+							onChangeText={field.onChange}
+							{...field}
+						/>
+					</View>
+				)}
+			/>
 		</ScrollView>
 	);
 };
