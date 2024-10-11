@@ -12,10 +12,13 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 				<Link
 					key={index}
 					href={`/albums/${String(song.album.id)}/songs/${String(song.id)}`}
-					className={cn(index != songs.length - 1 && "border-muted border-b-[4px]")}
+					className={cn(
+						"w-full",
+						index != songs.length - 1 && "border-muted border-b-[4px]"
+					)}
 					asChild
 				>
-					<View className="flex flex-row p-3 items-center justify-between gap-6">
+					<Pressable className="flex flex-row p-3 items-center justify-between gap-6">
 						<View className="flex flex-row items-center gap-6 max-w-52 ">
 							<Text className="ml-4 text-muted-foreground font-bold w-5">
 								{index + 1}
@@ -42,7 +45,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 								name={song.title}
 							/>
 						</View>
-					</View>
+					</Pressable>
 				</Link>
 			))}
 		</View>
