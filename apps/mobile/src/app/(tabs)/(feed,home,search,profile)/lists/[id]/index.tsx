@@ -34,7 +34,7 @@ const ListPage = () => {
 		<ScrollView className="flex flex-col gap-6">
 			<Stack.Screen
 				options={{
-					headerTitle: "",
+					title: "",
 					headerRight: () =>
 						isProfile ? (
 							<TouchableOpacity

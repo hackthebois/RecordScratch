@@ -191,7 +191,7 @@ function Onboard() {
 			<View className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
 				<Stack.Screen
 					options={{
-						headerTitle: ``,
+						title: ``,
 					}}
 				/>
 				<FontAwesome6 name="compact-disc" size={24} color="black" />
@@ -203,7 +203,7 @@ function Onboard() {
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 16 }}>
 			<Stack.Screen
 				options={{
-					headerTitle: ``,
+					title: ``,
 				}}
 			/>
 			<SlideWrapper page={page} pageIndex={0}>

@@ -41,7 +41,7 @@ const Followers = () => {
 		<>
 			<Stack.Screen
 				options={{
-					headerTitle: tab === "followers" ? "Followers" : "Following",
+					title: tab === "followers" ? "Followers" : "Following",
 					headerBackVisible: true,
 				}}
 			/>

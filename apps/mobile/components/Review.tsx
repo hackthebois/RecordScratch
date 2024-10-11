@@ -40,7 +40,8 @@ const LikeButton = (props: SelectLike) => {
 
 	return (
 		<Button
-			variant="secondary"
+			variant="ghost"
+			size={"sm"}
 			onPress={() => {
 				if (isLiking || isUnLiking) return;
 				if (like) {
@@ -60,22 +61,6 @@ const LikeButton = (props: SelectLike) => {
 	);
 };
 
-const ReplyButton = ({ handle, resourceId }: { resourceId: string; handle: string }) => {
-	return (
-		<Link
-			href={{
-				pathname: "(modals)/reply/rating",
-				params: { resourceId, handle },
-			}}
-			asChild
-		>
-			<Button variant="secondary">
-				<Reply size={25} className="text-muted-foreground" />
-			</Button>
-		</Link>
-	);
-};
-
 const CommentsButton = ({
 	handle,
 	resourceId,
@@ -83,7 +68,7 @@ const CommentsButton = ({
 }: SelectComment & {
 	handle: string;
 }) => {
-	const [comments] = api.comments.getComments.useSuspenseQuery({
+	const [comments] = api.comments.count.rating.useSuspenseQuery({
 		resourceId,
 		authorId,
 	});
@@ -96,7 +81,7 @@ const CommentsButton = ({
 			}}
 			asChild
 		>
-			<Button variant="secondary" className="flex-row gap-2">
+			<Button variant="ghost" size={"sm"} className="flex-row gap-2">
 				<MessageCircle size={25} className="text-muted-foreground" />
 				<Text className="font-bold">{comments}</Text>
 			</Button>
@@ -166,7 +151,17 @@ export const Review = ({
 								authorId={userId}
 							/>
 						</Suspense>
-						<ReplyButton handle={profile.handle} resourceId={resourceId} />
+						<Link
+							href={{
+								pathname: "(modals)/reply/rating",
+								params: { resourceId, handle: profile.handle },
+							}}
+							asChild
+						>
+							<Button variant="ghost" size={"sm"}>
+								<Reply size={25} className="text-muted-foreground" />
+							</Button>
+						</Link>
 					</View>
 				) : null}
 			</View>
