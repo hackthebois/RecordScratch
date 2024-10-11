@@ -1,6 +1,7 @@
 {
 	"cli": {
-		"version": ">= 7.5.0"
+		"version": ">= 7.5.0",
+		"appVersionSource": "remote"
 	},
 	"build": {
 		"development": {
@@ -10,7 +11,7 @@
 				"simulator": true
 			},
 			"env": {
-				"EXPO_PUBLIC_R2_PUBLIC_URL": "https://pub-e7db95dc6e1e42f5b6e54c7af15e3db1.r2.dev",
+				"EXPO_PUBLIC_R2_PUBLIC_URL": "https://cdn.recordscratch.app",
 				"EXPO_PUBLIC_CF_PAGES_URL": "https://recordscratch.app",
 				"EXPO_PUBLIC_URL": "recordscratch://",
 				"EXPO_PUBLIC_CF_PAGES_URL_ANDROID": "https://recordscratch.app",
@@ -22,7 +23,7 @@
 		},
 		"production": {
 			"env": {
-				"EXPO_PUBLIC_R2_PUBLIC_URL": "https://pub-e7db95dc6e1e42f5b6e54c7af15e3db1.r2.dev",
+				"EXPO_PUBLIC_R2_PUBLIC_URL": "https://cdn.recordscratch.app",
 				"EXPO_PUBLIC_CF_PAGES_URL": "https://recordscratch.app",
 				"EXPO_PUBLIC_URL": "recordscratch://",
 				"EXPO_PUBLIC_CF_PAGES_URL_ANDROID": "https://recordscratch.app",

@@ -47,12 +47,7 @@ export default function AlbumLayout() {
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
 			<View className="flex flex-1">
 				<ScrollView contentContainerClassName="pb-4">
-					<Stack.Screen
-						options={{
-							title: album.title,
-							headerBackVisible: true,
-						}}
-					/>
+					<Stack.Screen />
 					<Metadata
 						title={album.title}
 						type="ALBUM"

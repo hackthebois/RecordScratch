@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: "RecordScratch",
 	slug: "recordscratch",
-	version: "1.0.0",
+	version: "0.0.1",
 	orientation: "portrait",
 	icon: "./assets/icon.png",
 	scheme: "recordscratch",
@@ -17,13 +17,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	assetBundlePatterns: ["**/*"],
 	ios: {
 		supportsTablet: true,
-		bundleIdentifier: "app.recordscratch.mobile",
+		bundleIdentifier: "app.recordscratch.ios",
 	},
 	android: {
 		adaptiveIcon: {
 			foregroundImage: "./assets/adaptive-icon.png",
 			backgroundColor: "#ffffff",
 		},
+		package: "app.recordscratch.android",
+		versionCode: 1,
 	},
 	plugins: ["expo-router"],
 	experiments: {

@@ -35,6 +35,7 @@ Denoted by the `type:` prefix.
 | `docs`      | Documentation    | Changes to Documentation only                                                                                           |
 | `refactor`  | Code Refactoring | A code change that neither fixes a bug nor adds a feature                                                               |
 | `test`      | Tests            | Adding temporary changes, should be used with caution and should not be used to implement any new features or bug fixes |
+| `chore`     | Maintenance      | Changes to the build process, config, tools, etc                                                                        |
 
 ## Contributing code
 

@@ -18,11 +18,11 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Text } from "~/components/ui/text";
-import { TRPCProvider } from "~/lib/api";
 import { AuthProvider } from "~/lib/auth";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
+import { TRPCProvider } from "~/lib/api";
 
 const LIGHT_THEME: Theme = {
 	dark: false,

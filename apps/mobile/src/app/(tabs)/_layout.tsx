@@ -3,14 +3,14 @@ import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React, { useEffect } from "react";
 import { Pressable } from "react-native";
+import { z } from "zod";
 import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
+import { TRPCProvider, api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
 import { Home } from "~/lib/icons/Home";
 import { Search } from "~/lib/icons/Search";
 import { Star } from "~/lib/icons/Star";
 import { User } from "~/lib/icons/User";
-import { z } from "zod";
 
 export default function TabLayout() {
 	const router = useRouter();
@@ -22,6 +22,20 @@ export default function TabLayout() {
 	const logout = useAuth((s) => s.logout);
 	const sessionId = useAuth((s) => s.sessionId);
 	const setSessionId = useAuth((s) => s.setSessionId);
+
+	useEffect(() => {
+		if (myProfile) {
+			setProfile(myProfile!);
+		} else {
+			logout().then(() => router.push("(auth)/signin"));
+		}
+	}, [myProfile]);
+
+	useEffect(() => {
+		if (needsOnboarding) {
+			router.push("/onboarding");
+		}
+	}, [needsOnboarding]);
 
 	useEffect(() => {
 		const getToken = async () => {
@@ -48,20 +62,6 @@ export default function TabLayout() {
 		};
 		getToken();
 	}, []);
-
-	useEffect(() => {
-		if (myProfile) {
-			setProfile(myProfile!);
-		} else {
-			logout().then(() => router.push("(auth)/signin"));
-		}
-	}, [myProfile]);
-
-	useEffect(() => {
-		if (needsOnboarding) {
-			router.push("/onboarding");
-		}
-	}, [needsOnboarding]);
 
 	return (
 		<Tabs
