@@ -16,7 +16,7 @@ const CommentPage = () => {
 
 	return (
 		<>
-			<Stack.Screen options={{ headerTitle: `${comment.profile.name}'s Comment` }} />
+			<Stack.Screen options={{ title: `${comment.profile.name}'s Comment` }} />
 			<View className="flex-1">
 				<FlashList
 					ListHeaderComponent={

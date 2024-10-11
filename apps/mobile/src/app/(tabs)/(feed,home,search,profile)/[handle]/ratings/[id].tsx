@@ -24,7 +24,7 @@ const RatingPage = () => {
 
 	return (
 		<>
-			<Stack.Screen options={{ headerTitle: `${profile.name}'s Rating` }} />
+			<Stack.Screen options={{ title: `${profile.name}'s Rating` }} />
 			<View className="flex-1">
 				<FlashList
 					ListHeaderComponent={
