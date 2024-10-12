@@ -8,22 +8,21 @@ import { ReviewsList } from "~/components/ReviewsList";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
 
 const Chart = ({
-	profile,
+	userId,
 	tab,
 	filter,
 	setTab,
 	onChange,
 }: {
-	profile: Profile;
+	userId: string;
 	tab: string;
 	filter: number | undefined;
 	setTab: (_category: string) => void;
 	onChange: (_filter: number | undefined) => void;
 }) => {
-	const [values] = api.profiles.distribution.useSuspenseQuery({ userId: profile!.userId });
+	const [values] = api.profiles.distribution.useSuspenseQuery({ userId });
 
 	return (
 		<View>
@@ -49,7 +48,7 @@ const Chart = ({
 
 const Reviews = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
-	const profile = useAuth((s) => s.profile);
+	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const [tab, setTab] = useState("");
 	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
 
@@ -73,7 +72,7 @@ const Reviews = () => {
 				}}
 				ListHeader={
 					<Chart
-						profile={profile}
+						userId={profile.userId}
 						tab={tab}
 						setTab={setTab}
 						filter={ratingFilter}
