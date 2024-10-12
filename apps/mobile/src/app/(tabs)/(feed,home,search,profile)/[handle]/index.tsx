@@ -109,9 +109,9 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 		userId: profile.userId,
 	});
 
-	const [lists] = api.lists.getUser.useSuspenseQuery({
-		userId: profile.userId,
-	});
+	// const [lists] = api.lists.getUser.useSuspenseQuery({
+	// 	userId: profile.userId,
+	// });
 
 	const [streak] = api.ratings.user.streak.useSuspenseQuery({
 		userId: profile.userId,
