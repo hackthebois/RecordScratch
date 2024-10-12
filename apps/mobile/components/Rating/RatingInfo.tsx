@@ -27,14 +27,14 @@ export const RatingInfo = ({
 	return (
 		<View className="flex min-h-12 gap-4">
 			{!(size === "sm" && !rating?.average) && (
-				<View className="flex items-center justify-center gap-2 flex-row">
-					<Star size={30} color="#ffb703" fill="#ffb703" />
-					<View className="flex flex-col items-center">
+				<View className="flex items-center justify-center flex-row">
+					<Star size={size === "lg" ? 32 : 28} color="#ffb703" fill="#ffb703" />
+					<View className="flex flex-col items-center w-12 max-w-12">
 						{rating?.average && (
 							<Text
 								className={cn({
 									"text-lg font-semibold": size === "lg",
-									"font-medium": size === "sm",
+									"font-semibold text": size === "sm",
 								})}
 							>
 								{Number(rating.average).toFixed(1)}

@@ -33,7 +33,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 									resourceId: String(song.id),
 									category: "SONG",
 								}}
-								size="lg"
+								size="sm"
 							/>
 							<RateButton
 								imageUrl={song.album.title}
