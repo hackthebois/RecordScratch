@@ -4,6 +4,7 @@ import {
 	deezerHelpers as dh,
 	getQueryOptions as gqo,
 } from "@recordscratch/lib";
+import env from "~/env";
 
 export const deezer = <TRoute extends keyof Deezer>(input: {
 	route: TRoute;
@@ -11,7 +12,7 @@ export const deezer = <TRoute extends keyof Deezer>(input: {
 }): Promise<Deezer[TRoute]["output"]> => {
 	return d({
 		...input,
-		baseUrl: process.env.EXPO_PUBLIC_CF_PAGES_URL!,
+		baseUrl: env.SITE_URL,
 	});
 };
 
@@ -21,8 +22,8 @@ export const getQueryOptions = <TRoute extends keyof Deezer>(input: {
 }) => {
 	return gqo({
 		...input,
-		baseUrl: process.env.EXPO_PUBLIC_CF_PAGES_URL!,
+		baseUrl: env.SITE_URL,
 	});
 };
 
-export const deezerHelpers = dh(process.env.EXPO_PUBLIC_CF_PAGES_URL!);
+export const deezerHelpers = dh(env.SITE_URL);

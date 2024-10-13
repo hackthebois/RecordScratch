@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import { Pressable, View } from "react-native";
 // import googleLogo from "~/assets/google-logo.svg";
 import { Text } from "~/components/ui/text";
+import env from "~/env";
 import { useAuth } from "~/lib/auth";
 
 Browser.maybeCompleteAuthSession();
@@ -22,8 +23,8 @@ const AuthPage = () => {
 
 	const handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
-			`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/google?expoAddress=${process.env.EXPO_PUBLIC_URL}`,
-			`${process.env.EXPO_PUBLIC_URL}`
+			`${env.SITE_URL}/auth/google?expoAddress=${env.SCHEME}`,
+			`${env.SCHEME}}`
 		);
 		if (result.type !== "success") return;
 		const url = Linking.parse(result.url);
