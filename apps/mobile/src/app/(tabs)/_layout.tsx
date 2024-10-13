@@ -5,7 +5,8 @@ import React, { useEffect } from "react";
 import { Pressable } from "react-native";
 import { z } from "zod";
 import { Text } from "~/components/ui/text";
-import { TRPCProvider, api } from "~/lib/api";
+import env from "~/env";
+import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
 import { Home } from "~/lib/icons/Home";
 import { Search } from "~/lib/icons/Search";
@@ -39,9 +40,7 @@ export default function TabLayout() {
 
 	useEffect(() => {
 		const getToken = async () => {
-			await fetch(
-				`${process.env.EXPO_PUBLIC_CF_PAGES_URL}/auth/refresh?sessionId=${sessionId}`
-			)
+			await fetch(`${env.SITE_URL}}/auth/refresh?sessionId=${sessionId}`)
 				.then(async (response) => {
 					return z
 						.object({
