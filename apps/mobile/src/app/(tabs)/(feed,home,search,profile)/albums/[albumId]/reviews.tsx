@@ -56,9 +56,9 @@ const Reviews = () => {
 	const [ratingTab, setRatingTab] = useState("");
 	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
 
-	const onChange = (_filter: number | undefined) => {
-		if (ratingFilter) setRatingFilter(undefined);
-		else setRatingFilter(_filter);
+	const onChange = (filter: number | undefined) => {
+		if (filter === ratingFilter) setRatingFilter(undefined);
+		else setRatingFilter(filter);
 	};
 	const id = albumId!;
 
