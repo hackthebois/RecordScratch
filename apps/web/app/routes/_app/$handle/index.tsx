@@ -94,7 +94,7 @@ const SignOutButton = () => {
 		<Button
 			variant="outline"
 			onClick={() => {
-				fetch("/auth/signout").then(() => {
+				fetch("/api/auth/signout").then(() => {
 					navigate({
 						to: "/",
 					});
