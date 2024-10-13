@@ -1,4 +1,3 @@
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { TRPCReactProvider, api } from "@/trpc/react";
 import {
 	Outlet,
@@ -6,24 +5,24 @@ import {
 	createRootRoute,
 	useRouterState,
 } from "@tanstack/react-router";
-import { PostHogProvider, usePostHog } from "posthog-js/react";
-import React, { Suspense, useEffect } from "react";
-import { HelmetProvider } from "react-helmet-async";
-
-const TanStackRouterDevtools =
-	process.env.NODE_ENV === "production"
-		? () => null // Render nothing in production
-		: React.lazy(() =>
-				// Lazy load in development
-				import("@tanstack/router-devtools").then((res) => ({
-					default: res.TanStackRouterDevtools,
-					// For Embedded Mode
-					// default: res.TanStackRouterDevtoolsPanel
-				}))
-			);
+import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
+import { usePostHog } from "posthog-js/react";
+import React, { useEffect } from "react";
 
 export const Route = createRootRoute({
-	component: Root,
+	meta: () => [
+		{
+			charSet: "utf-8",
+		},
+		{
+			name: "viewport",
+			content: "width=device-width, initial-scale=1",
+		},
+		{
+			title: "TanStack Start Starter",
+		},
+	],
+	component: RootComponent,
 });
 
 const PostHogPageView = () => {
@@ -51,31 +50,41 @@ const PostHogIdentify = () => {
 	return null;
 };
 
-function Root() {
+function RootComponent() {
 	return (
-		<PostHogProvider
-			apiKey={process.env.VITE_POSTHOG_KEY}
-			options={{
-				api_host: process.env.CF_PAGES_URL + "/ingest",
-			}}
-		>
-			<TRPCReactProvider>
-				<HelmetProvider>
-					<ThemeProvider defaultTheme="dark" storageKey="theme">
-						<ScrollRestoration
-							getKey={(location) => location.pathname}
-						/>
-						<div className="flex w-screen flex-col items-center justify-center">
-							<Outlet />
-						</div>
-						<Suspense>
-							<PostHogIdentify />
-						</Suspense>
-						<PostHogPageView />
-						<TanStackRouterDevtools />
-					</ThemeProvider>
-				</HelmetProvider>
-			</TRPCReactProvider>
-		</PostHogProvider>
+		// <PostHogProvider
+		// 	apiKey={process.env.VITE_POSTHOG_KEY}
+		// 	options={{
+		// 		api_host: process.env.CF_PAGES_URL + "/ingest",
+		// 	}}
+		// >
+		<TRPCReactProvider>
+			<RootDocument>
+				<div className="flex w-screen flex-col items-center justify-center">
+					<Outlet />
+				</div>
+			</RootDocument>
+			<ScrollRestoration getKey={(location) => location.pathname} />
+			{/* <Suspense>
+					<PostHogIdentify />
+				</Suspense>
+				<PostHogPageView /> */}
+		</TRPCReactProvider>
+		// {/* </PostHogProvider> */}
+	);
+}
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+	return (
+		<Html>
+			<Head>
+				<Meta />
+			</Head>
+			<Body>
+				{children}
+				<ScrollRestoration />
+				<Scripts />
+			</Body>
+		</Html>
 	);
 }

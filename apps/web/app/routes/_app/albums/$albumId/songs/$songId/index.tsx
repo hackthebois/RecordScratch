@@ -1,4 +1,3 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ReviewDialog } from "@/components/review/ReviewDialog";
@@ -62,7 +61,7 @@ function Song() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={song.title} description={album.artist?.name} />
+			{/* <Head title={song.title} description={album.artist?.name} /> */}
 			<Metadata
 				title={song.title}
 				cover={album.cover_big ?? ""}

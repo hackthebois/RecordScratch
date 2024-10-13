@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Head } from "@/components/Head";
 import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { CreateList } from "@/components/lists/CreateList";
@@ -67,6 +66,13 @@ export const Route = createFileRoute("/_app/$handle/")({
 			userId: profile.userId,
 		});
 	},
+	// meta: (d) => [
+	// 	{
+	// 		title: d.loaderData.
+	// 		title: handle,
+	// 		description: "View user profile",
+	// 	},
+	// ],
 });
 
 const TopListLoader = () => {
@@ -182,7 +188,7 @@ function Handle() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={profile.name} description={profile.bio ?? undefined} />
+			{/* <Head title={profile.name} description={profile.bio ?? undefined} /> */}
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar
 					imageUrl={getImageUrl(profile)}

@@ -1,4 +1,3 @@
-import { Head } from "@/components/Head";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { Button } from "@/components/ui/Button";
@@ -15,15 +14,16 @@ import { Textarea } from "@/components/ui/Textarea";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cn, useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";
 import { OnboardSchema, handleRegex } from "@recordscratch/types";
-import { cn, useDebounce } from "@recordscratch/lib";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AtSign, Disc3 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export const Route = createFileRoute("/onboard")({
+	meta: () => [{ title: "Onboard" }],
 	component: Onboard,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
@@ -197,7 +197,6 @@ function Onboard() {
 
 	return (
 		<main className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
-			<Head title="Onboard" />
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>

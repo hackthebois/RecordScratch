@@ -16,7 +16,7 @@ const client = api.createClient({
 				(op.direction === "down" && op.result instanceof Error),
 		}),
 		httpBatchLink({
-			url: "/trpc",
+			url: "/api/trpc",
 			transformer: SuperJSON,
 		}),
 	],

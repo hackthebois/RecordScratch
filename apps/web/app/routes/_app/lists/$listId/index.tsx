@@ -1,4 +1,3 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import ListImage from "@/components/lists/ListImage";
@@ -177,7 +176,7 @@ function List() {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<Head title={listData.name} description={undefined} />
+			{/* <Head title={listData.name} description={undefined} /> */}
 			<Metadata
 				title={listData.name}
 				type={`${listData.category} list`}
