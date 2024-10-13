@@ -1,4 +1,5 @@
 import { defineConfig } from "@tanstack/start/config";
+import { config } from "vinxi/plugins/config";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
@@ -7,6 +8,16 @@ export default defineConfig({
 			// this is the plugin that enables path aliases
 			viteTsConfigPaths({
 				projects: ["./tsconfig.json"],
+			}),
+			config("custom", {
+				define: {
+					"process.env.CF_PAGES_URL": JSON.stringify(
+						process.env.CF_PAGES_URL
+					),
+					"process.env.VITE_POSTHOG_KEY": JSON.stringify(
+						process.env.VITE_POSTHOG_KEY
+					),
+				},
 			}),
 		],
 	},

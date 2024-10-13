@@ -1,8 +1,11 @@
 import Metadata from "@/components/Metadata";
+import AlbumList from "@/components/album/AlbumList";
+import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { buttonVariants } from "@/components/ui/Button";
 import { NotFound } from "@/components/ui/NotFound";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
 import { api, apiUtils } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
@@ -82,15 +85,15 @@ const AlbumOfTheDay = () => {
 };
 
 function Index() {
-	// const { feed = "recent" } = Route.useSearch();
-	// const [trending] = api.ratings.trending.useSuspenseQuery();
-	// const [top] = api.ratings.top.useSuspenseQuery();
-	// const { data: profile } = api.profiles.me.useQuery();
+	const { feed = "recent" } = Route.useSearch();
+	const [trending] = api.ratings.trending.useSuspenseQuery();
+	const [top] = api.ratings.top.useSuspenseQuery();
+	const { data: profile } = api.profiles.me.useQuery();
 
 	return (
 		<div className="flex flex-col gap-8">
 			<AlbumOfTheDay />
-			{/* 
+
 			{trending && (
 				<>
 					<h2>Trending</h2>
@@ -150,7 +153,7 @@ function Index() {
 						ratingType: "REVIEW",
 					}}
 				/>
-			)} */}
+			)}
 		</div>
 	);
 }
