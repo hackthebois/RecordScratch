@@ -1,8 +1,7 @@
 import { getImageUrl } from "@/lib/image";
-import { api } from "@/trpc/react";
 import { Profile } from "@recordscratch/types";
 
-import { Link } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import { FollowButton } from "../followers/FollowButton";
 import { UserAvatar } from "../user/UserAvatar";
 
@@ -13,7 +12,9 @@ export const ProfileItem = ({
 	profile: Profile;
 	onClick?: () => void;
 }) => {
-	const { data: myProfile } = api.profiles.me.useQuery();
+	const { profile: myProfile } = useRouteContext({
+		from: "__root__",
+	});
 
 	const showButton = !!myProfile && myProfile.userId !== profile.userId;
 

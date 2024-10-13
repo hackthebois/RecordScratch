@@ -10,7 +10,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { api, queryClient } from "@/trpc/react";
+import { queryClient } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 
 function Song() {
 	const { albumId, songId } = Route.useParams();
-	const [profile] = api.profiles.me.useSuspenseQuery();
+	const { profile } = Route.useRouteContext();
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",

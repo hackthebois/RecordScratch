@@ -25,7 +25,12 @@ import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+	Link,
+	createFileRoute,
+	notFound,
+	useNavigate,
+} from "@tanstack/react-router";
 import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
@@ -47,22 +52,22 @@ export const Route = createFileRoute("/_app/$handle/")({
 	},
 	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) return <NotFound />;
+		if (!profile) return notFound();
 
-		apiUtils.profiles.followCount.ensureData({
+		await apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "followers",
 		});
-		apiUtils.profiles.followCount.ensureData({
+		await apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "following",
 		});
 
-		apiUtils.lists.getUser.ensureData({
+		await apiUtils.lists.getUser.ensureData({
 			userId: profile.userId,
 		});
 
-		apiUtils.lists.topLists.ensureData({
+		await apiUtils.lists.topLists.ensureData({
 			userId: profile.userId,
 		});
 	},
@@ -135,13 +140,13 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
+	const { profile: myProfile } = Route.useRouteContext();
 	const {
 		rating,
 		tab = "reviews",
 		category = "all",
 		topCategory = "ALBUM",
 	} = Route.useSearch();
-	const { data: myProfile } = api.profiles.me.useQuery();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const { data: distribution } = api.profiles.distribution.useQuery(

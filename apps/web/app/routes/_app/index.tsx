@@ -89,7 +89,7 @@ function Index() {
 	const { feed = "recent" } = Route.useSearch();
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
-	const { data: profile } = api.profiles.me.useQuery();
+	const { profile } = Route.useRouteContext();
 
 	return (
 		<div className="flex flex-col gap-8">

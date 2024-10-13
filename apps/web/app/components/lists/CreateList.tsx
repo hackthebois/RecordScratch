@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
 import { SelectValue } from "@radix-ui/react-select";
+import { useRouteContext } from "@tanstack/react-router";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/Select";
 
 export const CreateList = ({
@@ -35,14 +36,16 @@ export const CreateList = ({
 	category?: Category;
 	size?: number;
 }) => {
+	const { profile } = useRouteContext({
+		from: "__root__",
+	});
+
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 
 	const form = useForm<InsertList>({
 		resolver: zodResolver(insertListSchema),
 	});
-
-	const { data: profile } = api.profiles.me.useQuery();
 
 	const { mutate: createList } = api.lists.create.useMutation({
 		onSuccess: () => {

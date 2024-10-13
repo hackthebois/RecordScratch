@@ -19,6 +19,7 @@ import {
 	Link,
 	UseNavigateResult,
 	createFileRoute,
+	notFound,
 	useNavigate,
 } from "@tanstack/react-router";
 import { Reorder } from "framer-motion";
@@ -40,13 +41,12 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 		const listData = await apiUtils.lists.get.ensureData({
 			id: listId,
 		});
-		if (!listData) return <NotFound />;
+		if (!listData) return notFound();
 
 		apiUtils.lists.resources.get.ensureData({
 			listId,
 			userId: listData!.userId,
 		});
-		apiUtils.profiles.me.ensureData();
 	},
 });
 
@@ -107,9 +107,9 @@ function List() {
 		from: Route.fullPath,
 	});
 	const { tab = "list" } = Route.useSearch();
+	const { profile: myProfile } = Route.useRouteContext();
 	const { listId } = Route.useParams();
 
-	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [listData] = api.lists.get.useSuspenseQuery({
 		id: listId,
 	});

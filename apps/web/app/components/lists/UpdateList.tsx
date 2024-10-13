@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { api } from "@/trpc/react";
+import { useRouteContext } from "@tanstack/react-router";
 import { Switch } from "../ui/switch";
 
 export const ModifyList = ({
@@ -37,14 +38,16 @@ export const ModifyList = ({
 	description: string | null;
 	onProfile: boolean;
 }) => {
+	const { profile } = useRouteContext({
+		from: "__root__",
+	});
+
 	const utils = api.useUtils();
 	const [open, setOpen] = useState(false);
 
 	const form = useForm<UpdateList>({
 		resolver: zodResolver(updateFormSchema),
 	});
-
-	const { data: profile } = api.profiles.me.useQuery();
 
 	const { mutate: updateList } = api.lists.update.useMutation({
 		onSuccess: () => {

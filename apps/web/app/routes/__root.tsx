@@ -1,6 +1,6 @@
 import appCss from "@/index.css?url";
 import { seo } from "@/lib/seo";
-import { api } from "@/trpc/react";
+import { getUser } from "@recordscratch/api";
 import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
@@ -8,9 +8,24 @@ import {
 	createRootRouteWithContext,
 	useRouterState,
 } from "@tanstack/react-router";
-import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
+import {
+	Body,
+	Head,
+	Html,
+	Meta,
+	Scripts,
+	createServerFn,
+} from "@tanstack/start";
 import { usePostHog } from "posthog-js/react";
 import React, { Suspense, useEffect } from "react";
+import { getCookie, getEvent } from "vinxi/http";
+
+export const getProfile = createServerFn("GET", async () => {
+	const event = getEvent();
+	const sessionId = getCookie(event, "auth_session");
+	if (!sessionId) return null;
+	return await getUser(sessionId);
+});
 
 export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
@@ -28,6 +43,13 @@ export const Route = createRootRouteWithContext<{
 		}),
 	],
 	links: () => [{ rel: "stylesheet", href: appCss }],
+	beforeLoad: async () => {
+		const profile = await getProfile();
+
+		return {
+			profile,
+		};
+	},
 	component: RootComponent,
 });
 
@@ -43,15 +65,16 @@ const PostHogPageView = () => {
 };
 
 const PostHogIdentify = () => {
-	const [user] = api.users.me.useSuspenseQuery();
+	const { profile } = Route.useRouteContext();
 	const posthog = usePostHog();
 
 	useEffect(() => {
-		if (!user) return;
-		posthog.identify(user.id, {
-			email: user.email,
+		if (!profile) return;
+		posthog.identify(profile.userId, {
+			handle: profile.handle,
+			name: profile.name,
 		});
-	}, [user, posthog]);
+	}, [profile, posthog]);
 
 	return null;
 };
