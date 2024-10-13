@@ -59,7 +59,7 @@ export default function SearchPage() {
 						textAlignVertical: "center",
 					}}
 					autoFocus
-					className="flex-1 h-full text-lg outline-none p-0"
+					className="flex-1 h-full text-lg text-foreground outline-none p-0"
 					onChangeText={(text) => setQuery(text)}
 				/>
 			</View>
