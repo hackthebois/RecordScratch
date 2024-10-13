@@ -81,7 +81,7 @@ const CommentModal = () => {
 							placeholder="Create a new comment..."
 							autoFocus
 							multiline
-							className="text-lg"
+							className="text-lg text-foreground"
 							scrollEnabled={false}
 							onChangeText={field.onChange}
 							{...field}

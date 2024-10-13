@@ -1,11 +1,10 @@
 import { useDebounce } from "@recordscratch/lib";
 import { useState } from "react";
-import MusicSearch from "./MusicSearch";
-import { Search } from "~/lib/icons/Search";
-import { Text } from "~/components/ui/text";
-import Dialog from "~/components/CoreComponents/Dialog";
 import { TextInput, View } from "react-native";
+import Dialog from "~/components/CoreComponents/Dialog";
 import { api } from "~/lib/api";
+import { Search } from "~/lib/icons/Search";
+import MusicSearch from "./MusicSearch";
 
 export const SearchAddToList = ({
 	category,
@@ -68,7 +67,7 @@ export const SearchAddToList = ({
 					autoComplete="off"
 					placeholder="Search"
 					value={query}
-					className="bg-transparent p-2 text-lg outline-none w-full"
+					className="bg-transparent p-2 text-lg outline-none w-full text-foreground"
 					onChangeText={(text) => setQuery(text)}
 				/>
 			</View>

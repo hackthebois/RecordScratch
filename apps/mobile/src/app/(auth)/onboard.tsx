@@ -238,7 +238,7 @@ function Onboard() {
 										padding: 5,
 									}}
 									placeholder="Name"
-									className=" w-96"
+									className=" w-96 text-foreground"
 									autoComplete="off"
 									onChangeText={field.onChange}
 								/>
@@ -266,7 +266,7 @@ function Onboard() {
 										padding: 5,
 									}}
 									placeholder=" Handle"
-									className="w-[22.75rem]"
+									className="w-[22.75rem] text-foreground"
 									autoComplete="off"
 									onChangeText={field.onChange}
 								/>
@@ -300,7 +300,7 @@ function Onboard() {
 										marginTop: 10,
 									}}
 									placeholder="Bio"
-									className="w-[23rem] text-start"
+									className="w-[23rem] text-start text-foreground"
 									multiline={true}
 									autoComplete="off"
 									onChangeText={field.onChange}
