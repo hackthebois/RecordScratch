@@ -31,7 +31,8 @@
 				"EXPO_PUBLIC_CF_PAGES_URL_ANDROID": "https://recordscratch.app",
 				"EXPO_PUBLIC_CF_PAGES_URL_IOS": "https://recordscratch.app"
 			},
-			"channel": "production"
+			"channel": "production",
+			"autoIncrement": true
 		}
 	},
 	"submit": {
