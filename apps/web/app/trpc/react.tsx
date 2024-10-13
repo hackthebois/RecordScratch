@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCQueryUtils, createTRPCReact } from "@trpc/react-query";
 
@@ -8,7 +8,8 @@ import SuperJSON from "superjson";
 export const api = createTRPCReact<AppRouter>();
 
 export const queryClient = new QueryClient();
-const client = api.createClient({
+
+export const client = api.createClient({
 	links: [
 		loggerLink({
 			enabled: (op) =>
@@ -16,19 +17,21 @@ const client = api.createClient({
 				(op.direction === "down" && op.result instanceof Error),
 		}),
 		httpBatchLink({
-			url: "/api/trpc",
+			url: process.env.CF_PAGES_URL + "/api/trpc",
 			transformer: SuperJSON,
 		}),
 	],
 });
+
 export const apiUtils = createTRPCQueryUtils({ queryClient, client });
 
-export function TRPCReactProvider(props: { children: React.ReactNode }) {
+export function TRPCReactProvider(props: {
+	children: React.ReactNode;
+	queryClient: QueryClient;
+}) {
 	return (
-		<QueryClientProvider client={queryClient}>
-			<api.Provider client={client} queryClient={queryClient}>
-				{props.children}
-			</api.Provider>
-		</QueryClientProvider>
+		<api.Provider client={client} queryClient={props.queryClient}>
+			{props.children}
+		</api.Provider>
 	);
 }

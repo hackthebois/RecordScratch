@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_app/")({
 			.parse(search);
 	},
 	loader: async () => {
+		apiUtils.misc.albumOfTheDay.ensureData();
 		apiUtils.ratings.top.ensureData();
 		apiUtils.ratings.trending.ensureData();
 	},

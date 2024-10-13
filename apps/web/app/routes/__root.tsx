@@ -1,15 +1,20 @@
-import { TRPCReactProvider, api } from "@/trpc/react";
+import appCss from "@/index.css?url";
+import { seo } from "@/lib/seo";
+import { api } from "@/trpc/react";
+import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
 	ScrollRestoration,
-	createRootRoute,
+	createRootRouteWithContext,
 	useRouterState,
 } from "@tanstack/react-router";
 import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
 import { usePostHog } from "posthog-js/react";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+	queryClient: QueryClient;
+}>()({
 	meta: () => [
 		{
 			charSet: "utf-8",
@@ -18,10 +23,11 @@ export const Route = createRootRoute({
 			name: "viewport",
 			content: "width=device-width, initial-scale=1",
 		},
-		{
-			title: "TanStack Start Starter",
-		},
+		...seo({
+			title: "RecordScratch",
+		}),
 	],
+	links: () => [{ rel: "stylesheet", href: appCss }],
 	component: RootComponent,
 });
 
@@ -52,25 +58,11 @@ const PostHogIdentify = () => {
 
 function RootComponent() {
 	return (
-		// <PostHogProvider
-		// 	apiKey={process.env.VITE_POSTHOG_KEY}
-		// 	options={{
-		// 		api_host: process.env.CF_PAGES_URL + "/ingest",
-		// 	}}
-		// >
-		<TRPCReactProvider>
-			<RootDocument>
-				<div className="flex w-screen flex-col items-center justify-center">
-					<Outlet />
-				</div>
-			</RootDocument>
-			<ScrollRestoration getKey={(location) => location.pathname} />
-			{/* <Suspense>
-					<PostHogIdentify />
-				</Suspense>
-				<PostHogPageView /> */}
-		</TRPCReactProvider>
-		// {/* </PostHogProvider> */}
+		<RootDocument>
+			<div className="flex w-screen flex-col items-center justify-center">
+				<Outlet />
+			</div>
+		</RootDocument>
 	);
 }
 
@@ -82,7 +74,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</Head>
 			<Body>
 				{children}
-				<ScrollRestoration />
+				<ScrollRestoration getKey={(location) => location.pathname} />
+				<Suspense>
+					<PostHogIdentify />
+				</Suspense>
+				<PostHogPageView />
 				<Scripts />
 			</Body>
 		</Html>
