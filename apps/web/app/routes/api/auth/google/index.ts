@@ -1,15 +1,19 @@
 import { createAPIFileRoute } from "@tanstack/start/api";
 import { Google, generateCodeVerifier, generateState } from "arctic";
-import { getEvent, setCookie } from "vinxi/http";
+import { getEvent, getQuery, setCookie } from "vinxi/http";
 
 export const Route = createAPIFileRoute("/api/auth/google")({
 	GET: async () => {
+		const event = getEvent();
+		const query = getQuery(event);
+
+		const expoAddress = query.expoAddress?.toString();
+
 		const google = new Google(
 			process.env.GOOGLE_CLIENT_ID!,
 			process.env.GOOGLE_CLIENT_SECRET!,
-			`${process.env.CF_PAGES_URL}/api/auth/google/callback`
+			`${process.env.CF_PAGES_URL}/api/auth/google/callback${expoAddress ? `?expoAddress=${expoAddress}` : ""}`
 		);
-		const event = getEvent();
 
 		const state = generateState();
 		const codeVerifier = generateCodeVerifier();

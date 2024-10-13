@@ -23,6 +23,8 @@ export const Route = createAPIFileRoute("/api/auth/google/callback")({
 
 		const expoAddress = query.expoAddress?.toString();
 
+		console.log("expoAddress", expoAddress);
+
 		const google = new Google(
 			process.env.GOOGLE_CLIENT_ID!,
 			process.env.GOOGLE_CLIENT_SECRET!,
@@ -71,10 +73,10 @@ export const Route = createAPIFileRoute("/api/auth/google/callback")({
 				email,
 				googleId,
 			});
-			redirect = "/onboard";
+			redirect = process.env.CF_PAGES_URL + "/onboard";
 		} else {
 			userId = existingUser.id;
-			redirect = "/";
+			redirect = process.env.CF_PAGES_URL + "/";
 		}
 
 		const session = await lucia.createSession(userId, {
@@ -92,6 +94,6 @@ export const Route = createAPIFileRoute("/api/auth/google/callback")({
 				sessionCookie.attributes
 			);
 
-		return Response.redirect(process.env.CF_PAGES_URL + redirect);
+		return Response.redirect(redirect);
 	},
 });
