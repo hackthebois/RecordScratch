@@ -20,7 +20,8 @@
   ],
   "name": "root",
   "devDependencies": {
-    "dotenv-cli": "^7.4.1"
+    "dotenv-cli": "^7.4.1",
+    "wrangler": "^3.80.4"
   },
   "trustedDependencies": [
     "core-js",

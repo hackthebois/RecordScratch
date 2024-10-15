@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import appCss from "@/index.css?url";
 import { seo } from "@/lib/seo";
-import { apiUtils } from "@/trpc/react";
+import { TRPCReactProvider, apiUtils } from "@/trpc/react";
 import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
@@ -11,7 +11,7 @@ import {
 	useRouterState,
 } from "@tanstack/react-router";
 import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
-import { usePostHog } from "posthog-js/react";
+import { PostHogProvider, usePostHog } from "posthog-js/react";
 import React, { Suspense, useEffect } from "react";
 
 export const Route = createRootRouteWithContext<{
@@ -77,12 +77,23 @@ const PostHogIdentify = () => {
 };
 
 function RootComponent() {
+	const { queryClient } = Route.useRouteContext();
+
 	return (
-		<RootDocument>
-			<div className="flex w-screen flex-col items-center justify-center">
-				<Outlet />
-			</div>
-		</RootDocument>
+		<TRPCReactProvider queryClient={queryClient}>
+			<PostHogProvider
+				apiKey={process.env.VITE_POSTHOG_KEY}
+				options={{
+					api_host: process.env.CF_PAGES_URL + "/ingest",
+				}}
+			>
+				<RootDocument>
+					<div className="flex w-screen flex-col items-center justify-center">
+						<Outlet />
+					</div>
+				</RootDocument>
+			</PostHogProvider>
+		</TRPCReactProvider>
 	);
 }
 

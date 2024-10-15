@@ -7,6 +7,7 @@ export const ErrorComponent = ({ error }: { error: unknown }) => {
 			<div className="mt-[15vh] flex h-full flex-col items-center justify-center gap-4">
 				<h1>Error Found</h1>
 				<p>{e.message}</p>
+				<p>{e.stack}</p>
 				<Button
 					onClick={() => {
 						window.location.reload();
