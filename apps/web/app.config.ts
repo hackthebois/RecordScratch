@@ -34,6 +34,9 @@ export default defineConfig({
 				cors: true,
 			},
 		},
+		experimental: {
+			asyncContext: true,
+		},
 	},
 	// 	experimental: {
 	// 		asyncContext: true,
