@@ -25,9 +25,9 @@ export const Route = createFileRoute("/_app/")({
 			.parse(search);
 	},
 	loader: async ({ context: { apiUtils } }) => {
-		apiUtils.misc.albumOfTheDay.ensureData();
-		apiUtils.ratings.top.ensureData();
-		apiUtils.ratings.trending.ensureData();
+		await apiUtils.misc.albumOfTheDay.ensureData();
+		await apiUtils.ratings.top.ensureData();
+		await apiUtils.ratings.trending.ensureData();
 	},
 	meta: () => [
 		{
@@ -94,7 +94,6 @@ function Index() {
 	return (
 		<div className="flex flex-col gap-8">
 			<AlbumOfTheDay />
-
 			{trending && (
 				<>
 					<h2>Trending</h2>

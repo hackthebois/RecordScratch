@@ -8,7 +8,7 @@ import { Review } from "./Review";
 export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
 	const { ref, inView } = useInView();
 
-	const { data, fetchNextPage, hasNextPage } =
+	const { data, fetchNextPage, hasNextPage, isLoading } =
 		api.ratings.feed.useInfiniteQuery(
 			{
 				...input,
@@ -33,8 +33,7 @@ export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
 					<Review key={index} {...review} />
 				))}
 			</div>
-			{!data && <div className="h-screen" />}
-			{hasNextPage && (
+			{(hasNextPage || isLoading) && (
 				<div
 					ref={ref}
 					className="flex h-40 flex-1 flex-col items-center justify-center"
@@ -42,6 +41,7 @@ export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
 					<Disc3 size={35} className="animate-spin" />
 				</div>
 			)}
+			{!data && <div className="h-screen" />}
 		</>
 	);
 };
