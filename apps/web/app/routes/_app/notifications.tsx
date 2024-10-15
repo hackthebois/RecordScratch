@@ -11,12 +11,7 @@ import {
 	Rating,
 	ReviewType,
 } from "@recordscratch/types";
-import {
-	Link,
-	createFileRoute,
-	notFound,
-	useRouteContext,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { BellOff, Heart, MessageCircle, Star, User } from "lucide-react";
 import React, { useEffect } from "react";
 
@@ -24,10 +19,11 @@ export const Route = createFileRoute("/_app/notifications")({
 	component: Notifications,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
-	loader: async ({ context: { apiUtils, profile } }) => {
+	loader: () => {
+		const profile = apiUtils.profiles.me.ensureData();
 		if (!profile) notFound();
 
-		await apiUtils.notifications.get.ensureData();
+		apiUtils.notifications.get.ensureData();
 	},
 });
 
@@ -202,9 +198,7 @@ const CommentNotification = ({
 
 function Notifications() {
 	const [allNotifications] = api.notifications.get.useSuspenseQuery();
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const [userProfile] = api.profiles.me.useSuspenseQuery();
 
 	const { mutate } = api.notifications.markAllSeen.useMutation({
 		onSettled: () => {
@@ -250,7 +244,7 @@ function Notifications() {
 
 					{notification.notifType === "LIKE" && (
 						<LikeNotification
-							user={profile!}
+							user={userProfile!}
 							fromUser={notification.profile}
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							/* @ts-ignore */

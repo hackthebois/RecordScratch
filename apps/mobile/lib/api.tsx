@@ -32,7 +32,7 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
 				}),
 				httpBatchLink({
 					transformer: superjson,
-					url: `${env.SITE_URL}/api/trpc`,
+					url: `${env.SITE_URL}/trpc`,
 					async headers() {
 						const headers = new Map<string, string>();
 						headers.set("x-trpc-source", "expo-react");
@@ -56,7 +56,7 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
 					}),
 					httpBatchLink({
 						transformer: superjson,
-						url: `${env.SITE_URL}/api/trpc`,
+						url: `${env.SITE_URL}/trpc`,
 						async headers() {
 							const headers = new Map<string, string>();
 							headers.set("x-trpc-source", "expo-react");

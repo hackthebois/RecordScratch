@@ -1,5 +1,4 @@
 import { api } from "@/trpc/react";
-import { useRouteContext } from "@tanstack/react-router";
 import React from "react";
 import { FollowButton } from "./FollowButton";
 
@@ -10,9 +9,7 @@ type Props = {
 const FollowersPopup = React.lazy(() => import("./FollowersPopup"));
 
 const FollowerMenu = ({ profileId }: Props) => {
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const { data: profile } = api.profiles.me.useQuery();
 
 	const [followerCount] = api.profiles.followCount.useSuspenseQuery({
 		profileId,

@@ -1,7 +1,6 @@
 import { getImageUrl } from "@/lib/image";
 import { api } from "@/trpc/react";
-import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -13,12 +12,11 @@ import {
 } from "../ui/AlertDialog";
 import { buttonVariants } from "../ui/Button";
 import { UserAvatar } from "./UserAvatar";
+import { useEffect } from "react";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
 	useEffect(() => {
@@ -49,7 +47,7 @@ export const UserButton = () => {
 			);
 		}
 		return (
-			<a href="/api/auth/google" className={buttonVariants({})}>
+			<a href="/auth/google" className={buttonVariants({})}>
 				Sign In
 			</a>
 		);

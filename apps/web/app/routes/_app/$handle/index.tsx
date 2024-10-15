@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Head } from "@/components/Head";
+import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { CreateList } from "@/components/lists/CreateList";
 import { EditTopLists } from "@/components/lists/EditTopLists";
@@ -8,7 +10,6 @@ import { EditProfile } from "@/components/profile/EditProfile";
 import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
-import { useTheme } from "@/components/theme/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,
@@ -22,15 +23,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
-import { api } from "@/trpc/react";
+import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import {
-	Link,
-	createFileRoute,
-	notFound,
-	useNavigate,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
@@ -50,34 +46,27 @@ export const Route = createFileRoute("/_app/$handle/")({
 			})
 			.parse(search);
 	},
-	loader: async ({ params: { handle }, context: { apiUtils } }) => {
+	loader: async ({ params: { handle } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) return notFound();
+		if (!profile) return <NotFound />;
 
-		await apiUtils.profiles.followCount.ensureData({
+		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "followers",
 		});
-		await apiUtils.profiles.followCount.ensureData({
+		apiUtils.profiles.followCount.ensureData({
 			profileId: profile.userId,
 			type: "following",
 		});
 
-		await apiUtils.lists.getUser.ensureData({
+		apiUtils.lists.getUser.ensureData({
 			userId: profile.userId,
 		});
 
-		await apiUtils.lists.topLists.ensureData({
+		apiUtils.lists.topLists.ensureData({
 			userId: profile.userId,
 		});
 	},
-	// meta: (d) => [
-	// 	{
-	// 		title: d.loaderData.
-	// 		title: handle,
-	// 		description: "View user profile",
-	// 	},
-	// ],
 });
 
 const TopListLoader = () => {
@@ -99,7 +88,7 @@ const SignOutButton = () => {
 		<Button
 			variant="outline"
 			onClick={() => {
-				fetch("/api/auth/signout").then(() => {
+				fetch("/auth/signout").then(() => {
 					navigate({
 						to: "/",
 					});
@@ -140,13 +129,13 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { profile: myProfile } = Route.useRouteContext();
 	const {
 		rating,
 		tab = "reviews",
 		category = "all",
 		topCategory = "ALBUM",
 	} = Route.useSearch();
+	const { data: myProfile } = api.profiles.me.useQuery();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const { data: distribution } = api.profiles.distribution.useQuery(
@@ -193,7 +182,7 @@ function Handle() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			{/* <Head title={profile.name} description={profile.bio ?? undefined} /> */}
+			<Head title={profile.name} description={profile.bio ?? undefined} />
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar
 					imageUrl={getImageUrl(profile)}

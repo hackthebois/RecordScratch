@@ -1,6 +1,3 @@
-import { api } from "@/trpc/react";
-import { useRouteContext } from "@tanstack/react-router";
-import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/Button";
 import {
@@ -12,8 +9,10 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/Dialog";
-import { CreateList } from "./CreateList";
 import ListList from "./ListList";
+import { api } from "@/trpc/react";
+import { MoreHorizontal } from "lucide-react";
+import { CreateList } from "./CreateList";
 
 export const AddToList = ({
 	parentId,
@@ -24,9 +23,7 @@ export const AddToList = ({
 	resourceId: string;
 	category: "SONG" | "ALBUM" | "ARTIST";
 }) => {
-	const { profile: myProfile } = useRouteContext({
-		from: "__root__",
-	});
+	const { data: myProfile } = api.profiles.me.useQuery();
 	const [open, setOpen] = useState(false);
 
 	if (!myProfile) return null;

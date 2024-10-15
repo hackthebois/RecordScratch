@@ -1,13 +1,9 @@
+import { Head } from "@/components/Head";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_app/privacy-policy")({
-	meta: () => [
-		{
-			title: "Privacy Policy",
-		},
-	],
+export const Route = createLazyFileRoute("/_app/privacy-policy")({
 	component: PrivacyPolicy,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,

@@ -1,14 +1,15 @@
 import { Review } from "@/components/review/Review";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
-import { api } from "@/trpc/react";
+import { NotFound } from "@/components/ui/NotFound";
+import { api, apiUtils } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	CommentAndProfile,
 	CommentAndProfileAndParent,
 	CreateCommentSchema,
 } from "@recordscratch/types";
-import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/Button";
@@ -53,21 +54,18 @@ export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 			})
 			.parse(search);
 	},
-	loader: async ({
-		params: { handle, resourceId },
-		context: { apiUtils },
-	}) => {
+	loader: async ({ params: { handle, resourceId } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) return notFound();
-
-		await apiUtils.ratings.user.get.ensureData({
+		if (!profile) return <NotFound />;
+		apiUtils.ratings.user.get.ensureData({
 			userId: profile.userId,
 			resourceId,
 		});
-		await apiUtils.comments.list.ensureData({
+		apiUtils.comments.list.ensureData({
 			authorId: profile.userId,
 			resourceId,
 		});
+		apiUtils.profiles.me.ensureData();
 	},
 });
 
@@ -440,9 +438,8 @@ const CommentLayout = ({
 
 function Rating() {
 	const { handle, resourceId } = Route.useParams();
-	const { profile: myProfile } = Route.useRouteContext();
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
 		userId: profile!.userId,
 		resourceId,

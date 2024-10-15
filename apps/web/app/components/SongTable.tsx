@@ -3,7 +3,7 @@ import { api } from "@/trpc/react";
 import { Track, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { keepPreviousData } from "@tanstack/react-query";
-import { Link, useRouteContext } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { AddToList } from "./lists/AddToList";
 import { RatingDialog } from "./rating/RatingDialog";
@@ -45,9 +45,7 @@ const SongRatingDialog = ({
 };
 
 const SongRatings = ({ songs, song }: { songs: Track[]; song: Track }) => {
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: ratings, isLoading } = api.ratings.getList.useQuery(
 		{
 			resourceIds: songs.map((song) => String(song.id)),

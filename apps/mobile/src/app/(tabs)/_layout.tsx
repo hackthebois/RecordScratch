@@ -40,7 +40,7 @@ export default function TabLayout() {
 
 	useEffect(() => {
 		const getToken = async () => {
-			await fetch(`${env.SITE_URL}}/api/auth/refresh?sessionId=${sessionId}`)
+			await fetch(`${env.SITE_URL}}/auth/refresh?sessionId=${sessionId}`)
 				.then(async (response) => {
 					return z
 						.object({
