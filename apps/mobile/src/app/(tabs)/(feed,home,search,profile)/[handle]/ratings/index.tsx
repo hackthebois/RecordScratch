@@ -1,4 +1,5 @@
 import NotFoundScreen from "#/app/+not-found";
+import { Profile } from "@recordscratch/types";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
@@ -51,10 +52,10 @@ const Reviews = () => {
 	const [tab, setTab] = useState("");
 	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
 
-	const onChange = (filter: number | undefined) => {
-		if (filter === ratingFilter) setRatingFilter(undefined);
-		else setRatingFilter(filter);
-		console.log(filter);
+	const onChange = (_filter: number | undefined) => {
+		if (ratingFilter) setRatingFilter(undefined);
+		else setRatingFilter(_filter);
+		console.log(_filter);
 	};
 
 	if (!profile) return <NotFoundScreen />;
