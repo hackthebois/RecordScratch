@@ -1,4 +1,3 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
@@ -10,7 +9,6 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { queryClient } from "@/trpc/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
@@ -25,41 +23,6 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 				tab: z.enum(["related", "discography"]).optional(),
 			})
 			.parse(search);
-	},
-	loader: ({ params: { artistId } }) => {
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}",
-				input: {
-					id: artistId,
-				},
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}/top",
-				input: {
-					id: artistId,
-				},
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}/albums",
-				input: {
-					id: artistId,
-					limit: 1000,
-				},
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}/related",
-				input: {
-					id: artistId,
-				},
-			})
-		);
 	},
 });
 
@@ -114,7 +77,7 @@ function Artist() {
 	});
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={artist.name} />
+			{/* <Head title={artist.name} /> */}
 			<Metadata
 				title={artist.name}
 				cover={artist.picture_big ?? ""}

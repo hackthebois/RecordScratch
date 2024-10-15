@@ -1,29 +1,50 @@
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { TRPCReactProvider, api } from "@/trpc/react";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import appCss from "@/index.css?url";
+import { seo } from "@/lib/seo";
+import { apiUtils } from "@/trpc/react";
+import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
 	ScrollRestoration,
-	createRootRoute,
+	createRootRouteWithContext,
 	useRouterState,
 } from "@tanstack/react-router";
-import { PostHogProvider, usePostHog } from "posthog-js/react";
+import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
+import { usePostHog } from "posthog-js/react";
 import React, { Suspense, useEffect } from "react";
-import { HelmetProvider } from "react-helmet-async";
 
-const TanStackRouterDevtools =
-	process.env.NODE_ENV === "production"
-		? () => null // Render nothing in production
-		: React.lazy(() =>
-				// Lazy load in development
-				import("@tanstack/router-devtools").then((res) => ({
-					default: res.TanStackRouterDevtools,
-					// For Embedded Mode
-					// default: res.TanStackRouterDevtoolsPanel
-				}))
-			);
+export const Route = createRootRouteWithContext<{
+	queryClient: QueryClient;
+	apiUtils: typeof apiUtils;
+}>()({
+	meta: () => [
+		{
+			charSet: "utf-8",
+		},
+		{
+			name: "viewport",
+			content: "width=device-width, initial-scale=1",
+		},
+		...seo({
+			title: "RecordScratch",
+		}),
+	],
+	links: () => [
+		{ rel: "stylesheet", href: appCss },
+		{
+			rel: "icon",
+			type: "image/svg+xml",
+			href: "/logo.svg",
+		},
+	],
+	beforeLoad: async ({ context: { apiUtils } }) => {
+		const profile = await apiUtils.profiles.me.ensureData();
 
-export const Route = createRootRoute({
-	component: Root,
+		return {
+			profile,
+		};
+	},
+	component: RootComponent,
 });
 
 const PostHogPageView = () => {
@@ -38,44 +59,53 @@ const PostHogPageView = () => {
 };
 
 const PostHogIdentify = () => {
-	const [user] = api.users.me.useSuspenseQuery();
+	const { profile } = Route.useRouteContext();
 	const posthog = usePostHog();
 
 	useEffect(() => {
-		if (!user) return;
-		posthog.identify(user.id, {
-			email: user.email,
+		if (!profile) return;
+		posthog.identify(profile.userId, {
+			handle: profile.handle,
+			name: profile.name,
 		});
-	}, [user, posthog]);
+	}, [profile, posthog]);
 
 	return null;
 };
 
-function Root() {
+function RootComponent() {
 	return (
-		<PostHogProvider
-			apiKey={process.env.VITE_POSTHOG_KEY}
-			options={{
-				api_host: process.env.CF_PAGES_URL + "/ingest",
-			}}
-		>
-			<TRPCReactProvider>
-				<HelmetProvider>
-					<ThemeProvider defaultTheme="dark" storageKey="theme">
-						<ScrollRestoration
-							getKey={(location) => location.pathname}
-						/>
-						<div className="flex w-screen flex-col items-center justify-center">
-							<Outlet />
-						</div>
-						<Suspense>
-							<PostHogIdentify />
-						</Suspense>
-						<PostHogPageView />
-						<TanStackRouterDevtools />
-					</ThemeProvider>
-				</HelmetProvider>
-			</TRPCReactProvider>
-		</PostHogProvider>
+		<RootDocument>
+			<div className="flex w-screen flex-col items-center justify-center">
+				<Outlet />
+			</div>
+		</RootDocument>
+	);
+}
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+	return (
+		<Html>
+			<Head>
+				<Meta />
+			</Head>
+			<Body>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+				>
+					{children}
+					<ScrollRestoration
+						getKey={(location) => location.pathname}
+					/>
+					<Suspense>
+						<PostHogIdentify />
+					</Suspense>
+					<PostHogPageView />
+					<Scripts />
+				</ThemeProvider>
+			</Body>
+		</Html>
 	);
 }

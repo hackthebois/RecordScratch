@@ -1,4 +1,3 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ReviewDialog } from "@/components/review/ReviewDialog";
@@ -11,7 +10,6 @@ import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { api, queryClient } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -21,25 +19,11 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
-	loader: ({ params: { albumId } }) => {
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/album/{id}/tracks",
-				input: { id: albumId, limit: 1000 },
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/album/{id}",
-				input: { id: albumId },
-			})
-		);
-	},
 });
 
 function Song() {
 	const { albumId, songId } = Route.useParams();
-	const [profile] = api.profiles.me.useSuspenseQuery();
+	const { profile } = Route.useRouteContext();
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",
@@ -62,7 +46,7 @@ function Song() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={song.title} description={album.artist?.name} />
+			{/* <Head title={song.title} description={album.artist?.name} /> */}
 			<Metadata
 				title={song.title}
 				cover={album.cover_big ?? ""}

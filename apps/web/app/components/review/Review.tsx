@@ -2,7 +2,7 @@ import { getImageUrl } from "@/lib/image";
 import { api } from "@/trpc/react";
 import { timeAgo } from "@recordscratch/lib";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import { Heart, MessageCircle, Reply, Star } from "lucide-react";
 import { Suspense } from "react";
 import { ResourceItem } from "../ResourceItem";
@@ -149,7 +149,9 @@ export const Review = ({
 	updatedAt,
 	onReply,
 }: ReviewType & { onReply?: () => void }) => {
-	const [profileExists] = api.profiles.me.useSuspenseQuery();
+	const { profile: profileExists } = useRouteContext({
+		from: "__root__",
+	});
 	return (
 		<div className="flex flex-col gap-4 rounded-lg border p-3 py-4 text-card-foreground">
 			<ResourceItem

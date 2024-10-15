@@ -1,4 +1,3 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
 import AlbumList from "@/components/album/AlbumList";
 import { ReviewsList } from "@/components/review/ReviewsList";
@@ -8,7 +7,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { api, apiUtils } from "@/trpc/react";
+import { api } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -25,10 +24,18 @@ export const Route = createFileRoute("/_app/")({
 			})
 			.parse(search);
 	},
-	loader: async () => {
-		apiUtils.ratings.top.ensureData();
-		apiUtils.ratings.trending.ensureData();
+	loader: async ({ context: { apiUtils } }) => {
+		await apiUtils.misc.albumOfTheDay.ensureData();
+		await apiUtils.ratings.top.ensureData();
+		await apiUtils.ratings.trending.ensureData();
 	},
+	meta: () => [
+		{
+			title: "Home",
+			description:
+				"View album of the day, trending albums, top rated albums and recent reviews.",
+		},
+	],
 });
 
 const AlbumOfTheDay = () => {
@@ -82,14 +89,10 @@ function Index() {
 	const { feed = "recent" } = Route.useSearch();
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
-	const { data: profile } = api.profiles.me.useQuery();
+	const { profile } = Route.useRouteContext();
 
 	return (
 		<div className="flex flex-col gap-8">
-			<Head
-				title="Home"
-				description="View album of the day, trending albums, top rated albums and recent reviews."
-			/>
 			<AlbumOfTheDay />
 			{trending && (
 				<>

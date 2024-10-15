@@ -13,6 +13,7 @@ import {
 import { Theme, ThemeProvider } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -21,7 +22,6 @@ import { TRPCProvider } from "~/lib/api";
 import { AuthProvider } from "~/lib/auth";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
-import * as SecureStore from "expo-secure-store";
 import "../styles.css";
 
 const LIGHT_THEME: Theme = {
