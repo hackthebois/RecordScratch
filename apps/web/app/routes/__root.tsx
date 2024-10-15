@@ -44,7 +44,14 @@ export const Route = createRootRouteWithContext<{
 			title: "RecordScratch",
 		}),
 	],
-	links: () => [{ rel: "stylesheet", href: appCss }],
+	links: () => [
+		{ rel: "stylesheet", href: appCss },
+		{
+			rel: "icon",
+			type: "image/svg+xml",
+			href: "/logo.svg",
+		},
+	],
 	beforeLoad: async () => {
 		const profile = (await getProfile()) as Profile | null;
 

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/Popover";
 import UserButton from "@/components/user/UserButton";
 import { env } from "@/env";
-import { api } from "@/trpc/react";
+import { api, apiUtils } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Bell, Disc3, Dot, Menu } from "lucide-react";
 import { Suspense } from "react";
@@ -32,6 +32,9 @@ export const Route = createFileRoute("/_app")({
 			<ErrorComponent error={error} />
 		</LayoutComponent>
 	),
+	loader: async () => {
+		await apiUtils.notifications.get.ensureData();
+	},
 });
 
 const NotificationBell = () => {
