@@ -10,7 +10,7 @@ import { getQueryOptions } from "@/lib/deezer";
 import { api } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const Route = createFileRoute("/_app/")({
@@ -89,7 +89,9 @@ function Index() {
 	const { feed = "recent" } = Route.useSearch();
 	const [trending] = api.ratings.trending.useSuspenseQuery();
 	const [top] = api.ratings.top.useSuspenseQuery();
-	const { profile } = Route.useRouteContext();
+	const { profile } = useRouteContext({
+		from: "__root__",
+	});
 
 	return (
 		<div className="flex flex-col gap-8">

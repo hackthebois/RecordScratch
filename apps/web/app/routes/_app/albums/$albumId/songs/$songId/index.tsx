@@ -13,7 +13,7 @@ import { getQueryOptions } from "@/lib/deezer";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useRouteContext } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
@@ -23,7 +23,9 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 
 function Song() {
 	const { albumId, songId } = Route.useParams();
-	const { profile } = Route.useRouteContext();
+	const { profile } = useRouteContext({
+		from: "__root__",
+	});
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/album/{id}",

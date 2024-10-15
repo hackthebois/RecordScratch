@@ -7,6 +7,7 @@ import {
 	Outlet,
 	ScrollRestoration,
 	createRootRouteWithContext,
+	useRouteContext,
 	useRouterState,
 } from "@tanstack/react-router";
 import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
@@ -59,7 +60,9 @@ const PostHogPageView = () => {
 };
 
 const PostHogIdentify = () => {
-	const { profile } = Route.useRouteContext();
+	const { profile } = useRouteContext({
+		from: "__root__",
+	});
 	const posthog = usePostHog();
 
 	useEffect(() => {

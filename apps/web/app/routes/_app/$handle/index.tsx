@@ -30,6 +30,7 @@ import {
 	createFileRoute,
 	notFound,
 	useNavigate,
+	useRouteContext,
 } from "@tanstack/react-router";
 import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
@@ -140,7 +141,9 @@ const ThemeToggle = () => {
 
 function Handle() {
 	const { handle } = Route.useParams();
-	const { profile: myProfile } = Route.useRouteContext();
+	const { profile: myProfile } = useRouteContext({
+		from: "__root__",
+	});
 	const {
 		rating,
 		tab = "reviews",

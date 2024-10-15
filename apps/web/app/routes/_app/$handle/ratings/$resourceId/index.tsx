@@ -8,7 +8,12 @@ import {
 	CommentAndProfileAndParent,
 	CreateCommentSchema,
 } from "@recordscratch/types";
-import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import {
+	Link,
+	createFileRoute,
+	notFound,
+	useRouteContext,
+} from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/Button";
@@ -440,7 +445,9 @@ const CommentLayout = ({
 
 function Rating() {
 	const { handle, resourceId } = Route.useParams();
-	const { profile: myProfile } = Route.useRouteContext();
+	const { profile: myProfile } = useRouteContext({
+		from: "__root__",
+	});
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
