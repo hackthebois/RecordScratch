@@ -2,17 +2,29 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import appCss from "@/index.css?url";
 import { seo } from "@/lib/seo";
 import { TRPCReactProvider, apiUtils } from "@/trpc/react";
-import { QueryClient } from "@tanstack/react-query";
+import { Profile } from "@recordscratch/types";
+import { QueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
 	Outlet,
 	ScrollRestoration,
 	createRootRouteWithContext,
-	useRouteContext,
 	useRouterState,
 } from "@tanstack/react-router";
-import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
+import {
+	Body,
+	Head,
+	Html,
+	Meta,
+	Scripts,
+	createServerFn,
+} from "@tanstack/start";
 import { PostHogProvider, usePostHog } from "posthog-js/react";
 import React, { Suspense, useEffect } from "react";
+
+const testFunc = createServerFn("GET", async () => {
+	console.log("Test Func");
+	return "Test";
+});
 
 export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
@@ -38,11 +50,9 @@ export const Route = createRootRouteWithContext<{
 			href: "/logo.svg",
 		},
 	],
-	beforeLoad: async ({ context: { apiUtils } }) => {
-		const profile = await apiUtils.profiles.me.ensureData();
-
+	beforeLoad: () => {
 		return {
-			profile,
+			profile: null as Profile | null,
 		};
 	},
 	component: RootComponent,
@@ -60,9 +70,7 @@ const PostHogPageView = () => {
 };
 
 const PostHogIdentify = () => {
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const { profile } = Route.useRouteContext();
 	const posthog = usePostHog();
 
 	useEffect(() => {
@@ -78,6 +86,13 @@ const PostHogIdentify = () => {
 
 function RootComponent() {
 	const { queryClient } = Route.useRouteContext();
+
+	const { data } = useSuspenseQuery({
+		queryKey: ["test"],
+		queryFn: () => testFunc(),
+	});
+
+	console.log(data);
 
 	return (
 		<TRPCReactProvider queryClient={queryClient}>
