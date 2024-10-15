@@ -23,7 +23,7 @@ const AuthPage = () => {
 
 	const handlePressButtonAsync = async () => {
 		const result = await Browser.openAuthSessionAsync(
-			`${env.SITE_URL}/auth/google?expoAddress=${env.SCHEME}`,
+			`${env.SITE_URL}/api/auth/google?expoAddress=${env.SCHEME}`,
 			`${env.SCHEME}}`
 		);
 		if (result.type !== "success") return;

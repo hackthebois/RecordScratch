@@ -57,10 +57,10 @@ export default createApp({
 			],
 		},
 		{
-			name: "auth",
+			name: "api",
 			type: "http",
-			base: "/auth",
-			handler: "./app/events/auth.ts",
+			base: "/api",
+			handler: "./app/events/api.ts",
 			target: "server",
 			plugins: () => [tsconfigPaths()],
 		},
