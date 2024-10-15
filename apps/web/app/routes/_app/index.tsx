@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { api, apiUtils } from "@/trpc/react";
+import { api } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_app/")({
 			})
 			.parse(search);
 	},
-	loader: async () => {
+	loader: async ({ context: { apiUtils } }) => {
 		apiUtils.misc.albumOfTheDay.ensureData();
 		apiUtils.ratings.top.ensureData();
 		apiUtils.ratings.trending.ensureData();

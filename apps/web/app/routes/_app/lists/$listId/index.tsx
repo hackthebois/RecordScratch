@@ -11,7 +11,7 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
-import { api, apiUtils } from "@/trpc/react";
+import { api } from "@/trpc/react";
 import { timeAgo } from "@recordscratch/lib";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
 import {
@@ -37,13 +37,13 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 			})
 			.parse(search);
 	},
-	loader: async ({ params: { listId } }) => {
+	loader: async ({ params: { listId }, context: { apiUtils } }) => {
 		const listData = await apiUtils.lists.get.ensureData({
 			id: listId,
 		});
 		if (!listData) return notFound();
 
-		apiUtils.lists.resources.get.ensureData({
+		await apiUtils.lists.resources.get.ensureData({
 			listId,
 			userId: listData!.userId,
 		});

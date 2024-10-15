@@ -24,10 +24,10 @@ export const Route = createFileRoute("/_app/notifications")({
 	component: Notifications,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
-	loader: ({ context }) => {
-		if (!context.profile) notFound();
+	loader: async ({ context: { apiUtils, profile } }) => {
+		if (!profile) notFound();
 
-		apiUtils.notifications.get.ensureData();
+		await apiUtils.notifications.get.ensureData();
 	},
 });
 

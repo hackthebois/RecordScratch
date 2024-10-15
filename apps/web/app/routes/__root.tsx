@@ -1,8 +1,7 @@
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import appCss from "@/index.css?url";
 import { seo } from "@/lib/seo";
-import { getUser } from "@recordscratch/api";
-import { Profile } from "@recordscratch/types";
+import { apiUtils } from "@/trpc/react";
 import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
@@ -10,27 +9,13 @@ import {
 	createRootRouteWithContext,
 	useRouterState,
 } from "@tanstack/react-router";
-import {
-	Body,
-	Head,
-	Html,
-	Meta,
-	Scripts,
-	createServerFn,
-} from "@tanstack/start";
+import { Body, Head, Html, Meta, Scripts } from "@tanstack/start";
 import { usePostHog } from "posthog-js/react";
 import React, { Suspense, useEffect } from "react";
-import { getCookie, getEvent } from "vinxi/http";
-
-export const getProfile = createServerFn("GET", async () => {
-	const event = getEvent();
-	const sessionId = getCookie(event, "auth_session");
-	if (!sessionId) return null;
-	return await getUser(sessionId);
-});
 
 export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
+	apiUtils: typeof apiUtils;
 }>()({
 	meta: () => [
 		{
@@ -52,8 +37,8 @@ export const Route = createRootRouteWithContext<{
 			href: "/logo.svg",
 		},
 	],
-	beforeLoad: async () => {
-		const profile = (await getProfile()) as Profile | null;
+	beforeLoad: async ({ context: { apiUtils } }) => {
+		const profile = await apiUtils.profiles.me.ensureData();
 
 		return {
 			profile,

@@ -1,5 +1,6 @@
 import { defineConfig } from "@tanstack/start/config";
 import { config } from "vinxi/plugins/config";
+import { envOnlyMacros } from "vite-env-only";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
@@ -19,6 +20,7 @@ export default defineConfig({
 					),
 				},
 			}),
+			envOnlyMacros(),
 		],
 	},
 	server: {

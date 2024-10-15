@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Tag } from "@/components/ui/Tag";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
-import { api, apiUtils } from "@/trpc/react";
+import { api } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import {
@@ -50,7 +50,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 			})
 			.parse(search);
 	},
-	loader: async ({ params: { handle } }) => {
+	loader: async ({ params: { handle }, context: { apiUtils } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) return notFound();
 

@@ -5,13 +5,13 @@ import SuperJSON from "superjson";
 import { ErrorComponent } from "./components/router/ErrorComponent";
 import { NotFound } from "./components/ui/NotFound";
 import { routeTree } from "./routeTree.gen";
-import { TRPCReactProvider, queryClient } from "./trpc/react";
+import { TRPCReactProvider, apiUtils, queryClient } from "./trpc/react";
 
 export function createRouter() {
 	return routerWithQueryClient(
 		createTanStackRouter({
 			routeTree,
-			context: { queryClient },
+			context: { queryClient, apiUtils },
 			defaultPreload: "intent",
 			defaultErrorComponent: ErrorComponent,
 			defaultNotFoundComponent: () => <NotFound />,

@@ -1,7 +1,7 @@
 import { Review } from "@/components/review/Review";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
-import { api, apiUtils } from "@/trpc/react";
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	CommentAndProfile,
@@ -53,7 +53,10 @@ export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 			})
 			.parse(search);
 	},
-	loader: async ({ params: { handle, resourceId } }) => {
+	loader: async ({
+		params: { handle, resourceId },
+		context: { apiUtils },
+	}) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
 		if (!profile) return notFound();
 
