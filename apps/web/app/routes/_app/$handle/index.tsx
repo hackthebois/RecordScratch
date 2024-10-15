@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { CreateList } from "@/components/lists/CreateList";
 import { EditTopLists } from "@/components/lists/EditTopLists";
@@ -9,6 +8,7 @@ import { EditProfile } from "@/components/profile/EditProfile";
 import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import {
 	DropdownMenu,

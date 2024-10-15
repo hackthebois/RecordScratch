@@ -16,9 +16,8 @@ import { UserAvatar } from "./UserAvatar";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
-	const profile = useRouteContext({
+	const { profile } = useRouteContext({
 		from: "__root__",
-		select: (s) => s.profile,
 	});
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 

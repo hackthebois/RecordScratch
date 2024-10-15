@@ -1,6 +1,8 @@
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import appCss from "@/index.css?url";
 import { seo } from "@/lib/seo";
 import { getUser } from "@recordscratch/api";
+import { Profile } from "@recordscratch/types";
 import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
@@ -44,7 +46,7 @@ export const Route = createRootRouteWithContext<{
 	],
 	links: () => [{ rel: "stylesheet", href: appCss }],
 	beforeLoad: async () => {
-		const profile = await getProfile();
+		const profile = (await getProfile()) as Profile | null;
 
 		return {
 			profile,
@@ -96,13 +98,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<Meta />
 			</Head>
 			<Body>
-				{children}
-				<ScrollRestoration getKey={(location) => location.pathname} />
-				<Suspense>
-					<PostHogIdentify />
-				</Suspense>
-				<PostHogPageView />
-				<Scripts />
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+				>
+					{children}
+					<ScrollRestoration
+						getKey={(location) => location.pathname}
+					/>
+					<Suspense>
+						<PostHogIdentify />
+					</Suspense>
+					<PostHogPageView />
+					<Scripts />
+				</ThemeProvider>
 			</Body>
 		</Html>
 	);
