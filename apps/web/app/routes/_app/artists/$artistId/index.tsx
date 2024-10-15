@@ -9,7 +9,6 @@ import { RatingInfo } from "@/components/ui/RatingInfo";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { queryClient } from "@/trpc/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
@@ -24,41 +23,6 @@ export const Route = createFileRoute("/_app/artists/$artistId/")({
 				tab: z.enum(["related", "discography"]).optional(),
 			})
 			.parse(search);
-	},
-	loader: ({ params: { artistId } }) => {
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}",
-				input: {
-					id: artistId,
-				},
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}/top",
-				input: {
-					id: artistId,
-				},
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}/albums",
-				input: {
-					id: artistId,
-					limit: 1000,
-				},
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/artist/{id}/related",
-				input: {
-					id: artistId,
-				},
-			})
-		);
 	},
 });
 

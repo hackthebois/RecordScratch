@@ -11,7 +11,6 @@ import { SignInReviewButton } from "@/components/signIn/SignInReviewButton";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { queryClient } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -28,14 +27,6 @@ export const Route = createFileRoute("/_app/albums/$albumId/")({
 				tab: z.enum(["reviews"]).optional(),
 			})
 			.parse(search);
-	},
-	loader: ({ params: { albumId } }) => {
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/album/{id}",
-				input: { id: albumId },
-			})
-		);
 	},
 });
 

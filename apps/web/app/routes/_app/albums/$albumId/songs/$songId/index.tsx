@@ -10,7 +10,6 @@ import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
-import { queryClient } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -20,20 +19,6 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
-	loader: ({ params: { albumId } }) => {
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/album/{id}/tracks",
-				input: { id: albumId, limit: 1000 },
-			})
-		);
-		queryClient.ensureQueryData(
-			getQueryOptions({
-				route: "/album/{id}",
-				input: { id: albumId },
-			})
-		);
-	},
 });
 
 function Song() {
