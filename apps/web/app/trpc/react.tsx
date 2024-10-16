@@ -25,10 +25,10 @@ export const apiUtils = createTRPCQueryUtils({ queryClient, client });
 
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
 	return (
-		<QueryClientProvider client={queryClient}>
-			<api.Provider client={client} queryClient={queryClient}>
+		<api.Provider client={client} queryClient={queryClient}>
+			<QueryClientProvider client={queryClient}>
 				{props.children}
-			</api.Provider>
-		</QueryClientProvider>
+			</QueryClientProvider>
+		</api.Provider>
 	);
 }

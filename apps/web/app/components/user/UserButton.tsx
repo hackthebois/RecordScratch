@@ -1,6 +1,7 @@
 import { getImageUrl } from "@/lib/image";
 import { api } from "@/trpc/react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -12,7 +13,6 @@ import {
 } from "../ui/AlertDialog";
 import { buttonVariants } from "../ui/Button";
 import { UserAvatar } from "./UserAvatar";
-import { useEffect } from "react";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
@@ -47,7 +47,7 @@ export const UserButton = () => {
 			);
 		}
 		return (
-			<a href="/auth/google" className={buttonVariants({})}>
+			<a href="/api/auth/google" className={buttonVariants({})}>
 				Sign In
 			</a>
 		);
