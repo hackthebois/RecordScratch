@@ -3,9 +3,7 @@ import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React, { useEffect } from "react";
 import { Pressable } from "react-native";
-import { z } from "zod";
 import { Text } from "~/components/ui/text";
-import env from "~/env";
 import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
 import { Home } from "~/lib/icons/Home";
@@ -38,29 +36,31 @@ export default function TabLayout() {
 		}
 	}, [needsOnboarding]);
 
-	useEffect(() => {
-		const getToken = async () => {
-			await fetch(`${env.SITE_URL}/api/auth/refresh?sessionId=${sessionId}`)
-				.then(async (response) => {
-					return z
-						.object({
-							sessionId: z.string(),
-						})
-						.safeParse(await response.json());
-				})
-				.then((parsedData) => {
-					if (parsedData.error) console.error(parsedData.error);
-					else {
-						console.log(`Parsed Session ID: ${parsedData.data.sessionId}`);
-						setSessionId(parsedData.data.sessionId);
-					}
-				})
-				.catch(function (err) {
-					console.log(err);
-				});
-		};
-		getToken();
-	}, []);
+	// Removed until fixed
+	//
+	// useEffect(() => {
+	// 	const getToken = async () => {
+	// 		await fetch(`${env.SITE_URL}/api/auth/refresh?sessionId=${sessionId}`)
+	// 			.then(async (response) => {
+	// 				return z
+	// 					.object({
+	// 						sessionId: z.string(),
+	// 					})
+	// 					.safeParse(await response.json());
+	// 			})
+	// 			.then((parsedData) => {
+	// 				if (parsedData.error) console.error(parsedData.error);
+	// 				else {
+	// 					console.log(`Parsed Session ID: ${parsedData.data.sessionId}`);
+	// 					setSessionId(parsedData.data.sessionId);
+	// 				}
+	// 			})
+	// 			.catch(function (err) {
+	// 				console.log(err);
+	// 			});
+	// 	};
+	// 	getToken();
+	// }, []);
 
 	return (
 		<Tabs

@@ -60,6 +60,8 @@ export const googleRoutes: Route[] = [
 				process.env.GOOGLE_CLIENT_SECRET!,
 				callBackUrl
 			);
+
+			// Validations
 			const code = z.string().parse(query.code);
 			const state = z.string().parse(query.state);
 			const storedState = getCookie(event, "state");
@@ -118,12 +120,16 @@ export const googleRoutes: Route[] = [
 				googleId,
 			});
 			const sessionCookie = lucia.createSessionCookie(session.id);
-			setCookie(
-				event,
-				sessionCookie.name,
-				sessionCookie.value,
-				sessionCookie.attributes
-			);
+
+			if (expoAddress)
+				redirect = `${expoAddress}?session_id=${session.id}`;
+			else
+				setCookie(
+					event,
+					sessionCookie.name,
+					sessionCookie.value,
+					sessionCookie.attributes
+				);
 
 			return sendRedirect(event, redirect);
 		},
