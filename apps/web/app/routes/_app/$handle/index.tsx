@@ -25,8 +25,8 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
-import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { keepPreviousData } from "@tanstack/react-query";
+import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
 import { Disc3 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
@@ -78,23 +78,23 @@ const TopListLoader = () => {
 };
 
 const SignOutButton = () => {
-	const navigate = useNavigate({
-		from: Route.fullPath,
-	});
+	const router = useRouter();
 	const posthog = usePostHog();
-	const queryClient = useQueryClient();
 
 	return (
 		<Button
 			variant="outline"
 			onClick={() => {
-				fetch("/api/auth/signout").then(() => {
-					navigate({
-						to: "/",
+				fetch("/api/auth/signout")
+					.then(() => {
+						posthog.reset();
+						apiUtils.invalidate();
+					})
+					.then(() => {
+						router.navigate({
+							to: "/",
+						});
 					});
-					posthog.reset();
-					queryClient.clear();
-				});
 			}}
 		>
 			Sign out
