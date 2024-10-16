@@ -1,7 +1,7 @@
 import { getLucia } from "@recordscratch/auth";
 import { getDB, sessions, users } from "@recordscratch/db";
 import { eq } from "drizzle-orm";
-import { getCookie, getQuery, setCookie } from "vinxi/http";
+import { getCookie, getHeader, getQuery, setCookie } from "vinxi/http";
 import { Route } from "..";
 
 export const authRoutes: Route[] = [
@@ -29,7 +29,11 @@ export const authRoutes: Route[] = [
 
 			const existingUser = await db.query.users.findFirst({
 				where: eq(users.googleId, googleId),
+				with: {
+					profile: true,
+				},
 			});
+
 			const userId = existingUser!.id;
 			const email = existingUser!.email;
 
@@ -38,14 +42,16 @@ export const authRoutes: Route[] = [
 				googleId,
 			});
 
-			return { sessionId: session.id };
+			return { sessionId: session.id, profile: existingUser!.profile };
 		},
 	],
 	[
 		"/auth/signout",
 		async (event) => {
 			const lucia = getLucia();
-			const session = getCookie(event, "auth_session");
+			const session =
+				getHeader(event, "Authorization") ??
+				getCookie(event, "auth_session");
 			if (!session) return;
 			const blankCookie = lucia.createBlankSessionCookie();
 			setCookie(

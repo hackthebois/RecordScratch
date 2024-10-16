@@ -37,6 +37,13 @@ export const users = pgTable("users", {
 	googleId: text("google_id").unique(),
 });
 
+export const usersRelations = relations(users, ({ one }) => ({
+	profile: one(profile, {
+		fields: [users.id],
+		references: [profile.userId],
+	}),
+}));
+
 export const sessions = pgTable("sessions", {
 	id: text("id").primaryKey(),
 	userId: text("user_id").notNull(),
@@ -75,7 +82,6 @@ export const profileRelations = relations(profile, ({ one, many }) => ({
 	user: one(users, {
 		fields: [profile.userId],
 		references: [users.id],
-		relationName: "user",
 	}),
 	profile: many(ratings, {
 		relationName: "profile",
@@ -338,6 +344,7 @@ export const tableSchemas = {
 };
 
 export const relationSchemas = {
+	usersRelations,
 	sessionRelations,
 	profileRelations,
 	ratingsRelations,
