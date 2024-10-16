@@ -29,7 +29,11 @@ export const authRoutes: Route[] = [
 
 			const existingUser = await db.query.users.findFirst({
 				where: eq(users.googleId, googleId),
+				with: {
+					profile: true,
+				},
 			});
+
 			const userId = existingUser!.id;
 			const email = existingUser!.email;
 
@@ -38,7 +42,7 @@ export const authRoutes: Route[] = [
 				googleId,
 			});
 
-			return { sessionId: session.id };
+			return { sessionId: session.id, profile: existingUser!.profile };
 		},
 	],
 	[

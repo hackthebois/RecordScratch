@@ -12,7 +12,7 @@ import { useAuth } from "~/lib/auth";
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
 	const sessionId = useAuth((s) => s.sessionId);
-	const setSessionId = useAuth((s) => s.setSessionId);
+	const login = useAuth((s) => s.login);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ const AuthPage = () => {
 		const url = Linking.parse(result.url);
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
-		await setSessionId(sessionId);
+		await login(sessionId);
 	};
 
 	return (

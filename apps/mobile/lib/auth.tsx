@@ -1,16 +1,18 @@
-import { Profile } from "@recordscratch/types";
+import { Profile, ProfileSchema } from "@recordscratch/types";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useRef } from "react";
+import SuperJSON from "superjson";
+import { z } from "zod";
 import { createStore, useStore } from "zustand";
 import env from "~/env";
 
 // Define the context type
 type Auth = {
-	status: "loading" | "authenticated" | "unauthenticated";
+	status: "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
 	sessionId: string | null;
 	profile: Profile | null;
 	logout: () => Promise<void>;
-	login: () => Promise<void>;
+	login: (session?: string) => Promise<void>;
 	setSessionId: (sessionId: string) => Promise<void>;
 	setProfile: (profile: Profile) => void;
 };
@@ -21,7 +23,12 @@ export const createAuthStore = () =>
 	createStore<Auth>()((set, get) => ({
 		status: "loading",
 		sessionId: null,
+		setSessionId: async (sessionId) => {
+			await SecureStore.setItemAsync("sessionId", sessionId);
+			set({ sessionId });
+		},
 		profile: null,
+		setProfile: (profile) => set({ profile }),
 		logout: async () => {
 			await fetch(env.SITE_URL + "/api/auth/signout", {
 				headers: {
@@ -31,19 +38,45 @@ export const createAuthStore = () =>
 			set({ sessionId: null, profile: null });
 			await SecureStore.deleteItemAsync("sessionId");
 		},
-		login: async () => {
-			const sessionId = await SecureStore.getItemAsync("sessionId");
-			if (!sessionId) {
+		login: async (session?: string) => {
+			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
+
+			if (!oldSessionId) {
 				set({ status: "unauthenticated" });
 				return;
 			}
-			set({ sessionId, status: "authenticated" });
+
+			const res = await fetch(`${env.SITE_URL}/api/auth/refresh?sessionId=${oldSessionId}`);
+			const data = await res.json();
+			const parsedData = z
+				.object({
+					sessionId: z.string(),
+					profile: ProfileSchema.nullish(),
+				})
+				.safeParse(
+					SuperJSON.deserialize({
+						json: data,
+						meta: {
+							values: {
+								"profile.createdAt": ["Date"],
+								"profile.updatedAt": ["Date"],
+							},
+						},
+					})
+				);
+
+			if (parsedData.error) {
+				get().logout();
+			} else {
+				get().setSessionId(parsedData.data.sessionId);
+				if (parsedData.data.profile) {
+					get().setProfile(parsedData.data.profile);
+					set({ status: "authenticated" });
+				} else {
+					set({ status: "needsonboarding" });
+				}
+			}
 		},
-		setSessionId: async (sessionId) => {
-			await SecureStore.setItemAsync("sessionId", sessionId);
-			set({ sessionId, status: "authenticated" });
-		},
-		setProfile: (profile) => set({ profile }),
 	}));
 
 export const AuthContext = createContext<AuthStore | null>(null);
