@@ -2,6 +2,7 @@ import { Profile } from "@recordscratch/types";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useRef } from "react";
 import { createStore, useStore } from "zustand";
+import env from "~/env";
 
 // Define the context type
 type Auth = {
@@ -10,18 +11,23 @@ type Auth = {
 	profile: Profile | null;
 	logout: () => Promise<void>;
 	login: () => Promise<void>;
-	setSessionId: (sessionId: string) => void;
+	setSessionId: (sessionId: string) => Promise<void>;
 	setProfile: (profile: Profile) => void;
 };
 
 type AuthStore = ReturnType<typeof createAuthStore>;
 
 export const createAuthStore = () =>
-	createStore<Auth>()((set) => ({
+	createStore<Auth>()((set, get) => ({
 		status: "loading",
 		sessionId: null,
 		profile: null,
 		logout: async () => {
+			await fetch(env.SITE_URL + "/api/auth/signout", {
+				headers: {
+					Authorization: `${get().sessionId}`,
+				},
+			});
 			set({ sessionId: null, profile: null });
 			await SecureStore.deleteItemAsync("sessionId");
 		},

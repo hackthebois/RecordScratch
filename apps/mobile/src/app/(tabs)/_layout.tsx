@@ -23,6 +23,10 @@ export default function TabLayout() {
 	const setSessionId = useAuth((s) => s.setSessionId);
 
 	useEffect(() => {
+		console.log("Session ID: ", sessionId);
+	}, [sessionId]);
+
+	useEffect(() => {
 		if (myProfile) {
 			setProfile(myProfile!);
 		} else {

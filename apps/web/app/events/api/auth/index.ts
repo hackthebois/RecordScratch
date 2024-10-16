@@ -1,7 +1,7 @@
 import { getLucia } from "@recordscratch/auth";
 import { getDB, sessions, users } from "@recordscratch/db";
 import { eq } from "drizzle-orm";
-import { getCookie, getQuery, setCookie } from "vinxi/http";
+import { getCookie, getHeader, getQuery, setCookie } from "vinxi/http";
 import { Route } from "..";
 
 export const authRoutes: Route[] = [
@@ -45,7 +45,9 @@ export const authRoutes: Route[] = [
 		"/auth/signout",
 		async (event) => {
 			const lucia = getLucia();
-			const session = getCookie(event, "auth_session");
+			const session =
+				getHeader(event, "Authorization") ??
+				getCookie(event, "auth_session");
 			if (!session) return;
 			const blankCookie = lucia.createBlankSessionCookie();
 			setCookie(
