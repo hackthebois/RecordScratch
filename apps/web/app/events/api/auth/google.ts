@@ -1,73 +1,13 @@
 import { getLucia } from "@recordscratch/auth";
-import { getDB, sessions, users } from "@recordscratch/db";
+import { getDB, users } from "@recordscratch/db";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { eq } from "drizzle-orm";
 import { generateId } from "lucia";
-import {
-	H3Event,
-	eventHandler,
-	getCookie,
-	getQuery,
-	getRequestURL,
-	sendRedirect,
-	setCookie,
-} from "vinxi/http";
+import { getCookie, getQuery, sendRedirect, setCookie } from "vinxi/http";
 import { z } from "zod";
+import { Route } from "..";
 
-// eslint-disable-next-line no-unused-vars
-const routes = new Map<string, (event: H3Event) => unknown>([
-	[
-		"/auth/refresh",
-		async (event) => {
-			const db = getDB();
-			const lucia = getLucia();
-			const query = getQuery(event);
-			const sessionId = query.sessionId as string;
-
-			if (!sessionId) return;
-			const googleId =
-				(
-					await db
-						.select({ googleId: users.googleId })
-						.from(sessions)
-						.innerJoin(users, eq(users.id, sessions.userId))
-						.where(eq(sessions.id, sessionId))
-				)[0]?.googleId || null;
-
-			if (!googleId) return;
-
-			await lucia.invalidateSession(sessionId);
-
-			const existingUser = await db.query.users.findFirst({
-				where: eq(users.googleId, googleId),
-			});
-			const userId = existingUser!.id;
-			const email = existingUser!.email;
-
-			const session = await lucia.createSession(userId, {
-				email,
-				googleId,
-			});
-
-			return { sessionId: session.id };
-		},
-	],
-	[
-		"/auth/signout",
-		async (event) => {
-			const lucia = getLucia();
-			const session = getCookie(event, "auth_session");
-			if (!session) return;
-			const blankCookie = lucia.createBlankSessionCookie();
-			setCookie(
-				event,
-				blankCookie.name,
-				blankCookie.value,
-				blankCookie.attributes
-			);
-			await lucia.invalidateSession(session);
-		},
-	],
+export const googleRoutes: Route[] = [
 	[
 		"/auth/google",
 		async (event) => {
@@ -188,15 +128,4 @@ const routes = new Map<string, (event: H3Event) => unknown>([
 			return sendRedirect(event, redirect);
 		},
 	],
-]);
-
-export default eventHandler(async (event) => {
-	const url = getRequestURL(event);
-
-	const route = routes.get(
-		url.pathname.replace(/^\/api/, "").replace(/\/$/, "")
-	);
-	if (route) return route(event);
-
-	return new Response("Not Found", { status: 404 });
-});
+];

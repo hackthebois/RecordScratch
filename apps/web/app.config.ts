@@ -60,7 +60,7 @@ export default createApp({
 			name: "api",
 			type: "http",
 			base: "/api",
-			handler: "./app/events/api.ts",
+			handler: "./app/events/api/index.ts",
 			target: "server",
 			plugins: () => [tsconfigPaths()],
 		},
