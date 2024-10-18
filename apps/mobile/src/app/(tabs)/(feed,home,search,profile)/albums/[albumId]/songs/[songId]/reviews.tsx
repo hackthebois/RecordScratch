@@ -13,7 +13,7 @@ import { getQueryOptions } from "~/lib/deezer";
 type RatingType = "all" | "REVIEW" | "RATING";
 
 const Reviews = () => {
-	const [tab, setTab] = useState("for-you");
+	const [tab, setTab] = useState("everyone");
 	const { albumId, songId } = useLocalSearchParams<{ albumId: string; songId: string }>();
 	const [ratingTab, setRatingTab] = useState<RatingType>("all");
 	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
@@ -27,7 +27,10 @@ const Reviews = () => {
 
 	const { data: values } = api.ratings.distribution.useQuery({
 		resourceId: songId,
-		reviewType: ratingTab === "all" ? undefined : ratingTab,
+		filters: {
+			reviewType: ratingTab === "all" ? undefined : ratingTab,
+			following: tab === "friends",
+		},
 	});
 
 	const resource: Resource = {
@@ -42,7 +45,7 @@ const Reviews = () => {
 			<Tabs value={tab} onValueChange={setTab}>
 				<View className="px-4">
 					<TabsList className="flex-row w-full">
-						<TabsTrigger value="for-you" className="flex-1">
+						<TabsTrigger value="everyone" className="flex-1">
 							<Text>Everyone</Text>
 						</TabsTrigger>
 						<TabsTrigger value="friends" className="flex-1">

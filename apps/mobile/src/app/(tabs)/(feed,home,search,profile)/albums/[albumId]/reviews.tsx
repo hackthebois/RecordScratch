@@ -29,7 +29,10 @@ const Reviews = () => {
 
 	const { data: values } = api.ratings.distribution.useQuery({
 		resourceId: albumId,
-		reviewType: ratingTab === "all" ? undefined : ratingTab,
+		filters: {
+			reviewType: ratingTab === "all" ? undefined : ratingTab,
+			following: tab === "friends",
+		},
 	});
 
 	const resource: Resource = {
