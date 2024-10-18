@@ -1,4 +1,4 @@
-import { followers, likes, profile, ratings } from "@recordscratch/db";
+import { followers, getDB, likes, profile, ratings } from "@recordscratch/db";
 import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@recordscratch/types";
 import dayjs from "dayjs";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull, isNull, sql } from "drizzle-orm";
@@ -9,6 +9,19 @@ const PaginatedInput = z.object({
 	cursor: z.number().min(0).optional(),
 	limit: z.number().optional(),
 });
+
+const getFollowingWhere = async (db: ReturnType<typeof getDB>, userId: string) => {
+	const following = await db.query.followers.findMany({
+		where: eq(followers.userId, userId),
+	});
+
+	if (following.length === 0) return undefined;
+
+	return inArray(
+		ratings.userId,
+		following.map((f) => f.followingId)
+	);
+};
 
 export const ratingsRouter = router({
 	get: publicProcedure
@@ -99,20 +112,13 @@ export const ratingsRouter = router({
 		.query(async ({ ctx: { db, userId }, input: { limit = 20, cursor = 0, filters } }) => {
 			let followingWhere = undefined;
 			if (filters?.following && userId) {
-				const following = await db.query.followers.findMany({
-					where: eq(followers.userId, userId),
-				});
+				followingWhere = await getFollowingWhere(db, userId);
 
-				if (following.length === 0)
+				if (!followingWhere)
 					return {
 						items: [],
 						nextCursor: undefined,
 					};
-
-				followingWhere = inArray(
-					ratings.userId,
-					following.map((f) => f.followingId)
-				);
 			}
 
 			let ratingTypeFilter;
@@ -147,23 +153,39 @@ export const ratingsRouter = router({
 		.input(
 			z.object({
 				resourceId: ResourceSchema.shape.resourceId,
-				reviewType: z.enum(["REVIEW", "RATING"]).optional(),
+				filters: z
+					.object({
+						reviewType: z.enum(["REVIEW", "RATING"]).optional(),
+						following: z.boolean().optional(),
+					})
+					.optional(),
 			})
 		)
-		.query(async ({ ctx: { db }, input: { resourceId, reviewType } }) => {
-			let where;
-			if (reviewType && reviewType === "REVIEW") {
-				where = and(eq(ratings.resourceId, resourceId), isNotNull(ratings.content));
-			} else if (reviewType && reviewType === "RATING") {
-				where = and(eq(ratings.resourceId, resourceId), isNull(ratings.content));
-			} else where = eq(ratings.resourceId, resourceId);
+		.query(async ({ ctx: { db, userId }, input: { resourceId, filters } }) => {
+			let followingWhere = undefined;
+			if (filters?.following && userId) {
+				followingWhere = await getFollowingWhere(db, userId);
+
+				if (!followingWhere) return Array(10).fill(0);
+			}
+
 			const distributionRatings = await db
 				.select({
 					rating: ratings.rating,
 					rating_count: count(ratings.rating),
 				})
 				.from(ratings)
-				.where(where)
+				.where(
+					and(
+						eq(ratings.resourceId, resourceId),
+						filters?.reviewType
+							? filters?.reviewType === "REVIEW"
+								? isNotNull(ratings.content)
+								: isNull(ratings.content)
+							: undefined,
+						followingWhere
+					)
+				)
 				.groupBy(ratings.rating)
 				.orderBy(ratings.rating);
 
