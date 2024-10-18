@@ -1,7 +1,7 @@
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import DistributionChart from "~/components/DistributionChart";
 import { ReviewsList } from "~/components/ReviewsList";
@@ -32,6 +32,12 @@ const Reviews = () => {
 			following: tab === "friends",
 		},
 	});
+
+	useEffect(() => {
+		if (values && ratingFilter && values[ratingFilter] === 0) {
+			setRatingFilter(undefined);
+		}
+	}, [values]);
 
 	const resource: Resource = {
 		parentId: String(albumId),

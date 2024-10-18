@@ -1,6 +1,6 @@
 import NotFoundScreen from "#/app/+not-found";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import DistributionChart from "~/components/DistributionChart";
 import { ReviewsList } from "~/components/ReviewsList";
@@ -22,6 +22,12 @@ const Reviews = () => {
 			enabled: !!profile,
 		}
 	);
+
+	useEffect(() => {
+		if (values && ratingFilter && values[ratingFilter] === 0) {
+			setRatingFilter(undefined);
+		}
+	}, [values]);
 
 	if (!profile) return <NotFoundScreen />;
 
