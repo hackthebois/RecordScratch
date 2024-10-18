@@ -1,9 +1,9 @@
 import { Track, cn } from "@recordscratch/lib";
 import { Link } from "expo-router";
 import { Pressable, View } from "react-native";
-import { Text } from "./ui/text";
-import { RatingInfo } from "./Rating/RatingInfo";
 import RateButton from "./Rating/RateButton";
+import { RatingInfo } from "./Rating/RatingInfo";
+import { Text } from "./ui/text";
 
 const SongTable = ({ songs }: { songs: Track[] }) => {
 	return (
@@ -18,12 +18,10 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 					)}
 					asChild
 				>
-					<Pressable className="flex flex-row p-3 items-center justify-between gap-6">
-						<View className="flex flex-row items-center gap-6 max-w-52 ">
-							<Text className="ml-4 text-muted-foreground font-bold w-5">
-								{index + 1}
-							</Text>
-							<Text className="text-md" numberOfLines={1} ellipsizeMode="tail">
+					<Pressable className="flex flex-row py-2 items-center justify-between gap-6 px-4">
+						<View className="flex flex-row items-center max-w-52 gap-2">
+							<Text className="text-muted-foreground font-bold w-6">{index + 1}</Text>
+							<Text numberOfLines={1}>
 								{song.title.replace(/ *\([^)]*\) */g, "")}
 							</Text>
 						</View>
@@ -36,13 +34,14 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 								size="sm"
 							/>
 							<RateButton
-								imageUrl={song.album.title}
+								imageUrl={song.album.cover_big}
 								resource={{
 									parentId: String(song.album.id),
 									resourceId: String(song.id),
 									category: "SONG",
 								}}
 								name={song.title}
+								size="sm"
 							/>
 						</View>
 					</Pressable>
