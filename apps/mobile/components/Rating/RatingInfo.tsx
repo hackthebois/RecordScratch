@@ -22,14 +22,14 @@ export const RatingInfo = ({
 		staleTime: Infinity,
 	});
 
-	if (isLoading) return <Star size={30} color="#ffb703" />;
+	if (isLoading) return <Star size={32} color="#ffb703" />;
 
 	return (
-		<View className="flex min-h-12 gap-4">
+		<View className="flex min-h-12 gap-4 justify-center">
 			{!(size === "sm" && !rating?.average) && (
-				<View className="flex items-center justify-center flex-row">
-					<Star size={size === "lg" ? 32 : 28} color="#ffb703" fill="#ffb703" />
-					<View className="flex flex-col items-center w-12 max-w-12">
+				<View className="flex items-center justify-center flex-row gap-2">
+					<Star size={size === "lg" ? 32 : 21} color="#ffb703" fill="#ffb703" />
+					<View className="flex flex-col items-center">
 						{rating?.average && (
 							<Text
 								className={cn({
