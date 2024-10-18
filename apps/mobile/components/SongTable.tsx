@@ -14,7 +14,7 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 					href={`/albums/${String(song.album.id)}/songs/${String(song.id)}`}
 					className={cn(
 						"w-full",
-						index != songs.length - 1 && "border-muted border-b-[4px]"
+						index != songs.length - 1 && "border-muted border-b-[2px]"
 					)}
 					asChild
 				>
