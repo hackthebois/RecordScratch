@@ -65,6 +65,7 @@ const Reviews = () => {
 					following: tab === "friends",
 					resourceId: resource.resourceId,
 					category: resource.category,
+					rating: ratingFilter,
 					ratingType: ratingTab === "all" ? undefined : ratingTab,
 				}}
 				limit={20}

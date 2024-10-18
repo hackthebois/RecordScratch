@@ -34,7 +34,7 @@ const DistributionChart = ({
 								value
 									? index + 1 === value
 										? "bg-[#ff8c00]"
-										: "bg-[#ffdd85]"
+										: "bg-[#ffb703] opacity-70"
 									: "bg-[#ffb703]"
 							)}
 						/>
