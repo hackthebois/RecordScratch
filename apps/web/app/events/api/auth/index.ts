@@ -1,7 +1,12 @@
-import { getLucia } from "@recordscratch/auth";
+import {
+	createSession,
+	generateSessionToken,
+	invalidateSession,
+	setSessionCookie,
+} from "@recordscratch/auth";
 import { getDB, sessions, users } from "@recordscratch/db";
 import { eq } from "drizzle-orm";
-import { getCookie, getHeader, getQuery, setCookie } from "vinxi/http";
+import { getCookie, getHeader, getQuery } from "vinxi/http";
 import { Route } from "..";
 
 export const authRoutes: Route[] = [
@@ -9,7 +14,6 @@ export const authRoutes: Route[] = [
 		"/auth/refresh",
 		async (event) => {
 			const db = getDB();
-			const lucia = getLucia();
 			const query = getQuery(event);
 			const sessionId = query.sessionId as string;
 
@@ -25,7 +29,7 @@ export const authRoutes: Route[] = [
 
 			if (!googleId) return;
 
-			await lucia.invalidateSession(sessionId);
+			await invalidateSession(sessionId);
 
 			const existingUser = await db.query.users.findFirst({
 				where: eq(users.googleId, googleId),
@@ -35,32 +39,22 @@ export const authRoutes: Route[] = [
 			});
 
 			const userId = existingUser!.id;
-			const email = existingUser!.email;
 
-			const session = await lucia.createSession(userId, {
-				email,
-				googleId,
-			});
+			const token = generateSessionToken();
+			await createSession(userId, token);
 
-			return { sessionId: session.id, profile: existingUser!.profile };
+			return { sessionId: token, profile: existingUser!.profile };
 		},
 	],
 	[
 		"/auth/signout",
 		async (event) => {
-			const lucia = getLucia();
 			const session =
 				getHeader(event, "Authorization") ??
-				getCookie(event, "auth_session");
+				getCookie(event, "session");
 			if (!session) return;
-			const blankCookie = lucia.createBlankSessionCookie();
-			setCookie(
-				event,
-				blankCookie.name,
-				blankCookie.value,
-				blankCookie.attributes
-			);
-			await lucia.invalidateSession(session);
+			setSessionCookie(event, undefined);
+			await invalidateSession(session);
 			return { success: true };
 		},
 	],

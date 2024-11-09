@@ -1,47 +1,44 @@
-import { getLucia } from "@recordscratch/auth";
+import {
+	createSession,
+	generateId,
+	generateSessionToken,
+	setOAuthCookies,
+	setSessionCookie,
+	validateState,
+} from "@recordscratch/auth";
 import { getDB, users } from "@recordscratch/db";
 import { Google, generateCodeVerifier, generateState } from "arctic";
 import { eq } from "drizzle-orm";
-import { generateId } from "lucia";
-import { getCookie, getQuery, sendRedirect, setCookie } from "vinxi/http";
+import { getQuery, sendRedirect } from "vinxi/http";
 import { z } from "zod";
 import { Route } from "..";
+
+const getGoogle = (expo: string) => {
+	return new Google(
+		process.env.GOOGLE_CLIENT_ID!,
+		process.env.GOOGLE_CLIENT_SECRET!,
+		`${process.env.CF_PAGES_URL}/api/auth/google/callback${expo ? `?expoAddress=${expo}` : ""}`
+	);
+};
 
 export const googleRoutes: Route[] = [
 	[
 		"/auth/google",
 		async (event) => {
 			const query = getQuery(event);
-			const expoAddress = query.expoAddress as string;
-			const callBackUrl = `${process.env.CF_PAGES_URL}/api/auth/google/callback${
-				expoAddress ? `?expoAddress=${expoAddress}` : ""
-			}`;
-			const google = new Google(
-				process.env.GOOGLE_CLIENT_ID!,
-				process.env.GOOGLE_CLIENT_SECRET!,
-				callBackUrl
-			);
+			const google = getGoogle(query.expoAddress as string);
+
 			const state = generateState();
 			const codeVerifier = generateCodeVerifier();
+
 			const url: URL = await google.createAuthorizationURL(
 				state,
 				codeVerifier,
-				{
-					scopes: ["profile", "email"],
-				}
+				["profile", "email"]
 			);
-			setCookie(event, "state", state, {
-				secure: process.env.NODE_ENV === "production",
-				path: "/",
-				httpOnly: true,
-				maxAge: 60 * 10, // 10 min
-			});
-			setCookie(event, "codeVerifier", codeVerifier, {
-				secure: process.env.NODE_ENV === "production",
-				path: "/",
-				httpOnly: true,
-				maxAge: 60 * 10, // 10 min
-			});
+
+			setOAuthCookies(event, state, codeVerifier);
+
 			return sendRedirect(event, url.toString());
 		},
 	],
@@ -49,45 +46,28 @@ export const googleRoutes: Route[] = [
 		"/auth/google/callback",
 		async (event) => {
 			const db = getDB();
-			const lucia = getLucia();
 			const query = getQuery(event);
-			const expoAddress = query.expoAddress as string;
-			const callBackUrl = `${process.env.CF_PAGES_URL}/api/auth/google/callback${
-				expoAddress ? `?expoAddress=${expoAddress}` : ""
-			}`;
-			const google = new Google(
-				process.env.GOOGLE_CLIENT_ID!,
-				process.env.GOOGLE_CLIENT_SECRET!,
-				callBackUrl
-			);
+			const { expoAddress } = query;
+			const google = getGoogle(expoAddress as string);
 
-			// Validations
-			const code = z.string().parse(query.code);
-			const state = z.string().parse(query.state);
-			const storedState = getCookie(event, "state");
-			const storedCodeVerifier = getCookie(event, "codeVerifier");
-
-			if (
-				!code ||
-				!storedState ||
-				!storedCodeVerifier ||
-				state !== storedState
-			) {
-				throw new Error("Invalid request Google Request");
-			}
+			const { code, codeVerifier } = validateState(event, true);
 
 			const tokens = await google.validateAuthorizationCode(
 				code,
-				storedCodeVerifier
+				codeVerifier
 			);
+
+			console.log("TOKENS", tokens);
+
 			const response = await fetch(
 				"https://openidconnect.googleapis.com/v1/userinfo",
 				{
 					headers: {
-						Authorization: `Bearer ${tokens.accessToken}`,
+						Authorization: `Bearer ${tokens.accessToken()}`,
 					},
 				}
 			);
+
 			const user: unknown = await response.json();
 			const { sub: googleId, email } = z
 				.object({
@@ -115,21 +95,12 @@ export const googleRoutes: Route[] = [
 				redirect = "/";
 			}
 
-			const session = await lucia.createSession(userId, {
-				email,
-				googleId,
-			});
-			const sessionCookie = lucia.createSessionCookie(session.id);
+			const token = generateSessionToken();
+			await createSession(token, userId);
+			console.log("TOKEN", token);
 
-			if (expoAddress)
-				redirect = `${expoAddress}?session_id=${session.id}`;
-			else
-				setCookie(
-					event,
-					sessionCookie.name,
-					sessionCookie.value,
-					sessionCookie.attributes
-				);
+			if (expoAddress) redirect = `${expoAddress}?session_id=${token}`;
+			else setSessionCookie(event, token);
 
 			return sendRedirect(event, redirect);
 		},

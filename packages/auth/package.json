@@ -12,7 +12,6 @@
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
-		"@lucia-auth/adapter-drizzle": "~1.0.7",
 		"@recordscratch/db": "workspace:*",
 		"drizzle-zod": "^0.5.1",
 		"zod": "^3.22.4"
