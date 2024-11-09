@@ -1,4 +1,4 @@
-import { Profile, ProfileSchema } from "@recordscratch/types";
+import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useRef } from "react";
 import SuperJSON from "superjson";
@@ -35,42 +35,42 @@ export const createAuthStore = () =>
 					Authorization: `${get().sessionId}`,
 				},
 			});
-			set({ sessionId: null, profile: null });
+			set({ sessionId: null, profile: null, status: "unauthenticated" });
 			await SecureStore.deleteItemAsync("sessionId");
 		},
 		login: async (session?: string) => {
 			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
+			console.log("oldSessionId", oldSessionId);
 
 			if (!oldSessionId) {
 				set({ status: "unauthenticated" });
 				return;
 			}
 
-			const res = await fetch(`${env.SITE_URL}/api/auth/refresh?sessionId=${oldSessionId}`);
+			const res = await fetch(`${env.SITE_URL}/api/auth/me?sessionId=${oldSessionId}`);
 			const data = await res.json();
 			const parsedData = z
 				.object({
-					sessionId: z.string(),
-					profile: ProfileSchema.nullish(),
+					user: UserSchema.extend({ profile: ProfileSchema.nullish() }).nullable(),
 				})
 				.safeParse(
 					SuperJSON.deserialize({
 						json: data,
 						meta: {
 							values: {
-								"profile.createdAt": ["Date"],
-								"profile.updatedAt": ["Date"],
+								"user.profile.createdAt": ["Date"],
+								"user.profile.updatedAt": ["Date"],
 							},
 						},
 					})
 				);
 
-			if (parsedData.error) {
+			if (parsedData.error || !parsedData.data.user) {
 				get().logout();
 			} else {
-				get().setSessionId(parsedData.data.sessionId);
-				if (parsedData.data.profile) {
-					get().setProfile(parsedData.data.profile);
+				get().setSessionId(oldSessionId);
+				if (parsedData.data.user.profile) {
+					get().setProfile(parsedData.data.user.profile);
 					set({ status: "authenticated" });
 				} else {
 					set({ status: "needsonboarding" });
@@ -85,10 +85,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const store = useRef(createAuthStore()).current;
 	const login = useStore(store, (s) => s.login);
 	const status = useStore(store, (s) => s.status);
+	const sessionId = useStore(store, (s) => s.sessionId);
 
 	useEffect(() => {
 		login();
 	}, [login]);
+
+	useEffect(() => {
+		console.log("AuthContext.Provider", sessionId, status);
+	}, [sessionId, status]);
 
 	if (status === "loading") {
 		return null;

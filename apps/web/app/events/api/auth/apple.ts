@@ -1,17 +1,18 @@
 import { decodeBase64IgnorePadding } from "@oslojs/encoding";
-import { setOAuthCookies, validateState } from "@recordscratch/auth";
-import { getDB } from "@recordscratch/db";
-import { Apple, generateState } from "arctic";
-import { getQuery, sendRedirect } from "vinxi/http";
+import {
+	handleUser,
+	setOAuthCookies,
+	validateState,
+} from "@recordscratch/auth";
+import { Apple, decodeIdToken, generateState } from "arctic";
+import { H3Event, getQuery, sendRedirect } from "vinxi/http";
 import { Route } from "..";
 
-const getApple = (expo: string) => {
-	const certificate = `-----BEGIN PRIVATE KEY-----
-TmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXANCk5ldmVyIGdvbm5hIGxldCB5b3UgZG93bg0KTmV2ZXIgZ29ubmEgcnVuIGFyb3VuZCBhbmQgZGVzZXJ0IHlvdQ0KTmV2ZXIgZ29ubmEgbWFrZSB5b3UgY3J5DQpOZXZlciBnb25uYSBzYXkgZ29vZGJ5ZQ0KTmV2ZXIgZ29ubmEgdGVsbCBhIGxpZSBhbmQgaHVydCB5b3U
------END PRIVATE KEY-----`;
+const getApple = (event: H3Event) => {
+	const expoAddress = getQuery(event).expoAddress as string;
 	const privateKey = decodeBase64IgnorePadding(
-		certificate
-			.replace("-----BEGIN PRIVATE KEY-----", "")
+		process.env
+			.APPLE_PRIVATE_KEY!.replace("-----BEGIN PRIVATE KEY-----", "")
 			.replace("-----END PRIVATE KEY-----", "")
 			.replaceAll("\r", "")
 			.replaceAll("\n", "")
@@ -22,7 +23,7 @@ TmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXANCk5ldmVyIGdvbm5hIGxldCB5b3UgZG93bg0KTmV2ZXIgZ29u
 		process.env.APPLE_TEAM_ID!,
 		process.env.APPLE_KEY_ID!,
 		privateKey,
-		`${process.env.CF_PAGES_URL}/api/auth/apple/callback${expo ? `?expoAddress=${expo}` : ""}`
+		`${process.env.CF_PAGES_URL}/api/auth/apple/callback${expoAddress ? `?expoAddress=${expoAddress}` : ""}`
 	);
 };
 
@@ -30,11 +31,11 @@ export const appleRoutes: Route[] = [
 	[
 		"/auth/apple",
 		async (event) => {
-			const query = getQuery(event);
-			const apple = getApple(query.expoAddress as string);
+			const apple = getApple(event);
 
 			const state = generateState();
-			const url = apple.createAuthorizationURL(state, ["name", "email"]);
+			const url = apple.createAuthorizationURL(state, ["email"]);
+			url.searchParams.set("response_mode", "form_post");
 
 			setOAuthCookies(event, state);
 
@@ -44,11 +45,16 @@ export const appleRoutes: Route[] = [
 	[
 		"/auth/apple/callback",
 		async (event) => {
-			const db = getDB();
-			const query = getQuery(event);
-			const apple = getApple(query.expoAddress as string);
+			const apple = getApple(event);
 
-			const { code } = validateState(event, false);
+			const { code, formData } = await validateState(event, false);
+
+			const email = (formData.get("email") as string) ?? undefined;
+
+			const tokens = await apple.validateAuthorizationCode(code);
+			const { sub } = decodeIdToken(tokens.idToken()) as { sub: string };
+
+			return handleUser(event, { appleId: sub, email });
 		},
 	],
 ];

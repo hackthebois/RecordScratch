@@ -2,7 +2,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn, useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";
-import { OnboardSchema, handleRegex } from "@recordscratch/types";
+import { OnboardSchema } from "@recordscratch/types";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { UserAvatar } from "~/components/UserAvatar";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
 
 const SlideWrapper = ({
 	page,
@@ -43,6 +44,7 @@ function Onboard() {
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+	const status = useAuth((s) => s.status);
 	const form = useForm<Onboard>({
 		resolver: zodResolver(OnboardSchema),
 		mode: "onChange",
@@ -54,7 +56,6 @@ function Onboard() {
 		},
 	});
 	const { name, image, handle, bio } = form.watch();
-	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
 	useEffect(() => {
 		if (!needsOnboarding) {
@@ -108,18 +109,18 @@ function Onboard() {
 		}
 	};
 
-	useEffect(() => {
-		if (handleExists) {
-			form.setError("handle", {
-				type: "validate",
-				message: "Handle already exists",
-			});
-		} else {
-			if (form.formState.errors.handle?.message === "Handle already exists") {
-				form.clearErrors("handle");
-			}
-		}
-	}, [form, handleExists]);
+	// useEffect(() => {
+	// 	if (handleExists) {
+	// 		form.setError("handle", {
+	// 			type: "validate",
+	// 			message: "Handle already exists",
+	// 		});
+	// 	} else {
+	// 		if (form.formState.errors.handle?.message === "Handle already exists") {
+	// 			form.clearErrors("handle");
+	// 		}
+	// 	}
+	// }, [form, handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
 		if (image) {
@@ -151,20 +152,20 @@ function Onboard() {
 		});
 	};
 
-	useEffect(() => {
-		if (!form.getFieldState("handle").isTouched) {
-			form.setValue(
-				"handle",
-				name?.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "").replace(" ", "")
-			);
-		}
-	}, [form, name]);
+	// useEffect(() => {
+	// 	if (!form.getFieldState("handle").isTouched) {
+	// 		form.setValue(
+	// 			"handle",
+	// 			name?.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "").replace(" ", "")
+	// 		);
+	// 	}
+	// }, [form, name]);
 
-	useEffect(() => {
-		if (page === 1) {
-			form.setFocus("name");
-		}
-	}, [form, page]);
+	// useEffect(() => {
+	// 	if (page === 1) {
+	// 		form.setFocus("name");
+	// 	}
+	// }, [form, page]);
 
 	const pageValid = (pageIndex: number) => {
 		if (pageIndex === 0) {
@@ -194,7 +195,7 @@ function Onboard() {
 						title: ``,
 					}}
 				/>
-				<FontAwesome6 name="compact-disc" size={24} color="black" />
+				{/* <FontAwesome6 name="compact-disc" size={24} color="black" /> */}
 			</View>
 		);
 	}
@@ -359,13 +360,15 @@ function Onboard() {
 					}}
 					disabled={!pageValid(page)}
 				>
-					{page === 2 && !bio
-						? "Skip"
-						: page === 3 && !image
-							? `Skip`
-							: page === 3
-								? "Finish"
-								: "Next"}
+					<Text>
+						{page === 2 && !bio
+							? "Skip"
+							: page === 3 && !image
+								? `Skip`
+								: page === 3
+									? "Finish"
+									: "Next"}
+					</Text>
 				</Button>
 			</View>
 		</View>

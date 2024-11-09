@@ -1,10 +1,9 @@
 import { Stack, useRouter } from "expo-router";
-import { useColorScheme } from "~/lib/useColorScheme";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/auth";
-import * as SecureStore from "expo-secure-store";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 const SettingsPage = () => {
 	const router = useRouter();

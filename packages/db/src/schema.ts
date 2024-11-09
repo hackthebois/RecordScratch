@@ -31,10 +31,9 @@ export const users = pgTable("users", {
 	id: text("id").primaryKey(),
 	email: varchar("email", {
 		length: 254,
-	})
-		.unique()
-		.notNull(),
+	}),
 	googleId: text("google_id").unique(),
+	appleId: text("apple_id").unique(),
 });
 
 export const usersRelations = relations(users, ({ one }) => ({
