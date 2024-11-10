@@ -15,6 +15,7 @@ type Auth = {
 	login: (session?: string) => Promise<void>;
 	setSessionId: (sessionId: string) => Promise<void>;
 	setProfile: (profile: Profile) => void;
+	setStatus: (status: Auth["status"]) => void;
 };
 
 type AuthStore = ReturnType<typeof createAuthStore>;
@@ -27,6 +28,7 @@ export const createAuthStore = () =>
 			await SecureStore.setItemAsync("sessionId", sessionId);
 			set({ sessionId });
 		},
+		setStatus: (status) => set({ status }),
 		profile: null,
 		setProfile: (profile) => set({ profile }),
 		logout: async () => {
@@ -40,7 +42,6 @@ export const createAuthStore = () =>
 		},
 		login: async (session?: string) => {
 			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
-			console.log("oldSessionId", oldSessionId);
 
 			if (!oldSessionId) {
 				set({ status: "unauthenticated" });
@@ -64,6 +65,8 @@ export const createAuthStore = () =>
 						},
 					})
 				);
+
+			console.log(parsedData.error, parsedData.data);
 
 			if (parsedData.error || !parsedData.data.user) {
 				get().logout();

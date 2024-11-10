@@ -9,14 +9,14 @@
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
-		"drizzle-kit": "^0.24.2"
+		"drizzle-kit": "^0.28.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5.4.2"
 	},
 	"dependencies": {
 		"@neondatabase/serverless": "^0.9.0",
-		"drizzle-orm": "^0.33.0",
-		"pg": "^8.11.5"
+		"drizzle-orm": "^0.36.1",
+		"pg": "^8.13.1"
 	}
 }

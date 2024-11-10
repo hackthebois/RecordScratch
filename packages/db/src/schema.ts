@@ -82,9 +82,6 @@ export const profileRelations = relations(profile, ({ one, many }) => ({
 		fields: [profile.userId],
 		references: [users.id],
 	}),
-	profile: many(ratings, {
-		relationName: "profile",
-	}),
 	follower: many(followers, {
 		relationName: "follower",
 	}),

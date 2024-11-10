@@ -35,11 +35,10 @@ const AuthPage = () => {
 				style={{
 					width: 150,
 					height: 150,
-					borderRadius: 75,
 				}}
 			/>
-			<Text variant="h1" className="text-center">
-				Welcome to RecordScratch!
+			<Text variant="h1" className="text-center text-4xl">
+				Welcome to RecordScratch
 			</Text>
 			<Pressable
 				onPress={async () => await handlePressButtonAsync("google")}

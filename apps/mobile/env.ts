@@ -6,8 +6,8 @@ let env = {
 	SCHEME: "recordscratch://",
 	SITE_URL:
 		Platform.OS === "android"
-			? "https://8931-184-148-99-76.ngrok-free.app"
-			: "https://8931-184-148-99-76.ngrok-free.app",
+			? "https://ced1-184-148-99-76.ngrok-free.app"
+			: "https://ced1-184-148-99-76.ngrok-free.app",
 };
 
 if (Updates.channel === "production") {

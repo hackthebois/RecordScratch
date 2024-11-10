@@ -39,6 +39,8 @@ export const appleRoutes: Route[] = [
 
 			setOAuthCookies(event, state);
 
+			console.log(url.toString());
+
 			sendRedirect(event, url.toString());
 		},
 	],

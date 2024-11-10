@@ -4,6 +4,8 @@ import { useAuth } from "~/lib/auth";
 const IndexPage = () => {
 	const status = useAuth((s) => s.status);
 
+	console.log(status);
+
 	if (status === "unauthenticated") {
 		return <Redirect href="(auth)/signin" />;
 	}
