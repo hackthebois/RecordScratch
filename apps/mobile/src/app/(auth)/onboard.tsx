@@ -226,12 +226,10 @@ function Onboard() {
 						<Text className="text-center text-4xl" variant="h1">
 							Welcome to RecordScratch
 						</Text>
-						<Text className="mt-4 text-center text-gray-700">
+						<Text className="mt-4 text-center">
 							Before you get started we have to set up your profile.
 						</Text>
-						<Text className="mt-1 text-center text-gray-700">
-							Press next below to get started.
-						</Text>
+						<Text className="mt-1 text-center">Press next below to get started.</Text>
 					</SlideWrapper>
 				);
 			case 1:

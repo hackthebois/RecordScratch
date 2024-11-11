@@ -19,6 +19,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		supportsTablet: true,
 		bundleIdentifier: "app.recordscratch.ios",
 		usesAppleSignIn: true,
+		entitlements: {
+			"com.apple.developer.applesignin": ["Default"],
+		},
 	},
 	android: {
 		adaptiveIcon: {

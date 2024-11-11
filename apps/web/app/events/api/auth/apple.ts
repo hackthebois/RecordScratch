@@ -5,7 +5,8 @@ import {
 	validateState,
 } from "@recordscratch/auth";
 import { Apple, decodeIdToken, generateState } from "arctic";
-import { H3Event, getQuery, sendRedirect } from "vinxi/http";
+import { H3Event, getQuery, readBody, sendRedirect } from "vinxi/http";
+import { z } from "zod";
 import { Route } from "..";
 
 const getApple = (event: H3Event) => {
@@ -57,6 +58,27 @@ export const appleRoutes: Route[] = [
 			const { sub } = decodeIdToken(tokens.idToken()) as { sub: string };
 
 			return handleUser(event, { appleId: sub, email });
+		},
+	],
+	[
+		"/auth/apple/mobile/callback",
+		async (event) => {
+			const body = await readBody(event);
+
+			const { idToken, email } = z
+				.object({
+					idToken: z.string(),
+					email: z.string().optional(),
+				})
+				.parse(body);
+
+			const { sub } = decodeIdToken(idToken) as { sub: string };
+
+			return handleUser(event, {
+				appleId: sub,
+				email,
+				onReturn: "sessionId",
+			});
 		},
 	],
 ];

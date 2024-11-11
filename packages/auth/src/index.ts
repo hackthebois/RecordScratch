@@ -129,9 +129,10 @@ export const handleUser = async (
 		googleId?: string;
 		appleId?: string;
 		email?: string;
+		onReturn?: "redirect" | "sessionId";
 	}
 ) => {
-	const { googleId = "", appleId = "", email } = options;
+	const { googleId = "", appleId = "", email, onReturn = " redirect" } = options;
 	const db = getDB();
 	const query = getQuery(event);
 	let userId: string;
@@ -162,7 +163,11 @@ export const handleUser = async (
 	if (expoAddress) redirect = `${expoAddress}?session_id=${token}`;
 	else setSessionCookie(event, token);
 
-	return sendRedirect(event, redirect);
+	if (onReturn === "sessionId")
+		return {
+			sessionId: token,
+		};
+	else return sendRedirect(event, redirect);
 };
 
 export type SessionValidationResult =

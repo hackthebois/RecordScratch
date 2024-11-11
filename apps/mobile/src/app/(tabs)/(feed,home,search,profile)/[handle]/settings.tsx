@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
@@ -11,6 +12,7 @@ const SettingsPage = () => {
 	const logout = useAuth((s) => s.logout);
 	const { setColorScheme, colorScheme } = useColorScheme();
 	const utils = api.useUtils();
+	const queryClient = useQueryClient();
 
 	return (
 		<View className="p-4 gap-4">
@@ -28,13 +30,9 @@ const SettingsPage = () => {
 			<Button
 				variant="outline"
 				onPress={async () => {
-					logout()
-						.then(async () => {
-							await utils.invalidate();
-						})
-						.then(() => {
-							router.push("(auth)/signin");
-						});
+					await queryClient.cancelQueries();
+					router.navigate("(auth)/signin");
+					await logout();
 				}}
 			>
 				<Text>Sign out</Text>

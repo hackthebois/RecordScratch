@@ -1,9 +1,11 @@
+import * as AppleAuthentication from "expo-apple-authentication";
 import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import * as Browser from "expo-web-browser";
 import React from "react";
 import { Pressable, View } from "react-native";
+import { z } from "zod";
 import { Text } from "~/components/ui/text";
 import env from "~/env";
 import { useAuth } from "~/lib/auth";
@@ -15,7 +17,7 @@ const AuthPage = () => {
 	const router = useRouter();
 	const { colorScheme } = useColorScheme();
 
-	const handlePressButtonAsync = async (adapter: "google" | "apple") => {
+	const handlePressButtonAsync = async (adapter: "google") => {
 		const result = await Browser.openAuthSessionAsync(
 			`${env.SITE_URL}/api/auth/${adapter}?expoAddress=${env.SCHEME}`,
 			`${env.SCHEME}`
@@ -61,7 +63,35 @@ const AuthPage = () => {
 				<Text className="text-lg font-medium">Sign in with Google</Text>
 			</Pressable>
 			<Pressable
-				onPress={async () => await handlePressButtonAsync("apple")}
+				onPress={async () => {
+					try {
+						const credential = await AppleAuthentication.signInAsync({
+							requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
+						});
+						const { identityToken, email } = credential;
+
+						const res = await fetch(`${env.SITE_URL}/api/auth/apple/mobile/callback`, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+							},
+							body: JSON.stringify({
+								idToken: identityToken,
+								email: email ?? undefined,
+							}),
+						});
+						const { sessionId } = z
+							.object({
+								sessionId: z.string(),
+							})
+							.parse(await res.json());
+
+						await login(sessionId);
+						router.navigate("(tabs)/");
+					} catch (e) {
+						console.error(e);
+					}
+				}}
 				className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
 			>
 				<Image
