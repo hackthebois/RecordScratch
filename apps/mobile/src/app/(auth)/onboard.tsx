@@ -220,6 +220,7 @@ function Onboard() {
 							style={{
 								width: 150,
 								height: 150,
+								borderRadius: 9999,
 							}}
 						/>
 						<Text className="text-center text-4xl" variant="h1">

@@ -4,15 +4,16 @@ import { useRouter } from "expo-router";
 import * as Browser from "expo-web-browser";
 import React from "react";
 import { Pressable, View } from "react-native";
-// import googleLogo from "~/assets/google-logo.svg";
 import { Text } from "~/components/ui/text";
 import env from "~/env";
 import { useAuth } from "~/lib/auth";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
 	const login = useAuth((s) => s.login);
 	const router = useRouter();
+	const { colorScheme } = useColorScheme();
 
 	const handlePressButtonAsync = async (adapter: "google" | "apple") => {
 		const result = await Browser.openAuthSessionAsync(
@@ -28,6 +29,11 @@ const AuthPage = () => {
 		router.navigate("(tabs)/");
 	};
 
+	const appleLogo = {
+		light: require("../../../assets/apple_black.svg"),
+		dark: require("../../../assets/apple_white.svg"),
+	};
+
 	return (
 		<View className="flex-1 justify-center items-center gap-6">
 			<Image
@@ -35,6 +41,7 @@ const AuthPage = () => {
 				style={{
 					width: 150,
 					height: 150,
+					borderRadius: 9999,
 				}}
 			/>
 			<Text variant="h1" className="text-center text-4xl">
@@ -58,7 +65,8 @@ const AuthPage = () => {
 				className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
 			>
 				<Image
-					source={require(`../../../assets/apple_black.svg`)}
+					key={colorScheme}
+					source={colorScheme === "dark" ? appleLogo.dark : appleLogo.light}
 					style={{
 						width: 26,
 						height: 30,
