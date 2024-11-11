@@ -2,35 +2,36 @@ import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import * as Browser from "expo-web-browser";
-import React, { useEffect } from "react";
+import React from "react";
 import { Pressable, View } from "react-native";
-// import googleLogo from "~/assets/google-logo.svg";
 import { Text } from "~/components/ui/text";
 import env from "~/env";
 import { useAuth } from "~/lib/auth";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
-	const sessionId = useAuth((s) => s.sessionId);
 	const login = useAuth((s) => s.login);
 	const router = useRouter();
+	const { colorScheme } = useColorScheme();
 
-	useEffect(() => {
-		if (sessionId) {
-			router.navigate("(tabs)/(home)");
-		}
-	}, [sessionId]);
-
-	const handlePressButtonAsync = async () => {
+	const handlePressButtonAsync = async (adapter: "google" | "apple") => {
 		const result = await Browser.openAuthSessionAsync(
-			`${env.SITE_URL}/api/auth/google?expoAddress=${env.SCHEME}`,
-			`${env.SCHEME}}`
+			`${env.SITE_URL}/api/auth/${adapter}?expoAddress=${env.SCHEME}`,
+			`${env.SCHEME}`
 		);
 		if (result.type !== "success") return;
 		const url = Linking.parse(result.url);
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
+
 		await login(sessionId);
+		router.navigate("(tabs)/");
+	};
+
+	const appleLogo = {
+		light: require("../../../assets/apple_black.svg"),
+		dark: require("../../../assets/apple_white.svg"),
 	};
 
 	return (
@@ -40,14 +41,14 @@ const AuthPage = () => {
 				style={{
 					width: 150,
 					height: 150,
-					borderRadius: 75,
+					borderRadius: 9999,
 				}}
 			/>
-			<Text variant="h1" className="text-center">
-				Welcome to RecordScratch!
+			<Text variant="h1" className="text-center text-4xl">
+				Welcome to RecordScratch
 			</Text>
 			<Pressable
-				onPress={handlePressButtonAsync}
+				onPress={async () => await handlePressButtonAsync("google")}
 				className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
 			>
 				<Image
@@ -58,6 +59,20 @@ const AuthPage = () => {
 					}}
 				/>
 				<Text className="text-lg font-medium">Sign in with Google</Text>
+			</Pressable>
+			<Pressable
+				onPress={async () => await handlePressButtonAsync("apple")}
+				className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
+			>
+				<Image
+					key={colorScheme}
+					source={colorScheme === "dark" ? appleLogo.dark : appleLogo.light}
+					style={{
+						width: 26,
+						height: 30,
+					}}
+				/>
+				<Text className="text-lg font-medium">Sign in with Apple</Text>
 			</Pressable>
 		</View>
 	);

@@ -1,66 +1,46 @@
-import { getLucia } from "@recordscratch/auth";
-import { getDB, sessions, users } from "@recordscratch/db";
+import {
+	invalidateSession,
+	setSessionCookie,
+	validateSessionToken,
+} from "@recordscratch/auth";
+import { getDB, users } from "@recordscratch/db";
 import { eq } from "drizzle-orm";
-import { getCookie, getHeader, getQuery, setCookie } from "vinxi/http";
+import { getCookie, getHeader, getQuery } from "vinxi/http";
 import { Route } from "..";
 
 export const authRoutes: Route[] = [
 	[
-		"/auth/refresh",
+		"/auth/me",
 		async (event) => {
 			const db = getDB();
-			const lucia = getLucia();
 			const query = getQuery(event);
 			const sessionId = query.sessionId as string;
 
-			if (!sessionId) return;
-			const googleId =
-				(
-					await db
-						.select({ googleId: users.googleId })
-						.from(sessions)
-						.innerJoin(users, eq(users.id, sessions.userId))
-						.where(eq(sessions.id, sessionId))
-				)[0]?.googleId || null;
+			const { user } = await validateSessionToken(sessionId);
 
-			if (!googleId) return;
-
-			await lucia.invalidateSession(sessionId);
+			if (!user) {
+				return { user: null };
+			}
 
 			const existingUser = await db.query.users.findFirst({
-				where: eq(users.googleId, googleId),
+				where: eq(users.id, user.id),
 				with: {
 					profile: true,
 				},
 			});
 
-			const userId = existingUser!.id;
-			const email = existingUser!.email;
-
-			const session = await lucia.createSession(userId, {
-				email,
-				googleId,
-			});
-
-			return { sessionId: session.id, profile: existingUser!.profile };
+			return { user: existingUser };
 		},
 	],
 	[
 		"/auth/signout",
 		async (event) => {
-			const lucia = getLucia();
 			const session =
 				getHeader(event, "Authorization") ??
-				getCookie(event, "auth_session");
+				getCookie(event, "session");
 			if (!session) return;
-			const blankCookie = lucia.createBlankSessionCookie();
-			setCookie(
-				event,
-				blankCookie.name,
-				blankCookie.value,
-				blankCookie.attributes
-			);
-			await lucia.invalidateSession(session);
+			setSessionCookie(event, undefined);
+			await invalidateSession(session);
 			return { success: true };
 		},
 	],

@@ -177,11 +177,18 @@ export const profilesRouter = router({
 	create: protectedProcedure
 		.input(CreateProfileSchema)
 		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
-			await db.insert(profile).values({ ...input, userId });
+			const newProfile = await db
+				.insert(profile)
+				.values({
+					...input,
+					userId,
+				})
+				.returning();
 			posthog("profile_created", {
 				distinctId: userId,
 				properties: input,
 			});
+			return newProfile[0]!;
 		}),
 	update: protectedProcedure
 		.input(UpdateProfileSchema)

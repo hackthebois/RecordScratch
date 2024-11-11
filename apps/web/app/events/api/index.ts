@@ -5,6 +5,7 @@ import {
 	getRequestURL,
 } from "vinxi/http";
 import { authRoutes } from "./auth";
+import { appleRoutes } from "./auth/apple";
 import { googleRoutes } from "./auth/google";
 
 // eslint-disable-next-line no-unused-vars
@@ -12,7 +13,11 @@ export type Route = [string, (event: H3Event<EventHandlerRequest>) => unknown];
 
 export type RouteMap = Map<Route[0], Route[1]>;
 
-const routes: RouteMap = new Map([...authRoutes, ...googleRoutes]);
+const routes: RouteMap = new Map([
+	...authRoutes,
+	...googleRoutes,
+	...appleRoutes,
+]);
 
 export default eventHandler(async (event) => {
 	const url = getRequestURL(event);

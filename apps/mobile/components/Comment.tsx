@@ -65,7 +65,7 @@ export const Comment = ({
 		<View className="p-4 gap-4">
 			<Link href={`/${String(profile.handle)}`} asChild>
 				<Pressable className="flex flex-row flex-wrap items-center gap-2">
-					<UserAvatar size={40} imageUrl={getImageUrl(profile)} />
+					<UserAvatar imageUrl={getImageUrl(profile)} />
 					<Text className="text-lg">{profile.name}</Text>
 					<Text className="text-left text-muted-foreground text-lg">
 						@{profile.handle} • {timeAgo(updatedAt)}

@@ -1,48 +1,63 @@
-import { FontAwesome6 } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn, useDebounce } from "@recordscratch/lib";
+import { useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";
 import { OnboardSchema, handleRegex } from "@recordscratch/types";
+import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, router } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { TextInput, View } from "react-native";
+import { ActivityIndicator, TextInput, View } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { UserAvatar } from "~/components/UserAvatar";
 import { Button } from "~/components/ui/button";
+import { Pill } from "~/components/ui/pill";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
+import { useAuth } from "~/lib/auth";
+import { AtSign } from "~/lib/icons/AtSign";
 
 const SlideWrapper = ({
 	page,
 	pageIndex,
 	children,
+	title,
 }: {
 	page: number;
 	pageIndex: number;
+	title?: string;
 	children: React.ReactNode;
 }) => {
+	useEffect(() => {
+		console.log(page, pageIndex);
+	}, []);
 	return (
-		<View
-			className={cn(
-				"flex-col items-center p-4",
-				page === pageIndex
-					? "duration-1000 animate-in fade-in"
-					: "duration-1000 animate-out fade-out",
-				page === pageIndex ? "flex" : "hidden"
-			)}
+		<Animated.View
+			className={"flex-col w-full items-center p-4 gap-4"}
+			entering={FadeIn}
+			exiting={FadeOut}
 		>
+			{page !== 0 ? <Pill>STEP {page}/3</Pill> : null}
+			{title ? (
+				<Text className="my-8" variant="h1">
+					{title}
+				</Text>
+			) : null}
 			{children}
-		</View>
+		</Animated.View>
 	);
 };
 
 const onInvalid = (errors: unknown) => console.error(errors);
 
 function Onboard() {
+	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+	const status = useAuth((s) => s.status);
+	const setStatus = useAuth((s) => s.setStatus);
+	const setProfile = useAuth((s) => s.setProfile);
 	const form = useForm<Onboard>({
 		resolver: zodResolver(OnboardSchema),
 		mode: "onChange",
@@ -54,18 +69,19 @@ function Onboard() {
 		},
 	});
 	const { name, image, handle, bio } = form.watch();
-	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
 	useEffect(() => {
-		if (!needsOnboarding) {
-			router.replace("/");
+		if (status !== "needsonboarding") {
+			router.replace("(tabs)/");
 		}
-	}, [needsOnboarding, router]);
+	}, [status, router]);
 
-	const { mutate: createProfile, isPending } = api.profiles.create.useMutation({
-		onSuccess: () => {
+	const { mutate: createProfile } = api.profiles.create.useMutation({
+		onSuccess: (profile) => {
 			utils.profiles.me.invalidate();
-			utils.profiles.needsOnboarding.invalidate();
+			setProfile(profile);
+			router.navigate("(tabs)/");
+			setStatus("authenticated");
 		},
 	});
 	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
@@ -89,8 +105,6 @@ function Onboard() {
 		if (!result.canceled && result.assets && result.assets.length > 0) {
 			// ImagePicker saves the taken photo to disk and returns a local URI to it
 			let localUri = result.assets[0]!.uri ?? "";
-			setImageUrl(result.assets[0]!.uri);
-
 			let filename = localUri.split("/").pop() ?? "";
 
 			// Infer the type of the image
@@ -109,6 +123,12 @@ function Onboard() {
 	};
 
 	useEffect(() => {
+		if (image && image instanceof File) {
+			setImageUrl(URL.createObjectURL(image));
+		}
+	}, [image]);
+
+	useEffect(() => {
 		if (handleExists) {
 			form.setError("handle", {
 				type: "validate",
@@ -122,6 +142,7 @@ function Onboard() {
 	}, [form, handleExists]);
 
 	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
+		setLoading(true);
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,
@@ -134,12 +155,6 @@ function Onboard() {
 				headers: {
 					"Content-Type": image?.type,
 				},
-			});
-			createProfile({
-				name,
-				handle,
-				imageUrl: url,
-				bio: bio ?? null,
 			});
 		}
 
@@ -178,170 +193,160 @@ function Onboard() {
 				handle?.length > 0
 			);
 		} else if (pageIndex === 2) {
-			return true;
+			return !form.getFieldState("bio").invalid;
 		} else if (pageIndex === 3) {
-			return true;
+			return !form.getFieldState("image").invalid;
 		} else {
 			return true;
 		}
 	};
 
-	if (isPending) {
+	if (loading) {
 		return (
 			<View className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
-				<Stack.Screen
-					options={{
-						title: ``,
-					}}
-				/>
-				<FontAwesome6 name="compact-disc" size={24} color="black" />
+				<ActivityIndicator size="large" className="text-muted-foreground" />
+				<Text className="mt-4 text-muted-foreground">Creating your account</Text>
 			</View>
 		);
 	}
 
+	const renderPage = (page: number) => {
+		switch (page) {
+			case 0:
+				return (
+					<SlideWrapper page={page} pageIndex={0} key={0}>
+						<Image
+							source={require("../../../assets/icon.png")}
+							style={{
+								width: 150,
+								height: 150,
+								borderRadius: 9999,
+							}}
+						/>
+						<Text className="text-center text-4xl" variant="h1">
+							Welcome to RecordScratch
+						</Text>
+						<Text className="mt-4 text-center text-gray-700">
+							Before you get started we have to set up your profile.
+						</Text>
+						<Text className="mt-1 text-center text-gray-700">
+							Press next below to get started.
+						</Text>
+					</SlideWrapper>
+				);
+			case 1:
+				return (
+					<SlideWrapper page={page} pageIndex={1} title="Pick a name" key={1}>
+						<Controller
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<View className="relative self-stretch">
+									<TextInput
+										{...field}
+										placeholder="Name"
+										className="self-stretch text-foreground border-border border rounded-md px-4 py-3"
+										autoComplete="off"
+										onChangeText={field.onChange}
+									/>
+									{form.formState.errors.name && (
+										<Text className="mt-2 text-destructive">
+											{form.formState.errors.name.message}
+										</Text>
+									)}
+								</View>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="handle"
+							render={({ field }) => (
+								<View className="relative self-stretch">
+									<AtSign
+										className="absolute left-3 top-[11px] text-muted-foreground text-lg"
+										size={16}
+									/>
+									<TextInput
+										{...field}
+										placeholder="Handle"
+										className="self-stretch text-foreground border-border border rounded-md pl-9 pr-4 py-3"
+										autoComplete="off"
+										onChangeText={field.onChange}
+									/>
+									{form.formState.errors.handle && (
+										<Text className="mt-2 text-destructive">
+											{form.formState.errors.handle.message}
+										</Text>
+									)}
+								</View>
+							)}
+						/>
+					</SlideWrapper>
+				);
+			case 2:
+				return (
+					<SlideWrapper page={page} pageIndex={2} title="Describe yourself" key={2}>
+						<Controller
+							control={form.control}
+							name="bio"
+							render={({ field }) => (
+								<View className="self-stretch">
+									<TextInput
+										{...field}
+										placeholder="Bio"
+										className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
+										multiline={true}
+										autoComplete="off"
+										onChangeText={field.onChange}
+									/>
+									{form.formState.errors.bio && (
+										<Text className="mt-2 text-destructive">
+											{form.formState.errors.bio.message}
+										</Text>
+									)}
+								</View>
+							)}
+						/>
+					</SlideWrapper>
+				);
+			case 3:
+				return (
+					<SlideWrapper page={page} pageIndex={3} title="Image" key={3}>
+						<UserAvatar imageUrl={imageUrl} size={200} />
+						<Controller
+							control={form.control}
+							name="image"
+							render={({ field: { onChange } }) => (
+								<View>
+									<Button
+										variant="secondary"
+										onPress={() => handleImagePick(onChange)}
+										className="mt-8"
+									>
+										<Text>Pick an image</Text>
+									</Button>
+									{form.formState.errors.image && (
+										<Text
+											style={{
+												color: "red",
+												marginTop: 5,
+												textAlign: "center",
+											}}
+										>
+											{`${form.formState.errors.image.message}`}
+										</Text>
+									)}
+								</View>
+							)}
+						/>
+					</SlideWrapper>
+				);
+		}
+	};
+
 	return (
 		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 16 }}>
-			<Stack.Screen
-				options={{
-					title: ``,
-				}}
-			/>
-			<SlideWrapper page={page} pageIndex={0}>
-				<FontAwesome6 name="compact-disc" size={200} />
-				<Text className="mt-12 text-center w-full" variant="h1">
-					Welcome to RecordScratch!
-				</Text>
-				<Text className="mt-4 text-center text-gray-700">
-					Before you get started we have to set up your profile.
-				</Text>
-				<Text className="mt-1 text-center text-gray-700">
-					Press next below to get started.
-				</Text>
-			</SlideWrapper>
-			<SlideWrapper page={page} pageIndex={1}>
-				<Text className="border border-gray-300 p-2 rounded-lg">STEP 1/3</Text>
-				<Text className="mt-8" variant="h1">
-					Pick a name
-				</Text>
-				<Controller
-					control={form.control}
-					name="name"
-					render={({ field }) => (
-						<View className="mt-8 w-full">
-							<View className="flex flex-row items-center border border-gray-300 rounded-md w-full">
-								<TextInput
-									{...field}
-									style={{
-										flexDirection: "row",
-										alignItems: "center",
-										marginLeft: 5,
-										padding: 5,
-									}}
-									placeholder="Name"
-									className=" w-96 text-foreground"
-									autoComplete="off"
-									onChangeText={field.onChange}
-								/>
-							</View>
-							{form.formState.errors.name && (
-								<Text style={{ color: "red", marginTop: 2 }}>
-									{form.formState.errors.name.message}
-								</Text>
-							)}
-						</View>
-					)}
-				/>
-				<Controller
-					control={form.control}
-					name="handle"
-					render={({ field }) => (
-						<View className="mt-2 w-full">
-							<View className="flex flex-row items-center border border-gray-300 rounded-md w-full">
-								<FontAwesome6 name="at" size={15} color="gray" className="ml-2" />
-								<TextInput
-									{...field}
-									style={{
-										flexDirection: "row",
-										alignItems: "center",
-										padding: 5,
-									}}
-									placeholder=" Handle"
-									className="w-[22.75rem] text-foreground"
-									autoComplete="off"
-									onChangeText={field.onChange}
-								/>
-							</View>
-							{form.formState.errors.handle && (
-								<Text style={{ color: "red", marginTop: 2 }}>
-									{form.formState.errors.handle.message}
-								</Text>
-							)}
-						</View>
-					)}
-				/>
-			</SlideWrapper>
-			<SlideWrapper page={page} pageIndex={2}>
-				<Text className="border border-gray-300 p-2 rounded-lg">STEP 2/3</Text>
-				<Text className="mt-8" variant="h1">
-					Describe yourself
-				</Text>
-				<Controller
-					control={form.control}
-					name="bio"
-					render={({ field }) => (
-						<View className="mt-2 w-full">
-							<View className="flex flex-row items-center border border-gray-300 rounded-md w-full mt-4">
-								<TextInput
-									{...field}
-									style={{
-										height: 150,
-										textAlignVertical: "top",
-										marginLeft: 10,
-										marginTop: 10,
-									}}
-									placeholder="Bio"
-									className="w-[23rem] text-start text-foreground"
-									multiline={true}
-									autoComplete="off"
-									onChangeText={field.onChange}
-								/>
-							</View>
-							{form.formState.errors.bio && (
-								<Text style={{ color: "red", marginTop: 2 }}>
-									{form.formState.errors.bio.message}
-								</Text>
-							)}
-						</View>
-					)}
-				/>
-			</SlideWrapper>
-			<SlideWrapper page={page} pageIndex={3}>
-				<Text className="border border-gray-300 p-2 rounded-lg">STEP 3/3</Text>
-				<Text className="my-8" variant="h1">
-					Image
-				</Text>
-				<UserAvatar imageUrl={imageUrl} size={200} />
-				<Controller
-					control={form.control}
-					name="image"
-					render={({ field: { onChange } }) => (
-						<View>
-							<Button
-								variant="secondary"
-								onPress={() => handleImagePick(onChange)}
-								className="mt-8"
-							>
-								<Text>Pick an image</Text>
-							</Button>
-							{form.formState.errors.image && (
-								<Text style={{ color: "red", marginTop: 5, textAlign: "center" }}>
-									{`${form.formState.errors.image.message}`}
-								</Text>
-							)}
-						</View>
-					)}
-				/>
-			</SlideWrapper>
+			{renderPage(page)}
 			<View className="mt-8 flex flex-row gap-4">
 				{page !== 0 && (
 					<Button variant="secondary" onPress={() => setPage((page) => page - 1)}>
@@ -359,13 +364,15 @@ function Onboard() {
 					}}
 					disabled={!pageValid(page)}
 				>
-					{page === 2 && !bio
-						? "Skip"
-						: page === 3 && !image
-							? `Skip`
-							: page === 3
-								? "Finish"
-								: "Next"}
+					<Text>
+						{page === 2 && !bio
+							? "Skip"
+							: page === 3 && !image
+								? `Skip`
+								: page === 3
+									? "Finish"
+									: "Next"}
+					</Text>
 				</Button>
 			</View>
 		</View>

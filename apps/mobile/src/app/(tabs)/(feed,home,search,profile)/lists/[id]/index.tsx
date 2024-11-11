@@ -61,7 +61,7 @@ const ListPage = () => {
 						}}
 					>
 						<View className="flex flex-row items-center gap-2 w-full">
-							<UserAvatar imageUrl={getImageUrl(userProfile)} size={40} />
+							<UserAvatar imageUrl={getImageUrl(userProfile)} />
 							<Text className="flex text-lg">{userProfile.name}</Text>
 						</View>
 					</Link>
