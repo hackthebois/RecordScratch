@@ -73,7 +73,7 @@ export function generateId(length: number): string {
 
 export const setSessionCookie = (event: H3Event, token: string | undefined): void => {
 	if (token) {
-		setCookie("session", token, {
+		setCookie(event, "session", token, {
 			secure: process.env.NODE_ENV === "production",
 			httpOnly: true,
 			sameSite: "lax",
