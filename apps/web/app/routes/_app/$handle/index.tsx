@@ -86,9 +86,9 @@ const SignOutButton = () => {
 			variant="outline"
 			onClick={() => {
 				fetch("/api/auth/signout")
-					.then(() => {
+					.then(async () => {
 						posthog.reset();
-						apiUtils.invalidate();
+						await apiUtils.invalidate();
 					})
 					.then(() => {
 						router.navigate({
