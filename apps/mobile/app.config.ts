@@ -18,6 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	ios: {
 		supportsTablet: true,
 		bundleIdentifier: "app.recordscratch.ios",
+		usesAppleSignIn: true,
 	},
 	android: {
 		adaptiveIcon: {
@@ -27,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		package: "app.recordscratch.android",
 		versionCode: 1,
 	},
-	plugins: ["expo-router"],
+	plugins: ["expo-router", "expo-apple-authentication"],
 	experiments: {
 		tsconfigPaths: true,
 		typedRoutes: true,
