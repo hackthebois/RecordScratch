@@ -70,19 +70,21 @@ const RatingModal = () => {
 	});
 
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
-		onSuccess: () => {
-			router.back();
-		},
-		onSettled: () => {
-			utils.ratings.user.get.invalidate({
+		onSuccess: async () => {
+			await utils.ratings.user.get.invalidate({
 				resourceId: resource.resourceId,
 				userId,
 			});
-			utils.ratings.get.invalidate(resource);
+			await utils.ratings.get.invalidate({
+				resourceId: resource.resourceId,
+				category: resource.category,
+			});
+			router.back();
 		},
 	});
 
 	const onSubmit = async (rate: RateForm) => {
+		console.log("clearing rating", resource);
 		rateMutation(rate);
 	};
 
@@ -103,7 +105,7 @@ const RatingModal = () => {
 				}}
 			/>
 			<ScrollView
-				contentContainerClassName="p-4 gap-16 justify-between"
+				contentContainerClassName="p-4 justify-between"
 				automaticallyAdjustKeyboardInsets
 			>
 				{imageUrl ? (
@@ -122,7 +124,7 @@ const RatingModal = () => {
 						]}
 					/>
 				) : null}
-				<View className="gap-4">
+				<View className="gap-4 mt-4">
 					<Text variant="h1" className="text-center">
 						{name}
 					</Text>
