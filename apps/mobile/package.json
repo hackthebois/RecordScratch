@@ -29,6 +29,7 @@
     "@rn-primitives/slot": "^1.0.3",
     "@rn-primitives/tabs": "^1.0.3",
     "@rn-primitives/types": "^1.0.3",
+    "@sentry/react-native": "~5.24.3",
     "@shopify/flash-list": "1.6.4",
     "@tanstack/react-query": "latest",
     "class-variance-authority": "^0.7.0",

@@ -5,6 +5,7 @@ import SuperJSON from "superjson";
 import { z } from "zod";
 import { createStore, useStore } from "zustand";
 import env from "~/env";
+import { catchError } from "./errors";
 
 // Define the context type
 type Auth = {
@@ -66,8 +67,6 @@ export const createAuthStore = () =>
 					})
 				);
 
-			console.log(parsedData.error, parsedData.data);
-
 			if (parsedData.error || !parsedData.data.user) {
 				get().logout();
 			} else {
@@ -88,15 +87,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const store = useRef(createAuthStore()).current;
 	const login = useStore(store, (s) => s.login);
 	const status = useStore(store, (s) => s.status);
-	const sessionId = useStore(store, (s) => s.sessionId);
 
 	useEffect(() => {
-		login();
+		login().catch(catchError);
 	}, [login]);
-
-	useEffect(() => {
-		console.log("AuthContext.Provider", sessionId, status);
-	}, [sessionId, status]);
 
 	if (status === "loading") {
 		return null;

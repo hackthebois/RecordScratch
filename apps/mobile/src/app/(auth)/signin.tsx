@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Text } from "~/components/ui/text";
 import env from "~/env";
 import { useAuth } from "~/lib/auth";
+import { catchError } from "~/lib/errors";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 Browser.maybeCompleteAuthSession();
@@ -27,7 +28,7 @@ const AuthPage = () => {
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
 
-		await login(sessionId);
+		await login(sessionId).catch(catchError);
 		router.navigate("(tabs)/");
 	};
 
@@ -86,7 +87,7 @@ const AuthPage = () => {
 							})
 							.parse(await res.json());
 
-						await login(sessionId);
+						await login(sessionId).catch(catchError);
 						router.navigate("(tabs)/");
 					} catch (e) {
 						console.error(e);

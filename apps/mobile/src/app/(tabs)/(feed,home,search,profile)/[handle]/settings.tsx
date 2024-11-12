@@ -3,15 +3,14 @@ import { Stack, useRouter } from "expo-router";
 import { View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
+import { catchError } from "~/lib/errors";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 const SettingsPage = () => {
 	const router = useRouter();
 	const logout = useAuth((s) => s.logout);
 	const { setColorScheme, colorScheme } = useColorScheme();
-	const utils = api.useUtils();
 	const queryClient = useQueryClient();
 
 	return (
@@ -32,7 +31,7 @@ const SettingsPage = () => {
 				onPress={async () => {
 					await queryClient.cancelQueries();
 					router.navigate("(auth)/signin");
-					await logout();
+					await logout().catch(catchError);
 				}}
 			>
 				<Text>Sign out</Text>

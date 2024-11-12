@@ -31,7 +31,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		package: "app.recordscratch.android",
 		versionCode: 1,
 	},
-	plugins: ["expo-router", "expo-apple-authentication"],
+	plugins: [
+		"expo-router",
+		"expo-apple-authentication",
+		[
+			"@sentry/react-native/expo",
+			{
+				organization: "recordscratch",
+				project: "recordscratch",
+			},
+		],
+	],
 	experiments: {
 		tsconfigPaths: true,
 		typedRoutes: true,
