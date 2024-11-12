@@ -5,6 +5,7 @@ import { View } from "react-native";
 import { Comment } from "~/components/Comment";
 import { Review } from "~/components/Review";
 import { api } from "~/lib/api";
+import { useRefreshByUser } from "~/lib/refresh";
 
 const RatingPage = () => {
 	const { id, handle } = useLocalSearchParams<{ id: string; handle: string }>();
@@ -15,10 +16,12 @@ const RatingPage = () => {
 		userId: profile!.userId,
 		resourceId: id!,
 	});
-	const [comments] = api.comments.list.useSuspenseQuery({
+	const [comments, { refetch }] = api.comments.list.useSuspenseQuery({
 		resourceId: id!,
 		authorId: profile!.userId,
 	});
+
+	const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch);
 
 	if (!profile || !rating) return <NotFoundScreen />;
 
@@ -37,6 +40,8 @@ const RatingPage = () => {
 					renderItem={({ item }) => <Comment comment={item} />}
 					ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 					estimatedItemSize={200}
+					refreshing={isRefetchingByUser}
+					onRefresh={refetchByUser}
 				/>
 			</View>
 		</>

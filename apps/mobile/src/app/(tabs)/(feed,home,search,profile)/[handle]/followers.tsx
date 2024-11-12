@@ -4,13 +4,17 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { ProfileItem } from "~/components/Item/ProfileItem";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
+import { useRefreshByUser } from "~/lib/refresh";
 
 const Followers = () => {
-	const { handle, type } = useLocalSearchParams<{ handle: string; type: string }>();
+	const { handle, type } = useLocalSearchParams<{
+		handle: string;
+		type: string;
+	}>();
 	const [tab, setTab] = useState(type ?? "followers");
 	const profile = useAuth((s) => s.profile);
 
@@ -18,24 +22,12 @@ const Followers = () => {
 
 	if (!userProfile) return <NotFoundScreen />;
 
-	const { data: followerProfiles } = api.profiles.followProfiles.useQuery(
-		{
-			profileId: userProfile.userId,
-			type: "followers",
-		},
-		{
-			enabled: tab === "followers",
-		}
-	);
-	const { data: followingProfiles } = api.profiles.followProfiles.useQuery(
-		{
-			profileId: userProfile.userId,
-			type: "following",
-		},
-		{
-			enabled: tab === "following",
-		}
-	);
+	const { data: followProfiles, refetch } = api.profiles.followProfiles.useQuery({
+		profileId: userProfile.userId,
+		type: tab === "followers" ? "followers" : "following",
+	});
+
+	const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
 
 	return (
 		<>
@@ -56,30 +48,18 @@ const Followers = () => {
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent value="followers" className="flex-1">
-					<FlashList
-						data={followerProfiles?.flatMap((item) => item.profile)}
-						renderItem={({ item }) => (
-							<ProfileItem profile={item} isUser={profile!.userId === item.userId} />
-						)}
-						estimatedItemSize={60}
-						ItemSeparatorComponent={() => <View className="h-3" />}
-						className="px-4"
-						contentContainerClassName="py-4"
-					/>
-				</TabsContent>
-				<TabsContent value="following" className="flex-1">
-					<FlashList
-						data={followingProfiles?.flatMap((item) => item.profile)}
-						renderItem={({ item }) => (
-							<ProfileItem profile={item} isUser={profile!.userId === item.userId} />
-						)}
-						estimatedItemSize={60}
-						ItemSeparatorComponent={() => <View className="h-3" />}
-						className="px-4"
-						contentContainerClassName="py-4"
-					/>
-				</TabsContent>
+				<FlashList
+					data={followProfiles?.flatMap((item) => item.profile)}
+					renderItem={({ item }) => (
+						<ProfileItem profile={item} isUser={profile!.userId === item.userId} />
+					)}
+					estimatedItemSize={60}
+					ItemSeparatorComponent={() => <View className="h-3" />}
+					className="px-4"
+					contentContainerClassName="py-4"
+					refreshing={isRefetchingByUser}
+					onRefresh={refetchByUser}
+				/>
 			</Tabs>
 		</>
 	);

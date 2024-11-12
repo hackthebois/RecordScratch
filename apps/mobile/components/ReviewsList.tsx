@@ -3,20 +3,24 @@ import { FlashList } from "@shopify/flash-list";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { api } from "~/lib/api";
+import { useRefreshByUser } from "~/lib/refresh";
 import { Review } from "./Review";
 
 export const ReviewsList = (
 	input: RouterInputs["ratings"]["feed"] & { ListHeader?: React.ReactNode }
 ) => {
 	const { ListHeader, ...queryInput } = input;
-	const { data, fetchNextPage, hasNextPage } = api.ratings.feed.useInfiniteQuery(
-		{
-			...queryInput,
-		},
-		{
-			getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
-		}
-	);
+	const { data, fetchNextPage, hasNextPage, refetch, isRefetching } =
+		api.ratings.feed.useInfiniteQuery(
+			{
+				...queryInput,
+			},
+			{
+				getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
+			}
+		);
+
+	const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
 
 	return (
 		<FlashList
@@ -35,6 +39,8 @@ export const ReviewsList = (
 					fetchNextPage();
 				}
 			}}
+			refreshing={isRefetchingByUser}
+			onRefresh={refetchByUser}
 			estimatedItemSize={380}
 		/>
 	);
