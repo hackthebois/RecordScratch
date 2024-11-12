@@ -7,8 +7,9 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, TextInput, View } from "react-native";
+import { ActivityIndicator, ScrollView, TextInput, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { UserAvatar } from "~/components/UserAvatar";
 import { Button } from "~/components/ui/button";
 import { Pill } from "~/components/ui/pill";
@@ -33,7 +34,7 @@ const SlideWrapper = ({
 	}, []);
 	return (
 		<Animated.View
-			className={"flex-col w-full items-center p-4 gap-4"}
+			className={"flex-col w-full items-center justify-center p-4 gap-4"}
 			entering={FadeIn}
 			exiting={FadeOut}
 		>
@@ -343,37 +344,43 @@ function Onboard() {
 	};
 
 	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 16 }}>
-			{renderPage(page)}
-			<View className="mt-8 flex flex-row gap-4">
-				{page !== 0 && (
-					<Button variant="secondary" onPress={() => setPage((page) => page - 1)}>
-						<Text>Back</Text>
+		<SafeAreaView style={{ flex: 1 }}>
+			<ScrollView
+				contentContainerClassName="items-center justify-center h-full"
+				automaticallyAdjustKeyboardInsets
+				keyboardShouldPersistTaps="handled"
+			>
+				{renderPage(page)}
+				<View className="mt-8 flex flex-row gap-4">
+					{page !== 0 && (
+						<Button variant="secondary" onPress={() => setPage((page) => page - 1)}>
+							<Text>Back</Text>
+						</Button>
+					)}
+					<Button
+						variant="secondary"
+						onPress={() => {
+							if (page === 3) {
+								form.handleSubmit(onSubmit, onInvalid)();
+							} else {
+								setPage((page) => page + 1);
+							}
+						}}
+						disabled={!pageValid(page)}
+					>
+						<Text>
+							{page === 2 && !bio
+								? "Skip"
+								: page === 3 && !image
+									? `Skip`
+									: page === 3
+										? "Finish"
+										: "Next"}
+						</Text>
 					</Button>
-				)}
-				<Button
-					variant="secondary"
-					onPress={() => {
-						if (page === 3) {
-							form.handleSubmit(onSubmit, onInvalid)();
-						} else {
-							setPage((page) => page + 1);
-						}
-					}}
-					disabled={!pageValid(page)}
-				>
-					<Text>
-						{page === 2 && !bio
-							? "Skip"
-							: page === 3 && !image
-								? `Skip`
-								: page === 3
-									? "Finish"
-									: "Next"}
-					</Text>
-				</Button>
-			</View>
-		</View>
+				</View>
+			</ScrollView>
+		</SafeAreaView>
 	);
 }
 
