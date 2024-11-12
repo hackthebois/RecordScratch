@@ -1,10 +1,11 @@
 import { Artist, cn } from "@recordscratch/lib";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { getQueryOptions } from "~/lib/deezer";
+import { Skeleton } from "../ui/skeleton";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -29,7 +30,7 @@ export const ArtistItem = ({
 	className?: string;
 	showType?: boolean;
 }) => {
-	const { data: artist } = useSuspenseQuery({
+	const { data: artist } = useQuery({
 		...getQueryOptions({
 			route: "/artist/{id}",
 			input: {
@@ -38,6 +39,31 @@ export const ArtistItem = ({
 		}),
 		initialData: initialArtist,
 	});
+
+	if (!artist) {
+		return (
+			<View
+				className={cn(
+					"flex items-center gap-4",
+					className,
+					direction === "vertical" ? "flex-col" : "flex-row"
+				)}
+			>
+				<Skeleton
+					className="relative min-w-[64px] rounded-full"
+					style={{
+						width: imageWidthAndHeight,
+						height: imageWidthAndHeight,
+					}}
+				/>
+				<View className="justify-center gap-1">
+					<Skeleton className="mb-1 h-4 w-32" />
+					{showType ? <Skeleton className="h-4 w-24" /> : null}
+				</View>
+			</View>
+		);
+	}
+
 	const artistImage = artist.picture_big;
 	const link = `/artists/${String(artist.id)}`;
 
