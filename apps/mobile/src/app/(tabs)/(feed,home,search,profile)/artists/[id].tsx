@@ -51,7 +51,7 @@ const ArtistPage = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-			<Stack.Screen options={{ title: artist.name }} />
+			<Stack.Screen />
 			<View className="flex-1">
 				<ScrollView>
 					<View className="flex flex-row mt-4 justify-center">

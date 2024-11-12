@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Metadata from "~/components/Metadata";
 import RateButton from "~/components/Rating/RateButton";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
+import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { getQueryOptions } from "~/lib/deezer";
 import { MessageSquareText } from "~/lib/icons/MessageSquareText";
@@ -42,7 +43,13 @@ const SongPage = () => {
 			<View className="flex flex-1">
 				<Stack.Screen
 					options={{
-						title: song.title,
+						headerRight: () => (
+							<Link href={`/albums/${album.id}`} asChild>
+								<Button variant="secondary" size={"sm"}>
+									<Text>Go to album</Text>
+								</Button>
+							</Link>
+						),
 					}}
 				/>
 				<ScrollView>
