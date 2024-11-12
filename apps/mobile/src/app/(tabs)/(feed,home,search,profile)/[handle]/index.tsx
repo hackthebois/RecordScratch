@@ -120,13 +120,13 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 		userId: profile.userId,
 	});
 
-	const tags = [`Streak: ${streak}`, `Likes: ${likes}`];
+	const tags = [`@${profile.handle}`, `Streak: ${streak}`, `Likes: ${likes}`];
 
 	return (
 		<View className="flex flex-1">
 			<Stack.Screen
 				options={{
-					title: profile.handle,
+					title: profile.name,
 					headerRight: () =>
 						isProfile ? (
 							<Link href={`(users)/settings`}>
@@ -143,7 +143,7 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 						<View className="flex flex-col items-center gap-4">
 							<View className="flex-row gap-4">
 								<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
-								<View className="items-start justify-center gap-2 flex-1">
+								<View className="items-start justify-center gap-3 flex-1">
 									<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
 										{tags
 											.filter((tag) => Boolean(tag))
