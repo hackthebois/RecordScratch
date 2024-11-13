@@ -2,7 +2,7 @@ import NotFoundScreen from "#/app/+not-found";
 import { ListWithResources } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import DistributionChart from "~/components/DistributionChart";
 import { FollowButton } from "~/components/Followers/FollowButton";
 import FollowerMenu from "~/components/Followers/FollowersMenu";
@@ -162,20 +162,22 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 							<FollowerMenu profileId={profile.userId} handleId={profile.handle} />
 						</View>
 					</View>
-					<View className="bg-secondary px-2 pt-1 rounded-xl">
-						<DistributionChart
-							distribution={values}
-							height={80}
-							onChange={(value) => {
-								router.push({
-									pathname: `/${profile.handle}/ratings`,
-									params: {
-										rating: value ? String(value) : undefined,
-									},
-								});
-							}}
-						/>
-					</View>
+					<Link href={`/${profile.handle}/ratings`} asChild>
+						<Pressable className="bg-secondary px-2 pt-1 rounded-xl">
+							<DistributionChart
+								distribution={values}
+								height={80}
+								onChange={(value) => {
+									router.push({
+										pathname: `/${profile.handle}/ratings`,
+										params: {
+											rating: value ? String(value) : undefined,
+										},
+									});
+								}}
+							/>
+						</Pressable>
+					</Link>
 				</View>
 				<TopListsTab {...topLists} />
 				{/* <FlashList

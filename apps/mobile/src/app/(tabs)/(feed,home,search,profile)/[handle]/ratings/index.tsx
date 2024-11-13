@@ -15,7 +15,9 @@ const Reviews = () => {
 	const { handle, rating } = useLocalSearchParams<{ handle: string; rating?: string }>();
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const [tab, setTab] = useState<RatingCategory>("all");
-	const [ratingFilter, setRatingFilter] = useState<number | undefined>(Number(rating));
+	const [ratingFilter, setRatingFilter] = useState<number | undefined>(
+		rating ? Number(rating) : undefined
+	);
 
 	const { data: values } = api.profiles.distribution.useQuery(
 		{ userId: profile!.userId, category: tab !== "all" ? tab : undefined },
