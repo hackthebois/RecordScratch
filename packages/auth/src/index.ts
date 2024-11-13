@@ -132,7 +132,7 @@ export const handleUser = async (
 		onReturn?: "redirect" | "sessionId";
 	}
 ) => {
-	const { googleId = "", appleId = "", email, onReturn = " redirect" } = options;
+	const { googleId, appleId, email, onReturn = " redirect" } = options;
 	const db = getDB();
 	const query = getQuery(event);
 	let userId: string;
@@ -140,7 +140,10 @@ export const handleUser = async (
 	const expoAddress = query.expoAddress as string;
 
 	const existingUser = await db.query.users.findFirst({
-		where: or(eq(users.googleId, googleId), eq(users.appleId, appleId)),
+		where: or(
+			googleId ? eq(users.googleId, googleId) : undefined,
+			appleId ? eq(users.appleId, appleId) : undefined
+		),
 	});
 
 	if (!existingUser) {

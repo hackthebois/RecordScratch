@@ -74,6 +74,8 @@ export const appleRoutes: Route[] = [
 
 			const { sub } = decodeIdToken(idToken) as { sub: string };
 
+			console.log(sub, email);
+
 			return handleUser(event, {
 				appleId: sub,
 				email,
