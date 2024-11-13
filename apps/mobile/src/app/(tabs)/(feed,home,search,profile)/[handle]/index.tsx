@@ -1,8 +1,9 @@
 import NotFoundScreen from "#/app/+not-found";
 import { ListWithResources } from "@recordscratch/types";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
+import DistributionChart from "~/components/DistributionChart";
 import { FollowButton } from "~/components/Followers/FollowButton";
 import FollowerMenu from "~/components/Followers/FollowersMenu";
 import { ArtistItem } from "~/components/Item/ArtistItem";
@@ -98,6 +99,7 @@ const TopListsTab = ({
 
 export const ProfilePage = ({ handle }: { handle: string }) => {
 	const myProfile = useAuth((s) => s.profile);
+	const router = useRouter();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 
@@ -119,6 +121,12 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 	const [likes] = api.ratings.user.totalLikes.useSuspenseQuery({
 		userId: profile.userId,
 	});
+	const { data: values } = api.profiles.distribution.useQuery(
+		{ userId: profile!.userId },
+		{
+			enabled: !!profile,
+		}
+	);
 
 	const tags = [`@${profile.handle}`, `Streak: ${streak}`, `Likes: ${likes}`];
 
@@ -138,7 +146,7 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 				}}
 			/>
 			<ScrollView>
-				<View className="mt-4 px-4">
+				<View className="mt-4 px-4 gap-2">
 					<View className="flex flex-col justify-start">
 						<View className="flex flex-col items-center gap-4">
 							<View className="flex-row gap-4">
@@ -158,6 +166,20 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 							</View>
 							<FollowerMenu profileId={profile.userId} handleId={profile.handle} />
 						</View>
+					</View>
+					<View className="bg-secondary px-2 pt-1 rounded-xl">
+						<DistributionChart
+							distribution={values}
+							height={80}
+							onChange={(value) => {
+								router.push({
+									pathname: `/${profile.handle}/ratings`,
+									params: {
+										rating: value ? String(value) : undefined,
+									},
+								});
+							}}
+						/>
 					</View>
 				</View>
 				<TopListsTab {...topLists} />

@@ -11,10 +11,10 @@ import { api } from "~/lib/api";
 type RatingCategory = "all" | "ALBUM" | "SONG";
 
 const Reviews = () => {
-	const { handle } = useLocalSearchParams<{ handle: string }>();
+	const { handle, rating } = useLocalSearchParams<{ handle: string; rating?: string }>();
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const [tab, setTab] = useState<RatingCategory>("all");
-	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
+	const [ratingFilter, setRatingFilter] = useState<number | undefined>(Number(rating));
 
 	const { data: values } = api.profiles.distribution.useQuery(
 		{ userId: profile!.userId, category: tab !== "all" ? tab : undefined },
