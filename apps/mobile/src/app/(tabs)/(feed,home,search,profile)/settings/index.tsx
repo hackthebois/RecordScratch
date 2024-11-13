@@ -5,6 +5,9 @@ import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useAuth } from "~/lib/auth";
 import { catchError } from "~/lib/errors";
+import { Moon } from "~/lib/icons/Moon";
+import { Sun } from "~/lib/icons/Sun";
+import { User } from "~/lib/icons/User";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 const SettingsPage = () => {
@@ -24,19 +27,25 @@ const SettingsPage = () => {
 				}}
 			/>
 			<Link href={`/settings/editprofile`} asChild>
-				<Button variant="ghost">
+				<Button variant="outline" className="gap-2 flex-row justify-between">
 					<Text>Edit profile</Text>
+					<User className="text-muted-foreground" size={18} />
 				</Button>
 			</Link>
 			<Button
-				variant="secondary"
+				variant="outline"
 				onPress={async () => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
-				className="flex flex-row items-center gap-2"
+				className="flex-row items-center gap-2 justify-between"
 			>
-				<Text>{colorScheme === "dark" ? "Light mode" : "Dark mode"}</Text>
+				<Text>Toggle theme</Text>
+				{colorScheme === "light" ? (
+					<Sun className="text-muted-foreground" size={18} />
+				) : (
+					<Moon className="text-muted-foreground" size={18} />
+				)}
 			</Button>
 			<Button
-				variant="outline"
+				variant="secondary"
 				onPress={async () => {
 					await queryClient.cancelQueries();
 					await queryClient.clear();
