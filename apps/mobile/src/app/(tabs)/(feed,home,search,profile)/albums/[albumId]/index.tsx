@@ -6,17 +6,23 @@ import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import StatBlock from "~/components/CoreComponents/StatBlock";
 import Metadata from "~/components/Metadata";
 import RateButton from "~/components/Rating/RateButton";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
 import SongTable from "~/components/SongTable";
 import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
-import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 export default function AlbumLayout() {
 	const { albumId } = useLocalSearchParams<{ albumId: string }>();
 	const id = albumId!;
+
+	const [total] = api.ratings.count.useSuspenseQuery({
+		resourceId: id,
+		category: "ALBUM",
+	});
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -76,11 +82,8 @@ export default function AlbumLayout() {
 						</View>
 						<View className="flex-row w-full px-4 pb-4">
 							<Link href={`/albums/${album.id}/reviews`} asChild>
-								<Pressable className="rounded-xl p-4 flex-1 bg-secondary">
-									<MessageSquareText className="text-secondary-foreground" />
-									<Text className="text-lg font-semibold text-secondary-foreground">
-										Reviews
-									</Text>
+								<Pressable className="flex-1">
+									<StatBlock title="Ratings" description={String(total)} />
 								</Pressable>
 							</Link>
 						</View>

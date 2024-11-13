@@ -1,8 +1,8 @@
 import { Link } from "expo-router";
 import React from "react";
 import { Pressable, View } from "react-native";
-import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
+import StatBlock from "../CoreComponents/StatBlock";
 
 const FollowerMenu = ({ profileId, handleId }: { profileId: string; handleId: string }) => {
 	const [totalRatings] = api.profiles.getTotalRatings.useSuspenseQuery({
@@ -40,11 +40,12 @@ const FollowerMenu = ({ profileId, handleId }: { profileId: string; handleId: st
 			<View className="flex flex-row w-full gap-2">
 				{links.map((link) => (
 					<Link key={link.to} href={link.to} asChild>
-						<Pressable className="flex flex-col flex-1 bg-secondary p-4 rounded-xl">
-							<Text className="text-secondary-foreground font-semibold text-lg">
-								{link.label}
-							</Text>
-							<Text className="text-secondary-foreground text-lg">{link.value}</Text>
+						<Pressable className="flex-1">
+							<StatBlock
+								title={link.label}
+								description={String(link.value)}
+								size="sm"
+							/>
 						</Pressable>
 					</Link>
 				))}

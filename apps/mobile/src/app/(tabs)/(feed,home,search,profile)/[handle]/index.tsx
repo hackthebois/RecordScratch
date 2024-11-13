@@ -132,8 +132,8 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 					title: profile.name,
 					headerRight: () =>
 						isProfile ? (
-							<Link href={`/settings`}>
-								<Settings size={22} className="mr-6 text-foreground" />
+							<Link href={`/settings`} className="p-2">
+								<Settings size={22} className="mr-2 text-foreground" />
 							</Link>
 						) : (
 							<FollowButton profileId={profile.userId} size={"sm"} />
@@ -163,7 +163,7 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 						</View>
 					</View>
 					<Link href={`/${profile.handle}/ratings`} asChild>
-						<Pressable className="bg-secondary px-2 pt-1 rounded-xl">
+						<Pressable className="border border-border px-2 pt-1 rounded-xl">
 							<DistributionChart
 								distribution={values}
 								height={80}

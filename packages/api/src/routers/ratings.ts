@@ -61,6 +61,22 @@ export const ratingsRouter = router({
 				)
 				.groupBy(ratings.resourceId);
 		}),
+	count: publicProcedure
+		.input(
+			ResourceSchema.pick({ resourceId: true, category: true }).extend({
+				onlyReviews: z.boolean().optional(),
+			})
+		)
+		.query(async ({ ctx: { db }, input: { resourceId, category, onlyReviews } }) => {
+			const total = await db.query.ratings.findMany({
+				where: and(
+					eq(ratings.resourceId, resourceId),
+					eq(ratings.category, category),
+					onlyReviews ? isNotNull(ratings.content) : undefined
+				),
+			});
+			return total.length;
+		}),
 	trending: publicProcedure.query(async ({ ctx: { db } }) => {
 		return await db
 			.select({
