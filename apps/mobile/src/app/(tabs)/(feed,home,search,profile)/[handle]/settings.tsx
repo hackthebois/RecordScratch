@@ -30,7 +30,9 @@ const SettingsPage = () => {
 				variant="outline"
 				onPress={async () => {
 					await queryClient.cancelQueries();
-					router.navigate("(auth)/signin");
+					await queryClient.clear();
+					await router.dismissAll();
+					router.replace("(auth)/signin");
 					await logout().catch(catchError);
 				}}
 			>
