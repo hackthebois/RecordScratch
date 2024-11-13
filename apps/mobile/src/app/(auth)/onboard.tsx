@@ -98,7 +98,7 @@ function Onboard() {
 	}) => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: false,
+			allowsEditing: true,
 			aspect: [4, 3],
 			quality: 1,
 		});
@@ -325,14 +325,8 @@ function Onboard() {
 										<Text>Pick an image</Text>
 									</Button>
 									{form.formState.errors.image && (
-										<Text
-											style={{
-												color: "red",
-												marginTop: 5,
-												textAlign: "center",
-											}}
-										>
-											{`${form.formState.errors.image.message}`}
+										<Text className="mt-2 text-destructive">
+											{form.formState.errors.image.message}
 										</Text>
 									)}
 								</View>

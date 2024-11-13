@@ -132,7 +132,7 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 					title: profile.name,
 					headerRight: () =>
 						isProfile ? (
-							<Link href={`(users)/settings`}>
+							<Link href={`/settings`}>
 								<Settings size={22} className="mr-6 text-foreground" />
 							</Link>
 						) : (

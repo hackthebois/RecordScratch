@@ -193,12 +193,15 @@ export const profilesRouter = router({
 	update: protectedProcedure
 		.input(UpdateProfileSchema)
 		.mutation(async ({ ctx: { db, userId }, input: newProfile }) => {
-			await db
+			const p = await db
 				.update(profile)
 				.set({
 					...newProfile,
+					updatedAt: new Date(),
 				})
-				.where(eq(profile.userId, userId));
+				.where(eq(profile.userId, userId))
+				.returning();
+			return p[0]!;
 		}),
 	getSignedURL: protectedProcedure
 		.input(
