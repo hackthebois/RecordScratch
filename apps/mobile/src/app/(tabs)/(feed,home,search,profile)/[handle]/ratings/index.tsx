@@ -1,4 +1,5 @@
 import NotFoundScreen from "#/app/+not-found";
+import { keepPreviousData } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -20,11 +21,12 @@ const Reviews = () => {
 		{ userId: profile!.userId, category: tab !== "all" ? tab : undefined },
 		{
 			enabled: !!profile,
+			placeholderData: keepPreviousData,
 		}
 	);
 
 	useEffect(() => {
-		if (values && ratingFilter && values[ratingFilter] === 0) {
+		if (values && ratingFilter && values[ratingFilter - 1] === 0) {
 			setRatingFilter(undefined);
 		}
 	}, [values]);
@@ -41,7 +43,7 @@ const Reviews = () => {
 					category: tab !== "all" ? tab : undefined,
 					rating: ratingFilter,
 				}}
-				ListHeader={
+				ListHeaderComponent={
 					<>
 						<DistributionChart
 							distribution={values}

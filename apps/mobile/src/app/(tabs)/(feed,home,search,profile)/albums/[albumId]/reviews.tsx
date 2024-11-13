@@ -1,5 +1,5 @@
 import { Resource } from "@recordscratch/types";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { keepPreviousData, useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
@@ -27,16 +27,21 @@ const Reviews = () => {
 		})
 	);
 
-	const { data: values } = api.ratings.distribution.useQuery({
-		resourceId: albumId,
-		filters: {
-			reviewType: ratingTab === "all" ? undefined : ratingTab,
-			following: tab === "friends",
+	const { data: values } = api.ratings.distribution.useQuery(
+		{
+			resourceId: albumId,
+			filters: {
+				reviewType: ratingTab === "all" ? undefined : ratingTab,
+				following: tab === "friends",
+			},
 		},
-	});
+		{
+			placeholderData: keepPreviousData,
+		}
+	);
 
 	useEffect(() => {
-		if (values && ratingFilter && values[ratingFilter] === 0) {
+		if (values && ratingFilter && values[ratingFilter - 1] === 0) {
 			setRatingFilter(undefined);
 		}
 	}, [values]);
@@ -70,7 +75,7 @@ const Reviews = () => {
 					ratingType: ratingTab === "all" ? undefined : ratingTab,
 					rating: ratingFilter,
 				}}
-				ListHeader={
+				ListHeaderComponent={
 					<>
 						<DistributionChart
 							distribution={values}

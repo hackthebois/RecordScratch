@@ -121,12 +121,7 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 	const [likes] = api.ratings.user.totalLikes.useSuspenseQuery({
 		userId: profile.userId,
 	});
-	const { data: values } = api.profiles.distribution.useQuery(
-		{ userId: profile!.userId },
-		{
-			enabled: !!profile,
-		}
-	);
+	const [values] = api.profiles.distribution.useSuspenseQuery({ userId: profile!.userId });
 
 	const tags = [`@${profile.handle}`, `Streak: ${streak}`, `Likes: ${likes}`];
 

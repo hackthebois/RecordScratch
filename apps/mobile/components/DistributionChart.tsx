@@ -1,12 +1,50 @@
 import { cn } from "@recordscratch/lib";
+import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
+import Animated, { Easing, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
 import { Text } from "~/components/ui/text";
+
+const AnimatedBar = ({
+	status,
+	height,
+}: {
+	status: "active" | "normal" | "inactive";
+	height: number;
+}) => {
+	const heightAnim = useSharedValue(0);
+	const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+	useEffect(() => {
+		heightAnim.value = withDelay(
+			isInitialLoad ? 400 : 0,
+			withTiming(height, {
+				duration: 400,
+				easing: Easing.out(Easing.cubic),
+			})
+		);
+		if (isInitialLoad) setIsInitialLoad(false);
+	}, [height]);
+
+	return (
+		<Animated.View
+			style={{
+				height: heightAnim,
+			}}
+			className={cn(
+				"h-full min-h-0 w-full rounded-t",
+				status === "active" && "bg-[#ff8c00]",
+				status === "normal" && "bg-[#ffb703]",
+				status === "inactive" && "bg-[#ffb703] opacity-70"
+			)}
+		/>
+	);
+};
 
 const DistributionChart = ({
 	distribution = [],
 	value,
 	onChange,
-	height = 144,
+	height = 112,
 }: {
 	distribution?: number[];
 	value?: number;
@@ -32,18 +70,15 @@ const DistributionChart = ({
 							else onChange(index + 1);
 						}}
 					>
-						<View
-							style={{
-								height: `${(ratings / maxRating) * 100}%`,
-							}}
-							className={cn(
-								"h-full min-h-0 w-full rounded-t",
-								value
-									? index + 1 === value
-										? "bg-[#ff8c00]"
-										: "bg-[#ffb703] opacity-70"
-									: "bg-[#ffb703]"
-							)}
+						<AnimatedBar
+							height={(ratings / maxRating) * height}
+							status={
+								value === index + 1
+									? "active"
+									: value && value !== index + 1
+										? "inactive"
+										: "normal"
+							}
 						/>
 					</TouchableOpacity>
 				))}
@@ -53,7 +88,9 @@ const DistributionChart = ({
 					length: 10,
 				}).map((_, index) => (
 					<View className="flex flex-1 flex-row items-center justify-center" key={index}>
-						<Text>{index + 1}</Text>
+						<Text className={cn(value === index + 1 && "text-[#ff8c00]")}>
+							{index + 1}
+						</Text>
 					</View>
 				))}
 			</View>
