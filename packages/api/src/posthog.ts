@@ -9,7 +9,7 @@ type PostHogEvent = {
 
 export const getPostHog = () => {
 	const ph = new PostHog(process.env.VITE_POSTHOG_KEY!, {
-		host: process.env.CF_PAGES_URL + "/ingest",
+		host: process.env.VITE_POSTHOG_HOST,
 	});
 
 	const posthog = <TEvent extends keyof PostHogEvent>(

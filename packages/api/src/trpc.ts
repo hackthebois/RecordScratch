@@ -19,6 +19,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 		return {
 			db,
 			r2,
+			posthog,
 			userId: null,
 		};
 	}
