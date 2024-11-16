@@ -32,6 +32,9 @@ export default function TabLayout() {
 					height: 90,
 					paddingTop: 12,
 				},
+				tabBarItemStyle: {
+					flexDirection: "column",
+				},
 				headerLeft: () => (
 					<Pressable onPress={() => router.back()}>
 						<ArrowLeft size={28} className="text-primary" />
