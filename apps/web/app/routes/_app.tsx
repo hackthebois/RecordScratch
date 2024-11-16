@@ -1,6 +1,5 @@
 import SearchBar from "@/components/SearchBar";
 import SignedIn from "@/components/SignedIn";
-import { useTheme } from "@/components/ThemeProvider";
 import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
@@ -58,8 +57,6 @@ const NotificationBell = () => {
 };
 
 function LayoutComponent({ children }: { children: React.ReactNode }) {
-	const { theme } = useTheme();
-
 	return (
 		<>
 			<header className="flex h-14 w-screen items-center justify-center border-b">
