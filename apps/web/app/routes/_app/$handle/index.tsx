@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Head } from "@/components/Head";
+import { Seo } from "@/components/Seo";
 import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { CreateList } from "@/components/lists/CreateList";
@@ -182,7 +182,16 @@ function Handle() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={profile.name} description={profile.bio ?? undefined} />
+			<Seo
+				title={profile.name}
+				description={[
+					...(profile.bio ? [profile.bio] : []),
+					...tags,
+				].join(", ")}
+				imageUrl={getImageUrl(profile)}
+				path={`/${profile.handle}`}
+				keywords={tags.join(", ")}
+			/>
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar
 					imageUrl={getImageUrl(profile)}

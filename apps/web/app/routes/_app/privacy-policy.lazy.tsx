@@ -1,4 +1,4 @@
-import { Head } from "@/components/Head";
+import { Seo } from "@/components/Seo";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { createLazyFileRoute } from "@tanstack/react-router";
@@ -12,6 +12,7 @@ export const Route = createLazyFileRoute("/_app/privacy-policy")({
 function PrivacyPolicy() {
 	return (
 		<div className="mx-auto p-4 md:p-8">
+			<Seo title="Privacy Policy" />
 			<h1 className="mb-4 text-5xl font-bold">Privacy Policy</h1>
 			<p className="mb-4">
 				By accessing and using recordscratch.app and any RecordScratch

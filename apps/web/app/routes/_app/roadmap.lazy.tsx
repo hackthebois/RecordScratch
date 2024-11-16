@@ -1,4 +1,4 @@
-import { Head } from "@/components/Head";
+import { Seo } from "@/components/Seo";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import {
@@ -96,7 +96,7 @@ const RoadmapSection = ({
 function Roadmap() {
 	return (
 		<div className="-m-4 flex h-[calc(100svh-56px)] flex-1 flex-col overflow-hidden sm:-m-6">
-			<Head
+			<Seo
 				title="Roadmap"
 				description="View the released, in progress and planned features"
 			/>

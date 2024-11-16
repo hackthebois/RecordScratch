@@ -1,5 +1,5 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
+import { Seo } from "@/components/Seo";
 import AlbumList from "@/components/album/AlbumList";
 import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
@@ -87,7 +87,7 @@ function Index() {
 
 	return (
 		<div className="flex flex-col gap-8">
-			<Head
+			<Seo
 				title="Home"
 				description="View album of the day, trending albums, top rated albums and recent reviews."
 			/>

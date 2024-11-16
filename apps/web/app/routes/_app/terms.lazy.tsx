@@ -1,4 +1,4 @@
-import { Head } from "@/components/Head";
+import { Seo } from "@/components/Seo";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
 import { createLazyFileRoute } from "@tanstack/react-router";
@@ -12,7 +12,7 @@ export const Route = createLazyFileRoute("/_app/terms")({
 function TermsAndConditions() {
 	return (
 		<div className="mx-auto p-4 md:p-8">
-			<Head title={"Terms and Conditions"} />
+			<Seo title="Terms and Conditions" />
 			<h1 className="mb-4 text-5xl font-bold">
 				Terms and Conditions of Use
 			</h1>

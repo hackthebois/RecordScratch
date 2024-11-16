@@ -1,5 +1,5 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
+import { Seo } from "@/components/Seo";
 import SongTable from "@/components/SongTable";
 import { AddToList } from "@/components/lists/AddToList";
 import { RatingDialog } from "@/components/rating/RatingDialog";
@@ -68,19 +68,28 @@ function Album() {
 		category: "ALBUM",
 	};
 
+	const tags = [
+		album.release_date,
+		album.duration ? `${formatDuration(album.duration)}` : undefined,
+		...(album.genres?.data.map((genre) => genre.name) ?? []),
+	];
+
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={album.title} description={album.artist?.name} />
+			<Seo
+				title={`${album.title} by ${album.artist?.name}`}
+				description={[
+					`${album.title} by ${album.artist?.name}`,
+					...tags,
+				].join(", ")}
+				imageUrl={album.cover_big ?? undefined}
+				path={`/albums/${album.id}`}
+				keywords={[album.title, album.artist?.name, ...tags].join(", ")}
+			/>
 			<Metadata
 				title={album.title}
 				cover={album.cover_big ?? ""}
-				tags={[
-					album.release_date,
-					album.duration
-						? `${formatDuration(album.duration)}`
-						: undefined,
-					...(album.genres?.data.map((genre) => genre.name) ?? []),
-				]}
+				tags={tags}
 				type={album.record_type?.toUpperCase() ?? "ALBUM"}
 			>
 				<Link

@@ -1,5 +1,5 @@
-import { Head } from "@/components/Head";
 import Metadata from "@/components/Metadata";
+import { Seo } from "@/components/Seo";
 import SongTable from "@/components/SongTable";
 import AlbumList from "@/components/album/AlbumList";
 import { ArtistItem } from "@/components/artist/ArtistItem";
@@ -112,9 +112,18 @@ function Artist() {
 		// Sort by earliest first
 		return dateB - dateA;
 	});
+
+	const tags = [`${artist.nb_album} Albums`];
+
 	return (
 		<div className="flex flex-col gap-6">
-			<Head title={artist.name} />
+			<Seo
+				title={artist.name}
+				description={[artist.name, ...tags].join(", ")}
+				imageUrl={artist.picture_big ?? ""}
+				path={`/artists/${artist.id}`}
+				keywords={[artist.name, ...tags].join(", ")}
+			/>
 			<Metadata
 				title={artist.name}
 				cover={artist.picture_big ?? ""}

@@ -12,6 +12,7 @@ import {
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
+import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/Button";
 import {
 	Form,
@@ -472,6 +473,17 @@ function Rating() {
 
 	return (
 		<div className="flex flex-col gap-2">
+			<Seo
+				title={`Rating by ${profile.name}`}
+				description={`${rating.rating}/10 stars${rating.content && `, Content: ${rating.content}`}`}
+				imageUrl={getImageUrl(profile)}
+				path={`/${profile.handle}/ratings/${resourceId}`}
+				keywords={[
+					profile.name,
+					profile.handle,
+					rating.rating + "/10",
+				].join(", ")}
+			/>
 			<Review {...rating} profile={profile} onReply={toggleOpenReply} />
 			{openReply && myProfile && (
 				<CommentForm
