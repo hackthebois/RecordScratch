@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: "RecordScratch",
 	slug: "recordscratch",
-	version: "0.0.1",
+	version: "0.0.2",
 	orientation: "portrait",
 	icon: "./assets/icon.png",
 	scheme: "recordscratch",
