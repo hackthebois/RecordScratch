@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /albums
+Disallow: /artists
+
+Sitemap: https://recordscratch.app/sitemap.xml
