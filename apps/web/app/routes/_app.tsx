@@ -1,5 +1,6 @@
 import SearchBar from "@/components/SearchBar";
 import SignedIn from "@/components/SignedIn";
+import { useTheme } from "@/components/ThemeProvider";
 import { Discord } from "@/components/icons/Discord";
 import Github from "@/components/icons/Github";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
@@ -13,7 +14,7 @@ import UserButton from "@/components/user/UserButton";
 import { env } from "@/env";
 import { api } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
-import { Bell, Disc3, Dot, Menu } from "lucide-react";
+import { Bell, Dot, Menu } from "lucide-react";
 import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app")({
@@ -57,6 +58,8 @@ const NotificationBell = () => {
 };
 
 function LayoutComponent({ children }: { children: React.ReactNode }) {
+	const { theme } = useTheme();
+
 	return (
 		<>
 			<header className="flex h-14 w-screen items-center justify-center border-b">
@@ -65,10 +68,15 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 						<Link to="/" className="flex items-center gap-3">
 							<Button
 								size="icon"
-								variant="outline"
 								aria-label="Home"
+								className="bg-white hover:bg-white"
+								variant={"outline"}
 							>
-								<Disc3 size={22} />
+								<img
+									src={"/logo.svg"}
+									alt="Logo"
+									className="h-7"
+								/>
 							</Button>
 						</Link>
 						<SearchBar />

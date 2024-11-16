@@ -19,7 +19,7 @@ import { cn, useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";
 import { OnboardSchema, handleRegex } from "@recordscratch/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AtSign, Disc3 } from "lucide-react";
+import { AtSign, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -73,13 +73,13 @@ function Onboard() {
 	const { name, image, handle, bio } = form.watch();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
-	useEffect(() => {
-		if (!needsOnboarding) {
-			navigate({
-				to: "/",
-			});
-		}
-	}, [needsOnboarding, navigate]);
+	// useEffect(() => {
+	// 	if (!needsOnboarding) {
+	// 		navigate({
+	// 			to: "/",
+	// 		});
+	// 	}
+	// }, [needsOnboarding, navigate]);
 
 	const { mutate: createProfile, isPending } =
 		api.profiles.create.useMutation({
@@ -190,7 +190,7 @@ function Onboard() {
 	if (isPending) {
 		return (
 			<main className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
-				<Disc3 size={50} className="animate-spin" />
+				<Loader2 size={50} className="animate-spin" />
 			</main>
 		);
 	}
@@ -201,7 +201,14 @@ function Onboard() {
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>
-						<Disc3 size={200} className="animate-spin" />
+						<div className="rounded-2xl bg-white p-4">
+							<img
+								width={200}
+								height={200}
+								src="/logo.svg"
+								alt="RecordScratch Logo"
+							/>
+						</div>
 						<h1 className="mt-12 text-center">
 							Welcome to RecordScratch!
 						</h1>

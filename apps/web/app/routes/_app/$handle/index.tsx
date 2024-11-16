@@ -27,7 +27,7 @@ import { api, apiUtils } from "@/trpc/react";
 import { cn } from "@recordscratch/lib/src/utils";
 import { keepPreviousData } from "@tanstack/react-query";
 import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
-import { Disc3 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
 import { z } from "zod";
@@ -72,7 +72,7 @@ export const Route = createFileRoute("/_app/$handle/")({
 const TopListLoader = () => {
 	return (
 		<div className="mb-2 mt-5 flex h-[10rem] items-center justify-center">
-			<Disc3 size={35} className="animate-spin" />
+			<Loader2 size={35} className="animate-spin" />
 		</div>
 	);
 };
