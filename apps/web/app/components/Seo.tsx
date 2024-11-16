@@ -20,7 +20,7 @@ export const Seo = ({
 	updatedAt,
 }: SeoProps) => {
 	const siteTitle = "RecordScratch";
-	const fullTitle = `${title} | ${siteTitle}`;
+	const fullTitle = `${title}`;
 	const canonical = `https://recordscratch.app${path}`;
 
 	return (
