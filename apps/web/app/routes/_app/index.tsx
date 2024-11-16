@@ -88,8 +88,9 @@ function Index() {
 	return (
 		<div className="flex flex-col gap-8">
 			<Seo
-				title="Home"
-				description="View album of the day, trending albums, top rated albums and recent reviews."
+				title="Recordscratch: Where Music Meets Community"
+				description="Recordscratch is the ultimate music-rating and social hub. Find new music, rate your recent listens, and connect with fellow music enthusiasts."
+				keywords="music, rating, community, social, album, artist, song, review, record, scratch"
 			/>
 			<AlbumOfTheDay />
 
