@@ -13,13 +13,13 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 		region: "auto",
 	});
 	const db = getDB();
-	const posthog = getPostHog();
+	const ph = getPostHog();
 
 	if (!sessionId) {
 		return {
 			db,
 			r2,
-			posthog,
+			ph,
 			userId: null,
 		};
 	}
@@ -30,7 +30,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 		return {
 			db,
 			r2,
-			posthog,
+			ph,
 			userId: null,
 		};
 	}
@@ -38,7 +38,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 	return {
 		db,
 		r2,
-		posthog,
+		ph,
 		userId: session.userId,
 	};
 };

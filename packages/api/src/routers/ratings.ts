@@ -3,6 +3,7 @@ import { RateFormSchema, ResourceSchema, ReviewFormSchema } from "@recordscratch
 import dayjs from "dayjs";
 import { and, avg, count, desc, eq, gt, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
+import { posthog } from "../posthog";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 const PaginatedInput = z.object({
@@ -315,7 +316,7 @@ export const ratingsRouter = router({
 	}),
 	rate: protectedProcedure
 		.input(RateFormSchema)
-		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
+		.mutation(async ({ ctx: { db, userId, ph }, input }) => {
 			const { rating, resourceId, parentId, category, content } = input;
 			if (rating === null) {
 				await db
@@ -350,14 +351,19 @@ export const ratingsRouter = router({
 						},
 					});
 			}
-			posthog("rate", {
-				distinctId: userId,
-				properties: input,
-			});
+			await posthog(ph, [
+				[
+					"rate",
+					{
+						distinctId: userId,
+						properties: input,
+					},
+				],
+			]);
 		}),
 	review: protectedProcedure
 		.input(ReviewFormSchema)
-		.mutation(async ({ ctx: { db, userId, posthog }, input }) => {
+		.mutation(async ({ ctx: { db, userId, ph }, input }) => {
 			await db
 				.insert(ratings)
 				.values({ ...input, userId })
@@ -365,10 +371,15 @@ export const ratingsRouter = router({
 					target: [ratings.resourceId, ratings.userId],
 					set: { ...input, userId },
 				});
-			posthog("review", {
-				distinctId: userId,
-				properties: input,
-			});
+			await posthog(ph, [
+				[
+					"review",
+					{
+						distinctId: userId,
+						properties: input,
+					},
+				],
+			]);
 		}),
 	leaderboard: publicProcedure.query(async ({ ctx: { db } }) => {
 		return await db

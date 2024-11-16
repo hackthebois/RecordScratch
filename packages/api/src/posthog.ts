@@ -12,14 +12,21 @@ export const getPostHog = () => {
 		host: process.env.VITE_POSTHOG_HOST,
 	});
 
-	const posthog = <TEvent extends keyof PostHogEvent>(
-		event: TEvent,
-		payload: {
+	return ph;
+};
+
+export const posthog = async <TEvent extends keyof PostHogEvent>(
+	ph: PostHog,
+	events: [
+		TEvent,
+		{
 			distinctId: string;
 			properties: PostHogEvent[TEvent];
-		}
-	) => {
-		return ph.capture({
+		},
+	][]
+) => {
+	events.forEach(([event, payload]) => {
+		ph.capture({
 			distinctId: payload.distinctId,
 			event,
 			properties: {
@@ -27,6 +34,6 @@ export const getPostHog = () => {
 				$host: process.env.CF_PAGES_URL!.replace(/^https?:\/\//, ""),
 			},
 		});
-	};
-	return posthog;
+	});
+	await ph.shutdown();
 };
