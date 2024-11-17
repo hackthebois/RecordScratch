@@ -104,23 +104,15 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<Html>
-			<Head>
+		<html>
+			<head>
 				<Meta />
-			</Head>
-			<Body>
-				<ThemeProvider>
-					{children}
-					<ScrollRestoration
-						getKey={(location) => location.pathname}
-					/>
-					<Suspense>
-						<PostHogIdentify />
-					</Suspense>
-					<PostHogPageView />
-					<Scripts />
-				</ThemeProvider>
-			</Body>
-		</Html>
+			</head>
+			<body>
+				{children}
+				<ScrollRestoration />
+				<Scripts />
+			</body>
+		</html>
 	);
 }
