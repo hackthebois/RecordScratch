@@ -1,7 +1,8 @@
 import SearchBar from "@/components/SearchBar";
 import SignedIn from "@/components/SignedIn";
 import { Discord } from "@/components/icons/Discord";
-import Github from "@/components/icons/Github";
+import { Github } from "@/components/icons/Github";
+import { Tiktok } from "@/components/icons/Tiktok";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import {
@@ -10,10 +11,10 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/Popover";
 import UserButton from "@/components/user/UserButton";
-import { env } from "@/env";
+import { socials } from "@/lib/socials";
 import { api } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
-import { Bell, Disc3, Dot, Menu } from "lucide-react";
+import { Bell, Dot, Mail, Menu } from "lucide-react";
 import { Suspense } from "react";
 
 export const Route = createFileRoute("/_app")({
@@ -65,10 +66,15 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 						<Link to="/" className="flex items-center gap-3">
 							<Button
 								size="icon"
-								variant="outline"
 								aria-label="Home"
+								className="bg-white hover:bg-white"
+								variant={"outline"}
 							>
-								<Disc3 size={22} />
+								<img
+									src={"/logo.svg"}
+									alt="Logo"
+									className="h-7"
+								/>
 							</Button>
 						</Link>
 						<SearchBar />
@@ -89,33 +95,52 @@ function LayoutComponent({ children }: { children: React.ReactNode }) {
 								</Button>
 							</PopoverTrigger>
 							<PopoverContent align="end" className="w-68">
-								<div className="flex flex-col items-center gap-2 text-sm font-semibold">
+								<div className="flex flex-col gap-1">
 									<div className="flex gap-2">
 										<a
-											href={env.VITE_DISCORD_URL}
+											href={socials.discord}
 											className="p-1"
 											target="_blank"
 										>
 											<Discord size={23} />
 										</a>
 										<a
-											href={env.VITE_GITHUB_URL}
+											href={socials.github}
 											className="p-1"
 											target="_blank"
 										>
 											<Github size={22} />
 										</a>
+										<a
+											href={"mailto:" + socials.email}
+											className="p-1"
+											target="_blank"
+										>
+											<Mail size={22} />
+										</a>
+										<a
+											href={socials.tiktok}
+											className="p-1"
+											target="_blank"
+										>
+											<Tiktok size={22} />
+										</a>
 									</div>
-								</div>
-								<hr className="my-2" />
-								<div className="flex items-center justify-between">
 									<Link
 										to="/roadmap"
 										className="text-sm text-muted-foreground"
 									>
 										Roadmap
 									</Link>
-									<Dot />
+									<Link
+										to="/support"
+										className="text-sm text-muted-foreground"
+									>
+										Support
+									</Link>
+								</div>
+								<hr className="my-2" />
+								<div className="flex items-center justify-between">
 									<Link
 										to="/terms"
 										className="text-sm text-muted-foreground"

@@ -7,7 +7,7 @@ import { QueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
 	Outlet,
 	ScrollRestoration,
-	createRootRouteWithContext,
+	createRootRoute,
 	useRouterState,
 } from "@tanstack/react-router";
 import {
@@ -70,16 +70,15 @@ const PostHogPageView = () => {
 };
 
 const PostHogIdentify = () => {
-	const { profile } = Route.useRouteContext();
+	const [user] = api.users.me.useSuspenseQuery();
 	const posthog = usePostHog();
 
 	useEffect(() => {
-		if (!profile) return;
-		posthog.identify(profile.userId, {
-			handle: profile.handle,
-			name: profile.name,
+		if (!user) return;
+		posthog.identify(user.id, {
+			email: user.email,
 		});
-	}, [profile, posthog]);
+	}, [user, posthog]);
 
 	return null;
 };

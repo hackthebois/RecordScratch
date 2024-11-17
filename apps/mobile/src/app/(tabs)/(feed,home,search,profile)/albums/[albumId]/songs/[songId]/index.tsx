@@ -5,15 +5,22 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import StatBlock from "~/components/CoreComponents/StatBlock";
 import Metadata from "~/components/Metadata";
 import RateButton from "~/components/Rating/RateButton";
 import { RatingInfo } from "~/components/Rating/RatingInfo";
+import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
-import { MessageSquareText } from "~/lib/icons/MessageSquareText";
 
 const SongPage = () => {
 	const { albumId, songId } = useLocalSearchParams<{ albumId: string; songId: string }>();
+
+	const [total] = api.ratings.count.useSuspenseQuery({
+		resourceId: songId,
+		category: "SONG",
+	});
 
 	const { data: album } = useSuspenseQuery(
 		getQueryOptions({
@@ -42,7 +49,13 @@ const SongPage = () => {
 			<View className="flex flex-1">
 				<Stack.Screen
 					options={{
-						title: song.title,
+						headerRight: () => (
+							<Link href={`/albums/${album.id}`} asChild>
+								<Button variant="secondary" size={"sm"}>
+									<Text>Go to album</Text>
+								</Button>
+							</Link>
+						),
 					}}
 				/>
 				<ScrollView>
@@ -66,11 +79,8 @@ const SongPage = () => {
 						</View>
 						<View className="flex-row w-full px-4 pb-4">
 							<Link href={`/albums/${album.id}/songs/${song.id}/reviews`} asChild>
-								<Pressable className="rounded-xl p-4 flex-1 bg-secondary">
-									<MessageSquareText className="text-secondary-foreground" />
-									<Text className="text-lg font-semibold text-secondary-foreground">
-										Reviews
-									</Text>
+								<Pressable className="flex-1">
+									<StatBlock title="Ratings" description={String(total)} />
 								</Pressable>
 							</Link>
 						</View>

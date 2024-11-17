@@ -4,13 +4,16 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 import { Comment } from "~/components/Comment";
 import { api } from "~/lib/api";
+import { useRefreshByUser } from "~/lib/refresh";
 
 const CommentPage = () => {
 	const { id } = useLocalSearchParams<{ id: string }>();
 
-	const [comment] = api.comments.get.useSuspenseQuery({
+	const [comment, { refetch }] = api.comments.get.useSuspenseQuery({
 		id,
 	});
+
+	const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch);
 
 	if (!comment) return <NotFoundScreen />;
 
@@ -29,6 +32,8 @@ const CommentPage = () => {
 					renderItem={({ item }) => <Comment comment={item} />}
 					ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 					estimatedItemSize={200}
+					refreshing={isRefetchingByUser}
+					onRefresh={refetchByUser}
 				/>
 			</View>
 		</>

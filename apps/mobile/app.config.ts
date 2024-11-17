@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: "RecordScratch",
 	slug: "recordscratch",
-	version: "0.0.1",
+	version: "0.0.2",
 	orientation: "portrait",
 	icon: "./assets/icon.png",
 	scheme: "recordscratch",
@@ -18,6 +18,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	ios: {
 		supportsTablet: true,
 		bundleIdentifier: "app.recordscratch.ios",
+		usesAppleSignIn: true,
+		entitlements: {
+			"com.apple.developer.applesignin": ["Default"],
+		},
 	},
 	android: {
 		adaptiveIcon: {
@@ -27,7 +31,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		package: "app.recordscratch.android",
 		versionCode: 1,
 	},
-	plugins: ["expo-router"],
+	plugins: [
+		"expo-router",
+		"expo-apple-authentication",
+		[
+			"@sentry/react-native/expo",
+			{
+				organization: "recordscratch",
+				project: "recordscratch",
+			},
+		],
+	],
 	experiments: {
 		tsconfigPaths: true,
 		typedRoutes: true,

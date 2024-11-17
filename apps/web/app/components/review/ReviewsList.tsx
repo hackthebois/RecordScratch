@@ -1,6 +1,6 @@
 import { api } from "@/trpc/react";
 import { RouterInputs } from "@/trpc/shared";
-import { Disc3 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { Review } from "./Review";
@@ -8,7 +8,7 @@ import { Review } from "./Review";
 export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
 	const { ref, inView } = useInView();
 
-	const { data, fetchNextPage, hasNextPage, isLoading } =
+	const { data, fetchNextPage, hasNextPage } =
 		api.ratings.feed.useInfiniteQuery(
 			{
 				...input,
@@ -33,15 +33,15 @@ export const ReviewsList = (input: RouterInputs["ratings"]["feed"]) => {
 					<Review key={index} {...review} />
 				))}
 			</div>
-			{(hasNextPage || isLoading) && (
+			{!data && <div className="h-screen" />}
+			{hasNextPage && (
 				<div
 					ref={ref}
 					className="flex h-40 flex-1 flex-col items-center justify-center"
 				>
-					<Disc3 size={35} className="animate-spin" />
+					<Loader2 size={35} className="animate-spin" />
 				</div>
 			)}
-			{!data && <div className="h-screen" />}
 		</>
 	);
 };

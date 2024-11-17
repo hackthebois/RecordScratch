@@ -65,27 +65,31 @@ const HomePage = () => {
 				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Trending
 				</Text>
-				<FlashList
-					data={trending}
-					renderItem={({ item }) => <AlbumItem {...item} />}
-					horizontal
-					contentContainerClassName="px-4"
-					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={160}
-					showsHorizontalScrollIndicator={false}
-				/>
+				<View>
+					<FlashList
+						data={trending}
+						renderItem={({ item }) => <AlbumItem {...item} />}
+						horizontal
+						contentContainerClassName="px-4"
+						ItemSeparatorComponent={() => <View className="w-4" />}
+						estimatedItemSize={160}
+						showsHorizontalScrollIndicator={false}
+					/>
+				</View>
 				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Top Albums
 				</Text>
-				<FlashList
-					data={top}
-					renderItem={({ item }) => <AlbumItem {...item} />}
-					horizontal
-					contentContainerClassName="px-4"
-					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={160}
-					showsHorizontalScrollIndicator={false}
-				/>
+				<View>
+					<FlashList
+						data={top}
+						renderItem={({ item }) => <AlbumItem {...item} />}
+						horizontal
+						contentContainerClassName="px-4"
+						ItemSeparatorComponent={() => <View className="w-4" />}
+						estimatedItemSize={160}
+						showsHorizontalScrollIndicator={false}
+					/>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);

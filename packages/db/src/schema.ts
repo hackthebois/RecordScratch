@@ -31,11 +31,17 @@ export const users = pgTable("users", {
 	id: text("id").primaryKey(),
 	email: varchar("email", {
 		length: 254,
-	})
-		.unique()
-		.notNull(),
+	}),
 	googleId: text("google_id").unique(),
+	appleId: text("apple_id").unique(),
 });
+
+export const usersRelations = relations(users, ({ one }) => ({
+	profile: one(profile, {
+		fields: [users.id],
+		references: [profile.userId],
+	}),
+}));
 
 export const sessions = pgTable("sessions", {
 	id: text("id").primaryKey(),
@@ -75,10 +81,6 @@ export const profileRelations = relations(profile, ({ one, many }) => ({
 	user: one(users, {
 		fields: [profile.userId],
 		references: [users.id],
-		relationName: "user",
-	}),
-	profile: many(ratings, {
-		relationName: "profile",
 	}),
 	follower: many(followers, {
 		relationName: "follower",
@@ -338,6 +340,7 @@ export const tableSchemas = {
 };
 
 export const relationSchemas = {
+	usersRelations,
 	sessionRelations,
 	profileRelations,
 	ratingsRelations,

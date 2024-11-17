@@ -12,7 +12,9 @@ import {
 } from "@expo-google-fonts/montserrat";
 import { Theme, ThemeProvider } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { Stack } from "expo-router";
+import * as Sentry from "@sentry/react-native";
+import { isRunningInExpoGo } from "expo";
+import { Stack, useNavigationContainerRef } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
@@ -43,10 +45,25 @@ export const unstable_settings = {
 	initialRouteName: "auth",
 };
 
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+Sentry.init({
+	dsn: "https://2648bda3885c4f3b7ab58671e8a9d44f@o4508287201312768.ingest.us.sentry.io/4508287205441536",
+	debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+	integrations: [
+		new Sentry.ReactNativeTracing({
+			// Pass instrumentation to be used as `routingInstrumentation`
+			routingInstrumentation,
+			enableNativeFramesTracking: !isRunningInExpoGo(),
+			// ...
+		}),
+	],
+});
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const RootLayout = () => {
 	const [fontLoaded, fontError] = useFonts({
 		Montserrat_100Thin,
 		Montserrat_200ExtraLight,
@@ -60,6 +77,13 @@ export default function RootLayout() {
 	});
 	const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+	const ref = useNavigationContainerRef();
+
+	useEffect(() => {
+		if (ref?.current) {
+			routingInstrumentation.registerNavigationContainer(ref);
+		}
+	}, [ref]);
 
 	useEffect(() => {
 		(async () => {
@@ -120,6 +144,12 @@ export default function RootLayout() {
 								}}
 							/>
 							<Stack.Screen
+								name="(auth)/onboard"
+								options={{
+									headerShown: false,
+								}}
+							/>
+							<Stack.Screen
 								name="(modals)/rating"
 								options={{
 									title: "",
@@ -150,4 +180,6 @@ export default function RootLayout() {
 			</TRPCProvider>
 		</AuthProvider>
 	);
-}
+};
+
+export default Sentry.wrap(RootLayout);

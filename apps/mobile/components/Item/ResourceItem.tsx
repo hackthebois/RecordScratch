@@ -61,9 +61,15 @@ export const ResourceItem = ({
 
 	if (isLoading || !album || (resource.category === "SONG" && isLoadingTracks)) {
 		return (
-			<View className="flex flex-row items-center gap-4 rounded">
+			<View
+				className={cn(
+					"flex gap-4 rounded w-full",
+					className,
+					direction === "vertical" ? "flex-col" : "flex-row items-center"
+				)}
+			>
 				<Skeleton
-					className="relative min-w-[64px] rounded"
+					className="relative min-w-[64px] rounded-xl"
 					style={{
 						width: imageWidthAndHeight,
 						height: imageWidthAndHeight,

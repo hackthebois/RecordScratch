@@ -1,4 +1,4 @@
-import { getLucia } from "@recordscratch/auth";
+import { validateSessionToken } from "@recordscratch/auth";
 import { getDB } from "@recordscratch/db";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { AwsClient } from "aws4fetch";
@@ -13,24 +13,24 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 		region: "auto",
 	});
 	const db = getDB();
-	const lucia = getLucia();
-	const posthog = getPostHog();
+	const ph = getPostHog();
 
 	if (!sessionId) {
 		return {
 			db,
 			r2,
+			ph,
 			userId: null,
 		};
 	}
 
-	const { session } = await lucia.validateSession(sessionId);
+	const { session } = await validateSessionToken(sessionId);
 
 	if (!session) {
 		return {
 			db,
 			r2,
-			posthog,
+			ph,
 			userId: null,
 		};
 	}
@@ -38,7 +38,7 @@ export const createTRPCContext = async ({ sessionId }: { sessionId?: string | nu
 	return {
 		db,
 		r2,
-		posthog,
+		ph,
 		userId: session.userId,
 	};
 };

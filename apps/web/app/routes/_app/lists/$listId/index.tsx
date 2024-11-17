@@ -1,4 +1,5 @@
 import Metadata from "@/components/Metadata";
+import { Seo } from "@/components/Seo";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import ListImage from "@/components/lists/ListImage";
 import { ListResource } from "@/components/lists/ListResource";
@@ -11,7 +12,7 @@ import { NotFound } from "@/components/ui/NotFound";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
-import { api } from "@/trpc/react";
+import { api, apiUtils } from "@/trpc/react";
 import { timeAgo } from "@recordscratch/lib";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
 import {
@@ -19,7 +20,6 @@ import {
 	Link,
 	UseNavigateResult,
 	createFileRoute,
-	notFound,
 	useNavigate,
 } from "@tanstack/react-router";
 import { Reorder } from "framer-motion";
@@ -37,16 +37,17 @@ export const Route = createFileRoute("/_app/lists/$listId/")({
 			})
 			.parse(search);
 	},
-	loader: async ({ params: { listId }, context: { apiUtils } }) => {
+	loader: async ({ params: { listId } }) => {
 		const listData = await apiUtils.lists.get.ensureData({
 			id: listId,
 		});
-		if (!listData) return notFound();
+		if (!listData) return <NotFound />;
 
-		await apiUtils.lists.resources.get.ensureData({
+		apiUtils.lists.resources.get.ensureData({
 			listId,
 			userId: listData!.userId,
 		});
+		apiUtils.profiles.me.ensureData();
 	},
 });
 
@@ -107,9 +108,9 @@ function List() {
 		from: Route.fullPath,
 	});
 	const { tab = "list" } = Route.useSearch();
-	const { profile: myProfile } = Route.useRouteContext();
 	const { listId } = Route.useParams();
 
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [listData] = api.lists.get.useSuspenseQuery({
 		id: listId,
 	});
@@ -176,7 +177,10 @@ function List() {
 
 	return (
 		<div className="flex flex-col gap-1">
-			{/* <Head title={listData.name} description={undefined} /> */}
+			<Seo
+				title={listData.name}
+				description={`${listData.category} list by ${profile.name}`}
+			/>
 			<Metadata
 				title={listData.name}
 				type={`${listData.category} list`}

@@ -1,8 +1,9 @@
 import NotFoundScreen from "#/app/+not-found";
 import { ListWithResources } from "@recordscratch/types";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
+import DistributionChart from "~/components/DistributionChart";
 import { FollowButton } from "~/components/Followers/FollowButton";
 import FollowerMenu from "~/components/Followers/FollowersMenu";
 import { ArtistItem } from "~/components/Item/ArtistItem";
@@ -98,6 +99,7 @@ const TopListsTab = ({
 
 export const ProfilePage = ({ handle }: { handle: string }) => {
 	const myProfile = useAuth((s) => s.profile);
+	const router = useRouter();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 
@@ -119,18 +121,19 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 	const [likes] = api.ratings.user.totalLikes.useSuspenseQuery({
 		userId: profile.userId,
 	});
+	const [values] = api.profiles.distribution.useSuspenseQuery({ userId: profile!.userId });
 
-	const tags = [`Streak: ${streak}`, `Likes: ${likes}`];
+	const tags = [`@${profile.handle}`, `Streak: ${streak}`, `Likes: ${likes}`];
 
 	return (
 		<View className="flex flex-1">
 			<Stack.Screen
 				options={{
-					title: profile.handle,
+					title: profile.name,
 					headerRight: () =>
 						isProfile ? (
-							<Link href={`(users)/settings`}>
-								<Settings size={22} className="mr-6 text-foreground" />
+							<Link href={`/settings`} className="p-2">
+								<Settings size={22} className="mr-2 text-foreground" />
 							</Link>
 						) : (
 							<FollowButton profileId={profile.userId} size={"sm"} />
@@ -138,12 +141,12 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 				}}
 			/>
 			<ScrollView>
-				<View className="mt-4 px-4">
+				<View className="mt-4 px-4 gap-2">
 					<View className="flex flex-col justify-start">
 						<View className="flex flex-col items-center gap-4">
 							<View className="flex-row gap-4">
 								<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
-								<View className="items-start justify-center gap-2 flex-1">
+								<View className="items-start justify-center gap-3 flex-1">
 									<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
 										{tags
 											.filter((tag) => Boolean(tag))
@@ -159,6 +162,22 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 							<FollowerMenu profileId={profile.userId} handleId={profile.handle} />
 						</View>
 					</View>
+					<Link href={`/${profile.handle}/ratings`} asChild>
+						<Pressable className="border border-border px-2 pt-1 rounded-xl">
+							<DistributionChart
+								distribution={values}
+								height={80}
+								onChange={(value) => {
+									router.push({
+										pathname: `/${profile.handle}/ratings`,
+										params: {
+											rating: value ? String(value) : undefined,
+										},
+									});
+								}}
+							/>
+						</Pressable>
+					</Link>
 				</View>
 				<TopListsTab {...topLists} />
 				{/* <FlashList

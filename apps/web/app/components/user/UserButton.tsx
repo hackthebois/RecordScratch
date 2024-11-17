@@ -1,6 +1,6 @@
 import { getImageUrl } from "@/lib/image";
 import { api } from "@/trpc/react";
-import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import {
 	AlertDialog,
@@ -16,9 +16,7 @@ import { UserAvatar } from "./UserAvatar";
 
 export const UserButton = () => {
 	const navigate = useNavigate();
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const [profile] = api.profiles.me.useSuspenseQuery();
 	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
 
 	useEffect(() => {

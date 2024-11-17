@@ -1,7 +1,7 @@
 import { User } from "~/lib/icons/User";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export const UserAvatar = ({ imageUrl, size }: { imageUrl?: string; size?: number }) => {
+export const UserAvatar = ({ imageUrl, size = 40 }: { imageUrl?: string; size?: number }) => {
 	return (
 		<Avatar
 			alt="Avatar"
@@ -12,7 +12,7 @@ export const UserAvatar = ({ imageUrl, size }: { imageUrl?: string; size?: numbe
 		>
 			<AvatarImage source={{ uri: imageUrl }} />
 			<AvatarFallback>
-				<User />
+				<User size={size * 0.6} className="text-muted-foreground" />
 			</AvatarFallback>
 		</Avatar>
 	);

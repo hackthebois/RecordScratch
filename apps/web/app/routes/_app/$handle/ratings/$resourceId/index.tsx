@@ -1,7 +1,8 @@
 import { Review } from "@/components/review/Review";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
-import { api } from "@/trpc/react";
+import { NotFound } from "@/components/ui/NotFound";
+import { api, apiUtils } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	CommentAndProfile,
@@ -16,6 +17,7 @@ import {
 } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
+import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/Button";
 import {
 	Form,
@@ -58,21 +60,18 @@ export const Route = createFileRoute("/_app/$handle/ratings/$resourceId/")({
 			})
 			.parse(search);
 	},
-	loader: async ({
-		params: { handle, resourceId },
-		context: { apiUtils },
-	}) => {
+	loader: async ({ params: { handle, resourceId } }) => {
 		const profile = await apiUtils.profiles.get.ensureData(handle);
-		if (!profile) return notFound();
-
-		await apiUtils.ratings.user.get.ensureData({
+		if (!profile) return <NotFound />;
+		apiUtils.ratings.user.get.ensureData({
 			userId: profile.userId,
 			resourceId,
 		});
-		await apiUtils.comments.list.ensureData({
+		apiUtils.comments.list.ensureData({
 			authorId: profile.userId,
 			resourceId,
 		});
+		apiUtils.profiles.me.ensureData();
 	},
 });
 
@@ -449,7 +448,7 @@ function Rating() {
 		from: "__root__",
 	});
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-
+	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
 		userId: profile!.userId,
 		resourceId,
@@ -482,6 +481,17 @@ function Rating() {
 
 	return (
 		<div className="flex flex-col gap-2">
+			<Seo
+				title={`Rating by ${profile.name}`}
+				description={`${rating.rating}/10 stars${rating.content && `, Content: ${rating.content}`}`}
+				imageUrl={getImageUrl(profile)}
+				path={`/${profile.handle}/ratings/${resourceId}`}
+				keywords={[
+					profile.name,
+					profile.handle,
+					rating.rating + "/10",
+				].join(", ")}
+			/>
 			<Review {...rating} profile={profile} onReply={toggleOpenReply} />
 			{openReply && myProfile && (
 				<CommentForm

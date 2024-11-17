@@ -1,4 +1,5 @@
 import Metadata from "@/components/Metadata";
+import { Seo } from "@/components/Seo";
 import { RatingDialog } from "@/components/rating/RatingDialog";
 import { ReviewDialog } from "@/components/review/ReviewDialog";
 import { ReviewsList } from "@/components/review/ReviewsList";
@@ -10,6 +11,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { RatingInfo } from "@/components/ui/RatingInfo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { getQueryOptions } from "@/lib/deezer";
+import { api, queryClient } from "@/trpc/react";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -19,6 +21,20 @@ export const Route = createFileRoute("/_app/albums/$albumId/songs/$songId/")({
 	component: Song,
 	pendingComponent: PendingComponent,
 	errorComponent: ErrorComponent,
+	loader: ({ params: { albumId } }) => {
+		queryClient.ensureQueryData(
+			getQueryOptions({
+				route: "/album/{id}/tracks",
+				input: { id: albumId, limit: 1000 },
+			})
+		);
+		queryClient.ensureQueryData(
+			getQueryOptions({
+				route: "/album/{id}",
+				input: { id: albumId },
+			})
+		);
+	},
 });
 
 function Song() {
@@ -46,18 +62,29 @@ function Song() {
 		category: "SONG",
 	};
 
+	const tags = [
+		album.release_date,
+		...(song.explicit_lyrics ? ["Explicit"] : []),
+		formatDuration(song.duration),
+	];
+
 	return (
 		<div className="flex flex-col gap-6">
-			{/* <Head title={song.title} description={album.artist?.name} /> */}
+			<Seo
+				title={`${song.title} by ${album.artist?.name}`}
+				description={[
+					`${song.title} by ${album.artist?.name}`,
+					...tags,
+				].join(", ")}
+				imageUrl={album.cover_big ?? undefined}
+				path={`/albums/${album.id}/songs/${song.id}`}
+				keywords={[song.title, album.artist?.name, ...tags].join(", ")}
+			/>
 			<Metadata
 				title={song.title}
 				cover={album.cover_big ?? ""}
 				type="SONG"
-				tags={[
-					album.release_date,
-					song.explicit_lyrics ? "Explicit" : undefined,
-					formatDuration(song.duration),
-				]}
+				tags={tags}
 			>
 				<Link
 					to="/artists/$artistId"

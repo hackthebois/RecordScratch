@@ -123,7 +123,11 @@ export default function SearchPage() {
 					<ActivityIndicator size="large" color="#ff8500" />
 				</View>
 			) : null}
-			<ScrollView contentContainerClassName="p-4 gap-2">
+			<ScrollView
+				contentContainerClassName="p-4 gap-2"
+				automaticallyAdjustKeyboardInsets
+				keyboardShouldPersistTaps="handled"
+			>
 				{tab === "profiles" ? (
 					profiles?.map((profile, index) => (
 						<ProfileItem

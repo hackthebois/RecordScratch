@@ -1,6 +1,7 @@
 import NotFoundScreen from "#/app/+not-found";
+import { keepPreviousData } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import DistributionChart from "~/components/DistributionChart";
 import { ReviewsList } from "~/components/ReviewsList";
@@ -8,54 +9,29 @@ import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 
-const Chart = ({
-	userId,
-	tab,
-	filter,
-	setTab,
-	onChange,
-}: {
-	userId: string;
-	tab: string;
-	filter: number | undefined;
-	setTab: (_category: string) => void;
-	onChange: (_filter: number | undefined) => void;
-}) => {
-	const [values] = api.profiles.distribution.useSuspenseQuery({ userId });
-
-	return (
-		<View>
-			<DistributionChart distribution={values} value={filter} onChange={onChange} />
-			<Tabs value={tab} onValueChange={setTab}>
-				<View className="px-4">
-					<TabsList className="flex-row w-full">
-						<TabsTrigger value="" className="flex-1">
-							<Text>All</Text>
-						</TabsTrigger>
-						<TabsTrigger value="ALBUM" className="flex-1">
-							<Text>Albums</Text>
-						</TabsTrigger>
-						<TabsTrigger value="SONG" className="flex-1">
-							<Text>Songs</Text>
-						</TabsTrigger>
-					</TabsList>
-				</View>
-			</Tabs>
-		</View>
-	);
-};
+type RatingCategory = "all" | "ALBUM" | "SONG";
 
 const Reviews = () => {
-	const { handle } = useLocalSearchParams<{ handle: string }>();
+	const { handle, rating } = useLocalSearchParams<{ handle: string; rating?: string }>();
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-	const [tab, setTab] = useState("");
-	const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined);
+	const [tab, setTab] = useState<RatingCategory>("all");
+	const [ratingFilter, setRatingFilter] = useState<number | undefined>(
+		rating ? Number(rating) : undefined
+	);
 
-	const onChange = (filter: number | undefined) => {
-		if (filter === ratingFilter) setRatingFilter(undefined);
-		else setRatingFilter(filter);
-		console.log(filter);
-	};
+	const { data: values } = api.profiles.distribution.useQuery(
+		{ userId: profile!.userId, category: tab !== "all" ? tab : undefined },
+		{
+			enabled: !!profile,
+			placeholderData: keepPreviousData,
+		}
+	);
+
+	useEffect(() => {
+		if (values && ratingFilter && values[ratingFilter - 1] === 0) {
+			setRatingFilter(undefined);
+		}
+	}, [values]);
 
 	if (!profile) return <NotFoundScreen />;
 
@@ -66,17 +42,32 @@ const Reviews = () => {
 				limit={20}
 				filters={{
 					profileId: profile.userId,
-					category: tab === "SONG" ? "SONG" : tab === "ALBUM" ? "ALBUM" : undefined,
+					category: tab !== "all" ? tab : undefined,
 					rating: ratingFilter,
 				}}
-				ListHeader={
-					<Chart
-						userId={profile.userId}
-						tab={tab}
-						setTab={setTab}
-						filter={ratingFilter}
-						onChange={onChange}
-					/>
+				ListHeaderComponent={
+					<>
+						<DistributionChart
+							distribution={values}
+							value={ratingFilter}
+							onChange={setRatingFilter}
+						/>
+						<Tabs value={tab} onValueChange={(v) => setTab(v as RatingCategory)}>
+							<View className="px-4">
+								<TabsList className="flex-row w-full">
+									<TabsTrigger value="all" className="flex-1">
+										<Text>All</Text>
+									</TabsTrigger>
+									<TabsTrigger value="ALBUM" className="flex-1">
+										<Text>Albums</Text>
+									</TabsTrigger>
+									<TabsTrigger value="SONG" className="flex-1">
+										<Text>Songs</Text>
+									</TabsTrigger>
+								</TabsList>
+							</View>
+						</Tabs>
+					</>
 				}
 			/>
 		</>

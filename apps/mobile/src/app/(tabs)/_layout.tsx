@@ -1,13 +1,9 @@
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Pressable } from "react-native";
-import { z } from "zod";
 import { Text } from "~/components/ui/text";
-import env from "~/env";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
 import { Home } from "~/lib/icons/Home";
 import { Search } from "~/lib/icons/Search";
 import { Star } from "~/lib/icons/Star";
@@ -15,53 +11,6 @@ import { User } from "~/lib/icons/User";
 
 export default function TabLayout() {
 	const router = useRouter();
-
-	const { data: needsOnboarding } = api.profiles.needsOnboarding.useQuery();
-	const [myProfile] = api.profiles.me.useSuspenseQuery();
-
-	const setProfile = useAuth((s) => s.setProfile);
-	const logout = useAuth((s) => s.logout);
-	const sessionId = useAuth((s) => s.sessionId);
-	const setSessionId = useAuth((s) => s.setSessionId);
-
-	useEffect(() => {
-		if (myProfile) {
-			setProfile(myProfile!);
-		} else {
-			logout().then(() => router.push("(auth)/signin"));
-		}
-	}, [myProfile]);
-
-	useEffect(() => {
-		if (needsOnboarding) {
-			router.push("/onboarding");
-		}
-	}, [needsOnboarding]);
-
-	useEffect(() => {
-		const getToken = async () => {
-			await fetch(`${env.SITE_URL}}/api/auth/refresh?sessionId=${sessionId}`)
-				.then(async (response) => {
-					return z
-						.object({
-							sessionId: z.string(),
-						})
-						.safeParse(await response.json());
-				})
-				.then((parsedData) => {
-					if (parsedData.error) console.error(parsedData.error);
-					else {
-						console.log(`Parsed Session ID: ${parsedData.data.sessionId}`);
-						setSessionId(parsedData.data.sessionId);
-					}
-				})
-				.catch(function (err) {
-					console.log(err);
-				});
-		};
-		getToken();
-	}, []);
-
 	return (
 		<Tabs
 			backBehavior="history"
@@ -82,6 +31,9 @@ export default function TabLayout() {
 				tabBarStyle: {
 					height: 90,
 					paddingTop: 12,
+				},
+				tabBarItemStyle: {
+					flexDirection: "column",
 				},
 				headerLeft: () => (
 					<Pressable onPress={() => router.back()}>

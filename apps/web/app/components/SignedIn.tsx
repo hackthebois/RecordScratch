@@ -1,9 +1,7 @@
-import { useRouteContext } from "@tanstack/react-router";
+import { api } from "@/trpc/react";
 
 const SignedIn = ({ children }: { children: React.ReactNode }) => {
-	const { profile } = useRouteContext({
-		from: "__root__",
-	});
+	const [profile] = api.profiles.me.useSuspenseQuery();
 
 	if (!profile) {
 		return null;

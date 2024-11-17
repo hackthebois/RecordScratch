@@ -30,7 +30,11 @@ const RatingInput = ({
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<Star size={28} color="#ffb703" fill="#ffb703" />
+								<Star
+									size={28}
+									color="#ffb703"
+									fill="#ffb703"
+								/>
 							) : (
 								<Star size={28} color="#ffb703" />
 							)
@@ -70,19 +74,29 @@ const RatingModal = () => {
 	});
 
 	const { mutate: rateMutation } = api.ratings.rate.useMutation({
-		onSuccess: () => {
-			router.back();
-		},
-		onSettled: () => {
-			utils.ratings.user.get.invalidate({
+		onSuccess: async () => {
+			await utils.ratings.user.get.invalidate({
 				resourceId: resource.resourceId,
 				userId,
 			});
-			utils.ratings.get.invalidate(resource);
+			await utils.ratings.get.invalidate({
+				resourceId: resource.resourceId,
+				category: resource.category,
+			});
+			await utils.profiles.distribution.invalidate({
+				userId,
+			});
+			await utils.ratings.feed.invalidate({
+				filters: {
+					profileId: userId,
+				},
+			});
+			router.back();
 		},
 	});
 
 	const onSubmit = async (rate: RateForm) => {
+		console.log("clearing rating", resource);
 		rateMutation(rate);
 	};
 
@@ -103,7 +117,7 @@ const RatingModal = () => {
 				}}
 			/>
 			<ScrollView
-				contentContainerClassName="p-4 gap-16 justify-between"
+				contentContainerClassName="p-4 justify-between"
 				automaticallyAdjustKeyboardInsets
 			>
 				{imageUrl ? (
@@ -122,7 +136,7 @@ const RatingModal = () => {
 						]}
 					/>
 				) : null}
-				<View className="gap-4">
+				<View className="gap-4 mt-4">
 					<Text variant="h1" className="text-center">
 						{name}
 					</Text>
@@ -135,7 +149,10 @@ const RatingModal = () => {
 						control={control}
 						name="rating"
 						render={({ field: { onChange, value } }) => (
-							<RatingInput value={value ?? 0} onChange={onChange} />
+							<RatingInput
+								value={value ?? 0}
+								onChange={onChange}
+							/>
 						)}
 					/>
 					<Controller
@@ -185,7 +202,10 @@ const RatingModal = () => {
 								<Text>Remove rating</Text>
 							</Pressable>
 						) : (
-							<Pressable onPress={clearRating} className="flex items-center">
+							<Pressable
+								onPress={clearRating}
+								className="flex items-center"
+							>
 								<Text>Remove rating</Text>
 							</Pressable>
 						))}

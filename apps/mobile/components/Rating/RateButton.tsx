@@ -8,16 +8,24 @@ import { useAuth } from "~/lib/auth";
 import { Star } from "~/lib/icons/Star";
 import { Button } from "../ui/button";
 
+const iconSize = {
+	lg: 27,
+	default: 24,
+	sm: 21,
+};
+
 const RateButton = ({
 	initialUserRating,
 	resource,
 	imageUrl,
 	name,
+	size = "default",
 }: {
 	initialUserRating?: Rating | null;
 	resource: Resource;
 	imageUrl?: string | null | undefined;
 	name?: string;
+	size?: "lg" | "default" | "sm";
 }) => {
 	const userId = useAuth((s) => s.profile!.userId);
 	const { data: userRating, isLoading } = api.ratings.user.get.useQuery(
@@ -32,6 +40,8 @@ const RateButton = ({
 		return <Skeleton className="w-[80px] h-[48px]" />;
 	}
 
+	const fill = userRating ? { fill: "#fb8500" } : undefined;
+
 	return (
 		<Link
 			href={{
@@ -44,18 +54,9 @@ const RateButton = ({
 			}}
 			asChild
 		>
-			<Button variant="secondary" className="flex-row gap-2">
-				{!userRating ? (
-					<>
-						<Star size={25} className="mr-2" color="#fb8500" />
-						<Text>Rate</Text>
-					</>
-				) : (
-					<>
-						<Star size={25} className="mr-2" color="#fb8500" fill="#fb8500" />
-						<Text>{userRating.rating}</Text>
-					</>
-				)}
+			<Button variant="secondary" size={size} className="flex-row gap-2">
+				<Star size={iconSize[size]} color="#fb8500" {...fill} />
+				<Text>{userRating ? userRating.rating : "Rate"}</Text>
 			</Button>
 		</Link>
 	);

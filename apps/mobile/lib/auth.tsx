@@ -1,43 +1,84 @@
-import { Profile } from "@recordscratch/types";
+import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useRef } from "react";
+import SuperJSON from "superjson";
+import { z } from "zod";
 import { createStore, useStore } from "zustand";
+import env from "~/env";
+import { catchError } from "./errors";
 
 // Define the context type
 type Auth = {
-	status: "loading" | "authenticated" | "unauthenticated";
+	status: "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
 	sessionId: string | null;
 	profile: Profile | null;
 	logout: () => Promise<void>;
-	login: () => Promise<void>;
-	setSessionId: (sessionId: string) => void;
+	login: (session?: string) => Promise<void>;
+	setSessionId: (sessionId: string) => Promise<void>;
 	setProfile: (profile: Profile) => void;
+	setStatus: (status: Auth["status"]) => void;
 };
 
 type AuthStore = ReturnType<typeof createAuthStore>;
 
 export const createAuthStore = () =>
-	createStore<Auth>()((set) => ({
+	createStore<Auth>()((set, get) => ({
 		status: "loading",
 		sessionId: null,
+		setSessionId: async (sessionId) => {
+			await SecureStore.setItemAsync("sessionId", sessionId);
+			set({ sessionId });
+		},
+		setStatus: (status) => set({ status }),
 		profile: null,
+		setProfile: (profile) => set({ profile }),
 		logout: async () => {
-			set({ sessionId: null, profile: null });
+			await fetch(env.SITE_URL + "/api/auth/signout", {
+				headers: {
+					Authorization: `${get().sessionId}`,
+				},
+			});
+			set({ sessionId: null, profile: null, status: "unauthenticated" });
 			await SecureStore.deleteItemAsync("sessionId");
 		},
-		login: async () => {
-			const sessionId = await SecureStore.getItemAsync("sessionId");
-			if (!sessionId) {
+		login: async (session?: string) => {
+			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
+
+			if (!oldSessionId) {
 				set({ status: "unauthenticated" });
 				return;
 			}
-			set({ sessionId, status: "authenticated" });
+
+			const res = await fetch(`${env.SITE_URL}/api/auth/me?sessionId=${oldSessionId}`);
+			const data = await res.json();
+			const parsedData = z
+				.object({
+					user: UserSchema.extend({ profile: ProfileSchema.nullish() }).nullable(),
+				})
+				.safeParse(
+					SuperJSON.deserialize({
+						json: data,
+						meta: {
+							values: {
+								"user.profile.createdAt": ["Date"],
+								"user.profile.updatedAt": ["Date"],
+							},
+						},
+					})
+				);
+
+			if (parsedData.error || !parsedData.data.user) {
+				get().logout();
+			} else {
+				get().setSessionId(oldSessionId);
+				if (parsedData.data.user.profile) {
+					get().setProfile(parsedData.data.user.profile);
+					set({ status: "authenticated" });
+				} else {
+					set({ status: "needsonboarding" });
+				}
+			}
 		},
-		setSessionId: async (sessionId) => {
-			await SecureStore.setItemAsync("sessionId", sessionId);
-			set({ sessionId, status: "authenticated" });
-		},
-		setProfile: (profile) => set({ profile }),
 	}));
 
 export const AuthContext = createContext<AuthStore | null>(null);
@@ -48,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const status = useStore(store, (s) => s.status);
 
 	useEffect(() => {
-		login();
+		login().catch(catchError);
 	}, [login]);
 
 	if (status === "loading") {
