@@ -1,5 +1,4 @@
 import { ResourceItem } from "@/components/ResourceItem";
-import { Seo } from "@/components/Seo";
 import { FollowButton } from "@/components/followers/FollowButton";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
 import { PendingComponent } from "@/components/router/Pending";
@@ -215,7 +214,7 @@ function Notifications() {
 
 	return (
 		<div className="flex flex-col gap-3">
-			<Seo title="Notifications" />
+			{/* <Seo title="Notifications" /> */}
 			{emptyNotifications && (
 				<div className="my-[20vh] flex w-full flex-col items-center justify-center gap-6">
 					<BellOff size={64} className="text-muted-foreground" />

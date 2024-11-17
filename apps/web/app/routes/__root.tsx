@@ -1,13 +1,13 @@
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import appCss from "@/index.css?url";
 import { seo } from "@/lib/seo";
-import { TRPCReactProvider, apiUtils } from "@/trpc/react";
+import { TRPCReactProvider, api, apiUtils } from "@/trpc/react";
 import { Profile } from "@recordscratch/types";
-import { QueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import {
 	Outlet,
 	ScrollRestoration,
-	createRootRoute,
+	createRootRouteWithContext,
 	useRouterState,
 } from "@tanstack/react-router";
 import {
@@ -84,17 +84,8 @@ const PostHogIdentify = () => {
 };
 
 function RootComponent() {
-	const { queryClient } = Route.useRouteContext();
-
-	const { data } = useSuspenseQuery({
-		queryKey: ["test"],
-		queryFn: () => testFunc(),
-	});
-
-	console.log(data);
-
 	return (
-		<TRPCReactProvider queryClient={queryClient}>
+		<TRPCReactProvider>
 			<PostHogProvider
 				apiKey={process.env.VITE_POSTHOG_KEY}
 				options={{
@@ -118,11 +109,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<Meta />
 			</Head>
 			<Body>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-				>
+				<ThemeProvider>
 					{children}
 					<ScrollRestoration
 						getKey={(location) => location.pathname}

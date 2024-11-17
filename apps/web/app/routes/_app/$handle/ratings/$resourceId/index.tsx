@@ -9,15 +9,9 @@ import {
 	CommentAndProfileAndParent,
 	CreateCommentSchema,
 } from "@recordscratch/types";
-import {
-	Link,
-	createFileRoute,
-	notFound,
-	useRouteContext,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
-import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/Button";
 import {
 	Form,
@@ -448,7 +442,6 @@ function Rating() {
 		from: "__root__",
 	});
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-	const [myProfile] = api.profiles.me.useSuspenseQuery();
 	const [rating] = api.ratings.user.get.useSuspenseQuery({
 		userId: profile!.userId,
 		resourceId,
@@ -481,7 +474,7 @@ function Rating() {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<Seo
+			{/* <Seo
 				title={`Rating by ${profile.name}`}
 				description={`${rating.rating}/10 stars${rating.content && `, Content: ${rating.content}`}`}
 				imageUrl={getImageUrl(profile)}
@@ -491,7 +484,7 @@ function Rating() {
 					profile.handle,
 					rating.rating + "/10",
 				].join(", ")}
-			/>
+			/> */}
 			<Review {...rating} profile={profile} onReply={toggleOpenReply} />
 			{openReply && myProfile && (
 				<CommentForm

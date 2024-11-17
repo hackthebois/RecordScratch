@@ -1,5 +1,4 @@
 import Metadata from "@/components/Metadata";
-import { Seo } from "@/components/Seo";
 import AlbumList from "@/components/album/AlbumList";
 import { ReviewsList } from "@/components/review/ReviewsList";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
@@ -89,11 +88,11 @@ function Index() {
 
 	return (
 		<div className="flex flex-col gap-8">
-			<Seo
+			{/* <Seo
 				title="Recordscratch: Where Music Meets Community"
 				description="Recordscratch is the ultimate music-rating and social hub. Find new music, rate your recent listens, and connect with fellow music enthusiasts."
 				keywords="music, rating, community, social, album, artist, song, review, record, scratch"
-			/>
+			/> */}
 			<AlbumOfTheDay />
 
 			{trending && (

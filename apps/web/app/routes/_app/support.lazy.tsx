@@ -1,6 +1,5 @@
 import * as React from "react";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Seo } from "@/components/Seo";
 import { Discord } from "@/components/icons/Discord";
 import { Button } from "@/components/ui/Button";
 import { Mail } from "lucide-react";
@@ -13,10 +12,10 @@ export const Route = createLazyFileRoute("/_app/support")({
 function RouteComponent() {
 	return (
 		<div className="mx-auto p-4 md:p-8">
-			<Seo
+			{/* <Seo
 				title="Support"
 				description="Get help and support for RecordScratch"
-			/>
+			/> */}
 			<h1 className="mb-4 text-5xl font-bold">Support</h1>
 			<p className="mb-8 text-muted-foreground">
 				Need help with RecordScratch? We're here to assist you. Choose

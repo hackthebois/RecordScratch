@@ -197,10 +197,6 @@ function Onboard() {
 
 	return (
 		<main className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
-			<Seo
-				title="Onboard"
-				description="Create your name, handle, bio, and image before starting"
-			/>
 			<Form {...form}>
 				<form>
 					<SlideWrapper page={page} pageIndex={0}>

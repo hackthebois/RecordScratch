@@ -1,5 +1,4 @@
 import Metadata from "@/components/Metadata";
-import { Seo } from "@/components/Seo";
 import { DeleteListButton } from "@/components/lists/DeleteListButton";
 import ListImage from "@/components/lists/ListImage";
 import { ListResource } from "@/components/lists/ListResource";
@@ -177,10 +176,10 @@ function List() {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<Seo
+			{/* <Seo
 				title={listData.name}
 				description={`${listData.category} list by ${profile.name}`}
-			/>
+			/> */}
 			<Metadata
 				title={listData.name}
 				type={`${listData.category} list`}

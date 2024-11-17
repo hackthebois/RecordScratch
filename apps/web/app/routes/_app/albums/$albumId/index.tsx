@@ -1,5 +1,4 @@
 import Metadata from "@/components/Metadata";
-import { Seo } from "@/components/Seo";
 import SongTable from "@/components/SongTable";
 import { AddToList } from "@/components/lists/AddToList";
 import { RatingDialog } from "@/components/rating/RatingDialog";
@@ -78,7 +77,7 @@ function Album() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<Seo
+			{/* <Seo
 				title={`${album.title} by ${album.artist?.name}`}
 				description={[
 					`${album.title} by ${album.artist?.name}`,
@@ -87,7 +86,7 @@ function Album() {
 				imageUrl={album.cover_big ?? undefined}
 				path={`/albums/${album.id}`}
 				keywords={[album.title, album.artist?.name, ...tags].join(", ")}
-			/>
+			/> */}
 			<Metadata
 				title={album.title}
 				cover={album.cover_big ?? ""}

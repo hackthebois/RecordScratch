@@ -1,9 +1,7 @@
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
-import reactRefresh from "@vitejs/plugin-react";
-import { createApp } from "vinxi";
 import { config } from "vinxi/plugins/config";
 import { envOnlyMacros } from "vite-env-only";
 import viteTsConfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "@tanstack/start/config";
 
 export default defineConfig({
 	vite: {

@@ -1,5 +1,8 @@
 import { sha256 } from "@oslojs/crypto/sha2";
-import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
+import {
+	encodeBase32LowerCaseNoPadding,
+	encodeHexLowerCase,
+} from "@oslojs/encoding";
 import { getDB, sessions, users } from "@recordscratch/db";
 import type { Session, User } from "@recordscratch/types";
 import { eq, or } from "drizzle-orm";
@@ -22,9 +25,14 @@ export const generateSessionToken = (): string => {
 	return token;
 };
 
-export const createSession = async (token: string, userId: string): Promise<Session> => {
+export const createSession = async (
+	token: string,
+	userId: string
+): Promise<Session> => {
 	const db = getDB();
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const sessionId = encodeHexLowerCase(
+		sha256(new TextEncoder().encode(token))
+	);
 	const session: Session = {
 		id: sessionId,
 		userId,
@@ -34,9 +42,13 @@ export const createSession = async (token: string, userId: string): Promise<Sess
 	return session;
 };
 
-export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+export async function validateSessionToken(
+	token: string
+): Promise<SessionValidationResult> {
 	const db = getDB();
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const sessionId = encodeHexLowerCase(
+		sha256(new TextEncoder().encode(token))
+	);
 	const result = await db
 		.select({ user: users, session: sessions })
 		.from(sessions)
@@ -71,7 +83,10 @@ export function generateId(length: number): string {
 	return generateRandomString(length, alphabet("a-z", "0-9"));
 }
 
-export const setSessionCookie = (event: H3Event, token: string | undefined): void => {
+export const setSessionCookie = (
+	event: H3Event,
+	token: string | undefined
+): void => {
 	if (token) {
 		setCookie(event, "session", token, {
 			secure: process.env.NODE_ENV === "production",
@@ -84,7 +99,11 @@ export const setSessionCookie = (event: H3Event, token: string | undefined): voi
 	}
 };
 
-export const setOAuthCookies = (event: H3Event, state: string, verifier?: string): void => {
+export const setOAuthCookies = (
+	event: H3Event,
+	state: string,
+	verifier?: string
+): void => {
 	setCookie(event, "state", state, {
 		secure: process.env.NODE_ENV === "production",
 		path: "/",
@@ -167,10 +186,14 @@ export const handleUser = async (
 	else setSessionCookie(event, token);
 
 	if (onReturn === "sessionId")
-		return {
-			sessionId: token,
-		};
-	else return sendRedirect(event, redirect);
+		return new Response(JSON.stringify({ sessionId: token }), {
+			status: 200,
+		});
+	else
+		return new Response(null, {
+			status: 302,
+			headers: { Location: redirect },
+		});
 };
 
 export type SessionValidationResult =

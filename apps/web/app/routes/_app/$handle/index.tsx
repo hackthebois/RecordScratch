@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Seo } from "@/components/Seo";
 import { useTheme } from "@/components/ThemeProvider";
 import FollowerMenu from "@/components/followers/FollowersMenu";
 import { CreateList } from "@/components/lists/CreateList";
@@ -32,8 +31,9 @@ import {
 	notFound,
 	useNavigate,
 	useRouteContext,
+	useRouter,
 } from "@tanstack/react-router";
-import { Disc3 } from "lucide-react";
+import { Disc3, Loader2 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Suspense, useState } from "react";
 import { z } from "zod";
@@ -144,7 +144,6 @@ function Handle() {
 		category = "all",
 		topCategory = "ALBUM",
 	} = Route.useSearch();
-	const { data: myProfile } = api.profiles.me.useQuery();
 
 	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 	const { data: distribution } = api.profiles.distribution.useQuery(
@@ -191,7 +190,7 @@ function Handle() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<Seo
+			{/* <Seo
 				title={profile.name}
 				description={[
 					...(profile.bio ? [profile.bio] : []),
@@ -200,7 +199,7 @@ function Handle() {
 				imageUrl={getImageUrl(profile)}
 				path={`/${profile.handle}`}
 				keywords={tags.join(", ")}
-			/>
+			/> */}
 			<div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
 				<UserAvatar
 					imageUrl={getImageUrl(profile)}
