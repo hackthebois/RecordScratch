@@ -27,6 +27,7 @@ import { Route as AppAlbumsAlbumIdSongsSongIdIndexImport } from './routes/_app/a
 // Create Virtual Routes
 
 const AppTermsLazyImport = createFileRoute('/_app/terms')()
+const AppSupportLazyImport = createFileRoute('/_app/support')()
 const AppRoadmapLazyImport = createFileRoute('/_app/roadmap')()
 const AppPrivacyPolicyLazyImport = createFileRoute('/_app/privacy-policy')()
 
@@ -54,6 +55,12 @@ const AppTermsLazyRoute = AppTermsLazyImport.update({
   path: '/terms',
   getParentRoute: () => AppRoute,
 } as any).lazy(() => import('./routes/_app/terms.lazy').then((d) => d.Route))
+
+const AppSupportLazyRoute = AppSupportLazyImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AppRoute,
+} as any).lazy(() => import('./routes/_app/support.lazy').then((d) => d.Route))
 
 const AppRoadmapLazyRoute = AppRoadmapLazyImport.update({
   id: '/roadmap',
@@ -152,6 +159,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRoadmapLazyImport
       parentRoute: typeof AppImport
     }
+    '/_app/support': {
+      id: '/_app/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof AppSupportLazyImport
+      parentRoute: typeof AppImport
+    }
     '/_app/terms': {
       id: '/_app/terms'
       path: '/terms'
@@ -217,6 +231,7 @@ interface AppRouteChildren {
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppPrivacyPolicyLazyRoute: typeof AppPrivacyPolicyLazyRoute
   AppRoadmapLazyRoute: typeof AppRoadmapLazyRoute
+  AppSupportLazyRoute: typeof AppSupportLazyRoute
   AppTermsLazyRoute: typeof AppTermsLazyRoute
   AppIndexRoute: typeof AppIndexRoute
   AppHandleIndexRoute: typeof AppHandleIndexRoute
@@ -231,6 +246,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppNotificationsRoute: AppNotificationsRoute,
   AppPrivacyPolicyLazyRoute: AppPrivacyPolicyLazyRoute,
   AppRoadmapLazyRoute: AppRoadmapLazyRoute,
+  AppSupportLazyRoute: AppSupportLazyRoute,
   AppTermsLazyRoute: AppTermsLazyRoute,
   AppIndexRoute: AppIndexRoute,
   AppHandleIndexRoute: AppHandleIndexRoute,
@@ -249,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AppNotificationsRoute
   '/privacy-policy': typeof AppPrivacyPolicyLazyRoute
   '/roadmap': typeof AppRoadmapLazyRoute
+  '/support': typeof AppSupportLazyRoute
   '/terms': typeof AppTermsLazyRoute
   '/': typeof AppIndexRoute
   '/$handle': typeof AppHandleIndexRoute
@@ -264,6 +281,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof AppNotificationsRoute
   '/privacy-policy': typeof AppPrivacyPolicyLazyRoute
   '/roadmap': typeof AppRoadmapLazyRoute
+  '/support': typeof AppSupportLazyRoute
   '/terms': typeof AppTermsLazyRoute
   '/': typeof AppIndexRoute
   '/$handle': typeof AppHandleIndexRoute
@@ -281,6 +299,7 @@ export interface FileRoutesById {
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/privacy-policy': typeof AppPrivacyPolicyLazyRoute
   '/_app/roadmap': typeof AppRoadmapLazyRoute
+  '/_app/support': typeof AppSupportLazyRoute
   '/_app/terms': typeof AppTermsLazyRoute
   '/_app/': typeof AppIndexRoute
   '/_app/$handle/': typeof AppHandleIndexRoute
@@ -299,6 +318,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/privacy-policy'
     | '/roadmap'
+    | '/support'
     | '/terms'
     | '/'
     | '/$handle'
@@ -313,6 +333,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/privacy-policy'
     | '/roadmap'
+    | '/support'
     | '/terms'
     | '/'
     | '/$handle'
@@ -328,6 +349,7 @@ export interface FileRouteTypes {
     | '/_app/notifications'
     | '/_app/privacy-policy'
     | '/_app/roadmap'
+    | '/_app/support'
     | '/_app/terms'
     | '/_app/'
     | '/_app/$handle/'
@@ -369,6 +391,7 @@ export const routeTree = rootRoute
         "/_app/notifications",
         "/_app/privacy-policy",
         "/_app/roadmap",
+        "/_app/support",
         "/_app/terms",
         "/_app/",
         "/_app/$handle/",
@@ -392,6 +415,10 @@ export const routeTree = rootRoute
     },
     "/_app/roadmap": {
       "filePath": "_app/roadmap.lazy.tsx",
+      "parent": "/_app"
+    },
+    "/_app/support": {
+      "filePath": "_app/support.lazy.tsx",
       "parent": "/_app"
     },
     "/_app/terms": {
