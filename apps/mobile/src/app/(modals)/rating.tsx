@@ -30,7 +30,11 @@ const RatingInput = ({
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<Star size={28} color="#ffb703" fill="#ffb703" />
+								<Star
+									size={28}
+									color="#ffb703"
+									fill="#ffb703"
+								/>
 							) : (
 								<Star size={28} color="#ffb703" />
 							)
@@ -78,6 +82,14 @@ const RatingModal = () => {
 			await utils.ratings.get.invalidate({
 				resourceId: resource.resourceId,
 				category: resource.category,
+			});
+			await utils.profiles.distribution.invalidate({
+				userId,
+			});
+			await utils.ratings.feed.invalidate({
+				filters: {
+					profileId: userId,
+				},
 			});
 			router.back();
 		},
@@ -137,7 +149,10 @@ const RatingModal = () => {
 						control={control}
 						name="rating"
 						render={({ field: { onChange, value } }) => (
-							<RatingInput value={value ?? 0} onChange={onChange} />
+							<RatingInput
+								value={value ?? 0}
+								onChange={onChange}
+							/>
 						)}
 					/>
 					<Controller
@@ -187,7 +202,10 @@ const RatingModal = () => {
 								<Text>Remove rating</Text>
 							</Pressable>
 						) : (
-							<Pressable onPress={clearRating} className="flex items-center">
+							<Pressable
+								onPress={clearRating}
+								className="flex items-center"
+							>
 								<Text>Remove rating</Text>
 							</Pressable>
 						))}

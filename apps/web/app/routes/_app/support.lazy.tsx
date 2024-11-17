@@ -3,7 +3,6 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { Seo } from "@/components/Seo";
 import { Discord } from "@/components/icons/Discord";
 import { Button } from "@/components/ui/Button";
-import { env } from "@/env";
 import { Mail } from "lucide-react";
 import { socials } from "@/lib/socials";
 
@@ -47,7 +46,6 @@ function RouteComponent() {
 						</Button>
 					</a>
 				</section>
-
 				<section>
 					<h2 className="mb-4 text-3xl font-semibold">
 						Email Support
@@ -59,11 +57,11 @@ function RouteComponent() {
 					<a href={"mailto:" + socials.email}>
 						<Button variant="outline" className="gap-2">
 							<Mail size={20} />
-							Email Support
+							Send us an Email
 						</Button>
 					</a>
 					<p className="mt-2 text-sm text-muted-foreground">
-						or copy{" "}
+						Alternatively, copy our email address:{" "}
 						<span className="font-mono">{socials.email}</span>
 					</p>
 				</section>

@@ -11,7 +11,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/Popover";
 import UserButton from "@/components/user/UserButton";
-import { env } from "@/env";
 import { socials } from "@/lib/socials";
 import { api } from "@/trpc/react";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
