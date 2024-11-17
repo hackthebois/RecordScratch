@@ -40,7 +40,7 @@ const SlideWrapper = ({
 		>
 			{page !== 0 ? <Pill>STEP {page}/3</Pill> : null}
 			{title ? (
-				<Text className="my-8" variant="h1">
+				<Text className="my-8 text-center" variant="h1">
 					{title}
 				</Text>
 			) : null}
@@ -235,7 +235,7 @@ function Onboard() {
 				);
 			case 1:
 				return (
-					<SlideWrapper page={page} pageIndex={1} title="Pick a name" key={1}>
+					<SlideWrapper page={page} pageIndex={1} title="Pick a display name and handle" key={1}>
 						<Controller
 							control={form.control}
 							name="name"
@@ -243,7 +243,7 @@ function Onboard() {
 								<View className="relative self-stretch">
 									<TextInput
 										{...field}
-										placeholder="Name"
+										placeholder="Display name"
 										className="self-stretch text-foreground border-border border rounded-md px-4 py-3"
 										autoComplete="off"
 										onChangeText={field.onChange}
