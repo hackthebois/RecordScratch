@@ -87,7 +87,7 @@ const RootLayout = () => {
 	const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 	const ref = useNavigationContainerRef();
-	const [preloadDone, setPreloadDone] = useState(false);
+	const [updatesHandled, setUpdatesHandled] = useState(false);
 
 	useEffect(() => {
 		const preload = async () => {
@@ -106,7 +106,7 @@ const RootLayout = () => {
 				}
 			}
 		};
-		preload().finally(() => setPreloadDone(true));
+		preload().finally(() => setUpdatesHandled(true));
 	}, []);
 
 	useEffect(() => {
@@ -140,12 +140,12 @@ const RootLayout = () => {
 	}, [fontError]);
 
 	useEffect(() => {
-		if (fontLoaded && isColorSchemeLoaded && preloadDone) {
+		if (fontLoaded && isColorSchemeLoaded && updatesHandled) {
 			SplashScreen.hideAsync();
 		}
-	}, [fontLoaded, isColorSchemeLoaded, preloadDone]);
+	}, [fontLoaded, isColorSchemeLoaded, updatesHandled]);
 
-	if (!fontLoaded || !isColorSchemeLoaded || !preloadDone) {
+	if (!fontLoaded || !isColorSchemeLoaded || !updatesHandled) {
 		return null;
 	}
 
