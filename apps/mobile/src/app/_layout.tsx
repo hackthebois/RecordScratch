@@ -140,10 +140,10 @@ const RootLayout = () => {
 	}, [fontError]);
 
 	useEffect(() => {
-		if (fontLoaded) {
+		if (fontLoaded && isColorSchemeLoaded && preloadDone) {
 			SplashScreen.hideAsync();
 		}
-	}, [fontLoaded, isColorSchemeLoaded]);
+	}, [fontLoaded, isColorSchemeLoaded, preloadDone]);
 
 	if (!fontLoaded || !isColorSchemeLoaded || !preloadDone) {
 		return null;
