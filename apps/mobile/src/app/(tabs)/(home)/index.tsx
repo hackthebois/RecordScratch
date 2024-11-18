@@ -32,13 +32,16 @@ const AlbumOfTheDay = () => {
 			type="ALBUM OF THE DAY"
 			tags={[
 				album.release_date,
-				album.duration ? `${formatDuration(album.duration)}` : undefined,
-				...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+				album.duration
+					? `${formatDuration(album.duration)}`
+					: undefined,
+				...(album.genres?.data.map(
+					(genre: { name: any }) => genre.name
+				) ?? []),
 			]}
 		>
 			<Button
 				variant="secondary"
-				className="w-1/3"
 				onPress={() => {
 					router.navigate(`/albums/${albumOfTheDay.albumId}`);
 				}}
@@ -60,7 +63,10 @@ const HomePage = () => {
 					title: "Home",
 				}}
 			/>
-			<ScrollView contentContainerClassName="flex flex-col pb-4" nestedScrollEnabled>
+			<ScrollView
+				contentContainerClassName="flex flex-col pb-4"
+				nestedScrollEnabled
+			>
 				<AlbumOfTheDay />
 				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Trending
