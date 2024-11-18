@@ -16,7 +16,7 @@ import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
 import { Stack, useNavigationContainerRef } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import * as SplashScreen from "expo-splash-screen";
+import { SplashScreen } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Text } from "~/components/ui/text";
@@ -138,12 +138,6 @@ const RootLayout = () => {
 	useEffect(() => {
 		if (fontError) throw fontError;
 	}, [fontError]);
-
-	useEffect(() => {
-		if (fontLoaded && isColorSchemeLoaded && updatesHandled) {
-			SplashScreen.hideAsync();
-		}
-	}, [fontLoaded, isColorSchemeLoaded, updatesHandled]);
 
 	if (!fontLoaded || !isColorSchemeLoaded || !updatesHandled) {
 		return null;
