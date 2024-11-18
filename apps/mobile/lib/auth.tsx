@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createStore, useStore } from "zustand";
 import env from "~/env";
 import { catchError } from "./errors";
-import { SplashScreen } from "expo-router";
+import { SplashScreen, useRouter } from "expo-router";
 
 // Define the context type
 type Auth = {
@@ -90,16 +90,23 @@ export const createAuthStore = () =>
 export const AuthContext = createContext<AuthStore | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+	const router = useRouter();
 	const store = useRef(createAuthStore()).current;
 	const login = useStore(store, (s) => s.login);
+	const logout = useStore(store, (s) => s.logout);
 	const status = useStore(store, (s) => s.status);
 
 	useEffect(() => {
 		login()
-			.then(async () => {
-				await SplashScreen.hideAsync();
+			.catch((e) => {
+				catchError(e);
+				logout().then(() => {
+					router.replace("/signin");
+				});
 			})
-			.catch(catchError);
+			.finally(async () => {
+				await SplashScreen.hideAsync();
+			});
 	}, [login]);
 
 	if (status === "loading") {
