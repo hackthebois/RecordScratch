@@ -17,7 +17,7 @@ import { isRunningInExpoGo } from "expo";
 import { Stack, useNavigationContainerRef } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Text } from "~/components/ui/text";
 import { TRPCProvider } from "~/lib/api";
@@ -25,6 +25,9 @@ import { AuthProvider } from "~/lib/auth";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
+import env from "~/env";
+import * as Updates from "expo-updates";
+import { catchError } from "~/lib/errors";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -44,6 +47,12 @@ export const unstable_settings = {
 	// Ensure that reloading on `/modal` keeps a back button present.
 	initialRouteName: "auth",
 };
+
+const timeoutPromise = new Promise<void>((_, reject) => {
+	setTimeout(() => {
+		reject(new Error("Timeout error"));
+	}, 5000);
+}).catch(() => {});
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
@@ -78,6 +87,27 @@ const RootLayout = () => {
 	const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 	const ref = useNavigationContainerRef();
+	const [preloadDone, setPreloadDone] = useState(false);
+
+	useEffect(() => {
+		const preload = async () => {
+			if (env.ENV !== "development") {
+				try {
+					const update = await Promise.race([
+						Updates.checkForUpdateAsync(),
+						timeoutPromise,
+					]);
+					if (update && update.isAvailable) {
+						await Updates.fetchUpdateAsync();
+						await Updates.reloadAsync();
+					}
+				} catch (error) {
+					catchError(error);
+				}
+			}
+		};
+		preload().finally(() => setPreloadDone(true));
+	}, []);
 
 	useEffect(() => {
 		if (ref?.current) {
@@ -115,7 +145,7 @@ const RootLayout = () => {
 		}
 	}, [fontLoaded, isColorSchemeLoaded]);
 
-	if (!fontLoaded || !isColorSchemeLoaded) {
+	if (!fontLoaded || !isColorSchemeLoaded || !preloadDone) {
 		return null;
 	}
 
@@ -123,12 +153,16 @@ const RootLayout = () => {
 		<AuthProvider>
 			<TRPCProvider>
 				<SafeAreaProvider>
-					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+					<ThemeProvider
+						value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
+					>
 						<Stack
 							screenOptions={{
 								animation: "fade",
 								headerBackTitleVisible: false,
-								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+								headerTitle: (props) => (
+									<Text variant="h4">{props.children}</Text>
+								),
 							}}
 						>
 							<Stack.Screen
