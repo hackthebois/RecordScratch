@@ -119,6 +119,7 @@ const RatingModal = () => {
 			<ScrollView
 				contentContainerClassName="p-4 justify-between"
 				automaticallyAdjustKeyboardInsets
+				keyboardShouldPersistTaps="handled"
 			>
 				{imageUrl ? (
 					<Image
