@@ -27,17 +27,22 @@ const SettingsPage = () => {
 				}}
 			/>
 			<Link href={`/settings/editprofile`} asChild>
-				<Button variant="outline" className="gap-2 flex-row justify-between">
-					<Text>Edit profile</Text>
+				<Button
+					variant="outline"
+					className="gap-2 flex-row justify-between"
+				>
+					<Text>Edit Profile</Text>
 					<User className="text-muted-foreground" size={18} />
 				</Button>
 			</Link>
 			<Button
 				variant="outline"
-				onPress={async () => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
+				onPress={async () =>
+					setColorScheme(colorScheme === "dark" ? "light" : "dark")
+				}
 				className="flex-row items-center gap-2 justify-between"
 			>
-				<Text>Toggle theme</Text>
+				<Text>Toggle Theme</Text>
 				{colorScheme === "light" ? (
 					<Sun className="text-muted-foreground" size={18} />
 				) : (
@@ -54,7 +59,7 @@ const SettingsPage = () => {
 					await logout().catch(catchError);
 				}}
 			>
-				<Text>Sign out</Text>
+				<Text>Sign Out</Text>
 			</Button>
 		</ScrollView>
 	);
