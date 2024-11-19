@@ -8,6 +8,49 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { Text } from "~/components/ui/text";
 import { getQueryOptions } from "~/lib/deezer";
 
+export const ResourceItemSkeleton = ({
+	direction = "horizontal",
+	imageCss,
+	imageWidthAndHeight = 150,
+	showArtist = true,
+}: {
+	direction?: "horizontal" | "vertical";
+	imageCss?: string;
+	imageWidthAndHeight?: number;
+	showArtist?: boolean;
+}) => {
+	return (
+		<View
+			className={cn(
+				"flex gap-4",
+				direction === "vertical" ? "flex-col" : "flex-row items-center"
+			)}
+			style={{
+				width: direction === "vertical" ? imageWidthAndHeight : "100%",
+			}}
+		>
+			<View
+				style={{
+					width: imageWidthAndHeight,
+					height: imageWidthAndHeight,
+				}}
+			>
+				<Skeleton className={cn(`h-full w-full rounded-xl`, imageCss)} />
+			</View>
+			<View className="flex flex-col gap-2">
+				<Skeleton className="w-[80%]">
+					<Text />
+				</Skeleton>
+				{showArtist ? (
+					<Skeleton className="w-[60%]">
+						<Text />
+					</Skeleton>
+				) : null}
+			</View>
+		</View>
+	);
+};
+
 export const ResourceItem = ({
 	initialAlbum,
 	resource,
@@ -61,32 +104,7 @@ export const ResourceItem = ({
 
 	if (isLoading || !album || (resource.category === "SONG" && isLoadingTracks)) {
 		return (
-			<View
-				className={cn(
-					"flex gap-4 rounded w-full",
-					className,
-					direction === "vertical" ? "flex-col" : "flex-row items-center"
-				)}
-			>
-				<View
-					style={{
-						width: imageWidthAndHeight,
-						height: imageWidthAndHeight,
-					}}
-				>
-					<Skeleton className={cn(`h-full w-full`, imageCss)} />
-				</View>
-				<View className="flex flex-col gap-2">
-					<Skeleton className="w-[80%]">
-						<Text />
-					</Skeleton>
-					{showArtist ? (
-						<Skeleton className="w-[60%]">
-							<Text className={cn("h-4", artistNameCss)} />
-						</Skeleton>
-					) : null}
-				</View>
-			</View>
+			<ResourceItemSkeleton {...{ direction, imageCss, imageWidthAndHeight, showArtist }} />
 		);
 	}
 
@@ -109,7 +127,7 @@ export const ResourceItem = ({
 		>
 			<View
 				className={cn(
-					"flex gap-4 rounded w-full",
+					"flex gap-4 w-full",
 					className,
 					direction === "vertical" ? "flex-col" : "flex-row items-center"
 				)}
@@ -128,7 +146,7 @@ export const ResourceItem = ({
 					<View className="h-full w-full bg-muted"></View>
 				)}
 				<View className="flex flex-col gap-2">
-					<Text className={cn(" truncate font-semibold mr-3", titleCss)}>{name}</Text>
+					<Text className={cn("truncate font-semibold mr-3", titleCss)}>{name}</Text>
 					<View className="flex flex-row gap-1 self-baseline">
 						{showType && (
 							<Text className="text-muted-foreground">

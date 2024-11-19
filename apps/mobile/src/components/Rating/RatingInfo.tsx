@@ -1,10 +1,11 @@
 import { cn } from "@recordscratch/lib";
 import { Resource, ResourceRating } from "@recordscratch/types";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { Pressable, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { Star } from "~/lib/icons/Star";
+import { Skeleton } from "../ui/skeleton";
 
 export const RatingInfo = ({
 	initialRating,
@@ -15,13 +16,40 @@ export const RatingInfo = ({
 	resource: Resource;
 	size?: "lg" | "sm";
 }) => {
-	const router = useRouter();
 	const { data: rating, isLoading } = api.ratings.get.useQuery(resource, {
 		initialData: initialRating,
 		staleTime: Infinity,
 	});
 
-	if (isLoading) return <Star size={32} color="#ffb703" />;
+	if (isLoading)
+		return (
+			<View
+				className={cn(
+					"flex min-h-12 gap-4 justify-center",
+					size === "sm" && "h-8 min-w-18",
+					size === "lg" && "h-12 min-w-20"
+				)}
+			>
+				<View className="flex items-center justify-center flex-row gap-2">
+					<Star size={size === "lg" ? 32 : 21} color="#ffb703" />
+					<View className="flex flex-col gap-1">
+						<Skeleton className="w-6">
+							<Text
+								className={cn({
+									"text-lg font-semibold": size === "lg",
+									"font-semibold text": size === "sm",
+								})}
+							/>
+						</Skeleton>
+						{size === "lg" && (
+							<Skeleton className="w-4">
+								<Text className="text-lg text-muted-foreground" />
+							</Skeleton>
+						)}
+					</View>
+				</View>
+			</View>
+		);
 
 	const href =
 		resource.category === "ALBUM"
@@ -32,15 +60,17 @@ export const RatingInfo = ({
 
 	return (
 		<Link href={href} asChild>
-			<Pressable className="flex min-h-12 gap-4 justify-center">
+			<Pressable
+				className={cn(
+					"flex min-h-12 gap-4 justify-center",
+					size === "sm" && "h-8 min-w-18",
+					size === "lg" && "h-12 min-w-20"
+				)}
+			>
 				{!(size === "sm" && !rating?.average) && (
 					<View className="flex items-center justify-center flex-row gap-2">
-						<Star
-							size={size === "lg" ? 32 : 21}
-							color="#ffb703"
-							fill="#ffb703"
-						/>
-						<View className="flex flex-col items-center">
+						<Star size={size === "lg" ? 32 : 21} color="#ffb703" fill="#ffb703" />
+						<View className="flex flex-col">
 							{rating?.average && (
 								<Text
 									className={cn({

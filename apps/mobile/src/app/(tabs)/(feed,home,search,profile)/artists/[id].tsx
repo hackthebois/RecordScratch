@@ -91,7 +91,6 @@ const ArtistPage = () => {
 									artistId={String(artist.id)}
 									initialArtist={artist}
 									direction="vertical"
-									textCss="line-clamp-2 text-center w-32"
 									imageWidthAndHeight={105}
 								/>
 							)}

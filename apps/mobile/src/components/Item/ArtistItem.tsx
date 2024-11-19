@@ -83,10 +83,13 @@ export const ArtistItem = ({
 		>
 			<View
 				className={cn(
-					"flex w-full items-center gap-4",
+					"flex items-center gap-4",
 					className,
 					direction === "vertical" ? "flex-col" : "flex-row"
 				)}
+				style={{
+					width: direction === "vertical" ? imageWidthAndHeight : "100%",
+				}}
 			>
 				<View className="items-center justify-center rounded-full overflow-hidden">
 					{artistImage ? (
@@ -101,7 +104,15 @@ export const ArtistItem = ({
 					)}
 				</View>
 				<View className="justify-center gap-1">
-					<Text className={cn("flex font-medium", textCss)}>{artist.name}</Text>
+					<Text
+						className={cn(
+							"flex font-medium line-clamp-2",
+							direction === "vertical" ? "text-center" : "",
+							textCss
+						)}
+					>
+						{artist.name}
+					</Text>
 					{showType && <Text className="text-muted-foreground">{"Artist"}</Text>}
 				</View>
 			</View>
