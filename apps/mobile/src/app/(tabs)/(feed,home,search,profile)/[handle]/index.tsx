@@ -1,4 +1,4 @@
-import { ListWithResources } from "@recordscratch/types";
+import { ListWithResources, Profile } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
@@ -20,7 +20,9 @@ import { getImageUrl } from "~/lib/image";
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
 
-	return <ProfilePage handle={handle!} />;
+	const [profile] = api.profiles.get.useSuspenseQuery(handle);
+
+	return <ProfilePage profile={profile} />;
 };
 
 const TopListsTab = ({
@@ -97,11 +99,9 @@ const TopListsTab = ({
 	);
 };
 
-export const ProfilePage = ({ handle }: { handle: string }) => {
+export const ProfilePage = ({ profile }: { profile: Profile | null }) => {
 	const myProfile = useAuth((s) => s.profile);
 	const router = useRouter();
-
-	const [profile] = api.profiles.get.useSuspenseQuery(handle);
 
 	if (!profile) return <NotFoundScreen />;
 
