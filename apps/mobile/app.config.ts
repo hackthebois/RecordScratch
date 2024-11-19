@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: "RecordScratch",
 	slug: "recordscratch",
-	version: "0.0.2",
+	version: "0.0.3",
 	orientation: "portrait",
 	icon: "./assets/icon.png",
 	scheme: "recordscratch",
@@ -14,6 +14,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		resizeMode: "contain",
 		backgroundColor: "#ffffff",
 	},
+
 	assetBundlePatterns: ["**/*"],
 	ios: {
 		supportsTablet: true,
@@ -41,6 +42,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				project: "recordscratch",
 			},
 		],
+		"expo-font",
+		"expo-secure-store",
 	],
 	experiments: {
 		tsconfigPaths: true,
