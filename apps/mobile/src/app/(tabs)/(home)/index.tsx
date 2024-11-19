@@ -135,8 +135,8 @@ const HomePage = () => {
 						/>
 					)}
 					horizontal
-					showsHorizontalScrollIndicator
-					contentContainerClassName="px-4 h-64"
+					showsHorizontalScrollIndicator={false}
+					contentContainerClassName="px-4 h-48"
 					ItemSeparatorComponent={() => <View className="w-4" />}
 					estimatedItemSize={105}
 				/>
