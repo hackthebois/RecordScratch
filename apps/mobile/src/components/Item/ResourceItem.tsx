@@ -146,7 +146,7 @@ export const ResourceItem = ({
 					<View className="h-full w-full bg-muted"></View>
 				)}
 				<View className="flex flex-col gap-2">
-					<Text className={cn(" truncate font-semibold mr-3", titleCss)}>{name}</Text>
+					<Text className={cn("truncate font-semibold mr-3", titleCss)}>{name}</Text>
 					<View className="flex flex-row gap-1 self-baseline">
 						{showType && (
 							<Text className="text-muted-foreground">

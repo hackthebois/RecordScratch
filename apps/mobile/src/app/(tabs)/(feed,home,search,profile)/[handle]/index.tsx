@@ -114,7 +114,7 @@ const TopListsTab = ({
 						key={artist.resourceId}
 						artistId={artist.resourceId}
 						direction="vertical"
-						textCss="font-medium line-clamp-2 text-center"
+						textCss="font-medium"
 					/>
 				))}
 			</TabsContent>

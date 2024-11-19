@@ -6,6 +6,7 @@ import React from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AlbumItem from "~/components/Item/AlbumItem";
+import { ArtistItem } from "~/components/Item/ArtistItem";
 import { ResourceItemSkeleton } from "~/components/Item/ResourceItem";
 import Metadata from "~/components/Metadata";
 import { Button } from "~/components/ui/button";
@@ -52,6 +53,8 @@ const AlbumOfTheDay = () => {
 const HomePage = () => {
 	const { data: trending } = api.ratings.trending.useQuery();
 	const { data: top } = api.ratings.top.useQuery();
+	const { data: popular } = api.ratings.popular.useQuery();
+	const { data: topArtists } = api.ratings.topArtists.useQuery();
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
@@ -63,7 +66,7 @@ const HomePage = () => {
 			<ScrollView contentContainerClassName="flex flex-col pb-4" nestedScrollEnabled>
 				<AlbumOfTheDay />
 				<Text variant="h2" className="pt-6 pb-4 px-4">
-					Trending
+					Trending Albums
 				</Text>
 				<FlashList
 					data={trending}
@@ -99,6 +102,43 @@ const HomePage = () => {
 						</ScrollView>
 					}
 					showsHorizontalScrollIndicator={false}
+				/>
+				<Text variant="h2" className="pt-6 pb-4 px-4">
+					Most Popular Albums
+				</Text>
+				<FlashList
+					data={popular}
+					renderItem={({ item }) => <AlbumItem {...item} />}
+					horizontal
+					contentContainerClassName="px-4 h-64"
+					ItemSeparatorComponent={() => <View className="w-4" />}
+					estimatedItemSize={150}
+					ListEmptyComponent={
+						<ScrollView horizontal contentContainerClassName="gap-4">
+							<ResourceItemSkeleton direction="vertical" />
+							<ResourceItemSkeleton direction="vertical" />
+							<ResourceItemSkeleton direction="vertical" />
+						</ScrollView>
+					}
+					showsHorizontalScrollIndicator={false}
+				/>
+				<Text variant="h2" className="pt-6 pb-4 px-4">
+					Top Artists
+				</Text>
+				<FlashList
+					data={topArtists}
+					renderItem={({ item: { artistId } }) => (
+						<ArtistItem
+							artistId={artistId}
+							direction="vertical"
+							imageWidthAndHeight={105}
+						/>
+					)}
+					horizontal
+					showsHorizontalScrollIndicator
+					contentContainerClassName="px-4 h-64"
+					ItemSeparatorComponent={() => <View className="w-4" />}
+					estimatedItemSize={105}
 				/>
 			</ScrollView>
 		</SafeAreaView>

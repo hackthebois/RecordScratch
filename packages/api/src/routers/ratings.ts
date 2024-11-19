@@ -111,6 +111,35 @@ export const ratingsRouter = router({
 			.limit(20);
 		return data;
 	}),
+	popular: publicProcedure.query(async ({ ctx: { db } }) => {
+		return await db
+			.select({
+				total: count(ratings.rating),
+				resourceId: ratings.resourceId,
+			})
+			.from(ratings)
+			.where(eq(ratings.category, "ALBUM"))
+			.groupBy(ratings.resourceId)
+			.orderBy(({ total }) => desc(total))
+			.limit(20);
+	}),
+	topArtists: publicProcedure.query(async ({ ctx: { db } }) => {
+		const rating = await db
+			.select({
+				total: count(ratings.rating),
+				average: avg(ratings.rating),
+				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 100`,
+				artistId: ratings.parentId,
+			})
+			.from(ratings)
+			.groupBy(ratings.parentId)
+			.where(eq(ratings.category, "ALBUM"))
+			.orderBy(({ sortValue }) => desc(sortValue))
+			.having(({ total }) => gt(total, 5))
+			.limit(20);
+		console.log(rating);
+		return rating;
+	}),
 	feed: publicProcedure
 		.input(
 			PaginatedInput.extend({
