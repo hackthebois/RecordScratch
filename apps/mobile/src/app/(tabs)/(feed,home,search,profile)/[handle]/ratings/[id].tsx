@@ -1,7 +1,7 @@
-import NotFoundScreen from "#/app/+not-found";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
+import NotFoundScreen from "~/app/+not-found";
 import { Comment } from "~/components/Comment";
 import { Review } from "~/components/Review";
 import { api } from "~/lib/api";

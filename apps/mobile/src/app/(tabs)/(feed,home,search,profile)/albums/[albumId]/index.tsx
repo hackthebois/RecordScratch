@@ -1,11 +1,11 @@
-import NotFoundScreen from "#/app/+not-found";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, Stack, router, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import NotFoundScreen from "~/app/+not-found";
 import StatBlock from "~/components/CoreComponents/StatBlock";
 import Metadata from "~/components/Metadata";
 import RateButton from "~/components/Rating/RateButton";
@@ -53,7 +53,6 @@ export default function AlbumLayout() {
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
 			<View className="flex flex-1">
 				<ScrollView contentContainerClassName="pb-4">
-					<Stack.Screen />
 					<Metadata
 						title={album.title}
 						type="ALBUM"

@@ -1,9 +1,9 @@
-import NotFoundScreen from "#/app/+not-found";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, TextInput, View } from "react-native";
 import { z } from "zod";
+import NotFoundScreen from "~/app/+not-found";
 import { Review } from "~/components/Review";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";

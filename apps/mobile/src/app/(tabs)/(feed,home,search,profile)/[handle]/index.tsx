@@ -1,8 +1,8 @@
-import NotFoundScreen from "#/app/+not-found";
 import { ListWithResources } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import NotFoundScreen from "~/app/+not-found";
 import DistributionChart from "~/components/DistributionChart";
 import { FollowButton } from "~/components/Followers/FollowButton";
 import FollowerMenu from "~/components/Followers/FollowersMenu";

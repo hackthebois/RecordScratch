@@ -1,10 +1,10 @@
-import NotFoundScreen from "#/app/+not-found";
 import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import NotFoundScreen from "~/app/+not-found";
 import StatBlock from "~/components/CoreComponents/StatBlock";
 import Metadata from "~/components/Metadata";
 import RateButton from "~/components/Rating/RateButton";
