@@ -1,12 +1,13 @@
 import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from "expo-splash-screen";
 import { createContext, useContext, useEffect, useRef } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
 import { createStore, useStore } from "zustand";
 import env from "~/env";
 import { catchError } from "./errors";
-import { SplashScreen, useRouter } from "expo-router";
 
 // Define the context type
 type Auth = {
@@ -43,17 +44,14 @@ export const createAuthStore = () =>
 			await SecureStore.deleteItemAsync("sessionId");
 		},
 		login: async (session?: string) => {
-			const oldSessionId =
-				session ?? (await SecureStore.getItemAsync("sessionId"));
+			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
 
 			if (!oldSessionId) {
 				set({ status: "unauthenticated" });
 				return;
 			}
 
-			const res = await fetch(
-				`${env.SITE_URL}/api/auth/me?sessionId=${oldSessionId}`
-			);
+			const res = await fetch(`${env.SITE_URL}/api/auth/me?sessionId=${oldSessionId}`);
 			const data = await res.json();
 			const parsedData = z
 				.object({
@@ -113,9 +111,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		return null;
 	}
 
-	return (
-		<AuthContext.Provider value={store}>{children}</AuthContext.Provider>
-	);
+	return <AuthContext.Provider value={store}>{children}</AuthContext.Provider>;
 };
 
 export function useAuth<T>(selector: (state: Auth) => T): T {
