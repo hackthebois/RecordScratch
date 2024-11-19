@@ -32,12 +32,8 @@ const AlbumOfTheDay = () => {
 			type="ALBUM OF THE DAY"
 			tags={[
 				album.release_date,
-				album.duration
-					? `${formatDuration(album.duration)}`
-					: undefined,
-				...(album.genres?.data.map(
-					(genre: { name: any }) => genre.name
-				) ?? []),
+				album.duration ? `${formatDuration(album.duration)}` : undefined,
+				...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
 			]}
 		>
 			<Button
@@ -63,39 +59,32 @@ const HomePage = () => {
 					title: "Home",
 				}}
 			/>
-			<ScrollView
-				contentContainerClassName="flex flex-col pb-4"
-				nestedScrollEnabled
-			>
+			<ScrollView contentContainerClassName="flex flex-col pb-4" nestedScrollEnabled>
 				<AlbumOfTheDay />
 				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Trending
 				</Text>
-				<View>
-					<FlashList
-						data={trending}
-						renderItem={({ item }) => <AlbumItem {...item} />}
-						horizontal
-						contentContainerClassName="px-4"
-						ItemSeparatorComponent={() => <View className="w-4" />}
-						estimatedItemSize={160}
-						showsHorizontalScrollIndicator={false}
-					/>
-				</View>
+				<FlashList
+					data={trending}
+					renderItem={({ item }) => <AlbumItem {...item} />}
+					horizontal
+					contentContainerClassName="px-4 h-64"
+					ItemSeparatorComponent={() => <View className="w-4" />}
+					estimatedItemSize={160}
+					showsHorizontalScrollIndicator={false}
+				/>
 				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Top Albums
 				</Text>
-				<View>
-					<FlashList
-						data={top}
-						renderItem={({ item }) => <AlbumItem {...item} />}
-						horizontal
-						contentContainerClassName="px-4"
-						ItemSeparatorComponent={() => <View className="w-4" />}
-						estimatedItemSize={160}
-						showsHorizontalScrollIndicator={false}
-					/>
-				</View>
+				<FlashList
+					data={top}
+					renderItem={({ item }) => <AlbumItem {...item} />}
+					horizontal
+					contentContainerClassName="px-4 h-64"
+					ItemSeparatorComponent={() => <View className="w-4" />}
+					estimatedItemSize={160}
+					showsHorizontalScrollIndicator={false}
+				/>
 			</ScrollView>
 		</SafeAreaView>
 	);

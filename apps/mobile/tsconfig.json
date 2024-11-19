@@ -21,11 +21,8 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "#/*": [
-        "./src/*"
-      ],
       "~/*": [
-        "*"
+        "./src/*"
       ]
     },
     "jsx": "react-native",
@@ -42,28 +39,10 @@
     ".expo"
   ],
   "include": [
-    "*.ts",
-    "*.js",
+    "src/**/*",
+    "nativewind-env.d.ts",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "components",
-    "src/app",
-    "src/env.ts",
-    "lib/icons.tsx",
-    "components/Search",
-    "components/DistributionChart.tsx",
-    "components/Review.tsx",
-    "components/Metadata.tsx",
-    "components/SongTable.tsx",
-    "components/UserAvatar.tsx",
-    "components/List",
-    "components/Rating",
-    "components/Comments",
-    "components/CoreComponents",
-    "components/Item",
-    "components/Infinite",
-    "components/Followers",
-    "nativewind-env.d.ts"
+    "expo-env.d.ts"
   ],
   "extends": "expo/tsconfig.base"
 }
