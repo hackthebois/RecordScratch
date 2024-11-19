@@ -49,13 +49,14 @@ export const ArtistItem = ({
 					direction === "vertical" ? "flex-col" : "flex-row"
 				)}
 			>
-				<Skeleton
-					className="relative min-w-[64px] rounded-full"
+				<View
 					style={{
 						width: imageWidthAndHeight,
 						height: imageWidthAndHeight,
 					}}
-				/>
+				>
+					<Skeleton className="relative w-full h-full rounded-full" />
+				</View>
 				<View className="justify-center gap-1">
 					<Skeleton className="mb-1 h-4 w-32" />
 					{showType ? <Skeleton className="h-4 w-24" /> : null}

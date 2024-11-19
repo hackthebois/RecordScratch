@@ -65,6 +65,7 @@ const ArtistPage = () => {
 									resource={{
 										resourceId: String(artist.id),
 										category: "ARTIST",
+										parentId: "",
 									}}
 								/>
 								{/*

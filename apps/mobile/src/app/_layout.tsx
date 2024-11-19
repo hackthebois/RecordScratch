@@ -28,6 +28,7 @@ import { NAV_THEME } from "~/lib/constants";
 import { catchError } from "~/lib/errors";
 import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
+import { PrefetchProfile } from "./(tabs)/(feed,home,search,profile)/[handle]";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -148,6 +149,7 @@ const RootLayout = () => {
 			<TRPCProvider>
 				<SafeAreaProvider>
 					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+						<PrefetchProfile />
 						<Stack
 							screenOptions={{
 								animation: "fade",

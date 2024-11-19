@@ -68,16 +68,23 @@ export const ResourceItem = ({
 					direction === "vertical" ? "flex-col" : "flex-row items-center"
 				)}
 			>
-				<Skeleton
-					className="relative min-w-[64px] rounded-xl"
+				<View
 					style={{
 						width: imageWidthAndHeight,
 						height: imageWidthAndHeight,
 					}}
-				/>
+				>
+					<Skeleton className={cn(`h-full w-full`, imageCss)} />
+				</View>
 				<View className="flex flex-col gap-2">
-					<Skeleton className="mb-1 h-4 w-32" />
-					<Skeleton className="h-4 w-24" />
+					<Skeleton className="w-[80%]">
+						<Text />
+					</Skeleton>
+					{showArtist ? (
+						<Skeleton className="w-[60%]">
+							<Text className={cn("h-4", artistNameCss)} />
+						</Skeleton>
+					) : null}
 				</View>
 			</View>
 		);

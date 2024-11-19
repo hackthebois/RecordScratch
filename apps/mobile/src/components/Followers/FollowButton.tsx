@@ -12,7 +12,7 @@ export const FollowButton = ({
 }) => {
 	const utils = api.useUtils();
 	const profile = useAuth((s) => s.profile);
-	const { data: isFollowing } = api.profiles.isFollowing.useQuery(profileId);
+	const [isFollowing] = api.profiles.isFollowing.useSuspenseQuery(profileId);
 
 	const revalidate = async () => {
 		await utils.profiles.isFollowing.invalidate(profileId);
