@@ -14,7 +14,10 @@ export const authRoutes: Route[] = [
 		async (event) => {
 			const db = getDB();
 			const query = getQuery(event);
-			const sessionId = query.sessionId as string;
+			const sessionId =
+				getHeader(event, "Authorization") ??
+				(query.sessionId as string | undefined);
+			if (!sessionId) return { user: null };
 
 			const { user } = await validateSessionToken(sessionId);
 
@@ -28,6 +31,21 @@ export const authRoutes: Route[] = [
 					profile: true,
 				},
 			});
+
+			const expoPushToken = getHeader(event, "Expo-Push-Token");
+			// Update the expo push token if it's different or not set
+			if (
+				existingUser &&
+				(!existingUser.expoPushToken ||
+					expoPushToken !== existingUser.expoPushToken)
+			) {
+				await db
+					.update(users)
+					.set({ expoPushToken })
+					.where(eq(users.id, user.id));
+
+				return { user: { ...existingUser, expoPushToken } };
+			}
 
 			return { user: existingUser };
 		},

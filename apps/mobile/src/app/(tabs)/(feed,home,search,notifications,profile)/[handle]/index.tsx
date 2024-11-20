@@ -9,36 +9,12 @@ import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
 import { Settings } from "@/lib/icons/Settings";
 import { getImageUrl } from "@/lib/image";
 import { ListWithResources, Profile } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-
-export const PrefetchProfile = (props: { handle?: string; userId?: string }) => {
-	const profile = useAuth((s) => s.profile);
-	const handle = props.handle ?? profile?.handle ?? "";
-	const userId = props.userId ?? profile?.userId ?? "";
-
-	api.profiles.get.usePrefetchQuery(handle);
-	api.ratings.user.streak.usePrefetchQuery({ userId });
-	api.ratings.user.totalLikes.usePrefetchQuery({ userId });
-	api.profiles.distribution.usePrefetchQuery({ userId });
-	api.lists.topLists.usePrefetchQuery({ userId });
-	api.profiles.getTotalRatings.usePrefetchQuery({ userId });
-	api.profiles.followCount.usePrefetchQuery({
-		profileId: userId,
-		type: "followers",
-	});
-	api.profiles.followCount.usePrefetchQuery({
-		profileId: userId,
-		type: "following",
-	});
-
-	return null;
-};
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();

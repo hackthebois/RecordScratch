@@ -33,6 +33,8 @@ export const users = pgTable("users", {
 	}),
 	googleId: text("google_id").unique(),
 	appleId: text("apple_id").unique(),
+	expoPushToken: text("expo_push_token"),
+	notificationsEnabled: boolean("notifications_enabled").default(true),
 });
 
 export const usersRelations = relations(users, ({ one }) => ({

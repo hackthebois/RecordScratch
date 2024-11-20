@@ -5,7 +5,10 @@ let env = {
 	ENV: "development",
 	R2_PUBLIC_URL: "https://cdn.recordscratch.app",
 	SCHEME: "recordscratch://",
-	SITE_URL: Platform.OS === "android" ? "http://localhost:3000" : "http://localhost:3000",
+	SITE_URL:
+		Platform.OS === "android"
+			? "http://localhost:3000"
+			: "https://b983-184-148-99-76.ngrok-free.app",
 };
 
 if (Updates.channel === "production") {

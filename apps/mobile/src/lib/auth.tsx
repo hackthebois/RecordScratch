@@ -7,7 +7,9 @@ import { createContext, useContext, useEffect, useRef } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
 import { createStore, useStore } from "zustand";
+import { api } from "./api";
 import { catchError } from "./errors";
+import { registerForPushNotificationsAsync } from "./notifications";
 
 // Define the context type
 type Auth = {
@@ -44,14 +46,21 @@ export const createAuthStore = () =>
 			await SecureStore.deleteItemAsync("sessionId");
 		},
 		login: async (session?: string) => {
-			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
+			const sessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
 
-			if (!oldSessionId) {
+			const expoPushToken = await registerForPushNotificationsAsync();
+
+			if (!sessionId) {
 				set({ status: "unauthenticated" });
 				return;
 			}
 
-			const res = await fetch(`${env.SITE_URL}/api/auth/me?sessionId=${oldSessionId}`);
+			const res = await fetch(`${env.SITE_URL}/api/auth/me`, {
+				headers: {
+					"Expo-Push-Token": expoPushToken ?? "",
+					Authorization: sessionId,
+				},
+			});
 			const data = await res.json();
 			const parsedData = z
 				.object({
@@ -74,7 +83,7 @@ export const createAuthStore = () =>
 			if (parsedData.error || !parsedData.data.user) {
 				get().logout();
 			} else {
-				get().setSessionId(oldSessionId);
+				get().setSessionId(sessionId);
 				if (parsedData.data.user.profile) {
 					get().setProfile(parsedData.data.user.profile);
 					set({ status: "authenticated" });
@@ -119,3 +128,34 @@ export function useAuth<T>(selector: (state: Auth) => T): T {
 	if (!store) throw new Error("Missing AuthContext.Provider in the tree");
 	return useStore(store, selector);
 }
+
+export const Prefetch = ({ handle, userId }: { handle: string; userId: string }) => {
+	api.profiles.get.usePrefetchQuery(handle);
+	api.ratings.user.streak.usePrefetchQuery({ userId });
+	api.ratings.user.totalLikes.usePrefetchQuery({ userId });
+	api.profiles.distribution.usePrefetchQuery({ userId });
+	api.lists.topLists.usePrefetchQuery({ userId });
+	api.profiles.getTotalRatings.usePrefetchQuery({ userId });
+	api.profiles.followCount.usePrefetchQuery({
+		profileId: userId,
+		type: "followers",
+	});
+	api.profiles.followCount.usePrefetchQuery({
+		profileId: userId,
+		type: "following",
+	});
+
+	return null;
+};
+
+export const PrefetchProfile = (props: { handle?: string; userId?: string }) => {
+	const profile = useAuth((s) => s.profile);
+	const handle = props.handle ?? profile?.handle ?? "";
+	const userId = props.userId ?? profile?.userId ?? "";
+
+	if (handle && userId) {
+		return <Prefetch handle={handle} userId={userId} />;
+	}
+
+	return null;
+};

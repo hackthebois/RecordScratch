@@ -1,7 +1,7 @@
 import { Text } from "@/components/ui/text";
 import env from "@/env";
 import { TRPCProvider } from "@/lib/api";
-import { AuthProvider } from "@/lib/auth";
+import { AuthProvider, PrefetchProfile } from "@/lib/auth";
 import { NAV_THEME } from "@/lib/constants";
 import { catchError } from "@/lib/errors";
 import { useColorScheme } from "@/lib/useColorScheme";
@@ -28,7 +28,6 @@ import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import { PrefetchProfile } from "./(tabs)/(feed,home,search,notifications,profile)/[handle]";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
