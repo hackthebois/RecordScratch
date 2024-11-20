@@ -1,3 +1,11 @@
+import AlbumItem from "@/components/Item/AlbumItem";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItemSkeleton } from "@/components/Item/ResourceItem";
+import Metadata from "@/components/Metadata";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { getQueryOptions } from "@/lib/deezer";
 import { formatDuration } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -5,14 +13,6 @@ import { Stack, useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AlbumItem from "~/components/Item/AlbumItem";
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ResourceItemSkeleton } from "~/components/Item/ResourceItem";
-import Metadata from "~/components/Metadata";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { getQueryOptions } from "~/lib/deezer";
 import NotFound from "../../+not-found";
 
 const AlbumOfTheDay = () => {

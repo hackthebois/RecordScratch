@@ -1,9 +1,9 @@
+import Dialog from "@/components/CoreComponents/Dialog";
+import { api } from "@/lib/api";
+import { Search } from "@/lib/icons/Search";
 import { useDebounce } from "@recordscratch/lib";
 import { useState } from "react";
 import { TextInput, View } from "react-native";
-import Dialog from "~/components/CoreComponents/Dialog";
-import { api } from "~/lib/api";
-import { Search } from "~/lib/icons/Search";
 import MusicSearch from "./MusicSearch";
 
 export const SearchAddToList = ({

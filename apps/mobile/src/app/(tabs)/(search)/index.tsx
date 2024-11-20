@@ -1,18 +1,18 @@
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ProfileItem } from "@/components/Item/ProfileItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
 import { SearchOptions, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ProfileItem } from "~/components/Item/ProfileItem";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-// import { useRecents } from "~/components/recents";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { deezerHelpers } from "~/lib/deezer";
-import { Search } from "~/lib/icons/Search";
+// import { useRecents } from "@/components/recents";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { deezerHelpers } from "@/lib/deezer";
+import { Search } from "@/lib/icons/Search";
 
 export default function SearchPage() {
 	// const { addRecent } = useRecents("SEARCH");

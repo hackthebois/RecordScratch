@@ -1,15 +1,15 @@
+import AlbumItem from "@/components/Item/AlbumItem";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import Metadata from "@/components/Metadata";
+import { RatingInfo } from "@/components/Rating/RatingInfo";
+import SongTable from "@/components/SongTable";
+import { Text } from "@/components/ui/text";
+import { getQueryOptions } from "@/lib/deezer";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AlbumItem from "~/components/Item/AlbumItem";
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import Metadata from "~/components/Metadata";
-import { RatingInfo } from "~/components/Rating/RatingInfo";
-import SongTable from "~/components/SongTable";
-import { Text } from "~/components/ui/text";
-import { getQueryOptions } from "~/lib/deezer";
 
 const ArtistPage = () => {
 	const { id } = useLocalSearchParams<{ id: string }>();

@@ -1,29 +1,26 @@
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { Bell } from "@/lib/icons/Bell";
+import { Home } from "@/lib/icons/Home";
+import { Search } from "@/lib/icons/Search";
+import { Star } from "@/lib/icons/Star";
+import { User } from "@/lib/icons/User";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { Bell } from "~/lib/icons/Bell";
-import { Home } from "~/lib/icons/Home";
-import { Search } from "~/lib/icons/Search";
-import { Star } from "~/lib/icons/Star";
-import { User } from "~/lib/icons/User";
 
 export default function TabLayout() {
 	const router = useRouter();
 	const { data: notifications } = api.notifications.getUnseen.useQuery();
 	const insets = useSafeAreaInsets();
 
-	console.log(notifications);
-
 	return (
 		<Tabs
 			backBehavior="history"
 			screenOptions={{
-				headerBackTitleVisible: false,
 				tabBarActiveTintColor: "#ffb703",
 				headerTitleAlign: "center",
 				tabBarLabel: ({ focused, children }: any) => (

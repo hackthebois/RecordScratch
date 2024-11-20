@@ -1,21 +1,21 @@
+import NotFoundScreen from "@/app/+not-found";
+import StatBlock from "@/components/CoreComponents/StatBlock";
+import DistributionChart from "@/components/DistributionChart";
+import { FollowButton } from "@/components/Followers/FollowButton";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Pill } from "@/components/ui/pill";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { Settings } from "@/lib/icons/Settings";
+import { getImageUrl } from "@/lib/image";
 import { ListWithResources, Profile } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import NotFoundScreen from "~/app/+not-found";
-import StatBlock from "~/components/CoreComponents/StatBlock";
-import DistributionChart from "~/components/DistributionChart";
-import { FollowButton } from "~/components/Followers/FollowButton";
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Pill } from "~/components/ui/pill";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { Settings } from "~/lib/icons/Settings";
-import { getImageUrl } from "~/lib/image";
 
 export const PrefetchProfile = (props: { handle?: string; userId?: string }) => {
 	const profile = useAuth((s) => s.profile);
@@ -195,7 +195,7 @@ export const ProfilePage = ({
 							</View>
 							<View className="flex flex-col items-center">
 								<View className="flex flex-row w-full gap-2">
-									<Link href={`${profile.handle}/ratings`} asChild>
+									<Link href={`/${profile.handle}/ratings`} asChild>
 										<Pressable className="flex-1">
 											<StatBlock
 												title={"Ratings"}
@@ -205,7 +205,7 @@ export const ProfilePage = ({
 											/>
 										</Pressable>
 									</Link>
-									<Link href={`${profile.handle}/followers`} asChild>
+									<Link href={`/${profile.handle}/followers`} asChild>
 										<Pressable className="flex-1">
 											<StatBlock
 												title={"Followers"}
@@ -216,7 +216,7 @@ export const ProfilePage = ({
 										</Pressable>
 									</Link>
 									<Link
-										href={`${profile.handle}/followers?type=following`}
+										href={`/${profile.handle}/followers?type=following`}
 										asChild
 									>
 										<Pressable className="flex-1">
@@ -239,8 +239,9 @@ export const ProfilePage = ({
 								height={80}
 								onChange={(value) => {
 									router.push({
-										pathname: `/${profile.handle}/ratings`,
+										pathname: "/[handle]/ratings",
 										params: {
+											handle: profile.handle,
 											rating: value ? String(value) : undefined,
 										},
 									});

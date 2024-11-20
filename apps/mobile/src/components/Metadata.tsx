@@ -1,8 +1,8 @@
+import { Pill } from "@/components/ui/pill";
+import { Text } from "@/components/ui/text";
 import { Image } from "expo-image";
 import React from "react";
 import { View } from "react-native";
-import { Pill } from "~/components/ui/pill";
-import { Text } from "~/components/ui/text";
 
 const Metadata = ({
 	title,

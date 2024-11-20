@@ -1,14 +1,14 @@
+import NotFoundScreen from "@/app/+not-found";
+import { ProfileItem } from "@/components/Item/ProfileItem";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import NotFoundScreen from "~/app/+not-found";
-import { ProfileItem } from "~/components/Item/ProfileItem";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { useRefreshByUser } from "~/lib/refresh";
 
 const Followers = () => {
 	const { handle, type } = useLocalSearchParams<{

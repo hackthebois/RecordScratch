@@ -1,18 +1,18 @@
+import { ResourceItem } from "@/components/Item/ResourceItem";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { Heart } from "@/lib/icons/Heart";
+import { MessageCircle } from "@/lib/icons/MessageCircle";
+import { Reply } from "@/lib/icons/Reply";
+import { Star } from "@/lib/icons/Star";
+import { getImageUrl } from "@/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { Suspense } from "react";
 import { Pressable, View } from "react-native";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { Heart } from "~/lib/icons/Heart";
-import { MessageCircle } from "~/lib/icons/MessageCircle";
-import { Reply } from "~/lib/icons/Reply";
-import { Star } from "~/lib/icons/Star";
-import { getImageUrl } from "~/lib/image";
 
 const IconSize = 30;
 

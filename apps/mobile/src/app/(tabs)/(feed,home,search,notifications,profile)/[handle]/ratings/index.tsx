@@ -1,13 +1,13 @@
+import NotFoundScreen from "@/app/+not-found";
+import DistributionChart from "@/components/DistributionChart";
+import { ReviewsList } from "@/components/ReviewsList";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
 import { keepPreviousData } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import NotFoundScreen from "~/app/+not-found";
-import DistributionChart from "~/components/DistributionChart";
-import { ReviewsList } from "~/components/ReviewsList";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
 
 type RatingCategory = "all" | "ALBUM" | "SONG";
 

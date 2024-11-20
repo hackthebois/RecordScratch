@@ -1,15 +1,15 @@
+import { UserAvatar } from "@/components/UserAvatar";
+import { Text } from "@/components/ui/text";
+import { RouterOutputs, api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { MessageCircle } from "@/lib/icons/MessageCircle";
+import { Reply } from "@/lib/icons/Reply";
+import { Trash } from "@/lib/icons/Trash";
+import { getImageUrl } from "@/lib/image";
 import { timeAgo } from "@recordscratch/lib";
 import { Link, useRouter } from "expo-router";
 import { Suspense } from "react";
 import { Pressable, View } from "react-native";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Text } from "~/components/ui/text";
-import { RouterOutputs, api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { MessageCircle } from "~/lib/icons/MessageCircle";
-import { Reply } from "~/lib/icons/Reply";
-import { Trash } from "~/lib/icons/Trash";
-import { getImageUrl } from "~/lib/image";
 import { Button } from "./ui/button";
 
 const CommentButton = ({ id }: { id: string }) => {

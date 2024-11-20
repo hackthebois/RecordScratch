@@ -1,8 +1,8 @@
-import { View } from "react-native";
-import { Category, ListItem } from "@recordscratch/types";
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ResourceItem } from "~/components/Item/ResourceItem";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
 import { cn } from "@recordscratch/lib";
+import { Category, ListItem } from "@recordscratch/types";
+import { View } from "react-native";
 
 const ListResources = ({ items, category }: { items: ListItem[]; category: Category }) => {
 	return (

@@ -1,6 +1,6 @@
+import { Text } from "@/components/ui/text";
 import { cn } from "@recordscratch/lib";
 import { View } from "react-native";
-import { Text } from "~/components/ui/text";
 import { Skeleton } from "../ui/skeleton";
 
 const StatBlock = ({

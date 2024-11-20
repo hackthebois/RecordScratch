@@ -1,10 +1,10 @@
+import env from "@/env";
 import {
 	Deezer,
 	deezer as d,
 	deezerHelpers as dh,
 	getQueryOptions as gqo,
 } from "@recordscratch/lib";
-import env from "~/env";
 
 export const deezer = <TRoute extends keyof Deezer>(input: {
 	route: TRoute;

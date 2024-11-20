@@ -1,7 +1,7 @@
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 export const FollowButton = ({
 	profileId,

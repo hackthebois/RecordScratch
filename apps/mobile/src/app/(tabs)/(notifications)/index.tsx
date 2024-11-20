@@ -1,5 +1,5 @@
+import { Text } from "@/components/ui/text";
 import { Stack } from "expo-router";
-import { Text } from "~/components/ui/text";
 const NotificationsPage = () => {
 	return (
 		<>

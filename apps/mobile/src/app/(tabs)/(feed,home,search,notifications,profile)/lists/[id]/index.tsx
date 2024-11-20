@@ -1,16 +1,16 @@
+import NotFoundScreen from "@/app/+not-found";
+import ListImage from "@/components/List/ListImage";
+import ListResources from "@/components/List/ListResources";
+import Metadata from "@/components/Metadata";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { Settings } from "@/lib/icons/Settings";
+import { getImageUrl } from "@/lib/image";
+import { useColorScheme } from "@/lib/useColorScheme";
 import { timeAgo } from "@recordscratch/lib";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-import NotFoundScreen from "~/app/+not-found";
-import ListImage from "~/components/List/ListImage";
-import ListResources from "~/components/List/ListResources";
-import Metadata from "~/components/Metadata";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { Settings } from "~/lib/icons/Settings";
-import { getImageUrl } from "~/lib/image";
-import { useColorScheme } from "~/lib/useColorScheme";
 
 const ListPage = () => {
 	const { utilsColor } = useColorScheme();
@@ -38,7 +38,7 @@ const ListPage = () => {
 					headerRight: () =>
 						isProfile ? (
 							<TouchableOpacity
-								onPress={() => router.navigate(`lists/${listId}/settings`)}
+								onPress={() => router.navigate(`/lists/${listId}/settings`)}
 							>
 								<Settings size={30} className="mr-6 text-foreground" />
 							</TouchableOpacity>
@@ -54,9 +54,9 @@ const ListPage = () => {
 				<View className="flex flex-row items-center gap-2">
 					<Link
 						href={{
-							pathname: "/[id]",
+							pathname: "/[handle]",
 							params: {
-								id: String(userProfile.handle),
+								handle: String(userProfile.handle),
 							},
 						}}
 					>

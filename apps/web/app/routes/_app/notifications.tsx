@@ -226,34 +226,22 @@ function Notifications() {
 			)}
 			{allNotifications.map((notification, index) => (
 				<React.Fragment key={index}>
-					{notification.notifType === "COMMENT" && (
+					{notification.notifType === "comment" && (
 						<CommentNotification
 							user={notification.profile}
-							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-							/* @ts-ignore */
 							comment={notification.comment}
-							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-							/* @ts-ignore */
-							ratingProfile={notification.ratingProfile}
-							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-							/* @ts-ignore */
-							type={notification.notification.type}
+							ratingProfile={notification.profile}
+							type={notification.type}
 						/>
 					)}
-					{notification.notifType === "FOLLOW" && (
+					{notification.notifType === "follow" && (
 						<FollowNotification user={notification.profile} />
 					)}
-
-					{notification.notifType === "LIKE" && (
+					{notification.notifType === "like" && (
 						<LikeNotification
 							user={userProfile!}
 							fromUser={notification.profile}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							/* @ts-ignore */
-							content={notification.ratings.content}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							/* @ts-ignore */
-							rating={notification.ratings}
+							rating={notification.rating}
 						/>
 					)}
 				</React.Fragment>

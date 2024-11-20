@@ -1,14 +1,14 @@
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { useAuth } from "@/lib/auth";
+import { catchError } from "@/lib/errors";
+import { Moon } from "@/lib/icons/Moon";
+import { Sun } from "@/lib/icons/Sun";
+import { User } from "@/lib/icons/User";
+import { useColorScheme } from "@/lib/useColorScheme";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, Redirect, Stack, useRouter } from "expo-router";
 import { ScrollView } from "react-native";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { useAuth } from "~/lib/auth";
-import { catchError } from "~/lib/errors";
-import { Moon } from "~/lib/icons/Moon";
-import { Sun } from "~/lib/icons/Sun";
-import { User } from "~/lib/icons/User";
-import { useColorScheme } from "~/lib/useColorScheme";
 
 const SettingsPage = () => {
 	const router = useRouter();
@@ -17,7 +17,7 @@ const SettingsPage = () => {
 	const { setColorScheme, colorScheme } = useColorScheme();
 	const queryClient = useQueryClient();
 
-	if (!profile) return <Redirect href="(auth)/signin" />;
+	if (!profile) return <Redirect href="/(auth)/signin" />;
 
 	return (
 		<ScrollView contentContainerClassName="p-4 gap-4">
@@ -27,19 +27,14 @@ const SettingsPage = () => {
 				}}
 			/>
 			<Link href={`/settings/editprofile`} asChild>
-				<Button
-					variant="outline"
-					className="gap-2 flex-row justify-between"
-				>
+				<Button variant="outline" className="gap-2 flex-row justify-between">
 					<Text>Edit Profile</Text>
 					<User className="text-muted-foreground" size={18} />
 				</Button>
 			</Link>
 			<Button
 				variant="outline"
-				onPress={async () =>
-					setColorScheme(colorScheme === "dark" ? "light" : "dark")
-				}
+				onPress={async () => setColorScheme(colorScheme === "dark" ? "light" : "dark")}
 				className="flex-row items-center gap-2 justify-between"
 			>
 				<Text>Toggle Theme</Text>
@@ -55,7 +50,7 @@ const SettingsPage = () => {
 					await queryClient.cancelQueries();
 					await queryClient.clear();
 					await router.dismissAll();
-					router.replace("(auth)/signin");
+					router.replace("/(auth)/signin");
 					await logout().catch(catchError);
 				}}
 			>

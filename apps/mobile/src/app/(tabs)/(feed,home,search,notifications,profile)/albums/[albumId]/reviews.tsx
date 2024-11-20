@@ -1,14 +1,14 @@
+import DistributionChart from "@/components/DistributionChart";
+import { ReviewsList } from "@/components/ReviewsList";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { getQueryOptions } from "@/lib/deezer";
 import { Resource } from "@recordscratch/types";
 import { keepPreviousData, useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import DistributionChart from "~/components/DistributionChart";
-import { ReviewsList } from "~/components/ReviewsList";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { getQueryOptions } from "~/lib/deezer";
 
 type RatingType = "all" | "REVIEW" | "RATING";
 

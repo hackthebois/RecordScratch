@@ -49,7 +49,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		"expo-secure-store",
 	],
 	experiments: {
-		tsconfigPaths: true,
 		typedRoutes: true,
 	},
 	jsEngine: "hermes",

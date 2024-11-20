@@ -1,3 +1,4 @@
+import env from "@/env";
 import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -6,7 +7,6 @@ import { createContext, useContext, useEffect, useRef } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
 import { createStore, useStore } from "zustand";
-import env from "~/env";
 import { catchError } from "./errors";
 
 // Define the context type

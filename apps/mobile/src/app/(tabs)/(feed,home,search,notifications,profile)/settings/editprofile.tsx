@@ -1,3 +1,10 @@
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { AtSign } from "@/lib/icons/AtSign";
+import { getImageUrl } from "@/lib/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
 import { UpdateProfileForm, UpdateProfileFormSchema } from "@recordscratch/types";
@@ -6,13 +13,6 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, TextInput, View } from "react-native";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { AtSign } from "~/lib/icons/AtSign";
-import { getImageUrl } from "~/lib/image";
 
 const EditProfile = () => {
 	const profile = useAuth((s) => s.profile!);

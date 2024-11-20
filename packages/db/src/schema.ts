@@ -8,7 +8,6 @@ import {
 	smallint,
 	text,
 	timestamp,
-	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
 
@@ -206,31 +205,6 @@ export const likesRelations = relations(likes, ({ one }) => ({
 	}),
 }));
 
-export const typeEnum = pgEnum("notifications_type", ["LIKE", "FOLLOW", "COMMENT", "REPLY"]);
-
-export const notifications = pgTable(
-	"notifications",
-	{
-		id: text("id")
-			.primaryKey()
-			.$default(() => uuidv4()),
-		userId: text("user_id").notNull(),
-		resourceId: text("resource_id"),
-		fromId: text("from_id").notNull(),
-		type: typeEnum("type").notNull(),
-		seen: boolean("seen").default(false).notNull(),
-		...dates,
-	},
-	(table) => ({
-		notification_unq_idx: uniqueIndex("notification_unq_idx").on(
-			table.userId,
-			table.resourceId,
-			table.type,
-			table.fromId
-		),
-	})
-);
-
 export const commentEnum = pgEnum("comment_type", ["COMMENT", "REPLY"]);
 const notificationOutline = {
 	userId: text("user_id").notNull(),
@@ -248,6 +222,17 @@ export const commentNotifications = pgTable("comment_notifications", {
 	...notificationOutline,
 });
 
+export const commentNotificationRelations = relations(commentNotifications, ({ one }) => ({
+	profile: one(profile, {
+		fields: [commentNotifications.fromId],
+		references: [profile.userId],
+	}),
+	comment: one(comments, {
+		fields: [commentNotifications.commentId],
+		references: [comments.id],
+	}),
+}));
+
 export const followNotifications = pgTable(
 	"follow_notifications",
 	{ ...notificationOutline },
@@ -257,6 +242,13 @@ export const followNotifications = pgTable(
 		}),
 	})
 );
+
+export const followNotificationRelations = relations(followNotifications, ({ one }) => ({
+	profile: one(profile, {
+		fields: [followNotifications.fromId],
+		references: [profile.userId],
+	}),
+}));
 
 export const likeNotifications = pgTable(
 	"like_notifications",
@@ -271,18 +263,14 @@ export const likeNotifications = pgTable(
 	})
 );
 
-export const notificationRelations = relations(notifications, ({ one }) => ({
+export const likeNotificationRelations = relations(likeNotifications, ({ one }) => ({
 	profile: one(profile, {
-		fields: [notifications.fromId],
-		references: [profile.userId],
-	}),
-	from: one(profile, {
-		fields: [notifications.fromId],
+		fields: [likeNotifications.fromId],
 		references: [profile.userId],
 	}),
 	rating: one(ratings, {
-		fields: [notifications.resourceId, notifications.userId],
-		references: [ratings.resourceId, ratings.userId],
+		fields: [likeNotifications.resourceId],
+		references: [ratings.resourceId],
 	}),
 }));
 
@@ -332,7 +320,6 @@ export const tableSchemas = {
 	lists,
 	listResources,
 	likes,
-	notifications,
 	comments,
 	commentNotifications,
 	followNotifications,
@@ -348,6 +335,8 @@ export const relationSchemas = {
 	listRelation,
 	listResourcesRelations,
 	likesRelations,
-	notificationRelations,
 	commentsRelations,
+	commentNotificationRelations,
+	followNotificationRelations,
+	likeNotificationRelations,
 };

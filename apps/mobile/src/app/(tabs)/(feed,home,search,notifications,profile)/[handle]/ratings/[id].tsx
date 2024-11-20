@@ -1,11 +1,11 @@
+import NotFoundScreen from "@/app/+not-found";
+import { Comment } from "@/components/Comment";
+import { Review } from "@/components/Review";
+import { api } from "@/lib/api";
+import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
-import NotFoundScreen from "~/app/+not-found";
-import { Comment } from "~/components/Comment";
-import { Review } from "~/components/Review";
-import { api } from "~/lib/api";
-import { useRefreshByUser } from "~/lib/refresh";
 
 const RatingPage = () => {
 	const { id, handle } = useLocalSearchParams<{ id: string; handle: string }>();

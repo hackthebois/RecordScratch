@@ -1,10 +1,10 @@
+import ListImage from "@/components/List/ListImage";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Text } from "@/components/ui/text";
+import { getImageUrl } from "@/lib/image";
 import { ListsType } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { View } from "react-native";
-import ListImage from "~/components/List/ListImage";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Text } from "~/components/ui/text";
-import { getImageUrl } from "~/lib/image";
 
 const ListsItem = ({
 	listsItem,

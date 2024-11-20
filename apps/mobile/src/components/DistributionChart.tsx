@@ -1,8 +1,8 @@
+import { Text } from "@/components/ui/text";
 import { cn } from "@recordscratch/lib";
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, { Easing, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
-import { Text } from "~/components/ui/text";
 
 const AnimatedBar = ({
 	status,

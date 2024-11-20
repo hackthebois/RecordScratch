@@ -1,3 +1,8 @@
+import { Text } from "@/components/ui/text";
+import env from "@/env";
+import { useAuth } from "@/lib/auth";
+import { catchError } from "@/lib/errors";
+import { useColorScheme } from "@/lib/useColorScheme";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { Image } from "expo-image";
 import * as Linking from "expo-linking";
@@ -6,11 +11,6 @@ import * as Browser from "expo-web-browser";
 import React from "react";
 import { Pressable, View } from "react-native";
 import { z } from "zod";
-import { Text } from "~/components/ui/text";
-import env from "~/env";
-import { useAuth } from "~/lib/auth";
-import { catchError } from "~/lib/errors";
-import { useColorScheme } from "~/lib/useColorScheme";
 
 Browser.maybeCompleteAuthSession();
 const AuthPage = () => {
