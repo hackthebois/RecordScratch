@@ -28,7 +28,7 @@ import { NAV_THEME } from "~/lib/constants";
 import { catchError } from "~/lib/errors";
 import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
-import { PrefetchProfile } from "./(tabs)/(feed,home,search,profile)/[handle]";
+import { PrefetchProfile } from "./(tabs)/(feed,home,search,notifications,profile)/[handle]";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
