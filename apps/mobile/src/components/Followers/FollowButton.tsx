@@ -8,7 +8,7 @@ export const FollowButton = ({
 	size = "default",
 }: {
 	profileId: string;
-	size: "sm" | "default";
+	size?: "sm" | "default";
 }) => {
 	const utils = api.useUtils();
 	const profile = useAuth((s) => s.profile);

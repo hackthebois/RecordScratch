@@ -218,7 +218,7 @@ export const commentNotifications = pgTable("comment_notifications", {
 		.primaryKey()
 		.$default(() => uuidv4()),
 	commentId: text("comment_id").notNull(),
-	type: commentEnum("type").notNull(),
+	type: commentEnum("type").notNull(), // REMOVE: Moved to comments table
 	...notificationOutline,
 });
 
@@ -279,11 +279,11 @@ export const comments = pgTable("comments", {
 		.primaryKey()
 		.notNull()
 		.$default(() => uuidv4()),
-	userId: text("user_id").notNull(),
-	resourceId: text("resource_id").notNull(),
-	authorId: text("author_id").notNull(),
-	parentId: text("parent_id"),
-	rootId: text("root_id"),
+	userId: text("user_id").notNull(), // The user who made the comment
+	resourceId: text("resource_id").notNull(), // rating resourceId
+	authorId: text("author_id").notNull(), // rating author
+	parentId: text("parent_id"), // parent comment id (null if commenting to rating)
+	rootId: text("root_id"), // root comment id (null if commenting to rating)
 	content: text("content").notNull(),
 	...dates,
 });
@@ -301,8 +301,8 @@ export const commentsRelations = relations(comments, ({ one, many }) => ({
 		fields: [comments.authorId],
 		references: [profile.userId],
 	}),
-	root: one(comments, {
-		fields: [comments.rootId],
+	parent: one(comments, {
+		fields: [comments.parentId],
 		references: [comments.id],
 		relationName: "replies",
 	}),

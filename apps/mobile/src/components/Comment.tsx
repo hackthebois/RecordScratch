@@ -20,7 +20,7 @@ const CommentButton = ({ id }: { id: string }) => {
 	return (
 		<Link
 			href={{
-				pathname: "comments/[id]",
+				pathname: "/comments/[id]",
 				params: { id },
 			}}
 			asChild
@@ -82,7 +82,7 @@ export const Comment = ({
 							</Suspense>
 							<Link
 								href={{
-									pathname: "(modals)/reply/comment",
+									pathname: "/(modals)/reply/comment",
 									params: { id },
 								}}
 								asChild
@@ -94,11 +94,7 @@ export const Comment = ({
 						</>
 					) : null}
 					{myProfile?.userId === profile.userId ? (
-						<Button
-							variant="ghost"
-							size={"sm"}
-							onPress={() => deleteComment({ id, rootId })}
-						>
+						<Button variant="ghost" size={"sm"} onPress={() => deleteComment({ id })}>
 							<Trash size={20} className="text-muted-foreground" />
 						</Button>
 					) : null}

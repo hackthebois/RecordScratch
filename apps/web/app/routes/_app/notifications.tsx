@@ -6,12 +6,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
-import {
-	CommentSchemaType,
-	Profile,
-	Rating,
-	ReviewType,
-} from "@recordscratch/types";
+import { Comment, Profile, Rating, ReviewType } from "@recordscratch/types";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { BellOff, Heart, MessageCircle, Star, User } from "lucide-react";
 import React, { useEffect } from "react";
@@ -145,7 +140,7 @@ const CommentNotification = ({
 	ratingProfile,
 }: {
 	user: Profile;
-	comment: CommentSchemaType;
+	comment: Comment;
 	type: "REPLY" | "COMMENT";
 	ratingProfile: Profile;
 }) => {

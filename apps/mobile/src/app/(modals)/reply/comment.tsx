@@ -33,7 +33,7 @@ const CommentModal = () => {
 			form.reset();
 			router.back();
 			router.navigate({
-				pathname: "comments/[id]",
+				pathname: "/comments/[id]",
 				params: { id },
 			});
 		},
@@ -49,7 +49,8 @@ const CommentModal = () => {
 			content,
 			resourceId: comment.resourceId,
 			authorId: comment.authorId,
-			rootId: comment.id,
+			rootId: comment.rootId ?? comment.id,
+			parentId: comment.id,
 		});
 	};
 

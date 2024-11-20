@@ -2,8 +2,8 @@ import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { Bell } from "@/lib/icons/Bell";
 import { Home } from "@/lib/icons/Home";
+import { Rows3 } from "@/lib/icons/Rows3";
 import { Search } from "@/lib/icons/Search";
-import { Star } from "@/lib/icons/Star";
 import { User } from "@/lib/icons/User";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
@@ -91,7 +91,7 @@ export default function TabLayout() {
 				options={{
 					title: "",
 					tabBarIcon: ({ focused }) => (
-						<Star
+						<Rows3
 							size={28}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
@@ -109,13 +109,13 @@ export default function TabLayout() {
 								size={28}
 								className={cn(focused ? "text-primary" : "text-muted-foreground")}
 							/>
-							{notifications && notifications > 0 && (
+							{notifications && notifications > 0 ? (
 								<View className="absolute -top-2 -right-1.5 bg-destructive px-1 h-5 min-w-5 rounded-full flex items-center justify-center">
 									<Text className="text-xs text-white font-semibold">
 										{notifications > 99 ? "99+" : notifications}
 									</Text>
 								</View>
-							)}
+							) : null}
 						</View>
 					),
 					headerShown: false,

@@ -36,7 +36,7 @@ const Reply = () => {
 			form.reset();
 			router.back();
 			router.navigate({
-				pathname: "[handle]/ratings/[id]",
+				pathname: "/[handle]/ratings/[id]",
 				params: { handle, id: resourceId },
 			});
 		},
@@ -57,6 +57,8 @@ const Reply = () => {
 			content,
 			resourceId,
 			authorId: profile.userId,
+			parentId: null,
+			rootId: null,
 		});
 	};
 

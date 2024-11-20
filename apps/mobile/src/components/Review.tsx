@@ -76,7 +76,7 @@ const CommentsButton = ({
 	return (
 		<Link
 			href={{
-				pathname: "[handle]/ratings/[id]",
+				pathname: "/[handle]/ratings/[id]",
 				params: { handle: handle, id: resourceId },
 			}}
 			asChild
@@ -122,7 +122,7 @@ export const Review = ({
 				<Link href={`/${String(profile.handle)}`} asChild>
 					<Pressable className="flex flex-row flex-wrap items-center gap-2">
 						<UserAvatar imageUrl={getImageUrl(profile)} />
-						<Text className="text-lg">{profile.name}</Text>
+						<Text className="text-lg font-medium">{profile.name}</Text>
 						<Text className="text-left text-muted-foreground text-lg">
 							@{profile.handle} • {timeAgo(updatedAt)}
 						</Text>
@@ -153,7 +153,7 @@ export const Review = ({
 						</Suspense>
 						<Link
 							href={{
-								pathname: "(modals)/reply/rating",
+								pathname: "/(modals)/reply/rating",
 								params: { resourceId, handle: profile.handle },
 							}}
 							asChild
