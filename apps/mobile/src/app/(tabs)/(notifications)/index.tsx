@@ -28,21 +28,30 @@ const NotificationBlock = ({
 }) => {
 	return (
 		<Link href={href} asChild>
-			<Pressable className="flex flex-row gap-4 p-4">
+			<Pressable
+				className="flex flex-row gap-3 px-4 flex-1 items-center"
+				style={{
+					height: 75,
+				}}
+			>
 				<View>{icon}</View>
-				<View className="flex w-full flex-col gap-2">
-					<View className="flex w-full flex-row gap-4">
+				<View className="flex flex-col gap-2 flex-1">
+					<View className="flex flex-row gap-3 flex-1 items-center">
 						<Link href={`/${profile.handle}`}>
-							<UserAvatar imageUrl={getImageUrl(profile)} />
+							<UserAvatar imageUrl={getImageUrl(profile)} size={50} />
 						</Link>
-						<View className="flex flex-row items-center">
-							<Text className="text-lg font-medium">{profile.name.trim()}</Text>
-							<Text className="text-left text-lg">{" " + action}</Text>
+						<View className="flex flex-row items-center flex-1 flex-wrap">
+							<Text numberOfLines={2}>
+								<Text className="text-lg font-medium">{profile.name.trim()}</Text>
+								<Text className="text-left text-lg">
+									{" " + action + (content ? ": " : "")}
+								</Text>
+								{content ? (
+									<Text className="text-muted-foreground text-lg">{content}</Text>
+								) : null}
+							</Text>
 						</View>
 					</View>
-					{content ? (
-						<Text className="text-left text-muted-foreground text-lg">{content}</Text>
-					) : null}
 				</View>
 			</Pressable>
 		</Link>
@@ -78,9 +87,9 @@ const NotificationItem = ({
 		case "comment":
 			return (
 				<NotificationBlock
-					icon={<MessageCircle size={28} />}
+					icon={<MessageCircle size={26} className="text-emerald-500" />}
 					href={`/${notification.profile.handle}/ratings/${notification.comment.resourceId}`}
-					action={`${notification.type === "COMMENT" ? "commented on your rating" : "replied to your comment"}`}
+					action={`${notification.type === "COMMENT" ? "commented" : "replied"}`}
 					content={notification.comment.content}
 					profile={notification.profile}
 				/>
@@ -120,7 +129,7 @@ export default function Notifications() {
 					keyExtractor={(item, index) => `notification-${item.userId}-${index}`}
 					ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 					renderItem={({ item }) => <NotificationItem notification={item} />}
-					estimatedItemSize={100}
+					estimatedItemSize={75}
 					scrollEnabled={true}
 					refreshing={isRefetchingByUser}
 					onRefresh={refetchByUser}

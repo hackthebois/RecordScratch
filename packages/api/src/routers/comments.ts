@@ -3,7 +3,6 @@ import {
 	CreateCommentSchema,
 	DeleteCommentSchema,
 	SelectCommentSchema,
-	SelectRepliesSchema,
 } from "@recordscratch/types";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
@@ -22,9 +21,19 @@ export const commentsRouter = router({
 				where: and(eq(comments.id, input.id)),
 				with: {
 					profile: true,
+					parent: {
+						with: {
+							profile: true,
+						},
+					},
 					replies: {
 						with: {
 							profile: true,
+							parent: {
+								with: {
+									profile: true,
+								},
+							},
 						},
 					},
 				},
@@ -91,7 +100,7 @@ export const commentsRouter = router({
 				: undefined;
 
 			// If parent comment and not replying to self then notify the parent
-			if (parentComment && userId !== parentComment.userId) {
+			if (parentComment) {
 				await createCommentNotification({
 					fromId: userId,
 					userId: parentComment.userId,
@@ -100,7 +109,7 @@ export const commentsRouter = router({
 				});
 			}
 			// If not commenting to self then notify the author of the rating
-			else if (userId !== input.authorId) {
+			else if (true) {
 				await createCommentNotification({
 					fromId: userId,
 					userId: input.authorId,
@@ -114,49 +123,5 @@ export const commentsRouter = router({
 		.input(DeleteCommentSchema)
 		.mutation(async ({ ctx: { db, userId }, input: { id } }) => {
 			await db.delete(comments).where(and(eq(comments.id, id), eq(comments.userId, userId)));
-		}),
-	getReplies: publicProcedure
-		.input(SelectRepliesSchema)
-		.query(async ({ ctx: { db }, input: { resourceId, authorId, parentId } }) => {
-			const replies = await db.query.comments.findFirst({
-				where: and(
-					eq(comments.resourceId, resourceId),
-					eq(comments.authorId, authorId),
-					parentId ? eq(comments.id, parentId) : undefined
-				),
-				with: {
-					replies: {
-						with: {
-							profile: true,
-							parent: {
-								with: {
-									profile: true,
-								},
-							},
-						},
-					},
-				},
-				orderBy: (comments) => [desc(comments.createdAt)],
-			});
-			return replies?.replies;
-		}),
-	getReplyCount: publicProcedure
-		.input(SelectRepliesSchema)
-		.query(async ({ ctx: { db }, input: { resourceId, authorId, parentId } }) => {
-			const countList = await db
-				.select({
-					replyCount: count(),
-				})
-				.from(comments)
-				.where(
-					and(
-						eq(comments.resourceId, resourceId),
-						eq(comments.authorId, authorId),
-						parentId ? eq(comments.parentId, parentId) : undefined
-					)
-				);
-
-			if (countList.length) return countList[0].replyCount;
-			else return 0;
 		}),
 });

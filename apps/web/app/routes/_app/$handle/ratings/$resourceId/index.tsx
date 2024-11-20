@@ -99,21 +99,14 @@ const CommentForm = ({
 	const { mutate, isPending } = api.comments.create.useMutation({
 		onSuccess: async () => {
 			form.reset();
-			if (!rootId && !parentId)
+			if (!parentId)
 				utils.comments.list.invalidate({
 					authorId,
 					resourceId,
 				});
 			else {
-				utils.comments.getReplies.invalidate({
-					authorId,
-					resourceId,
-					parentId,
-				});
-				utils.comments.getReplyCount.invalidate({
-					authorId,
-					resourceId,
-					parentId,
+				utils.comments.get.invalidate({
+					id: parentId,
 				});
 			}
 			utils.comments.count.rating.invalidate({
@@ -272,15 +265,8 @@ const Comment = ({
 					resourceId,
 				});
 			else {
-				utils.comments.getReplies.invalidate({
-					authorId,
-					resourceId,
-					parentId,
-				});
-				utils.comments.getReplyCount.invalidate({
-					authorId,
-					resourceId,
-					parentId,
+				utils.comments.get.invalidate({
+					id,
 				});
 			}
 			utils.comments.count.rating.invalidate({
@@ -383,16 +369,8 @@ const CommentLayout = ({
 }) => {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const { data: replies } = api.comments.getReplies.useQuery({
-		parentId: comment.id,
-		authorId: comment.authorId,
-		resourceId: comment.resourceId,
-	});
-
-	const [replyCount] = api.comments.getReplyCount.useSuspenseQuery({
-		parentId: comment.id,
-		authorId: comment.authorId,
-		resourceId: comment.resourceId,
+	const { data: fullComment } = api.comments.get.useQuery({
+		id: comment.id,
 	});
 
 	const toggleOpen = () => {
@@ -403,7 +381,7 @@ const CommentLayout = ({
 		<div>
 			<Comment
 				{...comment}
-				replyCount={replyCount}
+				replyCount={fullComment?.replies?.length}
 				myProfile={myProfile}
 				commentView={toggleOpen}
 				openCommentFormId={openCommentFormId}
@@ -411,7 +389,7 @@ const CommentLayout = ({
 			/>
 			<div>
 				{isOpen &&
-					replies?.map((reply) => {
+					fullComment?.replies?.map((reply) => {
 						return (
 							<div className=" ml-10 mt-2" key={reply.id}>
 								<Comment
