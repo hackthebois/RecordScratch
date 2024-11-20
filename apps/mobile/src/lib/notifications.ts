@@ -81,6 +81,7 @@ export function useNotificationObserver() {
 		});
 
 		const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+			console.log("Notification response", response);
 			redirect(response.notification);
 		});
 

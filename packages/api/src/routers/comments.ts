@@ -100,7 +100,7 @@ export const commentsRouter = router({
 				: undefined;
 
 			// If parent comment and not replying to self then notify the parent
-			if (parentComment) {
+			if (parentComment && parentComment.userId !== userId) {
 				await createCommentNotification({
 					fromId: userId,
 					userId: parentComment.userId,
@@ -109,7 +109,7 @@ export const commentsRouter = router({
 				});
 			}
 			// If not commenting to self then notify the author of the rating
-			else if (true) {
+			else if (input.authorId !== userId) {
 				await createCommentNotification({
 					fromId: userId,
 					userId: input.authorId,

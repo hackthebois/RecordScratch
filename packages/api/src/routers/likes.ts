@@ -24,7 +24,8 @@ export const likesRouter = router({
 				authorId,
 				resourceId,
 			});
-			if (userId != authorId) {
+			// TODO: Only send notifications if the user is not the author
+			if (true) {
 				await createLikeNotification({
 					resourceId,
 					fromId: userId,

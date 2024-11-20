@@ -34,6 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		},
 		package: "app.recordscratch.android",
 		versionCode: 1,
+		googleServicesFile: "./google-services.json",
 	},
 	plugins: [
 		"expo-router",

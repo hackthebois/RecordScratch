@@ -54,7 +54,9 @@ const LikeButton = (props: SelectLike) => {
 		>
 			<Heart
 				size={25}
-				className={cn(liked ? "text-red-500 fill-red-500" : "text-muted-foreground")}
+				className={cn(
+					liked ? "text-red-500 fill-red-500" : "text-muted-foreground fill-background"
+				)}
 			/>
 			<Text className="font-bold">{likesCount}</Text>
 		</Button>
