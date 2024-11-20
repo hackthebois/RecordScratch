@@ -1,6 +1,7 @@
 import { users } from "@recordscratch/db";
+import { UserSchema } from "@recordscratch/types";
 import { eq } from "drizzle-orm";
-import { publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const usersRouter = router({
 	me: publicProcedure.query(async ({ ctx: { db, userId } }) => {
@@ -9,4 +10,9 @@ export const usersRouter = router({
 			where: eq(users.id, userId),
 		});
 	}),
+	update: protectedProcedure
+		.input(UserSchema.pick({ notificationsEnabled: true }))
+		.mutation(async ({ ctx: { db, userId }, input: { notificationsEnabled } }) => {
+			return await db.update(users).set({ notificationsEnabled }).where(eq(users.id, userId));
+		}),
 });
