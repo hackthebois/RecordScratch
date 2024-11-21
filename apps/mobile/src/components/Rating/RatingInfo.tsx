@@ -1,10 +1,10 @@
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { Star } from "@/lib/icons/Star";
 import { cn } from "@recordscratch/lib";
 import { Resource, ResourceRating } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { Pressable, View } from "react-native";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { Star } from "~/lib/icons/Star";
 import { Skeleton } from "../ui/skeleton";
 
 export const RatingInfo = ({
@@ -59,7 +59,7 @@ export const RatingInfo = ({
 				: "";
 
 	return (
-		<Link href={href} asChild>
+		<Link href={href as any} asChild>
 			<Pressable
 				className={cn(
 					"flex min-h-12 gap-4 justify-center",

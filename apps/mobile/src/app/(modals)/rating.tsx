@@ -1,3 +1,8 @@
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { Star } from "@/lib/icons/Star";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RateForm, RateFormSchema, Resource } from "@recordscratch/types";
 import { Image } from "expo-image";
@@ -6,11 +11,6 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Pressable, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { Star } from "~/lib/icons/Star";
 
 const RatingInput = ({
 	value: rating,
@@ -30,11 +30,7 @@ const RatingInput = ({
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<Star
-									size={28}
-									color="#ffb703"
-									fill="#ffb703"
-								/>
+								<Star size={28} color="#ffb703" fill="#ffb703" />
 							) : (
 								<Star size={28} color="#ffb703" />
 							)
@@ -150,10 +146,7 @@ const RatingModal = () => {
 						control={control}
 						name="rating"
 						render={({ field: { onChange, value } }) => (
-							<RatingInput
-								value={value ?? 0}
-								onChange={onChange}
-							/>
+							<RatingInput value={value ?? 0} onChange={onChange} />
 						)}
 					/>
 					<Controller
@@ -203,10 +196,7 @@ const RatingModal = () => {
 								<Text>Remove rating</Text>
 							</Pressable>
 						) : (
-							<Pressable
-								onPress={clearRating}
-								className="flex items-center"
-							>
+							<Pressable onPress={clearRating} className="flex items-center">
 								<Text>Remove rating</Text>
 							</Pressable>
 						))}

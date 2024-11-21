@@ -137,7 +137,6 @@ export const ratingsRouter = router({
 			.orderBy(({ sortValue }) => desc(sortValue))
 			.having(({ total }) => gt(total, 5))
 			.limit(20);
-		console.log(rating);
 		return rating;
 	}),
 	feed: publicProcedure

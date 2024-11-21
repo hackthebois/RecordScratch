@@ -1,3 +1,4 @@
+import env from "@/env";
 import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -6,17 +7,20 @@ import { createContext, useContext, useEffect, useRef } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
 import { createStore, useStore } from "zustand";
-import env from "~/env";
+import { api } from "./api";
 import { catchError } from "./errors";
+import { registerForPushNotificationsAsync } from "./notifications";
 
 // Define the context type
 type Auth = {
 	status: "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
 	sessionId: string | null;
+	pushToken: string | null;
 	profile: Profile | null;
 	logout: () => Promise<void>;
 	login: (session?: string) => Promise<void>;
 	setSessionId: (sessionId: string) => Promise<void>;
+	setPushToken: (pushToken: string) => void;
 	setProfile: (profile: Profile) => void;
 	setStatus: (status: Auth["status"]) => void;
 };
@@ -27,6 +31,8 @@ export const createAuthStore = () =>
 	createStore<Auth>()((set, get) => ({
 		status: "loading",
 		sessionId: null,
+		pushToken: null,
+		setPushToken: (pushToken) => set({ pushToken }),
 		setSessionId: async (sessionId) => {
 			await SecureStore.setItemAsync("sessionId", sessionId);
 			set({ sessionId });
@@ -38,20 +44,29 @@ export const createAuthStore = () =>
 			await fetch(env.SITE_URL + "/api/auth/signout", {
 				headers: {
 					Authorization: `${get().sessionId}`,
+					"Expo-Push-Token": get().pushToken ?? "",
 				},
 			});
 			set({ sessionId: null, profile: null, status: "unauthenticated" });
 			await SecureStore.deleteItemAsync("sessionId");
 		},
 		login: async (session?: string) => {
-			const oldSessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
+			const sessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
 
-			if (!oldSessionId) {
+			const expoPushToken = await registerForPushNotificationsAsync();
+			set({ pushToken: expoPushToken });
+
+			if (!sessionId) {
 				set({ status: "unauthenticated" });
 				return;
 			}
 
-			const res = await fetch(`${env.SITE_URL}/api/auth/me?sessionId=${oldSessionId}`);
+			const res = await fetch(`${env.SITE_URL}/api/auth/me`, {
+				headers: {
+					"Expo-Push-Token": expoPushToken ?? "",
+					Authorization: sessionId,
+				},
+			});
 			const data = await res.json();
 			const parsedData = z
 				.object({
@@ -74,7 +89,7 @@ export const createAuthStore = () =>
 			if (parsedData.error || !parsedData.data.user) {
 				get().logout();
 			} else {
-				get().setSessionId(oldSessionId);
+				get().setSessionId(sessionId);
 				if (parsedData.data.user.profile) {
 					get().setProfile(parsedData.data.user.profile);
 					set({ status: "authenticated" });
@@ -93,6 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const login = useStore(store, (s) => s.login);
 	const logout = useStore(store, (s) => s.logout);
 	const status = useStore(store, (s) => s.status);
+	const pushToken = useStore(store, (s) => s.pushToken);
 
 	useEffect(() => {
 		login()
@@ -119,3 +135,34 @@ export function useAuth<T>(selector: (state: Auth) => T): T {
 	if (!store) throw new Error("Missing AuthContext.Provider in the tree");
 	return useStore(store, selector);
 }
+
+export const Prefetch = ({ handle, userId }: { handle: string; userId: string }) => {
+	api.profiles.get.usePrefetchQuery(handle);
+	api.ratings.user.streak.usePrefetchQuery({ userId });
+	api.ratings.user.totalLikes.usePrefetchQuery({ userId });
+	api.profiles.distribution.usePrefetchQuery({ userId });
+	api.lists.topLists.usePrefetchQuery({ userId });
+	api.profiles.getTotalRatings.usePrefetchQuery({ userId });
+	api.profiles.followCount.usePrefetchQuery({
+		profileId: userId,
+		type: "followers",
+	});
+	api.profiles.followCount.usePrefetchQuery({
+		profileId: userId,
+		type: "following",
+	});
+
+	return null;
+};
+
+export const PrefetchProfile = (props: { handle?: string; userId?: string }) => {
+	const profile = useAuth((s) => s.profile);
+	const handle = props.handle ?? profile?.handle ?? "";
+	const userId = props.userId ?? profile?.userId ?? "";
+
+	if (handle && userId) {
+		return <Prefetch handle={handle} userId={userId} />;
+	}
+
+	return null;
+};

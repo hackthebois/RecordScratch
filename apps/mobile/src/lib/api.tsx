@@ -4,8 +4,8 @@ import { createTRPCReact } from "@trpc/react-query";
 import React, { useEffect, useState } from "react";
 import superjson from "superjson";
 
+import env from "@/env";
 import type { AppRouter } from "@recordscratch/api";
-import env from "~/env";
 import { useAuth } from "./auth";
 import { catchError } from "./errors";
 

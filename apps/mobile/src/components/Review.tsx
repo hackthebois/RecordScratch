@@ -1,18 +1,18 @@
+import { ResourceItem } from "@/components/Item/ResourceItem";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { Heart } from "@/lib/icons/Heart";
+import { MessageCircle } from "@/lib/icons/MessageCircle";
+import { Reply } from "@/lib/icons/Reply";
+import { Star } from "@/lib/icons/Star";
+import { getImageUrl } from "@/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "expo-router";
 import { Suspense } from "react";
 import { Pressable, View } from "react-native";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { Heart } from "~/lib/icons/Heart";
-import { MessageCircle } from "~/lib/icons/MessageCircle";
-import { Reply } from "~/lib/icons/Reply";
-import { Star } from "~/lib/icons/Star";
-import { getImageUrl } from "~/lib/image";
 
 const IconSize = 30;
 
@@ -54,7 +54,9 @@ const LikeButton = (props: SelectLike) => {
 		>
 			<Heart
 				size={25}
-				className={cn(liked ? "text-red-500 fill-red-500" : "text-muted-foreground")}
+				className={cn(
+					liked ? "text-red-500 fill-red-500" : "text-muted-foreground fill-background"
+				)}
 			/>
 			<Text className="font-bold">{likesCount}</Text>
 		</Button>
@@ -76,7 +78,7 @@ const CommentsButton = ({
 	return (
 		<Link
 			href={{
-				pathname: "[handle]/ratings/[id]",
+				pathname: "/[handle]/ratings/[id]",
 				params: { handle: handle, id: resourceId },
 			}}
 			asChild
@@ -122,7 +124,7 @@ export const Review = ({
 				<Link href={`/${String(profile.handle)}`} asChild>
 					<Pressable className="flex flex-row flex-wrap items-center gap-2">
 						<UserAvatar imageUrl={getImageUrl(profile)} />
-						<Text className="text-lg">{profile.name}</Text>
+						<Text className="text-lg font-medium">{profile.name}</Text>
 						<Text className="text-left text-muted-foreground text-lg">
 							@{profile.handle} • {timeAgo(updatedAt)}
 						</Text>
@@ -153,7 +155,7 @@ export const Review = ({
 						</Suspense>
 						<Link
 							href={{
-								pathname: "(modals)/reply/rating",
+								pathname: "/(modals)/reply/rating",
 								params: { resourceId, handle: profile.handle },
 							}}
 							asChild

@@ -1,13 +1,13 @@
+import NotFoundScreen from "@/app/+not-found";
+import { Review } from "@/components/Review";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, TextInput, View } from "react-native";
 import { z } from "zod";
-import NotFoundScreen from "~/app/+not-found";
-import { Review } from "~/components/Review";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
 
 const Reply = () => {
 	const router = useRouter();
@@ -36,7 +36,7 @@ const Reply = () => {
 			form.reset();
 			router.back();
 			router.navigate({
-				pathname: "[handle]/ratings/[id]",
+				pathname: "/[handle]/ratings/[id]",
 				params: { handle, id: resourceId },
 			});
 		},
@@ -57,6 +57,8 @@ const Reply = () => {
 			content,
 			resourceId,
 			authorId: profile.userId,
+			parentId: null,
+			rootId: null,
 		});
 	};
 

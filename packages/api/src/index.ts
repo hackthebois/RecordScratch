@@ -31,3 +31,5 @@ type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 export { appRouter, createCaller, createTRPCContext };
 export type { AppRouter, RouterInputs, RouterOutputs };
+
+export * from "../../lib/src/notifications";

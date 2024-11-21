@@ -1,32 +1,33 @@
 {
-  "scripts": {
-    "build": "dotenv -- turbo build",
-    "build-cloudflare": "dotenv -- turbo build-cloudflare",
-    "type-check": "tsc",
-    "dev": "dotenv -- turbo dev",
-    "studio": "dotenv -- turbo studio",
-    "clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb"
-  },
-  "dependencies": {
-    "@types/uuid": "^10.0.0",
-    "dotenv": "^16.4.5",
-    "ngrok": "^5.0.0-beta.2",
-    "turbo": "^1.13.3",
-    "typescript": "~5.3.3"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "name": "root",
-  "devDependencies": {
-    "dotenv-cli": "^7.4.1"
-  },
-  "trustedDependencies": [
-    "core-js",
-    "es5-ext",
-    "esbuild",
-    "ngrok",
-    "protobufjs"
-  ]
+	"scripts": {
+		"build": "dotenv -- turbo build",
+		"build-cloudflare": "dotenv -- turbo build-cloudflare",
+		"type-check": "tsc",
+		"dev": "dotenv -- turbo dev",
+		"studio": "dotenv -- turbo studio",
+		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb",
+		"ngrok": "ngrok http 3000 --host-header=\"localhost:3000\""
+	},
+	"dependencies": {
+		"@types/uuid": "^10.0.0",
+		"dotenv": "^16.4.5",
+		"ngrok": "^5.0.0-beta.2",
+		"turbo": "^1.13.3",
+		"typescript": "~5.3.3"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"name": "root",
+	"devDependencies": {
+		"dotenv-cli": "^7.4.1"
+	},
+	"trustedDependencies": [
+		"core-js",
+		"es5-ext",
+		"esbuild",
+		"ngrok",
+		"protobufjs"
+	]
 }

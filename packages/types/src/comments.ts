@@ -1,35 +1,35 @@
 import { comments } from "@recordscratch/db";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import type { Profile } from "./profile";
 
-export const SelectCommentSchema = z.object({
-	resourceId: z.string(),
-	authorId: z.string(),
+export const CommentSchema = createSelectSchema(comments);
+export type Comment = z.infer<typeof CommentSchema>;
+
+export const SelectCommentSchema = CommentSchema.pick({
+	resourceId: true,
+	authorId: true,
 });
 export type SelectComment = z.infer<typeof SelectCommentSchema>;
 
 export const CreateCommentSchema = createInsertSchema(comments, {
 	content: z.string().min(1).max(10000),
 })
-	.extend({ replyUserId: z.string().optional() })
 	.omit({
 		userId: true,
+	})
+	.extend({
+		parentId: z.string().nullable(),
+		rootId: z.string().nullable(),
 	});
 export type CreateComment = z.infer<typeof CreateCommentSchema>;
 
-export const DeleteCommentSchema = CreateCommentSchema.pick({
+export const DeleteCommentSchema = CommentSchema.pick({
 	id: true,
-	rootId: true,
 });
 
-export const SelectReplySchema = CreateCommentSchema.pick({
+export const SelectRepliesSchema = CreateCommentSchema.pick({
 	authorId: true,
 	resourceId: true,
-	rootId: true,
+	parentId: true,
 });
-const CommentSchema = createSelectSchema(comments);
-export type CommentSchemaType = z.infer<typeof CommentSchema>;
-
-export type CommentAndProfile = CommentSchemaType & { profile: Profile };
-export type CommentAndProfileAndParent = CommentSchemaType & { profile: Profile; parent: Profile };
+export type SelectReplies = z.infer<typeof SelectRepliesSchema>;

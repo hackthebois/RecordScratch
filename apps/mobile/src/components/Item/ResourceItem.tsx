@@ -1,12 +1,12 @@
+import { Skeleton } from "@/components/ui/skeleton";
+import { Text } from "@/components/ui/text";
+import { getQueryOptions } from "@/lib/deezer";
 import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
-import { Skeleton } from "~/components/ui/skeleton";
-import { Text } from "~/components/ui/text";
-import { getQueryOptions } from "~/lib/deezer";
 
 export const ResourceItemSkeleton = ({
 	direction = "horizontal",

@@ -1,3 +1,10 @@
+import { Text } from "@/components/ui/text";
+import env from "@/env";
+import { TRPCProvider } from "@/lib/api";
+import { AuthProvider, PrefetchProfile } from "@/lib/auth";
+import { NAV_THEME } from "@/lib/constants";
+import { catchError } from "@/lib/errors";
+import { useColorScheme } from "@/lib/useColorScheme";
 import {
 	Montserrat_100Thin,
 	Montserrat_200ExtraLight,
@@ -20,15 +27,7 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Text } from "~/components/ui/text";
-import env from "~/env";
-import { TRPCProvider } from "~/lib/api";
-import { AuthProvider } from "~/lib/auth";
-import { NAV_THEME } from "~/lib/constants";
-import { catchError } from "~/lib/errors";
-import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
-import { PrefetchProfile } from "./(tabs)/(feed,home,search,profile)/[handle]";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -153,7 +152,7 @@ const RootLayout = () => {
 						<Stack
 							screenOptions={{
 								animation: "fade",
-								headerBackTitleVisible: false,
+								// headerBackTitleVisible: false,
 								headerTitle: (props: any) => (
 									<Text variant="h4">{props.children}</Text>
 								),

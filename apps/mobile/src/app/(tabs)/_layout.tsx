@@ -1,21 +1,29 @@
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { Bell } from "@/lib/icons/Bell";
+import { Home } from "@/lib/icons/Home";
+import { Rows3 } from "@/lib/icons/Rows3";
+import { Search } from "@/lib/icons/Search";
+import { User } from "@/lib/icons/User";
+import { useNotificationObserver } from "@/lib/notifications";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
-import { Pressable } from "react-native";
-import { Text } from "~/components/ui/text";
-import { Home } from "~/lib/icons/Home";
-import { Search } from "~/lib/icons/Search";
-import { Star } from "~/lib/icons/Star";
-import { User } from "~/lib/icons/User";
+import { Pressable, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
 	const router = useRouter();
+	const { data: notifications } = api.notifications.getUnseen.useQuery();
+	const insets = useSafeAreaInsets();
+
+	useNotificationObserver();
+
 	return (
 		<Tabs
 			backBehavior="history"
 			screenOptions={{
-				headerBackTitleVisible: false,
 				tabBarActiveTintColor: "#ffb703",
 				headerTitleAlign: "center",
 				tabBarLabel: ({ focused, children }: any) => (
@@ -30,11 +38,14 @@ export default function TabLayout() {
 				),
 				headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
 				tabBarStyle: {
-					height: 90,
-					paddingTop: 12,
+					height: 70,
+					paddingTop: 8,
+					paddingBottom: insets.bottom,
 				},
 				tabBarItemStyle: {
 					flexDirection: "column",
+					justifyContent: "center",
+					alignItems: "center",
 				},
 				headerLeft: () => (
 					<Pressable onPress={() => router.back()}>
@@ -55,7 +66,7 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="(home)"
 				options={{
-					title: "Home",
+					title: "",
 					tabBarIcon: ({ focused }) => (
 						<Home
 							size={28}
@@ -68,7 +79,7 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="(search)"
 				options={{
-					title: "Search",
+					title: "",
 					tabBarIcon: ({ focused }) => (
 						<Search
 							size={28}
@@ -81,9 +92,9 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="(feed)"
 				options={{
-					title: "Feed",
+					title: "",
 					tabBarIcon: ({ focused }) => (
-						<Star
+						<Rows3
 							size={28}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
@@ -92,9 +103,31 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
+				name="(notifications)"
+				options={{
+					title: "",
+					tabBarIcon: ({ focused }) => (
+						<View className="relative">
+							<Bell
+								size={28}
+								className={cn(focused ? "text-primary" : "text-muted-foreground")}
+							/>
+							{notifications && notifications > 0 ? (
+								<View className="absolute -top-2 -right-1.5 bg-destructive px-1 h-5 min-w-5 rounded-full flex items-center justify-center">
+									<Text className="text-xs text-white font-semibold">
+										{notifications > 99 ? "99+" : notifications}
+									</Text>
+								</View>
+							) : null}
+						</View>
+					),
+					headerShown: false,
+				}}
+			/>
+			<Tabs.Screen
 				name="(profile)"
 				options={{
-					title: "Profile",
+					title: "",
 					tabBarIcon: ({ focused }) => (
 						<User
 							size={28}

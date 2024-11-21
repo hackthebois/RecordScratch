@@ -6,12 +6,7 @@ import { PendingComponent } from "@/components/router/Pending";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
-import {
-	CommentSchemaType,
-	Profile,
-	Rating,
-	ReviewType,
-} from "@recordscratch/types";
+import { Comment, Profile, Rating, ReviewType } from "@recordscratch/types";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { BellOff, Heart, MessageCircle, Star, User } from "lucide-react";
 import React, { useEffect } from "react";
@@ -145,7 +140,7 @@ const CommentNotification = ({
 	ratingProfile,
 }: {
 	user: Profile;
-	comment: CommentSchemaType;
+	comment: Comment;
 	type: "REPLY" | "COMMENT";
 	ratingProfile: Profile;
 }) => {
@@ -226,34 +221,22 @@ function Notifications() {
 			)}
 			{allNotifications.map((notification, index) => (
 				<React.Fragment key={index}>
-					{notification.notifType === "COMMENT" && (
+					{notification.notifType === "comment" && (
 						<CommentNotification
 							user={notification.profile}
-							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-							/* @ts-ignore */
 							comment={notification.comment}
-							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-							/* @ts-ignore */
-							ratingProfile={notification.ratingProfile}
-							/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-							/* @ts-ignore */
-							type={notification.notification.type}
+							ratingProfile={notification.profile}
+							type={notification.type}
 						/>
 					)}
-					{notification.notifType === "FOLLOW" && (
+					{notification.notifType === "follow" && (
 						<FollowNotification user={notification.profile} />
 					)}
-
-					{notification.notifType === "LIKE" && (
+					{notification.notifType === "like" && (
 						<LikeNotification
 							user={userProfile!}
 							fromUser={notification.profile}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							/* @ts-ignore */
-							content={notification.ratings.content}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							/* @ts-ignore */
-							rating={notification.ratings}
+							rating={notification.rating}
 						/>
 					)}
 				</React.Fragment>

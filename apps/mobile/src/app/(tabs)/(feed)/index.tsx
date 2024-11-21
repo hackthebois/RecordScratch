@@ -1,9 +1,9 @@
+import { ReviewsList } from "@/components/ReviewsList";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import { ReviewsList } from "~/components/ReviewsList";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
 
 const FeedPage = () => {
 	const [tab, setTab] = useState("for-you");
