@@ -15,10 +15,12 @@ import { registerForPushNotificationsAsync } from "./notifications";
 type Auth = {
 	status: "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
 	sessionId: string | null;
+	pushToken: string | null;
 	profile: Profile | null;
 	logout: () => Promise<void>;
 	login: (session?: string) => Promise<void>;
 	setSessionId: (sessionId: string) => Promise<void>;
+	setPushToken: (pushToken: string) => void;
 	setProfile: (profile: Profile) => void;
 	setStatus: (status: Auth["status"]) => void;
 };
@@ -29,6 +31,8 @@ export const createAuthStore = () =>
 	createStore<Auth>()((set, get) => ({
 		status: "loading",
 		sessionId: null,
+		pushToken: null,
+		setPushToken: (pushToken) => set({ pushToken }),
 		setSessionId: async (sessionId) => {
 			await SecureStore.setItemAsync("sessionId", sessionId);
 			set({ sessionId });
@@ -40,6 +44,7 @@ export const createAuthStore = () =>
 			await fetch(env.SITE_URL + "/api/auth/signout", {
 				headers: {
 					Authorization: `${get().sessionId}`,
+					"Expo-Push-Token": get().pushToken ?? "",
 				},
 			});
 			set({ sessionId: null, profile: null, status: "unauthenticated" });
@@ -49,6 +54,7 @@ export const createAuthStore = () =>
 			const sessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
 
 			const expoPushToken = await registerForPushNotificationsAsync();
+			set({ pushToken: expoPushToken });
 
 			if (!sessionId) {
 				set({ status: "unauthenticated" });
@@ -102,6 +108,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const login = useStore(store, (s) => s.login);
 	const logout = useStore(store, (s) => s.logout);
 	const status = useStore(store, (s) => s.status);
+	const pushToken = useStore(store, (s) => s.pushToken);
 
 	useEffect(() => {
 		login()

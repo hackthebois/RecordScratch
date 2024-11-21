@@ -13,16 +13,24 @@ import {
 	parseFollowNotification,
 	parseLikeNotification,
 } from "@recordscratch/lib";
-import type { CreateFollowNotification, CreateLikeNotification, User } from "@recordscratch/types";
+import type {
+	CreateFollowNotification,
+	CreateLikeNotification,
+	PushToken,
+	User,
+} from "@recordscratch/types";
 import "dotenv/config"; // Ensures env vars are loaded first
 import { and, eq, inArray } from "drizzle-orm";
 import { Expo, type ExpoPushMessage } from "expo-server-sdk";
-
 export const sendPushNotifications = async ({
 	users,
 	messages,
 }: {
-	users: User[] | string[];
+	users:
+		| (User & {
+				pushTokens: PushToken[];
+		  })[]
+		| string[];
 	messages: {
 		title: ExpoPushMessage["title"];
 		body: ExpoPushMessage["body"];
@@ -34,11 +42,16 @@ export const sendPushNotifications = async ({
 	});
 
 	// If users is an array of user ids, fetch the users from the database
-	let usersList: User[] = [];
+	let usersList: (User & {
+		pushTokens: PushToken[];
+	})[] = [];
 	if (users.every((item) => typeof item === "string")) {
 		const db = getDB();
 		const u = await db.query.users.findMany({
 			where: inArray(userTable.id, users),
+			with: {
+				pushTokens: true,
+			},
 		});
 		usersList = u;
 	} else {
@@ -47,8 +60,8 @@ export const sendPushNotifications = async ({
 
 	// Filter users that have notifications enabled and have an expo push token
 	const pushTokens = usersList
-		.filter((user) => user.notificationsEnabled && user.expoPushToken)
-		.map((user) => user.expoPushToken!);
+		.filter((user) => user.notificationsEnabled && user.pushTokens.length > 0)
+		.flatMap((user) => user.pushTokens.map((token) => token.token));
 
 	// Create the notifications
 	let notifications: ExpoPushMessage[] = [];
@@ -88,16 +101,28 @@ export const createCommentNotification = async (commentId: string) => {
 				with: {
 					profile: {
 						with: {
-							user: true,
+							user: {
+								with: {
+									pushTokens: true,
+								},
+							},
 						},
 					},
 				},
 			},
 			profile: {
-				with: { user: true },
+				with: {
+					user: true,
+				},
 			},
 			author: {
-				with: { user: true },
+				with: {
+					user: {
+						with: {
+							pushTokens: true,
+						},
+					},
+				},
 			},
 		},
 	});
@@ -153,7 +178,11 @@ export const createFollowNotification = async (notification: CreateFollowNotific
 			with: {
 				following: {
 					with: {
-						user: true,
+						user: {
+							with: {
+								pushTokens: true,
+							},
+						},
 					},
 				},
 				follower: true,
@@ -209,7 +238,11 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 			with: {
 				author: {
 					with: {
-						user: true,
+						user: {
+							with: {
+								pushTokens: true,
+							},
+						},
 					},
 				},
 				profile: true,

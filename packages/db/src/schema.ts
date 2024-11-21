@@ -33,14 +33,34 @@ export const users = pgTable("users", {
 	}),
 	googleId: text("google_id").unique(),
 	appleId: text("apple_id").unique(),
-	expoPushToken: text("expo_push_token"),
 	notificationsEnabled: boolean("notifications_enabled").default(true),
 });
 
-export const usersRelations = relations(users, ({ one }) => ({
+export const pushTokens = pgTable(
+	"push_tokens",
+	{
+		userId: text("user_id").notNull(),
+		token: text("token").notNull(),
+	},
+	(table) => ({
+		pk_push_tokens: primaryKey({
+			columns: [table.userId, table.token],
+		}),
+	})
+);
+
+export const usersRelations = relations(users, ({ one, many }) => ({
 	profile: one(profile, {
 		fields: [users.id],
 		references: [profile.userId],
+	}),
+	pushTokens: many(pushTokens),
+}));
+
+export const pushTokenRelations = relations(pushTokens, ({ one }) => ({
+	user: one(users, {
+		fields: [pushTokens.userId],
+		references: [users.id],
 	}),
 }));
 
@@ -334,6 +354,7 @@ export const tableSchemas = {
 	commentNotifications,
 	followNotifications,
 	likeNotifications,
+	pushTokens,
 };
 
 export const relationSchemas = {
@@ -349,4 +370,5 @@ export const relationSchemas = {
 	commentNotificationRelations,
 	followNotificationRelations,
 	likeNotificationRelations,
+	pushTokenRelations,
 };

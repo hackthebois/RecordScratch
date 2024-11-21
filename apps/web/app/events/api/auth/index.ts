@@ -3,7 +3,7 @@ import {
 	setSessionCookie,
 	validateSessionToken,
 } from "@recordscratch/auth";
-import { getDB, users } from "@recordscratch/db";
+import { getDB, pushTokens, users } from "@recordscratch/db";
 import { eq } from "drizzle-orm";
 import { getCookie, getHeader, getQuery } from "vinxi/http";
 import { Route } from "..";
@@ -29,22 +29,32 @@ export const authRoutes: Route[] = [
 				where: eq(users.id, user.id),
 				with: {
 					profile: true,
+					pushTokens: true,
 				},
 			});
 
 			const expoPushToken = getHeader(event, "Expo-Push-Token");
-			// Update the expo push token if it's different or not set
+
+			// Insert the expo push token
 			if (
+				expoPushToken &&
+				// Only insert the token if the user exists
 				existingUser &&
-				(!existingUser.expoPushToken ||
-					expoPushToken !== existingUser.expoPushToken)
+				// Don't insert the same token twice
+				!existingUser?.pushTokens.find(
+					(token) => token.token === expoPushToken
+				)
 			) {
 				await db
-					.update(users)
-					.set({ expoPushToken })
-					.where(eq(users.id, user.id));
+					.insert(pushTokens)
+					.values({ token: expoPushToken, userId: user.id });
 
-				return { user: { ...existingUser, expoPushToken } };
+				return {
+					user: {
+						...existingUser,
+						pushTokens: [...existingUser.pushTokens, expoPushToken],
+					},
+				};
 			}
 
 			return { user: existingUser };
@@ -59,6 +69,18 @@ export const authRoutes: Route[] = [
 			if (!session) return;
 			setSessionCookie(event, undefined);
 			await invalidateSession(session);
+
+			const expoPushToken = getHeader(event, "Expo-Push-Token");
+			// If expo push token, delete it to prevent signed out notifications
+			if (expoPushToken) {
+				const db = getDB();
+
+				console.log("deleting push token", expoPushToken);
+				await db
+					.delete(pushTokens)
+					.where(eq(pushTokens.token, expoPushToken));
+			}
+
 			return { success: true };
 		},
 	],
