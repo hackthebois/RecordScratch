@@ -10,6 +10,7 @@ const Layout = () => {
 				headerShadowVisible: false,
 				animation: "fade",
 				title: "",
+				headerTitleAlign: "center",
 			}}
 		/>
 	);

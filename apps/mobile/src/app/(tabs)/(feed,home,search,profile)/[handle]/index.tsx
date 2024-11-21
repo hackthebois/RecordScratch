@@ -1,6 +1,7 @@
 import NotFoundScreen from "#/app/+not-found";
 import { ListWithResources } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { ListPlus } from "~/lib/icons/ListPlus";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import DistributionChart from "~/components/DistributionChart";
@@ -9,6 +10,7 @@ import FollowerMenu from "~/components/Followers/FollowersMenu";
 import { ArtistItem } from "~/components/Item/ArtistItem";
 import { ResourceItem } from "~/components/Item/ResourceItem";
 import { UserAvatar } from "~/components/UserAvatar";
+import { Button } from "~/components/ui/button";
 import { Pill } from "~/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
@@ -16,6 +18,7 @@ import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
 import { Settings } from "~/lib/icons/Settings";
 import { getImageUrl } from "~/lib/image";
+import { ResourcesList } from "~/components/List/TopList";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -27,10 +30,14 @@ const TopListsTab = ({
 	album,
 	song,
 	artist,
+	userId,
+	isProfile,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
+	userId: string;
+	isProfile: boolean;
 }) => {
 	const [value, setValue] = useState("albums");
 
@@ -49,7 +56,7 @@ const TopListsTab = ({
 					</TabsTrigger>
 				</TabsList>
 			</View>
-			<TabsContent value="albums" className="flex-row flex-wrap justify-between gap-2 p-4">
+			<TabsContent value="albums" className="flex-row flex-wrap justify-around p-4">
 				{album?.resources.map((album) => (
 					<ResourceItem
 						key={album.resourceId}
@@ -67,21 +74,29 @@ const TopListsTab = ({
 				))}
 			</TabsContent>
 			<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
-				{song?.resources.map((song) => (
-					<ResourceItem
-						key={song.resourceId}
-						resource={{
-							parentId: song.parentId!,
-							resourceId: song.resourceId,
-							category: "SONG",
-						}}
-						direction="vertical"
-						titleCss="font-medium line-clamp-2"
-						className="w-[115px]"
-						showArtist={false}
-						imageWidthAndHeight={115}
-					/>
-				))}
+				{/* {song?.resources.map((song) => (
+					// <ResourceItem
+					// 	key={song.resourceId}
+					// 	resource={{
+					// 		parentId: song.parentId!,
+					// 		resourceId: song.resourceId,
+					// 		category: "SONG",
+					// 	}}
+					// 	direction="vertical"
+					// 	titleCss="font-medium line-clamp-2"
+					// 	className="w-[115px]"
+					// 	showArtist={false}
+					// 	imageWidthAndHeight={115}
+					// />
+					
+				))} */}
+				<ResourcesList
+					category="SONG"
+					// editMode={editMode}
+					userId={userId}
+					list={song}
+					isUser={isProfile}
+				/>
 			</TabsContent>
 			<TabsContent value="artists" className="flex-row flex-wrap justify-between gap-2 p-4">
 				{artist?.resources.map((artist) => (
@@ -89,7 +104,9 @@ const TopListsTab = ({
 						key={artist.resourceId}
 						artistId={artist.resourceId}
 						direction="vertical"
-						textCss="font-medium line-clamp-2 text-center"
+						textCss="font-medium line-clamp-2"
+						imageWidthAndHeight={115}
+						className="w-[115px]"
 					/>
 				))}
 			</TabsContent>
@@ -179,7 +196,7 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 						</Pressable>
 					</Link>
 				</View>
-				<TopListsTab {...topLists} />
+				<TopListsTab {...topLists} userId={myProfile!.userId} isProfile={isProfile} />
 				{/* <FlashList
 						data={lists}
 						renderItem={({ index, item }) => (

@@ -30,11 +30,7 @@ const RatingInput = ({
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<Star
-									size={28}
-									color="#ffb703"
-									fill="#ffb703"
-								/>
+								<Star size={28} color="#ffb703" fill="#ffb703" />
 							) : (
 								<Star size={28} color="#ffb703" />
 							)
@@ -96,7 +92,6 @@ const RatingModal = () => {
 	});
 
 	const onSubmit = async (rate: RateForm) => {
-		console.log("clearing rating", resource);
 		rateMutation(rate);
 	};
 
@@ -111,11 +106,6 @@ const RatingModal = () => {
 
 	return (
 		<SafeAreaView edges={["bottom"]} className="h-full">
-			<Stack.Screen
-				options={{
-					title: `Rate ${resource.category === "ALBUM" ? "Album" : "Song"}`,
-				}}
-			/>
 			<ScrollView
 				contentContainerClassName="p-4 justify-between"
 				automaticallyAdjustKeyboardInsets
@@ -150,10 +140,7 @@ const RatingModal = () => {
 						control={control}
 						name="rating"
 						render={({ field: { onChange, value } }) => (
-							<RatingInput
-								value={value ?? 0}
-								onChange={onChange}
-							/>
+							<RatingInput value={value ?? 0} onChange={onChange} />
 						)}
 					/>
 					<Controller
@@ -203,10 +190,7 @@ const RatingModal = () => {
 								<Text>Remove rating</Text>
 							</Pressable>
 						) : (
-							<Pressable
-								onPress={clearRating}
-								className="flex items-center"
-							>
+							<Pressable onPress={clearRating} className="flex items-center">
 								<Text>Remove rating</Text>
 							</Pressable>
 						))}

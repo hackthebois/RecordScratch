@@ -23,10 +23,13 @@
     "dotenv-cli": "^7.4.1"
   },
   "trustedDependencies": [
+    "@parcel/watcher",
+    "@sentry/cli",
     "core-js",
     "es5-ext",
     "esbuild",
     "ngrok",
-    "protobufjs"
+    "protobufjs",
+    "sharp"
   ]
 }

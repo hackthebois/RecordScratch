@@ -12,6 +12,7 @@ import { Text } from "~/components/ui/text";
 import { api } from "~/lib/api";
 import { getQueryOptions } from "~/lib/deezer";
 import NotFound from "../../+not-found";
+import { useAuth } from "~/lib/auth";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();

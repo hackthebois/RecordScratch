@@ -129,6 +129,7 @@ const RootLayout = () => {
 								animation: "fade",
 								headerBackTitleVisible: false,
 								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+								headerTitleAlign: "center",
 							}}
 						>
 							<Stack.Screen
@@ -153,6 +154,14 @@ const RootLayout = () => {
 								name="(modals)/rating"
 								options={{
 									title: "",
+									presentation: "modal",
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="(modals)/searchResource"
+								options={{
+									title: "SEARCH",
 									presentation: "modal",
 									animation: "slide_from_bottom",
 								}}
