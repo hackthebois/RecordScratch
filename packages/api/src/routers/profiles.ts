@@ -235,21 +235,7 @@ export const profilesRouter = router({
 		.mutation(async ({ ctx: { db, userId }, input: followingId }) => {
 			if (userId === followingId) throw new Error("User Cannot Follow Themselves");
 
-			const followExists =
-				(
-					await db
-						.select()
-						.from(followers)
-						.where(
-							and(
-								eq(followers.userId, userId),
-								eq(followers.followingId, followingId)
-							)
-						)
-				).length > 0;
-
-			if (followExists) throw new Error("User Already Follows");
-			else await db.insert(followers).values({ userId, followingId });
+			await db.insert(followers).values({ userId, followingId }).onConflictDoNothing();
 			await createFollowNotification({
 				fromId: userId,
 				userId: followingId,

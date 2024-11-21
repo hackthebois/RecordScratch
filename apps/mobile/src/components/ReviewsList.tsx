@@ -1,10 +1,10 @@
+import { api } from "@/lib/api";
+import { useRefreshByUser } from "@/lib/refresh";
 import { RouterInputs } from "@recordscratch/api";
 import { ReviewType } from "@recordscratch/types";
 import { FlashList, FlashListProps } from "@shopify/flash-list";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import { api } from "~/lib/api";
-import { useRefreshByUser } from "~/lib/refresh";
 import { Review } from "./Review";
 
 export const ReviewsList = (

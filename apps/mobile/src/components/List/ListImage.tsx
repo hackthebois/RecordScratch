@@ -1,10 +1,10 @@
+import { getQueryOptions } from "@/lib/deezer";
 import { Feather } from "@expo/vector-icons";
 import { Deezer } from "@recordscratch/lib";
 import { Category, ListItem, UserListItem } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense } from "react";
-import { getQueryOptions } from "~/lib/deezer";
 import { Image } from "expo-image";
+import { Suspense } from "react";
 import { View } from "react-native";
 
 const ListSquare = ({

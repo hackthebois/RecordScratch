@@ -5,8 +5,7 @@ import { NotFound } from "@/components/ui/NotFound";
 import { api, apiUtils } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-	CommentAndProfile,
-	CommentAndProfileAndParent,
+	Comment as CommentType,
 	CreateCommentSchema,
 } from "@recordscratch/types";
 import { Link, createFileRoute } from "@tanstack/react-router";
@@ -40,7 +39,7 @@ import {
 	Send,
 	Trash2,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { z } from "zod";
 
@@ -80,15 +79,13 @@ const CommentForm = ({
 	rootId,
 	onSubmitForm,
 	replyHandle,
-	replyUserId,
 }: {
 	profile: Profile;
 	authorId: string;
-	parentId?: string;
-	rootId?: string;
+	parentId: string | null;
+	rootId: string | null;
 	onSubmitForm?: () => void;
 	replyHandle?: string;
-	replyUserId?: string;
 }) => {
 	const { resourceId } = Route.useParams();
 	const utils = api.useUtils();
@@ -102,21 +99,14 @@ const CommentForm = ({
 	const { mutate, isPending } = api.comments.create.useMutation({
 		onSuccess: async () => {
 			form.reset();
-			if (!rootId && !parentId)
+			if (!parentId)
 				utils.comments.list.invalidate({
 					authorId,
 					resourceId,
 				});
 			else {
-				utils.comments.getReplies.invalidate({
-					authorId,
-					resourceId,
-					rootId,
-				});
-				utils.comments.getReplyCount.invalidate({
-					authorId,
-					resourceId,
-					rootId,
+				utils.comments.get.invalidate({
+					id: parentId,
 				});
 			}
 			utils.comments.count.rating.invalidate({
@@ -134,7 +124,6 @@ const CommentForm = ({
 			authorId,
 			rootId,
 			parentId,
-			replyUserId,
 		});
 	};
 
@@ -238,6 +227,7 @@ const CommentMenu = ({ onClick }: { onClick: () => void }) => {
 const Comment = ({
 	id,
 	rootId,
+	parentId,
 	resourceId,
 	authorId,
 	content,
@@ -252,6 +242,7 @@ const Comment = ({
 }: {
 	id: string;
 	rootId: string | null;
+	parentId: string | null;
 	authorId: string;
 	resourceId: string;
 	content: string;
@@ -274,15 +265,8 @@ const Comment = ({
 					resourceId,
 				});
 			else {
-				utils.comments.getReplies.invalidate({
-					authorId,
-					resourceId,
-					rootId,
-				});
-				utils.comments.getReplyCount.invalidate({
-					authorId,
-					resourceId,
-					rootId,
+				utils.comments.get.invalidate({
+					id,
 				});
 			}
 			utils.comments.count.rating.invalidate({
@@ -357,12 +341,11 @@ const Comment = ({
 						replyHandle={profile.handle}
 						profile={myProfile}
 						authorId={authorId}
-						rootId={rootId ?? id}
+						rootId={rootId ?? id} // If no rootId, then it is a reply to comment
 						parentId={id}
 						onSubmitForm={() => {
 							toggleCommentForm(null);
 						}}
-						replyUserId={profile.userId}
 					/>
 				</div>
 			)}
@@ -376,32 +359,19 @@ const CommentLayout = ({
 	openCommentFormId,
 	toggleCommentForm,
 }: {
-	comment: CommentAndProfile;
+	comment: CommentType & {
+		profile: Profile;
+	};
 	myProfile: Profile | null;
 	openCommentFormId: string | null;
 	// eslint-disable-next-line no-unused-vars
 	toggleCommentForm: (commentId: string | null) => void;
 }) => {
-	const [replies, setReplies] = useState<CommentAndProfileAndParent[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
 
-	const { data: getReplies } = api.comments.getReplies.useQuery({
-		rootId: comment.id,
-		authorId: comment.authorId,
-		resourceId: comment.resourceId,
+	const { data: fullComment } = api.comments.get.useQuery({
+		id: comment.id,
 	});
-
-	const [replyCount] = api.comments.getReplyCount.useSuspenseQuery({
-		rootId: comment.id,
-		authorId: comment.authorId,
-		resourceId: comment.resourceId,
-	});
-
-	useEffect(() => {
-		if (getReplies) {
-			setReplies(getReplies);
-		}
-	}, [getReplies]);
 
 	const toggleOpen = () => {
 		setIsOpen(!isOpen);
@@ -411,7 +381,7 @@ const CommentLayout = ({
 		<div>
 			<Comment
 				{...comment}
-				replyCount={replyCount}
+				replyCount={fullComment?.replies?.length}
 				myProfile={myProfile}
 				commentView={toggleOpen}
 				openCommentFormId={openCommentFormId}
@@ -419,13 +389,15 @@ const CommentLayout = ({
 			/>
 			<div>
 				{isOpen &&
-					replies.map((reply) => {
+					fullComment?.replies?.map((reply) => {
 						return (
 							<div className=" ml-10 mt-2" key={reply.id}>
 								<Comment
 									{...reply}
 									myProfile={myProfile}
-									parentProfile={reply.parent}
+									parentProfile={
+										reply.parent?.profile ?? undefined
+									}
 									openCommentFormId={openCommentFormId}
 									toggleCommentForm={toggleCommentForm}
 								/>
@@ -490,9 +462,11 @@ function Rating() {
 					profile={myProfile}
 					authorId={profile.userId}
 					onSubmitForm={toggleOpenReply}
+					parentId={null} // Since it is a reply to the rating
+					rootId={null} // Since it is a reply to the rating
 				/>
 			)}
-			{comments.map((comment: CommentAndProfile) => (
+			{comments.map((comment: CommentType & { profile: Profile }) => (
 				<CommentLayout
 					comment={comment}
 					myProfile={myProfile}

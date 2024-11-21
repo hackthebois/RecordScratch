@@ -40,8 +40,6 @@ export const appleRoutes: Route[] = [
 
 			setOAuthCookies(event, state);
 
-			console.log(url.toString());
-
 			sendRedirect(event, url.toString());
 		},
 	],
@@ -73,8 +71,6 @@ export const appleRoutes: Route[] = [
 				.parse(body);
 
 			const { sub } = decodeIdToken(idToken) as { sub: string };
-
-			console.log(sub, email);
 
 			return handleUser(event, {
 				appleId: sub,

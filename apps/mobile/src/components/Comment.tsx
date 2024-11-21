@@ -1,15 +1,15 @@
+import { UserAvatar } from "@/components/UserAvatar";
+import { Text } from "@/components/ui/text";
+import { RouterOutputs, api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { MessageCircle } from "@/lib/icons/MessageCircle";
+import { Reply } from "@/lib/icons/Reply";
+import { Trash } from "@/lib/icons/Trash";
+import { getImageUrl } from "@/lib/image";
 import { timeAgo } from "@recordscratch/lib";
 import { Link, useRouter } from "expo-router";
 import { Suspense } from "react";
 import { Pressable, View } from "react-native";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Text } from "~/components/ui/text";
-import { RouterOutputs, api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { MessageCircle } from "~/lib/icons/MessageCircle";
-import { Reply } from "~/lib/icons/Reply";
-import { Trash } from "~/lib/icons/Trash";
-import { getImageUrl } from "~/lib/image";
 import { Button } from "./ui/button";
 
 const CommentButton = ({ id }: { id: string }) => {
@@ -20,7 +20,7 @@ const CommentButton = ({ id }: { id: string }) => {
 	return (
 		<Link
 			href={{
-				pathname: "comments/[id]",
+				pathname: "/comments/[id]",
 				params: { id },
 			}}
 			asChild
@@ -82,7 +82,7 @@ export const Comment = ({
 							</Suspense>
 							<Link
 								href={{
-									pathname: "(modals)/reply/comment",
+									pathname: "/(modals)/reply/comment",
 									params: { id },
 								}}
 								asChild
@@ -94,11 +94,7 @@ export const Comment = ({
 						</>
 					) : null}
 					{myProfile?.userId === profile.userId ? (
-						<Button
-							variant="ghost"
-							size={"sm"}
-							onPress={() => deleteComment({ id, rootId })}
-						>
+						<Button variant="ghost" size={"sm"} onPress={() => deleteComment({ id })}>
 							<Trash size={20} className="text-muted-foreground" />
 						</Button>
 					) : null}

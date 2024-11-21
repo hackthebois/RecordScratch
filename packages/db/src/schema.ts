@@ -8,7 +8,6 @@ import {
 	smallint,
 	text,
 	timestamp,
-	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
 
@@ -34,12 +33,34 @@ export const users = pgTable("users", {
 	}),
 	googleId: text("google_id").unique(),
 	appleId: text("apple_id").unique(),
+	notificationsEnabled: boolean("notifications_enabled").default(true),
 });
 
-export const usersRelations = relations(users, ({ one }) => ({
+export const pushTokens = pgTable(
+	"push_tokens",
+	{
+		userId: text("user_id").notNull(),
+		token: text("token").notNull(),
+	},
+	(table) => ({
+		pk_push_tokens: primaryKey({
+			columns: [table.userId, table.token],
+		}),
+	})
+);
+
+export const usersRelations = relations(users, ({ one, many }) => ({
 	profile: one(profile, {
 		fields: [users.id],
 		references: [profile.userId],
+	}),
+	pushTokens: many(pushTokens),
+}));
+
+export const pushTokenRelations = relations(pushTokens, ({ one }) => ({
+	user: one(users, {
+		fields: [pushTokens.userId],
+		references: [users.id],
 	}),
 }));
 
@@ -204,32 +225,15 @@ export const likesRelations = relations(likes, ({ one }) => ({
 		fields: [likes.resourceId, likes.authorId],
 		references: [ratings.resourceId, ratings.userId],
 	}),
+	profile: one(profile, {
+		fields: [likes.userId],
+		references: [profile.userId],
+	}),
+	author: one(profile, {
+		fields: [likes.authorId],
+		references: [profile.userId],
+	}),
 }));
-
-export const typeEnum = pgEnum("notifications_type", ["LIKE", "FOLLOW", "COMMENT", "REPLY"]);
-
-export const notifications = pgTable(
-	"notifications",
-	{
-		id: text("id")
-			.primaryKey()
-			.$default(() => uuidv4()),
-		userId: text("user_id").notNull(),
-		resourceId: text("resource_id"),
-		fromId: text("from_id").notNull(),
-		type: typeEnum("type").notNull(),
-		seen: boolean("seen").default(false).notNull(),
-		...dates,
-	},
-	(table) => ({
-		notification_unq_idx: uniqueIndex("notification_unq_idx").on(
-			table.userId,
-			table.resourceId,
-			table.type,
-			table.fromId
-		),
-	})
-);
 
 export const commentEnum = pgEnum("comment_type", ["COMMENT", "REPLY"]);
 const notificationOutline = {
@@ -244,9 +248,20 @@ export const commentNotifications = pgTable("comment_notifications", {
 		.primaryKey()
 		.$default(() => uuidv4()),
 	commentId: text("comment_id").notNull(),
-	type: commentEnum("type").notNull(),
+	type: commentEnum("type").notNull(), // REMOVE: Moved to comments table
 	...notificationOutline,
 });
+
+export const commentNotificationRelations = relations(commentNotifications, ({ one }) => ({
+	profile: one(profile, {
+		fields: [commentNotifications.fromId],
+		references: [profile.userId],
+	}),
+	comment: one(comments, {
+		fields: [commentNotifications.commentId],
+		references: [comments.id],
+	}),
+}));
 
 export const followNotifications = pgTable(
 	"follow_notifications",
@@ -257,6 +272,13 @@ export const followNotifications = pgTable(
 		}),
 	})
 );
+
+export const followNotificationRelations = relations(followNotifications, ({ one }) => ({
+	profile: one(profile, {
+		fields: [followNotifications.fromId],
+		references: [profile.userId],
+	}),
+}));
 
 export const likeNotifications = pgTable(
 	"like_notifications",
@@ -271,17 +293,13 @@ export const likeNotifications = pgTable(
 	})
 );
 
-export const notificationRelations = relations(notifications, ({ one }) => ({
+export const likeNotificationRelations = relations(likeNotifications, ({ one }) => ({
 	profile: one(profile, {
-		fields: [notifications.fromId],
-		references: [profile.userId],
-	}),
-	from: one(profile, {
-		fields: [notifications.fromId],
+		fields: [likeNotifications.fromId],
 		references: [profile.userId],
 	}),
 	rating: one(ratings, {
-		fields: [notifications.resourceId, notifications.userId],
+		fields: [likeNotifications.resourceId, likeNotifications.userId],
 		references: [ratings.resourceId, ratings.userId],
 	}),
 }));
@@ -291,11 +309,11 @@ export const comments = pgTable("comments", {
 		.primaryKey()
 		.notNull()
 		.$default(() => uuidv4()),
-	userId: text("user_id").notNull(),
-	resourceId: text("resource_id").notNull(),
-	authorId: text("author_id").notNull(),
-	parentId: text("parent_id"),
-	rootId: text("root_id"),
+	userId: text("user_id").notNull(), // The user who made the comment
+	resourceId: text("resource_id").notNull(), // rating resourceId
+	authorId: text("author_id").notNull(), // rating author
+	parentId: text("parent_id"), // parent comment id (null if commenting to rating)
+	rootId: text("root_id"), // root comment id (null if commenting to rating)
 	content: text("content").notNull(),
 	...dates,
 });
@@ -313,8 +331,8 @@ export const commentsRelations = relations(comments, ({ one, many }) => ({
 		fields: [comments.authorId],
 		references: [profile.userId],
 	}),
-	root: one(comments, {
-		fields: [comments.rootId],
+	parent: one(comments, {
+		fields: [comments.parentId],
 		references: [comments.id],
 		relationName: "replies",
 	}),
@@ -332,11 +350,11 @@ export const tableSchemas = {
 	lists,
 	listResources,
 	likes,
-	notifications,
 	comments,
 	commentNotifications,
 	followNotifications,
 	likeNotifications,
+	pushTokens,
 };
 
 export const relationSchemas = {
@@ -348,6 +366,9 @@ export const relationSchemas = {
 	listRelation,
 	listResourcesRelations,
 	likesRelations,
-	notificationRelations,
 	commentsRelations,
+	commentNotificationRelations,
+	followNotificationRelations,
+	likeNotificationRelations,
+	pushTokenRelations,
 };

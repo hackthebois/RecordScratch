@@ -1,10 +1,10 @@
+import { Text } from "@/components/ui/text";
+import { getQueryOptions } from "@/lib/deezer";
 import { Artist, cn } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 import { View } from "react-native";
-import { Text } from "~/components/ui/text";
-import { getQueryOptions } from "~/lib/deezer";
 import { Skeleton } from "../ui/skeleton";
 
 export const ArtistItem = ({

@@ -1,6 +1,7 @@
-import { Text } from "~/components/ui/text";
+import { Text } from "@/components/ui/text";
+import { ScreenProps } from "expo-router";
 
-export const defaultScreenOptions = {
+export const defaultScreenOptions: ScreenProps["options"] = {
 	headerBackTitle: "Back",
 	headerBackTitleStyle: {
 		fontFamily: "Montserrat-Medium",
