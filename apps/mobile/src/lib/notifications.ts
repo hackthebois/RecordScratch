@@ -33,7 +33,7 @@ export const registerForPushNotificationsAsync = async (ignoreInitialPermissions
 			finalStatus = status;
 		}
 		if (finalStatus !== "granted") {
-			console.warn("Failed to get push token for push notification!");
+			console.log("Failed to get push token for push notification!");
 			return;
 		}
 		// Learn more about projectId:
@@ -55,7 +55,7 @@ export const registerForPushNotificationsAsync = async (ignoreInitialPermissions
 			token = `${e}`;
 		}
 	} else {
-		console.warn("Must use physical device for Push Notifications");
+		console.log("Must use physical device for Push Notifications");
 	}
 
 	return token;

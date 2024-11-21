@@ -33,9 +33,9 @@ const Reply = () => {
 
 	const { mutate, isPending } = api.comments.create.useMutation({
 		onSuccess: async () => {
-			form.reset();
-			router.back();
-			router.navigate({
+			await form.reset();
+			await router.back();
+			await router.navigate({
 				pathname: "/[handle]/ratings/[id]",
 				params: { handle, id: resourceId },
 			});

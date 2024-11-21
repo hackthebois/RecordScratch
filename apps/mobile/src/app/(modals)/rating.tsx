@@ -89,7 +89,7 @@ const RatingModal = () => {
 					profileId: userId,
 				},
 			});
-			router.back();
+			await router.back();
 		},
 	});
 
