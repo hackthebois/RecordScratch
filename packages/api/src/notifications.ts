@@ -21,7 +21,48 @@ import type {
 } from "@recordscratch/types";
 import "dotenv/config"; // Ensures env vars are loaded first
 import { and, eq, inArray } from "drizzle-orm";
-import { Expo, type ExpoPushMessage } from "expo-server-sdk";
+import type { ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
+
+// Custom ExpoClient class to replace Expo SDK
+const Expo = (accessToken?: string) => {
+	const chunkPushNotifications = (notifications: ExpoPushMessage[]) => {
+		const chunks: ExpoPushMessage[][] = [];
+		const chunkSize = 100; // Expo's recommended chunk size
+
+		for (let i = 0; i < notifications.length; i += chunkSize) {
+			chunks.push(notifications.slice(i, i + chunkSize));
+		}
+
+		return chunks;
+	};
+
+	const sendPushNotificationsAsync = async (messages: ExpoPushMessage[]) => {
+		const response = await fetch("https://exp.host/--/api/v2/push/send", {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+			},
+			body: JSON.stringify(messages),
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		return (await response.json()) as {
+			data: ExpoPushTicket[];
+		};
+	};
+
+	return {
+		chunkPushNotifications,
+		sendPushNotificationsAsync,
+	};
+};
+
+// Replace Expo instantiation with our custom client
 export const sendPushNotifications = async ({
 	users,
 	messages,
@@ -37,10 +78,7 @@ export const sendPushNotifications = async ({
 		data: ExpoPushMessage["data"];
 	}[];
 }) => {
-	let expo = new Expo({
-		accessToken: process.env.EXPO_ACCESS_TOKEN,
-	});
-
+	const expo = Expo(process.env.EXPO_ACCESS_TOKEN);
 	// If users is an array of user ids, fetch the users from the database
 	let usersList: (User & {
 		pushTokens: PushToken[];
@@ -78,17 +116,17 @@ export const sendPushNotifications = async ({
 	// Chunk the notifications
 	let chunks = expo.chunkPushNotifications(notifications);
 	let tickets = [];
-	(async () => {
-		for (let chunk of chunks) {
-			try {
-				let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-				console.log(ticketChunk);
-				tickets.push(...ticketChunk);
-			} catch (error) {
-				console.error(error);
-			}
+
+	for (let chunk of chunks) {
+		try {
+			let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+			tickets.push(...ticketChunk.data);
+		} catch (error) {
+			console.error(error);
 		}
-	})();
+	}
+
+	return tickets;
 };
 
 export const createCommentNotification = async (commentId: string) => {
