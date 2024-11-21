@@ -205,6 +205,14 @@ export const likesRelations = relations(likes, ({ one }) => ({
 		fields: [likes.resourceId, likes.authorId],
 		references: [ratings.resourceId, ratings.userId],
 	}),
+	profile: one(profile, {
+		fields: [likes.userId],
+		references: [profile.userId],
+	}),
+	author: one(profile, {
+		fields: [likes.authorId],
+		references: [profile.userId],
+	}),
 }));
 
 export const commentEnum = pgEnum("comment_type", ["COMMENT", "REPLY"]);

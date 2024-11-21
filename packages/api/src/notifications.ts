@@ -5,8 +5,7 @@ import {
 	followNotifications,
 	getDB,
 	likeNotifications,
-	profile,
-	ratings,
+	likes,
 	users as userTable,
 } from "@recordscratch/db";
 import {
@@ -113,23 +112,24 @@ export const createCommentNotification = async (commentId: string) => {
 		return;
 
 	const type = comment.parent ? "REPLY" : "COMMENT";
-	const messageReceiver = type === "REPLY" ? comment.parent!.profile.user : comment.author.user;
+	const messageReceiver = type === "REPLY" ? comment.parent!.profile : comment.author;
 	const messageGiver = comment.profile;
 
 	const message = parseCommentNotification({
 		comment,
 		profile: messageGiver,
+		handle: messageReceiver.handle,
 	});
 
 	await Promise.all([
 		db.insert(commentNotifications).values({
 			type,
 			fromId: messageGiver.userId,
-			userId: messageReceiver.id,
+			userId: messageReceiver.userId,
 			commentId,
 		}),
 		sendPushNotifications({
-			users: [messageReceiver],
+			users: [messageReceiver.user],
 			messages: [message],
 		}),
 	]);
@@ -192,7 +192,7 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 
 	const db = getDB();
 
-	const [existingNotification, rating, fromProfile] = await Promise.all([
+	const [existingNotification, like] = await Promise.all([
 		db.query.likeNotifications.findFirst({
 			where: and(
 				eq(likeNotifications.userId, notification.userId),
@@ -200,25 +200,25 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 				eq(likeNotifications.resourceId, notification.resourceId)
 			),
 		}),
-		db.query.ratings.findFirst({
+		db.query.likes.findFirst({
 			where: and(
-				eq(ratings.resourceId, notification.resourceId),
-				eq(ratings.userId, notification.userId)
+				eq(likes.authorId, notification.userId),
+				eq(likes.resourceId, notification.resourceId),
+				eq(likes.userId, notification.fromId)
 			),
 			with: {
-				profile: {
+				author: {
 					with: {
 						user: true,
 					},
 				},
+				profile: true,
+				rating: true,
 			},
-		}),
-		db.query.profile.findFirst({
-			where: eq(profile.userId, notification.fromId),
 		}),
 	]);
 
-	if (!rating || !fromProfile) return;
+	if (!like) return;
 
 	await Promise.all([
 		db
@@ -237,12 +237,12 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 		...(!existingNotification
 			? [
 					sendPushNotifications({
-						users: [rating.profile.user],
+						users: [like.author.user],
 						messages: [
 							parseLikeNotification({
-								rating,
-								profile: fromProfile,
-								handle: rating.profile.handle,
+								rating: like.rating,
+								profile: like.profile,
+								handle: like.author.handle,
 							}),
 						],
 					}),

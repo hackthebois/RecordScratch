@@ -90,6 +90,7 @@ const NotificationItem = ({
 					{...parseCommentNotification({
 						profile: notification.profile,
 						comment: notification.comment,
+						handle: profile!.handle,
 					})}
 				/>
 			);

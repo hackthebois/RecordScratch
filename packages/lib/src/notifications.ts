@@ -12,9 +12,11 @@ export type Notification = {
 export const parseCommentNotification = ({
 	profile,
 	comment,
+	handle,
 }: {
 	profile: Profile;
 	comment: Comment;
+	handle: string;
 }): Notification => {
 	const type = comment.parentId ? "REPLY" : "COMMENT";
 	const action = type === "REPLY" ? "replied" : "commented";
@@ -25,7 +27,7 @@ export const parseCommentNotification = ({
 		body: `${profile.name} ${action}: ${comment.content}`,
 		content: comment.content,
 		data: {
-			url: `/${profile.handle}/ratings/${comment.resourceId}`,
+			url: `/${handle}/ratings/${comment.resourceId}`,
 		},
 	};
 };

@@ -87,7 +87,6 @@ export const commentsRouter = router({
 		.input(CreateCommentSchema)
 		.mutation(async ({ ctx: { db, userId }, input: notification }) => {
 			const id = uuidv4();
-
 			await db.insert(comments).values({ ...notification, userId, id });
 			await createCommentNotification(id);
 		}),
