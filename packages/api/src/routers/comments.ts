@@ -88,10 +88,8 @@ export const commentsRouter = router({
 		.mutation(async ({ ctx: { db, userId }, input: notification }) => {
 			const id = uuidv4();
 
-			await Promise.all([
-				db.insert(comments).values({ ...notification, userId, id }),
-				createCommentNotification(id),
-			]);
+			await db.insert(comments).values({ ...notification, userId, id });
+			await createCommentNotification(id);
 		}),
 
 	delete: protectedProcedure

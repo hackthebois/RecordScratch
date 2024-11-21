@@ -104,11 +104,11 @@ export const createCommentNotification = async (commentId: string) => {
 	});
 
 	if (
-		!comment
+		!comment ||
 		// Don't send notifications if the reply is to yourself
-		// comment.parent?.userId === comment.userId ||
+		comment.parent?.userId === comment.userId ||
 		// Don't send notifications if the comment is to yourself
-		// comment.author.userId === comment.userId
+		comment.author.userId === comment.userId
 	)
 		return;
 
@@ -138,20 +138,28 @@ export const createCommentNotification = async (commentId: string) => {
 export const createFollowNotification = async (notification: CreateFollowNotification) => {
 	const db = getDB();
 
-	const follow = await db.query.followers.findFirst({
-		where: and(
-			eq(followers.userId, notification.fromId),
-			eq(followers.followingId, notification.userId)
-		),
-		with: {
-			following: {
-				with: {
-					user: true,
+	const [existingNotification, follow] = await Promise.all([
+		db.query.followNotifications.findFirst({
+			where: and(
+				eq(followNotifications.userId, notification.userId),
+				eq(followNotifications.fromId, notification.fromId)
+			),
+		}),
+		db.query.followers.findFirst({
+			where: and(
+				eq(followers.userId, notification.fromId),
+				eq(followers.followingId, notification.userId)
+			),
+			with: {
+				following: {
+					with: {
+						user: true,
+					},
 				},
+				follower: true,
 			},
-			follower: true,
-		},
-	});
+		}),
+	]);
 
 	if (!follow) return;
 
@@ -167,36 +175,48 @@ export const createFollowNotification = async (notification: CreateFollowNotific
 					updatedAt: new Date(),
 				},
 			}),
-		sendPushNotifications({
-			users: [following.user],
-			messages: [parseFollowNotification({ profile: follower })],
-		}),
+		...(!existingNotification
+			? [
+					sendPushNotifications({
+						users: [following.user],
+						messages: [parseFollowNotification({ profile: follower })],
+					}),
+				]
+			: []),
 	]);
 };
 
 export const createLikeNotification = async (notification: CreateLikeNotification) => {
 	// Don't send notifications if the user is liking their own rating
-	// if (notification.userId === notification.fromId) return;
+	if (notification.userId === notification.fromId) return;
 
 	const db = getDB();
 
-	const rating = await db.query.ratings.findFirst({
-		where: and(
-			eq(ratings.resourceId, notification.resourceId),
-			eq(ratings.userId, notification.userId)
-		),
-		with: {
-			profile: {
-				with: {
-					user: true,
+	const [existingNotification, rating, fromProfile] = await Promise.all([
+		db.query.likeNotifications.findFirst({
+			where: and(
+				eq(likeNotifications.userId, notification.userId),
+				eq(likeNotifications.fromId, notification.fromId),
+				eq(likeNotifications.resourceId, notification.resourceId)
+			),
+		}),
+		db.query.ratings.findFirst({
+			where: and(
+				eq(ratings.resourceId, notification.resourceId),
+				eq(ratings.userId, notification.userId)
+			),
+			with: {
+				profile: {
+					with: {
+						user: true,
+					},
 				},
 			},
-		},
-	});
-
-	const fromProfile = await db.query.profile.findFirst({
-		where: eq(profile.userId, notification.fromId),
-	});
+		}),
+		db.query.profile.findFirst({
+			where: eq(profile.userId, notification.fromId),
+		}),
+	]);
 
 	if (!rating || !fromProfile) return;
 
@@ -214,15 +234,19 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 					updatedAt: new Date(),
 				},
 			}),
-		sendPushNotifications({
-			users: [rating.profile.user],
-			messages: [
-				parseLikeNotification({
-					rating,
-					profile: fromProfile,
-					handle: rating.profile.handle,
-				}),
-			],
-		}),
+		...(!existingNotification
+			? [
+					sendPushNotifications({
+						users: [rating.profile.user],
+						messages: [
+							parseLikeNotification({
+								rating,
+								profile: fromProfile,
+								handle: rating.profile.handle,
+							}),
+						],
+					}),
+				]
+			: []),
 	]);
 };
