@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { catchError } from "@/lib/errors";
 import { BellOff } from "@/lib/icons/BellOff";
 import { BellRing } from "@/lib/icons/BellRing";
+import { HelpCircle } from "@/lib/icons/HelpCircle";
 import { Moon } from "@/lib/icons/Moon";
 import { Sun } from "@/lib/icons/Sun";
 import { UserPen } from "@/lib/icons/UserPen";
@@ -41,6 +42,12 @@ const SettingsPage = () => {
 				<Button variant="outline" className="gap-2 flex-row justify-between">
 					<Text>Edit Profile</Text>
 					<UserPen className="text-muted-foreground" size={20} />
+				</Button>
+			</Link>
+			<Link href={"/settings/support"} asChild>
+				<Button variant="outline" className="flex-row items-center gap-2 justify-between">
+					<Text>Support</Text>
+					<HelpCircle className="text-muted-foreground" size={20} />
 				</Button>
 			</Link>
 			<Button
