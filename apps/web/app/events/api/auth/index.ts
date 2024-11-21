@@ -75,7 +75,6 @@ export const authRoutes: Route[] = [
 			if (expoPushToken) {
 				const db = getDB();
 
-				console.log("deleting push token", expoPushToken);
 				await db
 					.delete(pushTokens)
 					.where(eq(pushTokens.token, expoPushToken));

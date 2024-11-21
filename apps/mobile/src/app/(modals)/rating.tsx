@@ -24,20 +24,22 @@ const RatingInput = ({
 			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
 				<Pressable
 					key={index}
-					onPress={() => onChange(index)}
+					onPress={() => {
+						onChange(index);
+					}}
 					className="flex flex-row items-center justify-center pt-2"
 				>
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<Star size={28} color="#ffb703" fill="#ffb703" />
+								<Star size={28} className="text-star fill-star" />
 							) : (
-								<Star size={28} color="#ffb703" />
+								<Star size={28} className="text-star fill-background" />
 							)
 						) : (
-							<Star size={28} color="#ffb703" />
+							<Star size={28} className="text-star fill-background" />
 						)}
-						<Text className=" text-muted-foreground">{index}</Text>
+						<Text className="text-muted-foreground">{index}</Text>
 					</View>
 				</Pressable>
 			))}
@@ -64,7 +66,7 @@ const RatingModal = () => {
 		}
 	);
 
-	const { control, handleSubmit, formState } = useForm<RateForm>({
+	const { control, handleSubmit, formState, watch } = useForm<RateForm>({
 		resolver: zodResolver(RateFormSchema),
 		defaultValues: { ...resource, ...userRating },
 	});
