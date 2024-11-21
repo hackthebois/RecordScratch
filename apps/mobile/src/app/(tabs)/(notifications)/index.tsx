@@ -1,13 +1,19 @@
 import { Text } from "@/components/ui/text";
 import { UserAvatar } from "@/components/UserAvatar";
 import { api, RouterOutputs } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { BellOff } from "@/lib/icons/BellOff";
 import { Heart } from "@/lib/icons/Heart";
 import { MessageCircle } from "@/lib/icons/MessageCircle";
 import { User } from "@/lib/icons/User";
 import { getImageUrl } from "@/lib/image";
 import { useRefreshByUser } from "@/lib/refresh";
-import { Profile } from "@recordscratch/types";
+import {
+	Notification,
+	parseCommentNotification,
+	parseFollowNotification,
+	parseLikeNotification,
+} from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
 import { Link, LinkProps, Stack } from "expo-router";
 import React, { useEffect } from "react";
@@ -15,19 +21,13 @@ import { Pressable, View } from "react-native";
 
 const NotificationBlock = ({
 	icon,
-	href,
+	data,
 	action,
 	content,
 	profile,
-}: {
-	icon: React.ReactNode;
-	href: LinkProps["href"];
-	action: string;
-	content: string;
-	profile: Profile;
-}) => {
+}: Notification & { icon: React.ReactNode }) => {
 	return (
-		<Link href={href} asChild>
+		<Link href={data.url as LinkProps["href"]} asChild>
 			<Pressable
 				className="flex flex-row gap-3 px-4 flex-1 items-center"
 				style={{
@@ -42,7 +42,7 @@ const NotificationBlock = ({
 						</Link>
 						<View className="flex flex-row items-center flex-1 flex-wrap">
 							<Text numberOfLines={2}>
-								<Text className="text-lg font-medium">{profile.name.trim()}</Text>
+								<Text className="text-lg font-bold">{profile.name}</Text>
 								<Text className="text-left text-lg">
 									{" " + action + (content ? ": " : "")}
 								</Text>
@@ -63,35 +63,34 @@ const NotificationItem = ({
 }: {
 	notification: RouterOutputs["notifications"]["get"][0];
 }) => {
+	const profile = useAuth((s) => s.profile);
 	switch (notification.notifType) {
 		case "follow":
 			return (
 				<NotificationBlock
 					icon={<User size={28} className="text-sky-500" />}
-					href={`/${notification.profile.handle}`}
-					action="followed you"
-					content={""}
-					profile={notification.profile}
+					{...parseFollowNotification({ profile: notification.profile })}
 				/>
 			);
 		case "like":
 			return (
 				<NotificationBlock
 					icon={<Heart size={26} color="#ff4d4f" />}
-					href={`/${notification.profile.handle}/ratings/${notification.rating.resourceId}`}
-					action={`liked your ${notification.rating.content ? "review" : "rating"}`}
-					content={notification.rating.content ?? ""}
-					profile={notification.profile}
+					{...parseLikeNotification({
+						profile: notification.profile,
+						rating: notification.rating,
+						handle: profile!.handle,
+					})}
 				/>
 			);
 		case "comment":
 			return (
 				<NotificationBlock
 					icon={<MessageCircle size={26} className="text-emerald-500" />}
-					href={`/${notification.profile.handle}/ratings/${notification.comment.resourceId}`}
-					action={`${notification.type === "COMMENT" ? "commented" : "replied"}`}
-					content={notification.comment.content}
-					profile={notification.profile}
+					{...parseCommentNotification({
+						profile: notification.profile,
+						comment: notification.comment,
+					})}
 				/>
 			);
 	}

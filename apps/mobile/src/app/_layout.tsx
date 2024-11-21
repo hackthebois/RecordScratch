@@ -4,7 +4,6 @@ import { TRPCProvider } from "@/lib/api";
 import { AuthProvider, PrefetchProfile } from "@/lib/auth";
 import { NAV_THEME } from "@/lib/constants";
 import { catchError } from "@/lib/errors";
-import { useNotificationObserver } from "@/lib/notifications";
 import { useColorScheme } from "@/lib/useColorScheme";
 import {
 	Montserrat_100Thin,
@@ -139,8 +138,6 @@ const RootLayout = () => {
 	useEffect(() => {
 		if (fontError) throw fontError;
 	}, [fontError]);
-
-	useNotificationObserver();
 
 	if (!fontLoaded || !isColorSchemeLoaded || !updatesHandled) {
 		return null;

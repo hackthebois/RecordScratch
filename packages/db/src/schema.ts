@@ -271,8 +271,8 @@ export const likeNotificationRelations = relations(likeNotifications, ({ one }) 
 		references: [profile.userId],
 	}),
 	rating: one(ratings, {
-		fields: [likeNotifications.resourceId],
-		references: [ratings.resourceId],
+		fields: [likeNotifications.resourceId, likeNotifications.userId],
+		references: [ratings.resourceId, ratings.userId],
 	}),
 }));
 

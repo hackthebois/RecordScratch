@@ -5,20 +5,21 @@ import {
 	followNotifications,
 	getDB,
 	likeNotifications,
+	profile,
 	ratings,
 	users as userTable,
 } from "@recordscratch/db";
 import {
-	type CreateCommentNotification,
-	type CreateFollowNotification,
-	type CreateLikeNotification,
-	type User,
-} from "@recordscratch/types";
+	parseCommentNotification,
+	parseFollowNotification,
+	parseLikeNotification,
+} from "@recordscratch/lib";
+import type { CreateFollowNotification, CreateLikeNotification, User } from "@recordscratch/types";
 import "dotenv/config"; // Ensures env vars are loaded first
 import { and, eq, inArray } from "drizzle-orm";
 import { Expo, type ExpoPushMessage } from "expo-server-sdk";
 
-const sendPushNotifications = async ({
+export const sendPushNotifications = async ({
 	users,
 	messages,
 }: {
@@ -58,7 +59,6 @@ const sendPushNotifications = async ({
 				to: token,
 				sound: "default",
 				...message,
-				subtitle: message.title,
 			});
 		});
 	});
@@ -79,11 +79,11 @@ const sendPushNotifications = async ({
 	})();
 };
 
-export const createCommentNotification = async (notification: CreateCommentNotification) => {
+export const createCommentNotification = async (commentId: string) => {
 	const db = getDB();
 
 	const comment = await db.query.comments.findFirst({
-		where: eq(comments.id, notification.commentId),
+		where: eq(comments.id, commentId),
 		with: {
 			parent: {
 				with: {
@@ -94,42 +94,43 @@ export const createCommentNotification = async (notification: CreateCommentNotif
 					},
 				},
 			},
-			author: {
-				with: {
-					user: true,
-				},
+			profile: {
+				with: { user: true },
 			},
-			profile: true,
-			rating: true,
+			author: {
+				with: { user: true },
+			},
 		},
 	});
 
-	if (!comment) return;
+	if (
+		!comment
+		// Don't send notifications if the reply is to yourself
+		// comment.parent?.userId === comment.userId ||
+		// Don't send notifications if the comment is to yourself
+		// comment.author.userId === comment.userId
+	)
+		return;
 
-	const {
-		profile: { name, handle },
-		rating,
-	} = comment;
+	const type = comment.parent ? "REPLY" : "COMMENT";
+	const messageReceiver = type === "REPLY" ? comment.parent!.profile.user : comment.author.user;
+	const messageGiver = comment.profile;
 
-	const user = notification.type === "REPLY" ? comment.parent!.profile.user : comment.author.user;
-	const body =
-		notification.type === "REPLY"
-			? `${name} replied to your comment: ${comment.content}`
-			: `${name} commented on your ${rating.content ? `review: ${rating.content}` : "rating"}`;
+	const message = parseCommentNotification({
+		comment,
+		profile: messageGiver,
+	});
 
 	await Promise.all([
-		db.insert(commentNotifications).values(notification),
+		db.insert(commentNotifications).values({
+			type,
+			fromId: messageGiver.userId,
+			userId: messageReceiver.id,
+			commentId,
+		}),
 		sendPushNotifications({
-			users: [user],
-			messages: [
-				{
-					title: `New ${notification.type}!`,
-					body,
-					data: {
-						url: `/${handle}/ratings/${rating?.resourceId}`,
-					},
-				},
-			],
+			users: [messageReceiver],
+			messages: [message],
 		}),
 	]);
 };
@@ -154,10 +155,7 @@ export const createFollowNotification = async (notification: CreateFollowNotific
 
 	if (!follow) return;
 
-	const {
-		following: { user },
-		follower: { name, handle },
-	} = follow;
+	const { following, follower } = follow;
 
 	await Promise.all([
 		db
@@ -170,21 +168,16 @@ export const createFollowNotification = async (notification: CreateFollowNotific
 				},
 			}),
 		sendPushNotifications({
-			users: [user],
-			messages: [
-				{
-					title: "New Follower!",
-					body: `${name} has started following you`,
-					data: {
-						url: `/${handle}`,
-					},
-				},
-			],
+			users: [following.user],
+			messages: [parseFollowNotification({ profile: follower })],
 		}),
 	]);
 };
 
 export const createLikeNotification = async (notification: CreateLikeNotification) => {
+	// Don't send notifications if the user is liking their own rating
+	// if (notification.userId === notification.fromId) return;
+
 	const db = getDB();
 
 	const rating = await db.query.ratings.findFirst({
@@ -201,12 +194,11 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 		},
 	});
 
-	if (!rating) return;
+	const fromProfile = await db.query.profile.findFirst({
+		where: eq(profile.userId, notification.fromId),
+	});
 
-	const {
-		profile: { user, name, handle },
-		content,
-	} = rating;
+	if (!rating || !fromProfile) return;
 
 	await Promise.all([
 		db
@@ -223,15 +215,13 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 				},
 			}),
 		sendPushNotifications({
-			users: [user],
+			users: [rating.profile.user],
 			messages: [
-				{
-					title: "New Like!",
-					body: `${name} liked your ${content ? `review: ${content}` : "rating"}`,
-					data: {
-						url: `/${handle}/ratings/${notification.resourceId}`,
-					},
-				},
+				parseLikeNotification({
+					rating,
+					profile: fromProfile,
+					handle: rating.profile.handle,
+				}),
 			],
 		}),
 	]);

@@ -19,19 +19,18 @@ export const likesRouter = router({
 	like: protectedProcedure
 		.input(SelectLikeSchema)
 		.mutation(async ({ ctx: { db, userId }, input: { authorId, resourceId } }) => {
-			await db.insert(likes).values({
-				userId,
-				authorId,
-				resourceId,
-			});
-			// TODO: Only send notifications if the user is not the author
-			if (true) {
-				await createLikeNotification({
+			await Promise.all([
+				db.insert(likes).values({
+					userId,
+					authorId,
+					resourceId,
+				}),
+				createLikeNotification({
 					resourceId,
 					fromId: userId,
 					userId: authorId,
-				});
-			}
+				}),
+			]);
 		}),
 	unlike: protectedProcedure
 		.input(SelectLikeSchema)

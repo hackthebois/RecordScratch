@@ -5,6 +5,7 @@ import {
 	SelectCommentSchema,
 } from "@recordscratch/types";
 import { and, count, desc, eq, isNull } from "drizzle-orm";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createCommentNotification } from "../notifications";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
@@ -84,39 +85,13 @@ export const commentsRouter = router({
 	}),
 	create: protectedProcedure
 		.input(CreateCommentSchema)
-		.mutation(async ({ ctx: { db, userId }, input }) => {
-			const comment = await db
-				.insert(comments)
-				.values({ ...input, userId })
-				.returning();
+		.mutation(async ({ ctx: { db, userId }, input: notification }) => {
+			const id = uuidv4();
 
-			const parentComment = input.parentId
-				? await db.query.comments.findFirst({
-						where: eq(comments.id, input.parentId),
-						with: {
-							profile: true,
-						},
-					})
-				: undefined;
-
-			// If parent comment and not replying to self then notify the parent
-			if (parentComment && parentComment.userId !== userId) {
-				await createCommentNotification({
-					fromId: userId,
-					userId: parentComment.userId,
-					type: "REPLY",
-					commentId: comment[0].id,
-				});
-			}
-			// If not commenting to self then notify the author of the rating
-			else if (input.authorId !== userId) {
-				await createCommentNotification({
-					fromId: userId,
-					userId: input.authorId,
-					type: "COMMENT",
-					commentId: comment[0].id,
-				});
-			}
+			await Promise.all([
+				db.insert(comments).values({ ...notification, userId, id }),
+				createCommentNotification(id),
+			]);
 		}),
 
 	delete: protectedProcedure

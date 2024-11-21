@@ -5,6 +5,7 @@ import { Home } from "@/lib/icons/Home";
 import { Rows3 } from "@/lib/icons/Rows3";
 import { Search } from "@/lib/icons/Search";
 import { User } from "@/lib/icons/User";
+import { useNotificationObserver } from "@/lib/notifications";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
@@ -16,6 +17,8 @@ export default function TabLayout() {
 	const router = useRouter();
 	const { data: notifications } = api.notifications.getUnseen.useQuery();
 	const insets = useSafeAreaInsets();
+
+	useNotificationObserver();
 
 	return (
 		<Tabs
