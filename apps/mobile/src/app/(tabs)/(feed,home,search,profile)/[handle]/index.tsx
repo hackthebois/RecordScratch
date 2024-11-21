@@ -1,12 +1,12 @@
-import NotFoundScreen from "#/app/+not-found";
-import { ListWithResources } from "@recordscratch/types";
+import { ListWithResources, Profile } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { ListPlus } from "~/lib/icons/ListPlus";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import NotFoundScreen from "~/app/+not-found";
+import StatBlock from "~/components/CoreComponents/StatBlock";
 import DistributionChart from "~/components/DistributionChart";
 import { FollowButton } from "~/components/Followers/FollowButton";
-import FollowerMenu from "~/components/Followers/FollowersMenu";
 import { ArtistItem } from "~/components/Item/ArtistItem";
 import { ResourceItem } from "~/components/Item/ResourceItem";
 import { UserAvatar } from "~/components/UserAvatar";
@@ -18,12 +18,37 @@ import { api } from "~/lib/api";
 import { useAuth } from "~/lib/auth";
 import { Settings } from "~/lib/icons/Settings";
 import { getImageUrl } from "~/lib/image";
+
+export const PrefetchProfile = (props: { handle?: string; userId?: string }) => {
+	const profile = useAuth((s) => s.profile);
+	const handle = props.handle ?? profile?.handle ?? "";
+	const userId = props.userId ?? profile?.userId ?? "";
+
+	api.profiles.get.usePrefetchQuery(handle);
+	api.ratings.user.streak.usePrefetchQuery({ userId });
+	api.ratings.user.totalLikes.usePrefetchQuery({ userId });
+	api.profiles.distribution.usePrefetchQuery({ userId });
+	api.lists.topLists.usePrefetchQuery({ userId });
+	api.profiles.getTotalRatings.usePrefetchQuery({ userId });
+	api.profiles.followCount.usePrefetchQuery({
+		profileId: userId,
+		type: "followers",
+	});
+	api.profiles.followCount.usePrefetchQuery({
+		profileId: userId,
+		type: "following",
+	});
+
+	return null;
+};
 import { ResourcesList } from "~/components/List/TopList";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
 
-	return <ProfilePage handle={handle!} />;
+	const [profile] = api.profiles.get.useSuspenseQuery(handle);
+
+	return <ProfilePage profile={profile} isProfile={false} />;
 };
 
 const TopListsTab = ({
@@ -114,33 +139,42 @@ const TopListsTab = ({
 	);
 };
 
-export const ProfilePage = ({ handle }: { handle: string }) => {
-	const myProfile = useAuth((s) => s.profile);
+export const ProfilePage = ({
+	profile,
+	isProfile,
+}: {
+	profile: Profile | null;
+	isProfile: boolean;
+}) => {
 	const router = useRouter();
 
-	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-
 	if (!profile) return <NotFoundScreen />;
-
-	const isProfile = myProfile?.userId === profile.userId;
-
-	const [topLists] = api.lists.topLists.useSuspenseQuery({
-		userId: profile.userId,
-	});
 
 	// const [lists] = api.lists.getUser.useSuspenseQuery({
 	// 	userId: profile.userId,
 	// });
 
-	const [streak] = api.ratings.user.streak.useSuspenseQuery({
+	const { data: streak } = api.ratings.user.streak.useQuery({
 		userId: profile.userId,
 	});
-	const [likes] = api.ratings.user.totalLikes.useSuspenseQuery({
+	const { data: likes } = api.ratings.user.totalLikes.useQuery({
 		userId: profile.userId,
 	});
-	const [values] = api.profiles.distribution.useSuspenseQuery({ userId: profile!.userId });
-
-	const tags = [`@${profile.handle}`, `Streak: ${streak}`, `Likes: ${likes}`];
+	const { data: values } = api.profiles.distribution.useQuery({ userId: profile.userId });
+	const { data: totalRatings, isLoading: isLR } = api.profiles.getTotalRatings.useQuery({
+		userId: profile.userId,
+	});
+	const { data: followerCount, isLoading: isLFRC } = api.profiles.followCount.useQuery({
+		profileId: profile.userId,
+		type: "followers",
+	});
+	const { data: followingCount, isLoading: isLFGC } = api.profiles.followCount.useQuery({
+		profileId: profile.userId,
+		type: "following",
+	});
+	const { data: topLists } = api.lists.topLists.useQuery({
+		userId: profile.userId,
+	});
 
 	return (
 		<View className="flex flex-1">
@@ -153,7 +187,9 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 								<Settings size={22} className="mr-2 text-foreground" />
 							</Link>
 						) : (
-							<FollowButton profileId={profile.userId} size={"sm"} />
+							<Suspense fallback={null}>
+								<FollowButton profileId={profile.userId} size={"sm"} />
+							</Suspense>
 						),
 				}}
 			/>
@@ -164,19 +200,53 @@ export const ProfilePage = ({ handle }: { handle: string }) => {
 							<View className="flex-row gap-4">
 								<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
 								<View className="items-start justify-center gap-3 flex-1">
-									<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
-										{tags
-											.filter((tag) => Boolean(tag))
-											.map((tag, index) => (
-												<Pill key={index}>{tag}</Pill>
-											))}
+									<View className="flex flex-row flex-wrap items-center gap-3">
+										<Pill>{`@${profile.handle}`}</Pill>
+										<Pill>{`Streak: ${streak ?? ""}`}</Pill>
+										<Pill>{`Likes: ${likes ?? ""}`}</Pill>
 									</View>
 									<Text className="text-wrap truncate">
 										{profile.bio || "No bio yet"}
 									</Text>
 								</View>
 							</View>
-							<FollowerMenu profileId={profile.userId} handleId={profile.handle} />
+							<View className="flex flex-col items-center">
+								<View className="flex flex-row w-full gap-2">
+									<Link href={`${profile.handle}/ratings`} asChild>
+										<Pressable className="flex-1">
+											<StatBlock
+												title={"Ratings"}
+												description={String(totalRatings)}
+												size="sm"
+												loading={isLR}
+											/>
+										</Pressable>
+									</Link>
+									<Link href={`${profile.handle}/followers`} asChild>
+										<Pressable className="flex-1">
+											<StatBlock
+												title={"Followers"}
+												description={String(followerCount)}
+												size="sm"
+												loading={isLFRC}
+											/>
+										</Pressable>
+									</Link>
+									<Link
+										href={`${profile.handle}/followers?type=following`}
+										asChild
+									>
+										<Pressable className="flex-1">
+											<StatBlock
+												title={"Following"}
+												description={String(followingCount)}
+												size="sm"
+												loading={isLFGC}
+											/>
+										</Pressable>
+									</Link>
+								</View>
+							</View>
 						</View>
 					</View>
 					<Link href={`/${profile.handle}/ratings`} asChild>

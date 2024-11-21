@@ -10,27 +10,33 @@ import {
 	Montserrat_900Black,
 	useFonts,
 } from "@expo-google-fonts/montserrat";
-import { Theme, ThemeProvider } from "@react-navigation/native";
+import { DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
 import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
 import { Stack, useNavigationContainerRef } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import * as Updates from "expo-updates";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Text } from "~/components/ui/text";
+import env from "~/env";
 import { TRPCProvider } from "~/lib/api";
 import { AuthProvider } from "~/lib/auth";
 import { NAV_THEME } from "~/lib/constants";
+import { catchError } from "~/lib/errors";
 import { useColorScheme } from "~/lib/useColorScheme";
 import "../styles.css";
+import { PrefetchProfile } from "./(tabs)/(feed,home,search,profile)/[handle]";
 
 const LIGHT_THEME: Theme = {
+	...DefaultTheme,
 	dark: false,
 	colors: NAV_THEME.light,
 };
 const DARK_THEME: Theme = {
+	...DefaultTheme,
 	dark: true,
 	colors: NAV_THEME.dark,
 };
@@ -45,19 +51,23 @@ export const unstable_settings = {
 	initialRouteName: "auth",
 };
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+const timeoutPromise = new Promise<void>((_, reject) => {
+	setTimeout(() => {
+		reject(new Error("Timeout error"));
+	}, 5000);
+}).catch(() => {});
+
+// Construct a new integration instance. This is needed to communicate between the integration and React
+const navigationIntegration = Sentry.reactNavigationIntegration({
+	enableTimeToInitialDisplay: !isRunningInExpoGo(),
+});
 
 Sentry.init({
 	dsn: "https://2648bda3885c4f3b7ab58671e8a9d44f@o4508287201312768.ingest.us.sentry.io/4508287205441536",
-	debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-	integrations: [
-		new Sentry.ReactNativeTracing({
-			// Pass instrumentation to be used as `routingInstrumentation`
-			routingInstrumentation,
-			enableNativeFramesTracking: !isRunningInExpoGo(),
-			// ...
-		}),
-	],
+	debug: false,
+	tracesSampleRate: 1.0,
+	integrations: [navigationIntegration],
+	enableNativeFramesTracking: !isRunningInExpoGo(),
 });
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -78,10 +88,31 @@ const RootLayout = () => {
 	const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 	const ref = useNavigationContainerRef();
+	const [updatesHandled, setUpdatesHandled] = useState(false);
+
+	useEffect(() => {
+		const preload = async () => {
+			if (env.ENV !== "development") {
+				try {
+					const update = await Promise.race([
+						Updates.checkForUpdateAsync(),
+						timeoutPromise,
+					]);
+					if (update && update.isAvailable) {
+						await Updates.fetchUpdateAsync();
+						await Updates.reloadAsync();
+					}
+				} catch (error) {
+					catchError(error);
+				}
+			}
+		};
+		preload().finally(() => setUpdatesHandled(true));
+	}, []);
 
 	useEffect(() => {
 		if (ref?.current) {
-			routingInstrumentation.registerNavigationContainer(ref);
+			navigationIntegration.registerNavigationContainer(ref);
 		}
 	}, [ref]);
 
@@ -109,13 +140,7 @@ const RootLayout = () => {
 		if (fontError) throw fontError;
 	}, [fontError]);
 
-	useEffect(() => {
-		if (fontLoaded) {
-			SplashScreen.hideAsync();
-		}
-	}, [fontLoaded, isColorSchemeLoaded]);
-
-	if (!fontLoaded || !isColorSchemeLoaded) {
+	if (!fontLoaded || !isColorSchemeLoaded || !updatesHandled) {
 		return null;
 	}
 
@@ -124,12 +149,14 @@ const RootLayout = () => {
 			<TRPCProvider>
 				<SafeAreaProvider>
 					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+						<PrefetchProfile />
 						<Stack
 							screenOptions={{
 								animation: "fade",
 								headerBackTitleVisible: false,
-								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
-								headerTitleAlign: "center",
+								headerTitle: (props: any) => (
+									<Text variant="h4">{props.children}</Text>
+								),
 							}}
 						>
 							<Stack.Screen

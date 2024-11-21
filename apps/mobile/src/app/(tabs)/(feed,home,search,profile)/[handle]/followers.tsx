@@ -1,8 +1,8 @@
-import NotFoundScreen from "#/app/+not-found";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import NotFoundScreen from "~/app/+not-found";
 import { ProfileItem } from "~/components/Item/ProfileItem";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";

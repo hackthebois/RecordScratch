@@ -1,5 +1,7 @@
 import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
+import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from "expo-splash-screen";
 import { createContext, useContext, useEffect, useRef } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
@@ -53,7 +55,9 @@ export const createAuthStore = () =>
 			const data = await res.json();
 			const parsedData = z
 				.object({
-					user: UserSchema.extend({ profile: ProfileSchema.nullish() }).nullable(),
+					user: UserSchema.extend({
+						profile: ProfileSchema.nullish(),
+					}).nullable(),
 				})
 				.safeParse(
 					SuperJSON.deserialize({
@@ -84,12 +88,23 @@ export const createAuthStore = () =>
 export const AuthContext = createContext<AuthStore | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+	const router = useRouter();
 	const store = useRef(createAuthStore()).current;
 	const login = useStore(store, (s) => s.login);
+	const logout = useStore(store, (s) => s.logout);
 	const status = useStore(store, (s) => s.status);
 
 	useEffect(() => {
-		login().catch(catchError);
+		login()
+			.catch((e) => {
+				catchError(e);
+				logout().then(() => {
+					router.replace("/signin");
+				});
+			})
+			.finally(async () => {
+				await SplashScreen.hideAsync();
+			});
 	}, [login]);
 
 	if (status === "loading") {

@@ -15,9 +15,10 @@ export default function TabLayout() {
 		<Tabs
 			backBehavior="history"
 			screenOptions={{
+				headerBackTitleVisible: false,
 				tabBarActiveTintColor: "#ffb703",
 				headerTitleAlign: "center",
-				tabBarLabel: ({ focused, children }) => (
+				tabBarLabel: ({ focused, children }: any) => (
 					<Text
 						className={cn(
 							focused ? "text-primary" : "text-muted-foreground",
@@ -27,7 +28,7 @@ export default function TabLayout() {
 						{children}
 					</Text>
 				),
-				headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+				headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
 				tabBarStyle: {
 					height: 90,
 					paddingTop: 12,

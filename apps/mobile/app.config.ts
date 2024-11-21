@@ -1,19 +1,16 @@
 import type { ConfigContext, ExpoConfig } from "@expo/config";
 
+const version = "0.0.3";
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: "RecordScratch",
 	slug: "recordscratch",
-	version: "0.0.2",
+	version,
 	orientation: "portrait",
 	icon: "./assets/icon.png",
 	scheme: "recordscratch",
 	userInterfaceStyle: "automatic",
-	splash: {
-		image: "./assets/splash.png",
-		resizeMode: "contain",
-		backgroundColor: "#ffffff",
-	},
 	assetBundlePatterns: ["**/*"],
 	ios: {
 		supportsTablet: true,
@@ -23,6 +20,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			"com.apple.developer.applesignin": ["Default"],
 		},
 	},
+	splash: {
+		image: "./assets/icon.png",
+		imageWidth: 200,
+		resizeMode: "contain",
+		backgroundColor: "#ffffff",
+	},
+	newArchEnabled: true,
 	android: {
 		adaptiveIcon: {
 			foregroundImage: "./assets/adaptive-icon.png",
@@ -33,7 +37,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	plugins: [
 		"expo-router",
-		"expo-apple-authentication",
 		[
 			"@sentry/react-native/expo",
 			{
@@ -41,6 +44,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				project: "recordscratch",
 			},
 		],
+		"expo-apple-authentication",
+		"expo-font",
+		"expo-secure-store",
 	],
 	experiments: {
 		tsconfigPaths: true,
@@ -57,7 +63,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	updates: {
 		url: "https://u.expo.dev/7cef8d5a-7c74-45d8-909d-5202b9c533e3",
 	},
-	runtimeVersion: {
-		policy: "appVersion",
-	},
+	runtimeVersion: version,
 });

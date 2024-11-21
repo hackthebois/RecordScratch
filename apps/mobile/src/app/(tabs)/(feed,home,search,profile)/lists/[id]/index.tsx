@@ -1,7 +1,7 @@
-import NotFoundScreen from "#/app/+not-found";
 import { timeAgo } from "@recordscratch/lib";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
+import NotFoundScreen from "~/app/+not-found";
 import ListImage from "~/components/List/ListImage";
 import ListResources from "~/components/List/ListResources";
 import Metadata from "~/components/Metadata";
