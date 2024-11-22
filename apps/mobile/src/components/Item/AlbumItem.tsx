@@ -12,7 +12,7 @@ const AlbumItem = ({ resourceId, className }: { resourceId: string; className?: 
 					category: "ALBUM",
 					parentId: "",
 				}}
-				titleCss="line-clamp-1 w-40"
+				titleCss="w-40"
 				artistNameCss="w-40 line-clamp-1"
 			/>
 		</View>

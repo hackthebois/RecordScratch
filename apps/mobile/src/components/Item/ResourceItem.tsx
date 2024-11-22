@@ -145,8 +145,16 @@ export const ResourceItem = ({
 				) : (
 					<View className="h-full w-full bg-muted"></View>
 				)}
-				<View className="flex flex-col gap-2 flex-1">
-					<Text className={cn("font-semibold mr-3", titleCss)} numberOfLines={2}>
+				<View
+					className={cn(
+						"flex flex-col gap-2",
+						direction === "horizontal" ? "flex-1" : ""
+					)}
+				>
+					<Text
+						className={cn("font-semibold mr-3", titleCss)}
+						numberOfLines={direction === "horizontal" ? 2 : 1}
+					>
 						{name}
 					</Text>
 					<View className="flex flex-row gap-1 self-baseline">
