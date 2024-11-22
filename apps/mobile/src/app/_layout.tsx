@@ -21,9 +21,8 @@ import { DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
 import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
-import { Stack, useNavigationContainerRef } from "expo-router";
+import { SplashScreen, Stack, useNavigationContainerRef } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import * as SplashScreen from "expo-splash-screen";
 import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -71,10 +70,6 @@ Sentry.init({
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-SplashScreen.setOptions({
-	fade: true,
-});
 
 const RootLayout = () => {
 	const [fontLoaded, fontError] = useFonts({

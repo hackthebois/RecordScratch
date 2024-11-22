@@ -18,7 +18,7 @@ type Auth = {
 	pushToken: string | null;
 	profile: Profile | null;
 	logout: () => Promise<void>;
-	login: (session?: string) => Promise<void>;
+	login: (session?: string) => Promise<{ status: Auth["status"] }>;
 	setSessionId: (sessionId: string) => Promise<void>;
 	setPushToken: (pushToken: string) => void;
 	setProfile: (profile: Profile) => void;
@@ -58,7 +58,7 @@ export const createAuthStore = () =>
 
 			if (!sessionId) {
 				set({ status: "unauthenticated" });
-				return;
+				return { status: "unauthenticated" };
 			}
 
 			const res = await fetch(`${env.SITE_URL}/api/auth/me`, {
@@ -97,6 +97,7 @@ export const createAuthStore = () =>
 					set({ status: "needsonboarding" });
 				}
 			}
+			return { status: get().status };
 		},
 	}));
 
@@ -118,13 +119,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	useEffect(() => {
 		login()
-			.then(() => {
-				router.replace("/");
+			.then((status) => {
+				if (status.status === "authenticated") {
+					router.replace("/(tabs)/(home)");
+				} else if (status.status === "needsonboarding") {
+					router.replace("/(auth)/onboard");
+				} else {
+					router.replace("/(auth)/signin");
+				}
 			})
 			.catch((e) => {
 				catchError(e);
 				logout().then(() => {
-					router.replace("/signin");
+					router.replace("/(auth)/signin");
 				});
 			});
 	}, [login]);
