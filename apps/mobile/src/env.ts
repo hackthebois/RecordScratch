@@ -7,7 +7,7 @@ let env = {
 	SCHEME: "recordscratch://",
 	SITE_URL:
 		Platform.OS === "android"
-			? "http://localhost:3000"
+			? "https://0a10-184-148-99-76.ngrok-free.app"
 			: "https://0a10-184-148-99-76.ngrok-free.app",
 	DEBUG: false,
 };

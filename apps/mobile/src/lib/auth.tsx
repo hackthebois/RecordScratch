@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	useEffect(() => {
 		login()
 			.then(() => {
-				router.replace("/(tabs)/(home)");
+				router.replace("/");
 			})
 			.catch((e) => {
 				catchError(e);
