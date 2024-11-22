@@ -8,7 +8,6 @@ import { User } from "@/lib/icons/User";
 import { useNotificationObserver } from "@/lib/notifications/useNotificationObserver";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { cn } from "@recordscratch/lib";
-import { BlurView } from "expo-blur";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
@@ -34,8 +33,8 @@ export default function TabLayout() {
 				tabBarStyle: {
 					height: 80,
 					position: "absolute",
-					backgroundColor:
-						colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)",
+					// backgroundColor:
+					// 	colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)",
 				},
 				tabBarButton: ({ style, ...props }) => (
 					<Pressable
@@ -47,19 +46,20 @@ export default function TabLayout() {
 						}}
 					/>
 				),
-				tabBarBackground: () => (
-					<BlurView
-						tint={colorScheme === "dark" ? "dark" : "light"}
-						intensity={20}
-						style={{
-							position: "absolute",
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-						}}
-					/>
-				),
+				// TODO: Add blur background when bug is fixed: Unimplemented component <ViewManagerAdapter...
+				// tabBarBackground: () => (
+				// 	<BlurView
+				// 		tint={colorScheme === "dark" ? "dark" : "light"}
+				// 		intensity={20}
+				// 		style={{
+				// 			position: "absolute",
+				// 			top: 0,
+				// 			left: 0,
+				// 			right: 0,
+				// 			bottom: 0,
+				// 		}}
+				// 	/>
+				// ),
 				headerLeft: () => (
 					<Pressable onPress={() => router.back()}>
 						<ArrowLeft size={28} className="text-primary" />
