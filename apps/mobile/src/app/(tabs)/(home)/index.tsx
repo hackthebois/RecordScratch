@@ -58,7 +58,7 @@ const HomePage = () => {
 	const { data: topArtists } = api.ratings.topArtists.useQuery();
 
 	useEffect(() => {
-		SplashScreen.hideAsync();
+		SplashScreen.hide();
 	}, []);
 
 	return (

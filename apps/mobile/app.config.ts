@@ -20,12 +20,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			"com.apple.developer.applesignin": ["Default"],
 		},
 	},
-	splash: {
-		image: "./assets/icon.png",
-		imageWidth: 200,
-		resizeMode: "contain",
-		backgroundColor: "#ffffff",
-	},
 	newArchEnabled: true,
 	android: {
 		adaptiveIcon: {
@@ -43,6 +37,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			{
 				organization: "recordscratch",
 				project: "recordscratch",
+			},
+		],
+		[
+			"expo-splash-screen",
+			{
+				image: "./assets/icon.png",
+				resizeMode: "contain",
+				backgroundColor: "#ffffff",
 			},
 		],
 		"expo-apple-authentication",

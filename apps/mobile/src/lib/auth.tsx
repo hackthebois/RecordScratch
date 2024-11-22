@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	// Hide the splash screen when the user isn't going to home page
 	useEffect(() => {
 		if (status !== "authenticated" && status !== "loading") {
-			SplashScreen.hideAsync();
+			SplashScreen.hide();
 		}
 	}, [status]);
 
