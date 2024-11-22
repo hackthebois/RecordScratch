@@ -72,6 +72,10 @@ Sentry.init({
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+SplashScreen.setOptions({
+	fade: true,
+});
+
 const RootLayout = () => {
 	const [fontLoaded, fontError] = useFonts({
 		Montserrat_100Thin,
