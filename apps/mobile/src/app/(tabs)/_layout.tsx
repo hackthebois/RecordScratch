@@ -1,12 +1,12 @@
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { Bell } from "@/lib/icons/Bell";
 import { Home } from "@/lib/icons/Home";
 import { Rows3 } from "@/lib/icons/Rows3";
 import { Search } from "@/lib/icons/Search";
 import { User } from "@/lib/icons/User";
 import { useNotificationObserver } from "@/lib/notifications/useNotificationObserver";
-import { useColorScheme } from "@/lib/useColorScheme";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
@@ -15,8 +15,10 @@ import { Pressable } from "react-native";
 
 export default function TabLayout() {
 	const router = useRouter();
-	const { colorScheme } = useColorScheme();
-	const { data: notifications } = api.notifications.getUnseen.useQuery();
+	const sessionId = useAuth((s) => s.sessionId);
+	const { data: notifications } = api.notifications.getUnseen.useQuery(undefined, {
+		enabled: !!sessionId,
+	});
 
 	useNotificationObserver();
 
