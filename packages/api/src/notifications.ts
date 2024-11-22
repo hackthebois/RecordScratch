@@ -14,6 +14,7 @@ import {
 	parseLikeNotification,
 } from "@recordscratch/lib";
 import type {
+	CreateCommentNotification,
 	CreateFollowNotification,
 	CreateLikeNotification,
 	PushToken,
@@ -22,6 +23,7 @@ import type {
 import "dotenv/config"; // Ensures env vars are loaded first
 import { and, eq, inArray } from "drizzle-orm";
 import type { ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
+import { v4 as uuidv4 } from "uuid";
 
 // Custom ExpoClient class to replace Expo SDK
 const Expo = (accessToken?: string) => {
@@ -178,19 +180,23 @@ export const createCommentNotification = async (commentId: string) => {
 	const messageReceiver = type === "REPLY" ? comment.parent!.profile : comment.author;
 	const messageGiver = comment.profile;
 
+	const notification: CreateCommentNotification & { id: string } = {
+		id: uuidv4(),
+		type,
+		fromId: messageGiver.userId,
+		userId: messageReceiver.userId,
+		commentId,
+	};
+
 	const message = parseCommentNotification({
 		comment,
 		profile: messageGiver,
 		handle: messageReceiver.handle,
+		notification,
 	});
 
 	await Promise.all([
-		db.insert(commentNotifications).values({
-			type,
-			fromId: messageGiver.userId,
-			userId: messageReceiver.userId,
-			commentId,
-		}),
+		db.insert(commentNotifications).values(notification),
 		sendPushNotifications({
 			users: [messageReceiver.user],
 			messages: [message],
@@ -235,7 +241,9 @@ export const createFollowNotification = async (notification: CreateFollowNotific
 	await Promise.all([
 		db
 			.insert(followNotifications)
-			.values(notification)
+			.values({
+				...notification,
+			})
 			.onConflictDoUpdate({
 				target: [followNotifications.userId, followNotifications.fromId],
 				set: {
@@ -246,7 +254,12 @@ export const createFollowNotification = async (notification: CreateFollowNotific
 			? [
 					sendPushNotifications({
 						users: [following.user],
-						messages: [parseFollowNotification({ profile: follower })],
+						messages: [
+							parseFollowNotification({
+								profile: follower,
+								notification,
+							}),
+						],
 					}),
 				]
 			: []),
@@ -314,6 +327,7 @@ export const createLikeNotification = async (notification: CreateLikeNotificatio
 								rating: like.rating,
 								profile: like.profile,
 								handle: like.author.handle,
+								notification,
 							}),
 						],
 					}),

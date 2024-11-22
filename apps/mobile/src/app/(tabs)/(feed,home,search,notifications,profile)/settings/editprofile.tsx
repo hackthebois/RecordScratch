@@ -53,7 +53,8 @@ const EditProfile = () => {
 		});
 	}, [bio, defaultHandle, form, name, profile]);
 
-	const { image, handle } = form.watch();
+	const image = form.watch("image");
+	const handle = form.watch("handle");
 
 	useEffect(() => {
 		if (image && !form.formState.errors.image && image instanceof File) {

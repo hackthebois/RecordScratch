@@ -37,7 +37,7 @@ export const ResourceItemSkeleton = ({
 			>
 				<Skeleton className={cn(`h-full w-full rounded-xl`, imageCss)} />
 			</View>
-			<View className="flex flex-col gap-2">
+			<View className="flex flex-col gap-2 flex-1">
 				<Skeleton className="w-[80%]">
 					<Text />
 				</Skeleton>
@@ -121,7 +121,7 @@ export const ResourceItem = ({
 	return (
 		<Pressable
 			onPress={() => {
-				if (showLink) router.push(link);
+				if (showLink) router.push(link as any);
 				if (onPress) onPress();
 			}}
 		>
@@ -145,8 +145,18 @@ export const ResourceItem = ({
 				) : (
 					<View className="h-full w-full bg-muted"></View>
 				)}
-				<View className="flex flex-col gap-2">
-					<Text className={cn("truncate font-semibold mr-3", titleCss)}>{name}</Text>
+				<View
+					className={cn(
+						"flex flex-col gap-2",
+						direction === "horizontal" ? "flex-1" : ""
+					)}
+				>
+					<Text
+						className={cn("font-semibold mr-3", titleCss)}
+						numberOfLines={direction === "horizontal" ? 2 : 1}
+					>
+						{name}
+					</Text>
 					<View className="flex flex-row gap-1 self-baseline">
 						{showType && (
 							<Text className="text-muted-foreground">

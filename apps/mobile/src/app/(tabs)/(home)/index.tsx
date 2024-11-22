@@ -10,7 +10,8 @@ import { formatDuration } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
-import React from "react";
+import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../../+not-found";
@@ -56,6 +57,10 @@ const HomePage = () => {
 	const { data: top } = api.ratings.top.useQuery();
 	const { data: popular } = api.ratings.popular.useQuery();
 	const { data: topArtists } = api.ratings.topArtists.useQuery();
+
+	useEffect(() => {
+		SplashScreen.hide();
+	}, []);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>

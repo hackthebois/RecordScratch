@@ -9,13 +9,14 @@ import { User } from "@/lib/icons/User";
 import { getImageUrl } from "@/lib/image";
 import { useRefreshByUser } from "@/lib/refresh";
 import {
+	cn,
 	Notification,
 	parseCommentNotification,
 	parseFollowNotification,
 	parseLikeNotification,
 } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
-import { Link, LinkProps, Stack } from "expo-router";
+import { Link, LinkProps, Stack, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import { Pressable, View } from "react-native";
 
@@ -26,10 +27,24 @@ const NotificationBlock = ({
 	content,
 	profile,
 }: Notification & { icon: React.ReactNode }) => {
+	const utils = api.useUtils();
+	const pathname = usePathname();
+	const { mutate } = api.notifications.markSeen.useMutation({
+		onSettled: () => {
+			utils.notifications.getUnseen.invalidate();
+		},
+	});
+
+	useEffect(() => {
+		if (pathname === "/" && !data.notification.data.seen) {
+			mutate(data.notification);
+		}
+	}, [data, mutate, pathname]);
+
 	return (
 		<Link href={data.url as LinkProps["href"]} asChild>
 			<Pressable
-				className="flex flex-row gap-3 px-4 flex-1 items-center"
+				className={cn("flex flex-row gap-3 px-4 flex-1 items-center")}
 				style={{
 					height: 75,
 				}}
@@ -69,7 +84,10 @@ const NotificationItem = ({
 			return (
 				<NotificationBlock
 					icon={<User size={28} className="text-sky-500" />}
-					{...parseFollowNotification({ profile: notification.profile })}
+					{...parseFollowNotification({
+						profile: notification.profile,
+						notification,
+					})}
 				/>
 			);
 		case "like":
@@ -80,6 +98,7 @@ const NotificationItem = ({
 						profile: notification.profile,
 						rating: notification.rating,
 						handle: profile!.handle,
+						notification,
 					})}
 				/>
 			);
@@ -91,6 +110,7 @@ const NotificationItem = ({
 						profile: notification.profile,
 						comment: notification.comment,
 						handle: profile!.handle,
+						notification,
 					})}
 				/>
 			);
@@ -98,22 +118,11 @@ const NotificationItem = ({
 };
 
 export default function Notifications() {
-	const utils = api.useUtils();
-	const [allNotifications, { refetch }] = api.notifications.get.useSuspenseQuery();
-
-	const { mutate } = api.notifications.markAllSeen.useMutation({
-		onSettled: () => {
-			utils.notifications.getUnseen.invalidate();
-		},
-	});
+	const { data: allNotifications, refetch } = api.notifications.get.useQuery();
 
 	const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
 
-	useEffect(() => {
-		mutate();
-	}, [mutate]);
-
-	const emptyNotifications = allNotifications.length === 0;
+	const emptyNotifications = allNotifications?.length === 0;
 
 	return (
 		<>
@@ -127,7 +136,7 @@ export default function Notifications() {
 				<FlashList
 					data={allNotifications}
 					keyExtractor={(item, index) => `notification-${item.userId}-${index}`}
-					ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
+					ItemSeparatorComponent={() => <View className="h-[2px] bg-muted" />}
 					renderItem={({ item }) => <NotificationItem notification={item} />}
 					estimatedItemSize={75}
 					scrollEnabled={true}

@@ -96,7 +96,7 @@ function Index() {
 
 			{trending && (
 				<>
-					<h2>Trending</h2>
+					<h2>Trending Albums</h2>
 					<AlbumList
 						albums={trending.map(({ resourceId }) => resourceId)}
 					/>
@@ -104,7 +104,7 @@ function Index() {
 			)}
 			{top && (
 				<>
-					<h2>Top Rated</h2>
+					<h2>Top Albums</h2>
 					<AlbumList
 						albums={top.map(({ resourceId }) => resourceId)}
 					/>

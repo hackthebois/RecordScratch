@@ -56,7 +56,7 @@ export const RatingInfo = ({
 			? `/albums/${resource.resourceId}/reviews`
 			: resource.category === "SONG"
 				? `/albums/${resource.parentId}/songs/${resource.resourceId}/reviews`
-				: "";
+				: `/artists/${resource.resourceId}`;
 
 	return (
 		<Link href={href as any} asChild>

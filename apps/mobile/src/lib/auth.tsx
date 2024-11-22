@@ -108,18 +108,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const login = useStore(store, (s) => s.login);
 	const logout = useStore(store, (s) => s.logout);
 	const status = useStore(store, (s) => s.status);
-	const pushToken = useStore(store, (s) => s.pushToken);
+
+	// Hide the splash screen when the user isn't going to home page
+	useEffect(() => {
+		if (status !== "authenticated" && status !== "loading") {
+			SplashScreen.hide();
+		}
+	}, [status]);
 
 	useEffect(() => {
 		login()
+			.then(() => {
+				router.replace("/");
+			})
 			.catch((e) => {
 				catchError(e);
 				logout().then(() => {
 					router.replace("/signin");
 				});
-			})
-			.finally(async () => {
-				await SplashScreen.hideAsync();
 			});
 	}, [login]);
 
@@ -151,6 +157,10 @@ export const Prefetch = ({ handle, userId }: { handle: string; userId: string })
 		profileId: userId,
 		type: "following",
 	});
+	api.ratings.trending.usePrefetchQuery();
+	api.ratings.top.usePrefetchQuery();
+	api.ratings.popular.usePrefetchQuery();
+	api.ratings.topArtists.usePrefetchQuery();
 
 	return null;
 };

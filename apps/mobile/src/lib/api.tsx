@@ -1,7 +1,7 @@
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import superjson from "superjson";
 
 import env from "@/env";
@@ -29,53 +29,25 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
 				}),
 			})
 	);
-	const [trpcClient, setTrpcClient] = useState(() =>
-		api.createClient({
-			links: [
-				loggerLink({
-					enabled: (opts) =>
-						process.env.NODE_ENV === "development" ||
-						(opts.direction === "down" && opts.result instanceof Error),
-					colorMode: "css",
-				}),
-				httpBatchLink({
-					transformer: superjson,
-					url: `${env.SITE_URL}/trpc`,
-					async headers() {
-						const headers = new Map<string, string>();
-						headers.set("x-trpc-source", "expo-react");
-						headers.set("Authorization", `${sessionId}`);
-						return Object.fromEntries(headers);
-					},
-				}),
-			],
-		})
-	);
 
-	useEffect(() => {
-		setTrpcClient(
-			api.createClient({
-				links: [
-					loggerLink({
-						enabled: (opts) =>
-							process.env.NODE_ENV === "development" ||
-							(opts.direction === "down" && opts.result instanceof Error),
-						colorMode: "ansi",
-					}),
-					httpBatchLink({
-						transformer: superjson,
-						url: `${env.SITE_URL}/trpc`,
-						async headers() {
-							const headers = new Map<string, string>();
-							headers.set("x-trpc-source", "expo-react");
-							headers.set("Authorization", `${sessionId}`);
-							return Object.fromEntries(headers);
-						},
-					}),
-				],
-			})
-		);
-	}, [sessionId]);
+	const trpcClient = api.createClient({
+		links: [
+			loggerLink({
+				enabled: () => env.DEBUG,
+				colorMode: "ansi",
+			}),
+			httpBatchLink({
+				transformer: superjson,
+				url: `${env.SITE_URL}/trpc`,
+				async headers() {
+					const headers = new Map<string, string>();
+					headers.set("x-trpc-source", "expo-react");
+					headers.set("Authorization", `${sessionId}`);
+					return Object.fromEntries(headers);
+				},
+			}),
+		],
+	});
 
 	return (
 		<api.Provider client={trpcClient} queryClient={queryClient}>

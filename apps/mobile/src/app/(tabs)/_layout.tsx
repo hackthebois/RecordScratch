@@ -5,18 +5,18 @@ import { Home } from "@/lib/icons/Home";
 import { Rows3 } from "@/lib/icons/Rows3";
 import { Search } from "@/lib/icons/Search";
 import { User } from "@/lib/icons/User";
-import { useNotificationObserver } from "@/lib/notifications";
+import { useNotificationObserver } from "@/lib/notifications/useNotificationObserver";
+import { useColorScheme } from "@/lib/useColorScheme";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
-import { Pressable, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Pressable } from "react-native";
 
 export default function TabLayout() {
 	const router = useRouter();
+	const { colorScheme } = useColorScheme();
 	const { data: notifications } = api.notifications.getUnseen.useQuery();
-	const insets = useSafeAreaInsets();
 
 	useNotificationObserver();
 
@@ -24,29 +24,42 @@ export default function TabLayout() {
 		<Tabs
 			backBehavior="history"
 			screenOptions={{
-				tabBarActiveTintColor: "#ffb703",
 				headerTitleAlign: "center",
-				tabBarLabel: ({ focused, children }: any) => (
-					<Text
-						className={cn(
-							focused ? "text-primary" : "text-muted-foreground",
-							"text-sm font-semibold"
-						)}
-					>
-						{children}
-					</Text>
-				),
+				tabBarShowLabel: false,
+				sceneStyle: {
+					paddingBottom: 80,
+				},
 				headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
 				tabBarStyle: {
-					height: 70,
-					paddingTop: 8,
-					paddingBottom: insets.bottom,
+					height: 80,
+					position: "absolute",
+					// backgroundColor:
+					// 	colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)",
 				},
-				tabBarItemStyle: {
-					flexDirection: "column",
-					justifyContent: "center",
-					alignItems: "center",
-				},
+				tabBarButton: ({ style, ...props }) => (
+					<Pressable
+						{...props}
+						style={{
+							flex: 1,
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+					/>
+				),
+				// TODO: Add blur background when bug is fixed: Unimplemented component <ViewManagerAdapter...
+				// tabBarBackground: () => (
+				// 	<BlurView
+				// 		tint={colorScheme === "dark" ? "dark" : "light"}
+				// 		intensity={20}
+				// 		style={{
+				// 			position: "absolute",
+				// 			top: 0,
+				// 			left: 0,
+				// 			right: 0,
+				// 			bottom: 0,
+				// 		}}
+				// 	/>
+				// ),
 				headerLeft: () => (
 					<Pressable onPress={() => router.back()}>
 						<ArrowLeft size={28} className="text-primary" />
@@ -55,21 +68,12 @@ export default function TabLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="index"
-				options={{
-					title: "",
-					tabBarIcon: () => null,
-					href: null,
-					headerLeft: () => null,
-				}}
-			/>
-			<Tabs.Screen
 				name="(home)"
 				options={{
 					title: "",
 					tabBarIcon: ({ focused }) => (
 						<Home
-							size={28}
+							size={26}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
@@ -82,7 +86,7 @@ export default function TabLayout() {
 					title: "",
 					tabBarIcon: ({ focused }) => (
 						<Search
-							size={28}
+							size={26}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
@@ -95,7 +99,7 @@ export default function TabLayout() {
 					title: "",
 					tabBarIcon: ({ focused }) => (
 						<Rows3
-							size={28}
+							size={26}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
@@ -106,20 +110,16 @@ export default function TabLayout() {
 				name="(notifications)"
 				options={{
 					title: "",
+					tabBarBadge: notifications
+						? notifications > 9
+							? "9+"
+							: notifications
+						: undefined,
 					tabBarIcon: ({ focused }) => (
-						<View className="relative">
-							<Bell
-								size={28}
-								className={cn(focused ? "text-primary" : "text-muted-foreground")}
-							/>
-							{notifications && notifications > 0 ? (
-								<View className="absolute -top-2 -right-1.5 bg-destructive px-1 h-5 min-w-5 rounded-full flex items-center justify-center">
-									<Text className="text-xs text-white font-semibold">
-										{notifications > 99 ? "99+" : notifications}
-									</Text>
-								</View>
-							) : null}
-						</View>
+						<Bell
+							size={26}
+							className={cn(focused ? "text-primary" : "text-muted-foreground")}
+						/>
 					),
 					headerShown: false,
 				}}
@@ -130,7 +130,7 @@ export default function TabLayout() {
 					title: "",
 					tabBarIcon: ({ focused }) => (
 						<User
-							size={28}
+							size={26}
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),

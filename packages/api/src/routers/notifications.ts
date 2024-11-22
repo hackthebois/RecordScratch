@@ -1,4 +1,5 @@
 import { commentNotifications, followNotifications, likeNotifications } from "@recordscratch/db";
+import { NotificationDataSchema } from "@recordscratch/lib";
 import { and, count, desc, eq } from "drizzle-orm";
 import { protectedProcedure, router } from "../trpc";
 
@@ -40,8 +41,6 @@ export const notificationsRouter = router({
 			...followNotifs.map((notif) => ({ ...notif, notifType: "follow" as const })),
 			...likeNotifs.map((notif) => ({ ...notif, notifType: "like" as const })),
 		];
-
-		console.log("allNotifications", allNotifications);
 
 		allNotifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
@@ -94,4 +93,43 @@ export const notificationsRouter = router({
 				),
 		]);
 	}),
+	markSeen: protectedProcedure
+		.input(NotificationDataSchema)
+		.mutation(async ({ ctx: { db, userId }, input }) => {
+			switch (input.type) {
+				case "COMMENT":
+					await db
+						.update(commentNotifications)
+						.set({ seen: true })
+						.where(
+							and(
+								eq(commentNotifications.id, input.data.id!),
+								eq(commentNotifications.userId, userId)
+							)
+						);
+					break;
+				case "FOLLOW":
+					await db
+						.update(followNotifications)
+						.set({ seen: true })
+						.where(
+							and(
+								eq(followNotifications.fromId, input.data.fromId),
+								eq(followNotifications.userId, userId)
+							)
+						);
+					break;
+				case "LIKE":
+					await db
+						.update(likeNotifications)
+						.set({ seen: true })
+						.where(
+							and(
+								eq(likeNotifications.fromId, input.data.fromId),
+								eq(likeNotifications.userId, userId)
+							)
+						);
+					break;
+			}
+		}),
 });
