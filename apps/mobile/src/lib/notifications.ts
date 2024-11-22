@@ -50,7 +50,6 @@ export const registerForPushNotificationsAsync = async (ignoreInitialPermissions
 					projectId,
 				})
 			).data;
-			console.log(token);
 		} catch (e) {
 			token = `${e}`;
 		}

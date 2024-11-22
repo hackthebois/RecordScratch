@@ -29,7 +29,7 @@ const AuthPage = () => {
 		if (!sessionId) return;
 
 		await login(sessionId).catch(catchError);
-		router.navigate("(tabs)/");
+		router.replace("/(tabs)/(home)");
 	};
 
 	const appleLogo = {
@@ -88,7 +88,7 @@ const AuthPage = () => {
 							.parse(await res.json());
 
 						await login(sessionId).catch(catchError);
-						router.navigate("(tabs)/");
+						router.replace("/(tabs)/(home)");
 					} catch (e) {
 						console.error(e);
 					}

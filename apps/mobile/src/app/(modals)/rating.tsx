@@ -94,7 +94,6 @@ const RatingModal = () => {
 	});
 
 	const onSubmit = async (rate: RateForm) => {
-		console.log("clearing rating", resource);
 		rateMutation(rate);
 	};
 

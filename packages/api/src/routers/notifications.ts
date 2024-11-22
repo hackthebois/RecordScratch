@@ -41,8 +41,6 @@ export const notificationsRouter = router({
 			...likeNotifs.map((notif) => ({ ...notif, notifType: "like" as const })),
 		];
 
-		console.log("allNotifications", allNotifications);
-
 		allNotifications.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
 		return allNotifications;

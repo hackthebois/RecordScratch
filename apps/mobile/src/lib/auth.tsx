@@ -117,12 +117,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	}, [status]);
 
 	useEffect(() => {
-		login().catch((e) => {
-			catchError(e);
-			logout().then(() => {
-				router.replace("/signin");
+		login()
+			.then(() => {
+				router.replace("/(tabs)/(home)");
+			})
+			.catch((e) => {
+				catchError(e);
+				logout().then(() => {
+					router.replace("/signin");
+				});
 			});
-		});
 	}, [login]);
 
 	if (status === "loading") {
