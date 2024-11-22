@@ -27,6 +27,9 @@ export default function TabLayout() {
 			screenOptions={{
 				headerTitleAlign: "center",
 				tabBarShowLabel: false,
+				sceneStyle: {
+					paddingBottom: 80,
+				},
 				headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
 				tabBarStyle: {
 					height: 80,

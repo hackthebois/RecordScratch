@@ -128,7 +128,7 @@ export const ratingsRouter = router({
 			.select({
 				total: count(ratings.rating),
 				average: avg(ratings.rating),
-				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 100`,
+				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 10`,
 				artistId: ratings.parentId,
 			})
 			.from(ratings)
