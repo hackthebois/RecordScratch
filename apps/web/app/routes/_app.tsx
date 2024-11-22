@@ -1,9 +1,9 @@
-import SearchBar from "@/components/SearchBar";
-import SignedIn from "@/components/SignedIn";
 import { Discord } from "@/components/icons/Discord";
 import { Github } from "@/components/icons/Github";
 import { Tiktok } from "@/components/icons/Tiktok";
 import { ErrorComponent } from "@/components/router/ErrorComponent";
+import SearchBar from "@/components/SearchBar";
+import SignedIn from "@/components/SignedIn";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import {
 	Popover,
@@ -11,8 +11,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/Popover";
 import UserButton from "@/components/user/UserButton";
-import { socials } from "@/lib/socials";
 import { api } from "@/trpc/react";
+import { socials } from "@recordscratch/lib";
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Bell, Dot, Mail, Menu } from "lucide-react";
 import { Suspense } from "react";

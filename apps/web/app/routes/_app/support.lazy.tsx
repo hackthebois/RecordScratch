@@ -1,10 +1,9 @@
-import * as React from "react";
-import { createLazyFileRoute } from "@tanstack/react-router";
-import { Seo } from "@/components/Seo";
 import { Discord } from "@/components/icons/Discord";
+import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/Button";
+import { socials } from "@recordscratch/lib";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { Mail } from "lucide-react";
-import { socials } from "@/lib/socials";
 
 export const Route = createLazyFileRoute("/_app/support")({
 	component: RouteComponent,
