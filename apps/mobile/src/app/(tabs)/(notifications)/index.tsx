@@ -136,7 +136,7 @@ export default function Notifications() {
 				<FlashList
 					data={allNotifications}
 					keyExtractor={(item, index) => `notification-${item.userId}-${index}`}
-					ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
+					ItemSeparatorComponent={() => <View className="h-[1px] bg-muted" />}
 					renderItem={({ item }) => <NotificationItem notification={item} />}
 					estimatedItemSize={75}
 					scrollEnabled={true}
