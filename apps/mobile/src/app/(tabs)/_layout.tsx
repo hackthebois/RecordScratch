@@ -5,7 +5,7 @@ import { Home } from "@/lib/icons/Home";
 import { Rows3 } from "@/lib/icons/Rows3";
 import { Search } from "@/lib/icons/Search";
 import { User } from "@/lib/icons/User";
-import { useNotificationObserver } from "@/lib/notifications";
+import { useNotificationObserver } from "@/lib/notifications/useNotificationObserver";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";

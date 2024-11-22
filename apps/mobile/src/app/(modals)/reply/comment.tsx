@@ -44,6 +44,8 @@ const CommentModal = () => {
 		},
 	});
 
+	const markSeen = api.notifications.markSeen.useMutation();
+
 	const onSubmit = async ({ content }: { content: string }) => {
 		mutate({
 			content,
