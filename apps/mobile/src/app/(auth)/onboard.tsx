@@ -73,7 +73,7 @@ function Onboard() {
 
 	useEffect(() => {
 		if (status !== "needsonboarding") {
-			router.replace("(tabs)/");
+			router.replace("/(tabs)/(home)");
 		}
 	}, [status, router]);
 
@@ -81,7 +81,7 @@ function Onboard() {
 		onSuccess: (profile) => {
 			utils.profiles.me.invalidate();
 			setProfile(profile);
-			router.navigate("(tabs)/");
+			router.navigate("/(tabs)/(home)");
 			setStatus("authenticated");
 		},
 	});
