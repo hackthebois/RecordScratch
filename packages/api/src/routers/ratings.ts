@@ -11,6 +11,10 @@ const PaginatedInput = z.object({
 	limit: z.number().optional(),
 });
 
+const RatingAlgorithm = (countWeight: number) => {
+	return sql`ROUND(AVG(${ratings.rating}), 1) + ${countWeight} * LN(COUNT(${ratings.rating}))`;
+};
+
 const getFollowingWhere = async (db: ReturnType<typeof getDB>, userId: string) => {
 	const following = await db.query.followers.findMany({
 		where: eq(followers.userId, userId),
@@ -101,7 +105,7 @@ export const ratingsRouter = router({
 				total: count(ratings.rating),
 				average: avg(ratings.rating),
 				resourceId: ratings.resourceId,
-				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 100`,
+				sortValue: RatingAlgorithm(0.3),
 			})
 			.from(ratings)
 			.where(eq(ratings.category, "ALBUM"))
@@ -128,7 +132,7 @@ export const ratingsRouter = router({
 			.select({
 				total: count(ratings.rating),
 				average: avg(ratings.rating),
-				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 10`,
+				sortValue: RatingAlgorithm(0.8),
 				artistId: ratings.parentId,
 			})
 			.from(ratings)
