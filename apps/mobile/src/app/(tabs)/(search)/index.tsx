@@ -21,12 +21,6 @@ const tabs = {
 		filters: { albums: true, artists: true, songs: true },
 		limit: 4,
 	},
-	profiles: {
-		label: "Profiles",
-		value: "profiles",
-		filters: { albums: false, artists: false, songs: false },
-		limit: 12,
-	},
 	songs: {
 		label: "Songs",
 		value: "songs",
@@ -43,6 +37,12 @@ const tabs = {
 		label: "Artists",
 		value: "artists",
 		filters: { albums: false, artists: true, songs: false },
+		limit: 12,
+	},
+	profiles: {
+		label: "Profiles",
+		value: "profiles",
+		filters: { albums: false, artists: false, songs: false },
 		limit: 12,
 	},
 };
@@ -124,23 +124,6 @@ export default function SearchPage() {
 					</View>
 				) : (
 					<>
-						{tab === "profiles" || tab === "all"
-							? profiles?.items.map((profile, index) => (
-									<ProfileItem
-										profile={profile}
-										key={index}
-										size={80}
-										onClick={() => {
-											// addRecent({
-											// 	id: profile.userId,
-											// 	type: "PROFILE",
-											// 	data: profile,
-											// });
-										}}
-										isUser
-									/>
-								))
-							: null}
 						{tab !== "profiles"
 							? music?.songs.map((song) => (
 									<ResourceItem
@@ -198,6 +181,23 @@ export default function SearchPage() {
 										}}
 										imageWidthAndHeight={80}
 										showType
+									/>
+								))
+							: null}
+						{tab === "profiles" || tab === "all"
+							? profiles?.items.map((profile, index) => (
+									<ProfileItem
+										profile={profile}
+										key={index}
+										size={80}
+										onClick={() => {
+											// addRecent({
+											// 	id: profile.userId,
+											// 	type: "PROFILE",
+											// 	data: profile,
+											// });
+										}}
+										isUser
 									/>
 								))
 							: null}

@@ -209,7 +209,7 @@ export const ProfilePage = ({
 						</View>
 					</View>
 					<Link href={`/${profile.handle}/ratings`} asChild>
-						<Pressable className="border border-border px-2 pt-1 rounded-xl">
+						<Pressable className="border border-border p-3 rounded-xl">
 							<DistributionChart
 								distribution={values}
 								height={80}
@@ -226,13 +226,15 @@ export const ProfilePage = ({
 						</Pressable>
 					</Link>
 				</View>
-				<TopListsTab
-					{...(topLists ?? {
-						album: undefined,
-						song: undefined,
-						artist: undefined,
-					})}
-				/>
+				{topLists && topLists.album && topLists.song && topLists.artist ? (
+					<TopListsTab
+						{...(topLists ?? {
+							album: undefined,
+							song: undefined,
+							artist: undefined,
+						})}
+					/>
+				) : null}
 				{/* <FlashList
 						data={lists}
 						renderItem={({ index, item }) => (

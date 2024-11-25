@@ -6,33 +6,53 @@ import { FlashList, FlashListProps } from "@shopify/flash-list";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { Review } from "./Review";
+import { Text } from "./ui/text";
 
 export const ReviewsList = (
 	input: RouterInputs["ratings"]["feed"] & {
 		ListHeaderComponent?: FlashListProps<ReviewType>["ListHeaderComponent"];
+		emptyText?: string;
 	}
 ) => {
-	const { ListHeaderComponent, ...queryInput } = input;
-	const { data, fetchNextPage, hasNextPage, refetch } = api.ratings.feed.useInfiniteQuery(
-		{
-			...queryInput,
-		},
-		{
-			getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
-		}
-	);
+	const { ListHeaderComponent, emptyText, ...queryInput } = input;
+	const { data, fetchNextPage, hasNextPage, refetch, isLoading } =
+		api.ratings.feed.useInfiniteQuery(
+			{
+				...queryInput,
+			},
+			{
+				getNextPageParam: (lastPage: { nextCursor: any }) => lastPage.nextCursor,
+			}
+		);
 
 	const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
+
+	console.log(data?.pages?.flatMap((page) => page.items));
 
 	return (
 		<FlashList
 			ListHeaderComponent={ListHeaderComponent}
-			data={data?.pages?.flatMap((page) => page.items)}
+			data={
+				data?.pages?.flatMap((page) => page.items).length === 0
+					? undefined
+					: data?.pages?.flatMap((page) => page.items)
+			}
 			keyExtractor={(item, index) => `review-${item.userId}-${index}`}
 			ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
 			renderItem={({ item }) => <Review {...item} />}
 			ListFooterComponent={() =>
 				hasNextPage ? <ActivityIndicator size="large" color="#ff8500" /> : null
+			}
+			ListEmptyComponent={
+				<View className="px-4 pt-40">
+					{isLoading ? (
+						<ActivityIndicator size="large" color="#ff8500" />
+					) : (
+						<Text className="text-center text-lg">
+							{emptyText ? emptyText : "No reviews found"}
+						</Text>
+					)}
+				</View>
 			}
 			scrollEnabled={true}
 			onEndReachedThreshold={0.1}

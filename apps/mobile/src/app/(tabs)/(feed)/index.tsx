@@ -22,7 +22,7 @@ const FeedPage = () => {
 							<Text>For You</Text>
 						</TabsTrigger>
 						<TabsTrigger value="friends" className="flex-1">
-							<Text>Friends</Text>
+							<Text>Following</Text>
 						</TabsTrigger>
 					</TabsList>
 				</View>
@@ -33,6 +33,11 @@ const FeedPage = () => {
 					following: tab === "friends",
 					ratingType: "REVIEW",
 				}}
+				emptyText={
+					tab === "friends"
+						? "No following reviews found. Follow some friends to see their reviews."
+						: "No for you reviews found. Check back later."
+				}
 			/>
 		</>
 	);

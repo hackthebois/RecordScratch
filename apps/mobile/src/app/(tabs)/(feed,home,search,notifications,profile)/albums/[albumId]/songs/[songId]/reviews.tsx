@@ -76,20 +76,23 @@ const Reviews = () => {
 				limit={20}
 				ListHeaderComponent={
 					<>
-						<DistributionChart
-							distribution={values}
-							value={ratingFilter}
-							onChange={setRatingFilter}
-						/>
+						<View className="p-4">
+							<DistributionChart
+								distribution={values}
+								value={ratingFilter}
+								onChange={setRatingFilter}
+							/>
+						</View>
 						<Tabs
 							value={ratingTab}
-							onValueChange={(v) => setRatingTab(v as RatingType)}
+							onValueChange={(value) =>
+								value !== ratingTab
+									? setRatingTab(value as RatingType)
+									: setRatingTab("all")
+							}
 						>
 							<View className="px-4">
 								<TabsList className="flex-row w-full">
-									<TabsTrigger value="all" className="flex-1">
-										<Text>All</Text>
-									</TabsTrigger>
 									<TabsTrigger value="REVIEW" className="flex-1">
 										<Text>Reviews</Text>
 									</TabsTrigger>
