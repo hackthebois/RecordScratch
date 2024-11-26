@@ -1,3 +1,4 @@
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
@@ -12,9 +13,9 @@ import { OnboardSchema, handleRegex } from "@recordscratch/types";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, ScrollView, TextInput, View } from "react-native";
+import { ActivityIndicator, TextInput, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -91,6 +92,10 @@ function Onboard() {
 	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
 		enabled: debouncedHandle?.length > 0,
 	});
+	const handleDoesNotExist = useMemo(
+		() => handleExists !== undefined && !handleExists,
+		[handleExists]
+	);
 
 	const handleImagePick = async (onChange: {
 		(...event: any[]): void;
@@ -182,25 +187,20 @@ function Onboard() {
 		}
 	}, [form, page]);
 
-	const pageValid = (pageIndex: number) => {
-		if (pageIndex === 0) {
-			return true;
+	const pageValid = useMemo(() => {
+		switch (page) {
+			case 0:
+				return true;
+			case 1:
+				return name?.length > 0 && handleDoesNotExist && handle?.length > 0;
+			case 2:
+				return !form.getFieldState("bio").invalid;
+			case 3:
+				return !form.getFieldState("image").invalid;
+			default:
+				return true;
 		}
-		if (pageIndex === 1) {
-			return (
-				!form.getFieldState("name").invalid &&
-				name?.length > 0 &&
-				!form.getFieldState("handle").invalid &&
-				handle?.length > 0
-			);
-		} else if (pageIndex === 2) {
-			return !form.getFieldState("bio").invalid;
-		} else if (pageIndex === 3) {
-			return !form.getFieldState("image").invalid;
-		} else {
-			return true;
-		}
-	};
+	}, [form, handleDoesNotExist, debouncedHandle, name, page]);
 
 	if (loading) {
 		return (
@@ -348,11 +348,7 @@ function Onboard() {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<ScrollView
-				contentContainerClassName="items-center justify-center h-full"
-				automaticallyAdjustKeyboardInsets
-				keyboardShouldPersistTaps="handled"
-			>
+			<KeyboardAvoidingScrollView contentContainerClassName="items-center justify-center h-full">
 				{renderPage(page)}
 				<View className="mt-8 flex flex-row gap-4">
 					{page !== 0 && (
@@ -369,7 +365,7 @@ function Onboard() {
 								setPage((page) => page + 1);
 							}
 						}}
-						disabled={!pageValid(page)}
+						disabled={!pageValid}
 					>
 						<Text>
 							{page === 2 && !bio
@@ -382,7 +378,7 @@ function Onboard() {
 						</Text>
 					</Button>
 				</View>
-			</ScrollView>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 }

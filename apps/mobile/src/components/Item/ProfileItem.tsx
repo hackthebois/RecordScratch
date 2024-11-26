@@ -34,7 +34,7 @@ export const ProfileItem = ({
 							{profile.name}
 						</Text>
 						<Text className="text-muted-foreground">
-							{showType ? "Profile • " : ""}@{profile.handle}
+							{showType ? "User • " : ""}@{profile.handle}
 						</Text>
 					</View>
 				</View>

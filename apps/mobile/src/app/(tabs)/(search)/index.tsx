@@ -41,7 +41,7 @@ const tabs = {
 		limit: 12,
 	},
 	profiles: {
-		label: "Profiles",
+		label: "Users",
 		value: "profiles",
 		filters: { albums: false, artists: false, songs: false },
 		limit: 12,
@@ -195,6 +195,7 @@ export default function SearchPage() {
 											// 	data: profile,
 											// });
 										}}
+										showType={tab === "all"}
 										isUser
 									/>
 								))
