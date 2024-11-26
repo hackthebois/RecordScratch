@@ -2,15 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { catchError } from "@/lib/errors";
 import { BellOff } from "@/lib/icons/BellOff";
 import { BellRing } from "@/lib/icons/BellRing";
 import { HelpCircle } from "@/lib/icons/HelpCircle";
 import { Moon } from "@/lib/icons/Moon";
 import { Sun } from "@/lib/icons/Sun";
+import { UserMinus } from "@/lib/icons/UserMinus";
 import { UserPen } from "@/lib/icons/UserPen";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { useQueryClient } from "@tanstack/react-query";
+import { reloadAppAsync } from "expo";
 import { Link, Redirect, Stack, useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 
@@ -93,14 +94,17 @@ const SettingsPage = () => {
 					)}
 				</View>
 			</Button>
+			<Link href={`/settings/deleteaccount`} asChild>
+				<Button variant="outline" className="gap-2 flex-row justify-between">
+					<Text>Delete Account</Text>
+					<UserMinus className="text-destructive" size={20} />
+				</Button>
+			</Link>
 			<Button
 				variant="secondary"
 				onPress={async () => {
-					await queryClient.cancelQueries();
-					await queryClient.clear();
-					await router.dismissAll();
-					router.replace("/(auth)/signin");
-					await logout().catch(catchError);
+					await logout();
+					await reloadAppAsync();
 				}}
 			>
 				<Text>Sign Out</Text>

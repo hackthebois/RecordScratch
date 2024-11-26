@@ -1,6 +1,7 @@
 import env from "@/env";
 import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
-import { useRouter } from "expo-router";
+import { reloadAppAsync } from "expo";
+import { Router, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { createContext, useContext, useEffect, useRef } from "react";
@@ -23,6 +24,7 @@ type Auth = {
 	setPushToken: (pushToken: string) => void;
 	setProfile: (profile: Profile) => void;
 	setStatus: (status: Auth["status"]) => void;
+	delete: () => Promise<void>;
 };
 
 type AuthStore = ReturnType<typeof createAuthStore>;
@@ -47,7 +49,6 @@ export const createAuthStore = () =>
 					"Expo-Push-Token": get().pushToken ?? "",
 				},
 			});
-			set({ sessionId: null, profile: null, status: "unauthenticated" });
 			await SecureStore.deleteItemAsync("sessionId");
 		},
 		login: async (session?: string) => {
@@ -87,21 +88,49 @@ export const createAuthStore = () =>
 				);
 
 			if (parsedData.error || !parsedData.data.user) {
-				get().logout();
+				set({ sessionId: null, profile: null, status: "unauthenticated" });
+				return { status: "unauthenticated" };
 			} else {
 				get().setSessionId(sessionId);
 				if (parsedData.data.user.profile) {
 					get().setProfile(parsedData.data.user.profile);
 					set({ status: "authenticated" });
+					return { status: "authenticated" };
 				} else {
 					set({ status: "needsonboarding" });
+					return { status: "needsonboarding" };
 				}
 			}
-			return { status: get().status };
+		},
+		delete: async () => {
+			const sessionId = get().sessionId;
+			if (!sessionId) return;
+			await SecureStore.deleteItemAsync("sessionId");
+			// Delete user
+			const res = await fetch(`${env.SITE_URL}/api/auth/delete`, {
+				headers: { Authorization: sessionId },
+			});
+			return await res.json();
 		},
 	}));
 
 export const AuthContext = createContext<AuthStore | null>(null);
+
+export const handleLoginRedirect = async ({
+	status,
+	router,
+}: {
+	status: Auth["status"];
+	router: Router;
+}) => {
+	if (status === "authenticated") {
+		router.replace("/(tabs)/(home)");
+	} else if (status === "needsonboarding") {
+		router.replace("/(auth)/onboard");
+	} else {
+		router.replace("/(auth)/signin");
+	}
+};
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const router = useRouter();
@@ -119,20 +148,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	useEffect(() => {
 		login()
-			.then((status) => {
-				if (status.status === "authenticated") {
-					router.replace("/(tabs)/(home)");
-				} else if (status.status === "needsonboarding") {
-					router.replace("/(auth)/onboard");
-				} else {
-					router.replace("/(auth)/signin");
-				}
-			})
+			.then(({ status }) => handleLoginRedirect({ status, router }))
 			.catch((e) => {
 				catchError(e);
-				logout().then(() => {
-					router.replace("/(auth)/signin");
-				});
+				reloadAppAsync();
 			});
 	}, [login]);
 
