@@ -59,7 +59,9 @@ export default function DeleteAccount() {
 					onValueChange={setConfirmDelete}
 					trackColor={{ false: "#767577", true: "#767577" }}
 				/>
-				<Text>I understand that this action is permanent and cannot be reversed</Text>
+				<Text className="flex-1">
+					I understand that this action is permanent and cannot be reversed
+				</Text>
 			</View>
 			<Button
 				onPress={() => handleDeleteAccount()}
