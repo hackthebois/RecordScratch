@@ -1,4 +1,5 @@
 import NotFoundScreen from "@/app/+not-found";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { Review } from "@/components/Review";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -6,7 +7,7 @@ import { api } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { z } from "zod";
 
 const Reply = () => {
@@ -63,7 +64,7 @@ const Reply = () => {
 	};
 
 	return (
-		<ScrollView className="h-full" automaticallyAdjustKeyboardInsets>
+		<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
 			<Stack.Screen
 				options={{
 					title: `Reply`,
@@ -98,7 +99,7 @@ const Reply = () => {
 					</View>
 				)}
 			/>
-		</ScrollView>
+		</KeyboardAvoidingScrollView>
 	);
 };
 

@@ -5,7 +5,7 @@ let env = {
 	ENV: "development",
 	R2_PUBLIC_URL: "https://cdn.recordscratch.app",
 	SCHEME: "recordscratch://",
-	SITE_URL: Platform.OS === "android" ? "http://192.168.1.100:3000" : "http://localhost:3000",
+	SITE_URL: Platform.OS === "android" ? "http://192.168.1.100:3000" : "https://recordscratch.app",
 	DEBUG: false,
 };
 

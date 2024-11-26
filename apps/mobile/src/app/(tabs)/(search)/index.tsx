@@ -5,9 +5,10 @@ import { useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Platform, ScrollView, TextInput, View } from "react-native";
+import { ActivityIndicator, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { useRecents } from "@/components/recents";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -91,6 +92,7 @@ export default function SearchPage() {
 							paddingBottom: Platform.OS === "ios" ? 4 : 0,
 							textAlignVertical: "center",
 						}}
+						autoCorrect={false}
 						autoFocus
 						className="flex-1 h-full text-xl text-foreground outline-none p-0"
 						onChangeText={(text) => setQuery(text)}
@@ -113,11 +115,7 @@ export default function SearchPage() {
 					</TabsList>
 				</Tabs>
 			</View>
-			<ScrollView
-				contentContainerClassName="p-4 gap-3"
-				automaticallyAdjustKeyboardInsets
-				keyboardShouldPersistTaps="handled"
-			>
+			<KeyboardAvoidingScrollView contentContainerClassName="p-4 gap-3">
 				{isLoading || isLoadingProfiles ? (
 					<View className="flex items-center justify-center pt-40">
 						<ActivityIndicator size="large" color="#ff8500" />
@@ -203,7 +201,7 @@ export default function SearchPage() {
 							: null}
 					</>
 				)}
-			</ScrollView>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 }

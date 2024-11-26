@@ -42,19 +42,21 @@ const Metadata = ({
 				<View className={"self-center"}>{cover}</View>
 			)}
 			<View className="flex flex-col justify-center items-center gap-4 sm:justify-center">
-				{!!type && <Text className="text-muted-foreground">{type.toUpperCase()}</Text>}
-				<Text variant={"h1"} className="text-center">
-					{title}
-				</Text>
-				{tags && (
-					<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
-						{tags
-							.filter((tag) => Boolean(tag))
-							.map((tag, index) => (
-								<Pill key={index}>{tag}</Pill>
-							))}
-					</View>
-				)}
+				<View className="flex flex-col justify-center items-center gap-4 px-4">
+					{!!type && <Text className="text-muted-foreground">{type.toUpperCase()}</Text>}
+					<Text variant={"h1"} className="text-center">
+						{title}
+					</Text>
+					{tags && (
+						<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
+							{tags
+								.filter((tag) => Boolean(tag))
+								.map((tag, index) => (
+									<Pill key={index}>{tag}</Pill>
+								))}
+						</View>
+					)}
+				</View>
 				{children}
 			</View>
 		</View>

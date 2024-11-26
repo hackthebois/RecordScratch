@@ -1,3 +1,4 @@
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -9,7 +10,7 @@ import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, KeyboardAvoidingView, Pressable, ScrollView, TextInput, View } from "react-native";
+import { Alert, Pressable, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const RatingInput = ({
@@ -113,101 +114,93 @@ const RatingModal = () => {
 					title: `Rate ${resource.category === "ALBUM" ? "Album" : "Song"}`,
 				}}
 			/>
-			<KeyboardAvoidingView
-				style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
-				behavior="padding"
-				keyboardVerticalOffset={116}
-			>
-				<ScrollView
-					contentContainerClassName="p-4 justify-between"
-					keyboardShouldPersistTaps="handled"
-				>
-					{imageUrl ? (
-						<Image
-							alt={`cover`}
-							source={{
-								uri: imageUrl,
-							}}
-							style={[
-								{
-									alignSelf: "center",
-									borderRadius: 12,
-									width: 200,
-									height: 200,
-								},
-							]}
-						/>
-					) : null}
-					<View className="gap-4 mt-4">
-						<Text variant="h1" className="text-center">
-							{name}
-						</Text>
-						<Text className="text-center text-xl">
-							{resource.category === "ALBUM"
-								? "How would you rate this album?"
-								: "How would you rate this song?"}
-						</Text>
-						<Controller
-							control={control}
-							name="rating"
-							render={({ field: { onChange, value } }) => (
-								<RatingInput value={value ?? 0} onChange={onChange} />
-							)}
-						/>
-						<Controller
-							control={control}
-							name="content"
-							render={({ field: { onChange, value } }) => (
-								<TextInput
-									onChangeText={onChange}
-									value={value ?? undefined}
-									className="text-lg text-foreground border border-border rounded-xl min-h-32 p-4"
-									placeholder="Add review..."
-									multiline
-								/>
-							)}
-						/>
-					</View>
-					<View className="mt-4">
-						<Button
-							onPress={handleSubmit(onSubmit)}
-							disabled={!formState.isValid}
-							className="mb-4"
-							variant="secondary"
-						>
-							<Text>Rate</Text>
-						</Button>
-						{userRating &&
-							(userRating.content ? (
-								<Pressable
-									className="flex items-center"
-									onPress={() =>
-										Alert.alert(
-											"Remove your review?",
-											"This will remove your current review",
-											[
-												{
-													text: "Cancel",
-													style: "cancel",
-												},
-												{
-													text: "Remove",
-													onPress: () => clearRating(),
-												},
-											]
-										)
-									}
-								>
-									<Text>Remove rating</Text>
-								</Pressable>
-							) : (
-								<Pressable onPress={clearRating} className="flex items-center">
-									<Text>Remove rating</Text>
-								</Pressable>
-							))}
-					</View>
-				</ScrollView>
-			</KeyboardAvoidingView>
+			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
+				{imageUrl ? (
+					<Image
+						alt={`cover`}
+						source={{
+							uri: imageUrl,
+						}}
+						style={[
+							{
+								alignSelf: "center",
+								borderRadius: 12,
+								width: 200,
+								height: 200,
+							},
+						]}
+					/>
+				) : null}
+				<View className="gap-4 mt-4">
+					<Text variant="h1" className="text-center">
+						{name}
+					</Text>
+					<Text className="text-center text-xl">
+						{resource.category === "ALBUM"
+							? "How would you rate this album?"
+							: "How would you rate this song?"}
+					</Text>
+					<Controller
+						control={control}
+						name="rating"
+						render={({ field: { onChange, value } }) => (
+							<RatingInput value={value ?? 0} onChange={onChange} />
+						)}
+					/>
+					<Controller
+						control={control}
+						name="content"
+						render={({ field: { onChange, value } }) => (
+							<TextInput
+								onChangeText={onChange}
+								value={value ?? undefined}
+								className="text-lg text-foreground border border-border rounded-xl min-h-32 p-4"
+								placeholder="Add review..."
+								multiline
+								scrollEnabled={false}
+							/>
+						)}
+					/>
+				</View>
+				<View className="mt-4">
+					<Button
+						onPress={handleSubmit(onSubmit)}
+						disabled={!formState.isValid}
+						className="mb-4"
+						variant="secondary"
+					>
+						<Text>Rate</Text>
+					</Button>
+					{userRating &&
+						(userRating.content ? (
+							<Pressable
+								className="flex items-center"
+								onPress={() =>
+									Alert.alert(
+										"Remove your review?",
+										"This will remove your current review",
+										[
+											{
+												text: "Cancel",
+												style: "cancel",
+											},
+											{
+												text: "Remove",
+												onPress: () => clearRating(),
+											},
+										]
+									)
+								}
+							>
+								<Text>Remove rating</Text>
+							</Pressable>
+						) : (
+							<Pressable onPress={clearRating} className="flex items-center">
+								<Text>Remove rating</Text>
+							</Pressable>
+						))}
+				</View>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 };

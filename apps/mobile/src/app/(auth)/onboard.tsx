@@ -303,7 +303,7 @@ function Onboard() {
 										{...field}
 										placeholder="Bio"
 										className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
-										multiline={true}
+										multiline
 										autoComplete="off"
 										onChangeText={field.onChange}
 									/>
