@@ -1,3 +1,4 @@
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -12,7 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 
 const EditProfile = () => {
 	const profile = useAuth((s) => s.profile!);
@@ -147,7 +148,7 @@ const EditProfile = () => {
 	};
 
 	return (
-		<ScrollView contentContainerClassName="p-4 gap-6">
+		<KeyboardAvoidingScrollView contentContainerClassName="p-4 gap-6">
 			<Stack.Screen
 				options={{
 					title: "Edit Profile",
@@ -211,7 +212,7 @@ const EditProfile = () => {
 							{...field}
 							placeholder="Bio"
 							className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
-							multiline={true}
+							multiline
 							autoComplete="off"
 							onChangeText={field.onChange}
 						/>
@@ -250,7 +251,7 @@ const EditProfile = () => {
 			>
 				{loading ? <Text>Loading...</Text> : <Text>Save</Text>}
 			</Button>
-		</ScrollView>
+		</KeyboardAvoidingScrollView>
 	);
 };
 

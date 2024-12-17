@@ -47,17 +47,21 @@ const Reviews = () => {
 				}}
 				ListHeaderComponent={
 					<>
-						<DistributionChart
-							distribution={values}
-							value={ratingFilter}
-							onChange={setRatingFilter}
-						/>
-						<Tabs value={tab} onValueChange={(v) => setTab(v as RatingCategory)}>
+						<View className="p-4">
+							<DistributionChart
+								distribution={values}
+								value={ratingFilter}
+								onChange={setRatingFilter}
+							/>
+						</View>
+						<Tabs
+							value={tab}
+							onValueChange={(value) =>
+								value !== tab ? setTab(value as RatingCategory) : setTab("all")
+							}
+						>
 							<View className="px-4">
 								<TabsList className="flex-row w-full">
-									<TabsTrigger value="all" className="flex-1">
-										<Text>All</Text>
-									</TabsTrigger>
 									<TabsTrigger value="ALBUM" className="flex-1">
 										<Text>Albums</Text>
 									</TabsTrigger>

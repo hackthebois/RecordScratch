@@ -93,7 +93,6 @@ function Index() {
 				keywords="music, rating, community, social, album, artist, song, review, record, scratch"
 			/>
 			<AlbumOfTheDay />
-
 			{trending && (
 				<>
 					<h2>Trending Albums</h2>

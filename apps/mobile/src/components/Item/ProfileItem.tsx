@@ -9,10 +9,14 @@ export const ProfileItem = ({
 	profile,
 	onClick,
 	isUser,
+	size = 60,
+	showType = false,
 }: {
 	profile: Profile;
 	isUser: boolean;
 	onClick?: () => void;
+	size?: number;
+	showType?: boolean;
 }) => {
 	return (
 		<Link
@@ -23,12 +27,14 @@ export const ProfileItem = ({
 			onPress={onClick}
 		>
 			<View className="flex flex-row justify-between items-center gap-4 rounded w-full">
-				<View className="flex flex-row items-center">
-					<UserAvatar imageUrl={getImageUrl(profile)} size={60} />
-					<View className="min-w-0 truncate px-3">
-						<Text className="truncate font-medium">{profile.name}</Text>
-						<Text className="truncate py-1 text-sm text-muted-foreground">
-							@{profile.handle}
+				<View className="flex flex-row items-center gap-4">
+					<UserAvatar imageUrl={getImageUrl(profile)} size={size} />
+					<View className="justify-center gap-1">
+						<Text className="flex font-semibold" numberOfLines={2}>
+							{profile.name}
+						</Text>
+						<Text className="text-muted-foreground">
+							{showType ? "User • " : ""}@{profile.handle}
 						</Text>
 					</View>
 				</View>

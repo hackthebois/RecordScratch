@@ -5,11 +5,7 @@ import { and, avg, count, desc, eq, gt, inArray, isNotNull, isNull, sql } from "
 import { z } from "zod";
 import { posthog } from "../posthog";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
-
-const PaginatedInput = z.object({
-	cursor: z.number().min(0).optional(),
-	limit: z.number().optional(),
-});
+import { PaginatedInput } from "../utils";
 
 const RatingAlgorithm = (countWeight: number) => {
 	return sql`ROUND(AVG(${ratings.rating}), 1) + ${countWeight} * LN(COUNT(${ratings.rating}))`;

@@ -54,7 +54,7 @@ const DistributionChart = ({
 	const maxRating = Math.max(...distribution) === 0 ? 1 : Math.max(...distribution);
 
 	return (
-		<View className="flex w-full flex-col p-3">
+		<View className="flex w-full flex-col">
 			<View
 				className="flex flex-row w-full gap-1"
 				style={{

@@ -3,7 +3,7 @@ import { getQueryOptions } from "@/lib/deezer";
 import { Artist, cn } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { Link, LinkProps } from "expo-router";
 import { View } from "react-native";
 import { Skeleton } from "../ui/skeleton";
 
@@ -70,7 +70,7 @@ export const ArtistItem = ({
 
 	return (
 		<Link
-			href={showLink ? link : ""}
+			href={(showLink ? link : "") as LinkProps["href"]}
 			onPress={(e) => {
 				if (onClick) {
 					onClick();
@@ -106,10 +106,11 @@ export const ArtistItem = ({
 				<View className="justify-center gap-1">
 					<Text
 						className={cn(
-							"flex font-medium line-clamp-2",
+							"flex font-semibold",
 							direction === "vertical" ? "text-center" : "",
 							textCss
 						)}
+						numberOfLines={2}
 					>
 						{artist.name}
 					</Text>

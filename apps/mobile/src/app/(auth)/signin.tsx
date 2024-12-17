@@ -1,8 +1,9 @@
 import { Text } from "@/components/ui/text";
 import env from "@/env";
-import { useAuth } from "@/lib/auth";
+import { handleLoginRedirect, useAuth } from "@/lib/auth";
 import { catchError } from "@/lib/errors";
 import { useColorScheme } from "@/lib/useColorScheme";
+import { reloadAppAsync } from "expo";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { Image } from "expo-image";
 import * as Linking from "expo-linking";
@@ -28,8 +29,12 @@ const AuthPage = () => {
 		const sessionId = url.queryParams?.session_id?.toString() ?? null;
 		if (!sessionId) return;
 
-		await login(sessionId).catch(catchError);
-		router.replace("/(tabs)/(home)");
+		await login(sessionId)
+			.then(({ status }) => handleLoginRedirect({ status, router }))
+			.catch((e) => {
+				catchError(e);
+				reloadAppAsync();
+			});
 	};
 
 	const appleLogo = {
@@ -94,8 +99,12 @@ const AuthPage = () => {
 								})
 								.parse(await res.json());
 
-							await login(sessionId).catch(catchError);
-							router.replace("/(tabs)/(home)");
+							await login(sessionId)
+								.then(({ status }) => handleLoginRedirect({ status, router }))
+								.catch((e) => {
+									catchError(e);
+									reloadAppAsync();
+								});
 						} catch (e) {
 							console.error(e);
 						}

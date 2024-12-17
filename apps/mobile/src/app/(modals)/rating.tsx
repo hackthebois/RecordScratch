@@ -1,3 +1,4 @@
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -9,7 +10,7 @@ import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, Pressable, ScrollView, TextInput, View } from "react-native";
+import { Alert, Pressable, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const RatingInput = ({
@@ -108,11 +109,12 @@ const RatingModal = () => {
 
 	return (
 		<SafeAreaView edges={["bottom"]} className="h-full">
-			<ScrollView
-				contentContainerClassName="p-4 justify-between"
-				automaticallyAdjustKeyboardInsets
-				keyboardShouldPersistTaps="handled"
-			>
+			<Stack.Screen
+				options={{
+					title: `Rate ${resource.category === "ALBUM" ? "Album" : "Song"}`,
+				}}
+			/>
+			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
 				{imageUrl ? (
 					<Image
 						alt={`cover`}
@@ -155,6 +157,7 @@ const RatingModal = () => {
 								className="text-lg text-foreground border border-border rounded-xl min-h-32 p-4"
 								placeholder="Add review..."
 								multiline
+								scrollEnabled={false}
 							/>
 						)}
 					/>
@@ -197,7 +200,7 @@ const RatingModal = () => {
 							</Pressable>
 						))}
 				</View>
-			</ScrollView>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 };
