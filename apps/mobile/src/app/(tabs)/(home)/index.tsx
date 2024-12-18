@@ -14,7 +14,7 @@ import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../../+not-found";
-import { useAuth } from "~/lib/auth";
+import { useAuth } from "@/lib/auth";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
@@ -57,6 +57,7 @@ const HomePage = () => {
 	const { data: popular } = api.ratings.popular.useQuery();
 	const { data: topArtists } = api.ratings.topArtists.useQuery();
 
+	const test = useAuth((s) => s.sessionId);
 	useEffect(() => {
 		SplashScreen.hide();
 	}, []);
@@ -70,6 +71,9 @@ const HomePage = () => {
 			/>
 			<ScrollView contentContainerClassName="flex flex-col pb-4" nestedScrollEnabled>
 				<AlbumOfTheDay />
+				<Text variant="h2" className="pt-6 pb-4 px-4">
+					SessionId:`{test}`
+				</Text>
 				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Trending Albums
 				</Text>

@@ -165,7 +165,7 @@ export const handleUser = async (
 
 	if (expoAddress) redirect = `${expoAddress}?session_id=${token}`;
 	else setSessionCookie(event, token);
-
+	console.log(redirect);
 	if (onReturn === "sessionId")
 		return {
 			sessionId: token,

@@ -5,7 +5,9 @@ let env = {
 	ENV: "development",
 	R2_PUBLIC_URL: "https://cdn.recordscratch.app",
 	SCHEME: "recordscratch://",
-	SITE_URL: Platform.OS === "android" ? "http://recordscratch.app" : "http://localhost:3000",
+	// SITE_URL: Platform.OS === "android" ? "http://recordscratch.app" : "http://localhost:3000",
+	SITE_URL: "https://humane-cockatoo-instantly.ngrok-free.app",
+	DEBUG: true,
 };
 
 if (Updates.channel === "production") {

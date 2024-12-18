@@ -53,7 +53,6 @@ export const createAuthStore = () =>
 		},
 		login: async (session?: string) => {
 			const sessionId = session ?? (await SecureStore.getItemAsync("sessionId"));
-
 			const expoPushToken = await registerForPushNotificationsAsync();
 			set({ pushToken: expoPushToken });
 
@@ -61,7 +60,7 @@ export const createAuthStore = () =>
 				set({ status: "unauthenticated" });
 				return { status: "unauthenticated" };
 			}
-
+			console.log(sessionId);
 			const res = await fetch(`${env.SITE_URL}/api/auth/me`, {
 				headers: {
 					"Expo-Push-Token": expoPushToken ?? "",
@@ -86,7 +85,7 @@ export const createAuthStore = () =>
 						},
 					})
 				);
-
+			console.log(`${JSON.stringify(data)}`);
 			if (parsedData.error || !parsedData.data.user) {
 				set({ sessionId: null, profile: null, status: "unauthenticated" });
 				return { status: "unauthenticated" };
@@ -123,6 +122,7 @@ export const handleLoginRedirect = async ({
 	status: Auth["status"];
 	router: Router;
 }) => {
+	console.log(`status: ${status}`);
 	if (status === "authenticated") {
 		router.replace("/(tabs)/(home)");
 	} else if (status === "needsonboarding") {
