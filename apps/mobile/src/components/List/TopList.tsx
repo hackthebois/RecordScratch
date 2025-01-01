@@ -4,10 +4,10 @@ import { ArtistItem } from "../Item/ArtistItem";
 import { Category, ListWithResources, UserListItem } from "@recordscratch/types";
 import { ResourceItem } from "../Item/ResourceItem";
 import { useState } from "react";
-import { api } from "~/lib/api";
+import { api } from "@/lib/api";
 import { View } from "react-native";
 import { Link } from "expo-router";
-import { Text } from "~/components/ui/text";
+import { Text } from "@/components/ui/text";
 
 export const ResourcesList = ({
 	category,

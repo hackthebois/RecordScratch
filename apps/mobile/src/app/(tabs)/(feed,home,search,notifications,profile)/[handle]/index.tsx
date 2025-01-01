@@ -4,11 +4,13 @@ import DistributionChart from "@/components/DistributionChart";
 import { FollowButton } from "@/components/Followers/FollowButton";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
+import { ResourcesList } from "@/components/List/TopList";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { Settings } from "@/lib/icons/Settings";
 import { getImageUrl } from "@/lib/image";
 import { ListWithResources, Profile } from "@recordscratch/types";
@@ -28,10 +30,14 @@ const TopListsTab = ({
 	album,
 	song,
 	artist,
+	userId,
+	isProfile,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
+	userId: string;
+	isProfile: boolean;
 }) => {
 	const [value, setValue] = useState("albums");
 
@@ -50,7 +56,7 @@ const TopListsTab = ({
 					</TabsTrigger>
 				</TabsList>
 			</View>
-			<TabsContent value="albums" className="flex-row flex-wrap justify-between gap-2 p-4">
+			<TabsContent value="albums" className="flex-row flex-wrap justify-around p-4">
 				{album?.resources.map((album) => (
 					<ResourceItem
 						key={album.resourceId}
@@ -68,21 +74,13 @@ const TopListsTab = ({
 				))}
 			</TabsContent>
 			<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
-				{song?.resources.map((song) => (
-					<ResourceItem
-						key={song.resourceId}
-						resource={{
-							parentId: song.parentId!,
-							resourceId: song.resourceId,
-							category: "SONG",
-						}}
-						direction="vertical"
-						titleCss="font-medium line-clamp-2"
-						className="w-[115px]"
-						showArtist={false}
-						imageWidthAndHeight={115}
-					/>
-				))}
+				<ResourcesList
+					category="SONG"
+					// editMode={editMode}
+					userId={userId}
+					list={song}
+					isUser={isProfile}
+				/>
 			</TabsContent>
 			<TabsContent value="artists" className="flex-row flex-wrap justify-between gap-2 p-4">
 				{artist?.resources.map((artist) => (
@@ -90,7 +88,9 @@ const TopListsTab = ({
 						key={artist.resourceId}
 						artistId={artist.resourceId}
 						direction="vertical"
-						textCss="font-medium"
+						textCss="font-medium line-clamp-2"
+						imageWidthAndHeight={115}
+						className="w-[115px]"
 					/>
 				))}
 			</TabsContent>
@@ -112,6 +112,7 @@ export const ProfilePage = ({
 	// const [lists] = api.lists.getUser.useSuspenseQuery({
 	// 	userId: profile.userId,
 	// });
+	const [mobileUserId] = useAuth((s) => s.profile!.userId);
 
 	const { data: streak } = api.ratings.user.streak.useQuery({
 		userId: profile.userId,
@@ -131,7 +132,8 @@ export const ProfilePage = ({
 		profileId: profile.userId,
 		type: "following",
 	});
-	const { data: topLists } = api.lists.topLists.useQuery({
+
+	const [topLists] = api.lists.topLists.useSuspenseQuery({
 		userId: profile.userId,
 	});
 
@@ -226,26 +228,7 @@ export const ProfilePage = ({
 						</Pressable>
 					</Link>
 				</View>
-				{topLists && topLists.album && topLists.song && topLists.artist ? (
-					<TopListsTab
-						{...(topLists ?? {
-							album: undefined,
-							song: undefined,
-							artist: undefined,
-						})}
-					/>
-				) : null}
-				{/* <FlashList
-						data={lists}
-						renderItem={({ index, item }) => (
-							<ColumnItem index={index} numColumns={2} className="px-8 py-4">
-								<ListsItem listsItem={item} />
-							</ColumnItem>
-						)}
-						numColumns={2}
-						contentContainerClassName="w-full gap-4 px-4 pb-4 mt-3"
-						estimatedItemSize={350}
-					/> */}
+				<TopListsTab {...topLists} userId={mobileUserId} isProfile={isProfile} />
 			</ScrollView>
 		</View>
 	);

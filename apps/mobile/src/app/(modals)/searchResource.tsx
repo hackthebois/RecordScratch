@@ -4,14 +4,14 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, Platform, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArtistItem } from "~/components/Item/ArtistItem";
-import { ResourceItem } from "~/components/Item/ResourceItem";
-// import { useRecents } from "~/components/recents";
-import { deezerHelpers } from "~/lib/deezer";
-import { Search } from "~/lib/icons/Search";
-import { ArrowLeft } from "~/lib/icons/ArrowLeft";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
+// import { useRecents } from "@/components/recents";
+import { deezerHelpers } from "@/lib/deezer";
+import { Search } from "@/lib/icons/Search";
+import { ArrowLeft } from "@/lib/icons/ArrowLeft";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 
 const MusicSearch = ({
 	query,
