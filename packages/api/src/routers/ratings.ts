@@ -5,11 +5,11 @@ import { and, avg, count, desc, eq, gt, inArray, isNotNull, isNull, sql } from "
 import { z } from "zod";
 import { posthog } from "../posthog";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { PaginatedInput } from "../utils";
 
-const PaginatedInput = z.object({
-	cursor: z.number().min(0).optional(),
-	limit: z.number().optional(),
-});
+const RatingAlgorithm = (countWeight: number) => {
+	return sql`ROUND(AVG(${ratings.rating}), 1) + ${countWeight} * LN(COUNT(${ratings.rating}))`;
+};
 
 const getFollowingWhere = async (db: ReturnType<typeof getDB>, userId: string) => {
 	const following = await db.query.followers.findMany({
@@ -101,7 +101,7 @@ export const ratingsRouter = router({
 				total: count(ratings.rating),
 				average: avg(ratings.rating),
 				resourceId: ratings.resourceId,
-				sortValue: sql`ROUND(AVG(${ratings.rating}), 1) + CAST(COUNT(${ratings.rating}) as decimal) / 100`,
+				sortValue: RatingAlgorithm(0.3),
 			})
 			.from(ratings)
 			.where(eq(ratings.category, "ALBUM"))
@@ -110,6 +110,34 @@ export const ratingsRouter = router({
 			.having(({ total }) => gt(total, 5))
 			.limit(20);
 		return data;
+	}),
+	popular: publicProcedure.query(async ({ ctx: { db } }) => {
+		return await db
+			.select({
+				total: count(ratings.rating),
+				resourceId: ratings.resourceId,
+			})
+			.from(ratings)
+			.where(eq(ratings.category, "ALBUM"))
+			.groupBy(ratings.resourceId)
+			.orderBy(({ total }) => desc(total))
+			.limit(20);
+	}),
+	topArtists: publicProcedure.query(async ({ ctx: { db } }) => {
+		const rating = await db
+			.select({
+				total: count(ratings.rating),
+				average: avg(ratings.rating),
+				sortValue: RatingAlgorithm(0.8),
+				artistId: ratings.parentId,
+			})
+			.from(ratings)
+			.groupBy(ratings.parentId)
+			.where(eq(ratings.category, "ALBUM"))
+			.orderBy(({ sortValue }) => desc(sortValue))
+			.having(({ total }) => gt(total, 5))
+			.limit(20);
+		return rating;
 	}),
 	feed: publicProcedure
 		.input(

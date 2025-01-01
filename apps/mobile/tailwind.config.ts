@@ -45,6 +45,7 @@ export default {
 					foreground: "hsl(var(--card-foreground))",
 				},
 				"star-orange": "#fb8500",
+				star: "#ffb703",
 			},
 			borderWidth: {
 				hairline: hairlineWidth(),

@@ -1,3 +1,11 @@
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
+import { Pill } from "@/components/ui/pill";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { AtSign } from "@/lib/icons/AtSign";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";
@@ -5,18 +13,11 @@ import { OnboardSchema, handleRegex } from "@recordscratch/types";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, ScrollView, TextInput, View } from "react-native";
+import { ActivityIndicator, TextInput, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { UserAvatar } from "~/components/UserAvatar";
-import { Button } from "~/components/ui/button";
-import { Pill } from "~/components/ui/pill";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
-import { useAuth } from "~/lib/auth";
-import { AtSign } from "~/lib/icons/AtSign";
 
 const SlideWrapper = ({
 	page,
@@ -73,7 +74,7 @@ function Onboard() {
 
 	useEffect(() => {
 		if (status !== "needsonboarding") {
-			router.replace("(tabs)/");
+			router.replace("/(tabs)/(home)");
 		}
 	}, [status, router]);
 
@@ -81,19 +82,19 @@ function Onboard() {
 		onSuccess: (profile) => {
 			utils.profiles.me.invalidate();
 			setProfile(profile);
-			router.navigate("(tabs)/");
+			router.navigate("/(tabs)/(home)");
 			setStatus("authenticated");
 		},
 	});
-	const { mutateAsync: getSignedURL } =
-		api.profiles.getSignedURL.useMutation();
+	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = api.profiles.handleExists.useQuery(
-		debouncedHandle,
-		{
-			enabled: debouncedHandle?.length > 0,
-		}
+	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
+		enabled: debouncedHandle?.length > 0,
+	});
+	const handleDoesNotExist = useMemo(
+		() => handleExists !== undefined && !handleExists,
+		[handleExists]
 	);
 
 	const handleImagePick = async (onChange: {
@@ -140,10 +141,7 @@ function Onboard() {
 				message: "Handle already exists",
 			});
 		} else {
-			if (
-				form.formState.errors.handle?.message ===
-				"Handle already exists"
-			) {
+			if (form.formState.errors.handle?.message === "Handle already exists") {
 				form.clearErrors("handle");
 			}
 		}
@@ -178,9 +176,7 @@ function Onboard() {
 		if (!form.getFieldState("handle").isTouched) {
 			form.setValue(
 				"handle",
-				name
-					?.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "")
-					.replace(" ", "")
+				name?.replace(new RegExp(`[^${handleRegex.source}]+`, "g"), "").replace(" ", "")
 			);
 		}
 	}, [form, name]);
@@ -191,36 +187,26 @@ function Onboard() {
 		}
 	}, [form, page]);
 
-	const pageValid = (pageIndex: number) => {
-		if (pageIndex === 0) {
-			return true;
+	const pageValid = useMemo(() => {
+		switch (page) {
+			case 0:
+				return true;
+			case 1:
+				return name?.length > 0 && handleDoesNotExist && handle?.length > 0;
+			case 2:
+				return !form.getFieldState("bio").invalid;
+			case 3:
+				return !form.getFieldState("image").invalid;
+			default:
+				return true;
 		}
-		if (pageIndex === 1) {
-			return (
-				!form.getFieldState("name").invalid &&
-				name?.length > 0 &&
-				!form.getFieldState("handle").invalid &&
-				handle?.length > 0
-			);
-		} else if (pageIndex === 2) {
-			return !form.getFieldState("bio").invalid;
-		} else if (pageIndex === 3) {
-			return !form.getFieldState("image").invalid;
-		} else {
-			return true;
-		}
-	};
+	}, [form, handleDoesNotExist, debouncedHandle, name, page]);
 
 	if (loading) {
 		return (
 			<View className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
-				<ActivityIndicator
-					size="large"
-					className="text-muted-foreground"
-				/>
-				<Text className="mt-4 text-muted-foreground">
-					Creating your account
-				</Text>
+				<ActivityIndicator size="large" className="text-muted-foreground" />
+				<Text className="mt-4 text-muted-foreground">Creating your account</Text>
 			</View>
 		);
 	}
@@ -242,12 +228,9 @@ function Onboard() {
 							Welcome to RecordScratch
 						</Text>
 						<Text className="mt-4 text-center">
-							Before you get started we have to set up your
-							profile.
+							Before you get started we have to set up your profile.
 						</Text>
-						<Text className="mt-1 text-center">
-							Press next below to get started.
-						</Text>
+						<Text className="mt-1 text-center">Press next below to get started.</Text>
 					</SlideWrapper>
 				);
 			case 1:
@@ -300,10 +283,7 @@ function Onboard() {
 									</View>
 									{form.formState.errors.handle && (
 										<Text className="mt-2 text-destructive">
-											{
-												form.formState.errors.handle
-													.message
-											}
+											{form.formState.errors.handle.message}
 										</Text>
 									)}
 								</View>
@@ -313,12 +293,7 @@ function Onboard() {
 				);
 			case 2:
 				return (
-					<SlideWrapper
-						page={page}
-						pageIndex={2}
-						title="Describe yourself"
-						key={2}
-					>
+					<SlideWrapper page={page} pageIndex={2} title="Describe yourself" key={2}>
 						<Controller
 							control={form.control}
 							name="bio"
@@ -328,7 +303,7 @@ function Onboard() {
 										{...field}
 										placeholder="Bio"
 										className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
-										multiline={true}
+										multiline
 										autoComplete="off"
 										onChangeText={field.onChange}
 									/>
@@ -344,12 +319,7 @@ function Onboard() {
 				);
 			case 3:
 				return (
-					<SlideWrapper
-						page={page}
-						pageIndex={3}
-						title="Image"
-						key={3}
-					>
+					<SlideWrapper page={page} pageIndex={3} title="Image" key={3}>
 						<UserAvatar imageUrl={imageUrl} size={200} />
 						<Controller
 							control={form.control}
@@ -358,19 +328,14 @@ function Onboard() {
 								<View>
 									<Button
 										variant="secondary"
-										onPress={() =>
-											handleImagePick(onChange)
-										}
+										onPress={() => handleImagePick(onChange)}
 										className="mt-8"
 									>
 										<Text>Pick an image</Text>
 									</Button>
 									{form.formState.errors.image && (
 										<Text className="mt-2 text-destructive">
-											{
-												form.formState.errors.image
-													.message
-											}
+											{form.formState.errors.image.message}
 										</Text>
 									)}
 								</View>
@@ -383,18 +348,11 @@ function Onboard() {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<ScrollView
-				contentContainerClassName="items-center justify-center h-full"
-				automaticallyAdjustKeyboardInsets
-				keyboardShouldPersistTaps="handled"
-			>
+			<KeyboardAvoidingScrollView contentContainerClassName="items-center justify-center h-full">
 				{renderPage(page)}
 				<View className="mt-8 flex flex-row gap-4">
 					{page !== 0 && (
-						<Button
-							variant="secondary"
-							onPress={() => setPage((page) => page - 1)}
-						>
+						<Button variant="secondary" onPress={() => setPage((page) => page - 1)}>
 							<Text>Back</Text>
 						</Button>
 					)}
@@ -407,7 +365,7 @@ function Onboard() {
 								setPage((page) => page + 1);
 							}
 						}}
-						disabled={!pageValid(page)}
+						disabled={!pageValid}
 					>
 						<Text>
 							{page === 2 && !bio
@@ -420,7 +378,7 @@ function Onboard() {
 						</Text>
 					</Button>
 				</View>
-			</ScrollView>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 }

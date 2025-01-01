@@ -7,6 +7,7 @@ import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { RatingSchema } from "@recordscratch/types";
 import { createFollowNotification } from "../notifications";
 import { posthog } from "../posthog";
+import { PaginatedInput } from "../utils";
 
 export const profilesRouter = router({
 	get: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: handle }) => {
@@ -235,21 +236,7 @@ export const profilesRouter = router({
 		.mutation(async ({ ctx: { db, userId }, input: followingId }) => {
 			if (userId === followingId) throw new Error("User Cannot Follow Themselves");
 
-			const followExists =
-				(
-					await db
-						.select()
-						.from(followers)
-						.where(
-							and(
-								eq(followers.userId, userId),
-								eq(followers.followingId, followingId)
-							)
-						)
-				).length > 0;
-
-			if (followExists) throw new Error("User Already Follows");
-			else await db.insert(followers).values({ userId, followingId });
+			await db.insert(followers).values({ userId, followingId }).onConflictDoNothing();
 			await createFollowNotification({
 				fromId: userId,
 				userId: followingId,
@@ -288,9 +275,19 @@ export const profilesRouter = router({
 				where: eq(profile.handle, handle),
 			}));
 		}),
-	search: publicProcedure.input(z.string()).query(async ({ ctx: { db }, input: query }) => {
-		return await db.query.profile.findMany({
-			where: or(ilike(profile.handle, `%${query}%`), ilike(profile.name, `%${query}%`)),
-		});
-	}),
+	search: publicProcedure
+		.input(PaginatedInput.extend({ query: z.string() }))
+		.query(async ({ ctx: { db }, input: { query, limit = 10, cursor = 0 } }) => {
+			const items = await db.query.profile.findMany({
+				where: or(ilike(profile.handle, `%${query}%`), ilike(profile.name, `%${query}%`)),
+				limit: limit + 1,
+				offset: cursor,
+			});
+			let nextCursor: typeof cursor | undefined = undefined;
+			if (items.length > limit) {
+				items.pop();
+				nextCursor = cursor + items.length;
+			}
+			return { items, nextCursor };
+		}),
 });

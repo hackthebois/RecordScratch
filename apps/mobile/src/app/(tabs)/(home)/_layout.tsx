@@ -1,5 +1,5 @@
+import { defaultScreenOptions } from "@/lib/navigation";
 import { Stack } from "expo-router";
-import { Text } from "~/components/ui/text";
 
 const Layout = () => {
 	return (

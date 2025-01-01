@@ -44,6 +44,7 @@
     "class-variance-authority": "^0.7.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
+    "expo-server-sdk": "^3.12.0",
     "framer-motion": "^11.0.18",
     "jotai": "^2.6.4",
     "lucide-react": "^0.331.0",

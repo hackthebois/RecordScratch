@@ -1,9 +1,9 @@
+import { ReviewsList } from "@/components/ReviewsList";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text } from "@/components/ui/text";
 import { Stack } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import { ReviewsList } from "~/components/ReviewsList";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
 
 const FeedPage = () => {
 	const [tab, setTab] = useState("for-you");
@@ -22,7 +22,7 @@ const FeedPage = () => {
 							<Text>For You</Text>
 						</TabsTrigger>
 						<TabsTrigger value="friends" className="flex-1">
-							<Text>Friends</Text>
+							<Text>Following</Text>
 						</TabsTrigger>
 					</TabsList>
 				</View>
@@ -33,6 +33,11 @@ const FeedPage = () => {
 					following: tab === "friends",
 					ratingType: "REVIEW",
 				}}
+				emptyText={
+					tab === "friends"
+						? "No following reviews found. Follow some friends to see their reviews."
+						: "No for you reviews found. Check back later."
+				}
 			/>
 		</>
 	);

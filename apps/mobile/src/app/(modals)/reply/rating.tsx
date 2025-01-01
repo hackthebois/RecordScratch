@@ -1,13 +1,14 @@
-import NotFoundScreen from "#/app/+not-found";
+import NotFoundScreen from "@/app/+not-found";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
+import { Review } from "@/components/Review";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { z } from "zod";
-import { Review } from "~/components/Review";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
 
 const Reply = () => {
 	const router = useRouter();
@@ -33,10 +34,10 @@ const Reply = () => {
 
 	const { mutate, isPending } = api.comments.create.useMutation({
 		onSuccess: async () => {
-			form.reset();
-			router.back();
-			router.navigate({
-				pathname: "[handle]/ratings/[id]",
+			await form.reset();
+			await router.back();
+			await router.navigate({
+				pathname: "/[handle]/ratings/[id]",
 				params: { handle, id: resourceId },
 			});
 		},
@@ -57,11 +58,13 @@ const Reply = () => {
 			content,
 			resourceId,
 			authorId: profile.userId,
+			parentId: null,
+			rootId: null,
 		});
 	};
 
 	return (
-		<ScrollView className="h-full" automaticallyAdjustKeyboardInsets>
+		<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
 			<Stack.Screen
 				options={{
 					title: `Reply`,
@@ -96,7 +99,7 @@ const Reply = () => {
 					</View>
 				)}
 			/>
-		</ScrollView>
+		</KeyboardAvoidingScrollView>
 	);
 };
 

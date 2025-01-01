@@ -1,12 +1,13 @@
+import { Comment } from "@/components/Comment";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { z } from "zod";
-import { Comment } from "~/components/Comment";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { api } from "~/lib/api";
 
 const CommentModal = () => {
 	const router = useRouter();
@@ -30,10 +31,10 @@ const CommentModal = () => {
 
 	const { mutate, isPending } = api.comments.create.useMutation({
 		onSuccess: async () => {
-			form.reset();
-			router.back();
-			router.navigate({
-				pathname: "comments/[id]",
+			await form.reset();
+			await router.back();
+			await router.navigate({
+				pathname: "/comments/[id]",
 				params: { id },
 			});
 		},
@@ -44,17 +45,20 @@ const CommentModal = () => {
 		},
 	});
 
+	const markSeen = api.notifications.markSeen.useMutation();
+
 	const onSubmit = async ({ content }: { content: string }) => {
 		mutate({
 			content,
 			resourceId: comment.resourceId,
 			authorId: comment.authorId,
-			rootId: comment.id,
+			rootId: comment.rootId ?? comment.id,
+			parentId: comment.id,
 		});
 	};
 
 	return (
-		<ScrollView className="h-full" automaticallyAdjustKeyboardInsets>
+		<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
 			<Stack.Screen
 				options={{
 					title: `Reply`,
@@ -89,7 +93,7 @@ const CommentModal = () => {
 					</View>
 				)}
 			/>
-		</ScrollView>
+		</KeyboardAvoidingScrollView>
 	);
 };
 

@@ -1,14 +1,10 @@
-import { useAuth } from "~/lib/auth";
-import { ProfilePage } from "../(feed,home,search,profile)/[handle]";
+import { useAuth } from "@/lib/auth";
+import { ProfilePage } from "../(feed,home,search,notifications,profile)/[handle]";
 
 const Profile = () => {
 	const profile = useAuth((s) => s.profile);
 
-	if (!profile) {
-		return null;
-	}
-
-	return <ProfilePage handle={profile.handle} />;
+	return <ProfilePage profile={profile} isProfile={true} />;
 };
 
 export default Profile;
