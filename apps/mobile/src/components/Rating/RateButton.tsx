@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Star } from "@/lib/icons/Star";
+import { Star } from "@/lib/icons/IconsLoader";
 import { Rating, Resource } from "@recordscratch/types";
 import { Link } from "expo-router";
 import React from "react";

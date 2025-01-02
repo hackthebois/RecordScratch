@@ -10,7 +10,7 @@ import { Skeleton } from "../ui/skeleton";
 export const ArtistItem = ({
 	initialArtist,
 	artistId,
-	onClick,
+	onPress,
 	direction = "horizontal",
 	showLink = true,
 	textCss = "truncate",
@@ -21,7 +21,7 @@ export const ArtistItem = ({
 }: {
 	initialArtist?: Artist;
 	artistId: string;
-	onClick?: () => void;
+	onPress?: () => void;
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
 	textCss?: string;
@@ -72,8 +72,8 @@ export const ArtistItem = ({
 		<Link
 			href={(showLink ? link : "") as LinkProps["href"]}
 			onPress={(e) => {
-				if (onClick) {
-					onClick();
+				if (onPress) {
+					onPress();
 					if (!showLink) {
 						e.preventDefault();
 						e.stopPropagation();

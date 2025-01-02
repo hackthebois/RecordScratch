@@ -1,11 +1,11 @@
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Bell } from "@/lib/icons/Bell";
-import { Home } from "@/lib/icons/Home";
-import { Rows3 } from "@/lib/icons/Rows3";
-import { Search } from "@/lib/icons/Search";
-import { User } from "@/lib/icons/User";
+import { Bell } from "@/lib/icons/IconsLoader";
+import { Home } from "@/lib/icons/IconsLoader";
+import { Rows3 } from "@/lib/icons/IconsLoader";
+import { Search } from "@/lib/icons/IconsLoader";
+import { User } from "@/lib/icons/IconsLoader";
 import { useNotificationObserver } from "@/lib/notifications/useNotificationObserver";
 import { cn } from "@recordscratch/lib";
 import { Tabs, useRouter } from "expo-router";

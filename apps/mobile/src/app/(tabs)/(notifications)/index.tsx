@@ -2,10 +2,10 @@ import { Text } from "@/components/ui/text";
 import { UserAvatar } from "@/components/UserAvatar";
 import { api, RouterOutputs } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { BellOff } from "@/lib/icons/BellOff";
-import { Heart } from "@/lib/icons/Heart";
-import { MessageCircle } from "@/lib/icons/MessageCircle";
-import { User } from "@/lib/icons/User";
+import { BellOff } from "@/lib/icons/IconsLoader";
+import { Heart } from "@/lib/icons/IconsLoader";
+import { MessageCircle } from "@/lib/icons/IconsLoader";
+import { User } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { useRefreshByUser } from "@/lib/refresh";
 import {

@@ -7,14 +7,14 @@ import { View } from "react-native";
 
 export const ProfileItem = ({
 	profile,
-	onClick,
+	onPress,
 	isUser,
 	size = 60,
 	showType = false,
 }: {
 	profile: Profile;
 	isUser: boolean;
-	onClick?: () => void;
+	onPress?: () => void;
 	size?: number;
 	showType?: boolean;
 }) => {
@@ -24,7 +24,7 @@ export const ProfileItem = ({
 				pathname: "/[handle]",
 				params: { handle: String(profile.handle) },
 			}}
-			onPress={onClick}
+			onPress={onPress}
 		>
 			<View className="flex flex-row justify-between items-center gap-4 rounded w-full">
 				<View className="flex flex-row items-center gap-4">

@@ -10,12 +10,12 @@ const ListsItem = ({
 	listsItem,
 	size = 175,
 	showProfile = false,
-	onClick,
+	onPress,
 }: {
 	listsItem: ListsType;
 	showProfile?: boolean;
 	size?: number;
-	onClick?: (_listId: string) => void;
+	onPress?: (_listId: string) => void;
 }) => {
 	if (!listsItem.id || !listsItem.profile) return null;
 	const profile = listsItem.profile;

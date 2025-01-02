@@ -4,7 +4,7 @@ import { ResourceItem } from "@/components/Item/ResourceItem";
 import { useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ActivityIndicator, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { useRecents } from "@/components/recents";
@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { deezerHelpers } from "@/lib/deezer";
-import { Search } from "@/lib/icons/Search";
+import { Search } from "@/lib/icons/IconsLoader";
 
 const tabs = {
 	all: {
@@ -51,8 +51,7 @@ export default function SearchPage() {
 	// const { addRecent } = useRecents("SEARCH");
 	const [tab, setTab] = useState<keyof typeof tabs>("all");
 	const [query, setQuery] = useState("");
-
-	const debouncedQuery = useDebounce(query, 500);
+	const debouncedQuery = useDebounce(query, 1000);
 
 	const { data: music, isLoading } = useQuery({
 		queryKey: ["search", debouncedQuery, tabs[tab]],
@@ -170,7 +169,7 @@ export default function SearchPage() {
 										key={artist.id}
 										artistId={String(artist.id)}
 										initialArtist={artist}
-										onClick={() => {
+										onPress={() => {
 											// addRecent({
 											// 	id: String(artist.id),
 											// 	type: "ARTIST",
@@ -188,7 +187,7 @@ export default function SearchPage() {
 										profile={profile}
 										key={index}
 										size={80}
-										onClick={() => {
+										onPress={() => {
 											// addRecent({
 											// 	id: profile.userId,
 											// 	type: "PROFILE",

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Star } from "@/lib/icons/Star";
+import { Star } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RateForm, RateFormSchema, Resource } from "@recordscratch/types";
 import { Image } from "expo-image";

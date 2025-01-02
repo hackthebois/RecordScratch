@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { AtSign } from "@/lib/icons/AtSign";
+import { AtSign } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
@@ -59,7 +59,11 @@ const EditProfile = () => {
 
 	useEffect(() => {
 		if (image && !form.formState.errors.image && image instanceof File) {
-			setImageUrl(URL.createObjectURL(image));
+			const fileReaderInstance = new FileReader();
+			fileReaderInstance.readAsDataURL(image);
+			fileReaderInstance.onload = () => {
+				setImageUrl(fileReaderInstance.result?.toString());
+			};
 		}
 	}, [image, form]);
 
@@ -110,7 +114,7 @@ const EditProfile = () => {
 		(arg0: string | undefined): void;
 	}) => {
 		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			mediaTypes: ["images"],
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,

@@ -151,10 +151,8 @@ const RootLayout = () => {
 						<Stack
 							screenOptions={{
 								animation: "fade",
-								// headerBackTitleVisible: false,
-								headerTitle: (props: any) => (
-									<Text variant="h4">{props.children}</Text>
-								),
+								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
+								headerTitleAlign: "center",
 							}}
 						>
 							<Stack.Screen

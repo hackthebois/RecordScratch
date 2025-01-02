@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useAuth } from "@/lib/auth";
 import { catchError } from "@/lib/errors";
-import { Dot } from "@/lib/icons/Dot";
+import { Dot } from "@/lib/icons/IconsLoader";
 import { useMutation } from "@tanstack/react-query";
 import { reloadAppAsync } from "expo";
 import { Stack } from "expo-router";

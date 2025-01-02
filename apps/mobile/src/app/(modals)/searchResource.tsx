@@ -1,17 +1,18 @@
-import { useDebounce } from "@recordscratch/lib";
+import { Album, Artist, Track, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Platform, ScrollView, TextInput, View } from "react-native";
+import { ActivityIndicator, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
 // import { useRecents } from "@/components/recents";
 import { deezerHelpers } from "@/lib/deezer";
-import { Search } from "@/lib/icons/Search";
-import { ArrowLeft } from "@/lib/icons/ArrowLeft";
+import { Search } from "@/lib/icons/IconsLoader";
+import { ArrowLeft } from "@/lib/icons/IconsLoader";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { FlashList } from "@shopify/flash-list";
 
 const MusicSearch = ({
 	query,
@@ -24,7 +25,6 @@ const MusicSearch = ({
 	listId: string;
 	onPress?: () => void;
 }) => {
-	// const { addRecent } = useRecents("SEARCH");
 	const options = {
 		filters: {
 			albums: category === "ALBUM",
@@ -55,93 +55,95 @@ const MusicSearch = ({
 		},
 	});
 
-	return (
-		<>
-			{isLoading ? (
-				<View className="flex items-center justify-center flex-1">
-					<ActivityIndicator size="large" color="#ff8500" />
-				</View>
-			) : null}
-			<ScrollView
-				contentContainerClassName="p-4 gap-2"
-				automaticallyAdjustKeyboardInsets
-				keyboardShouldPersistTaps="handled"
-			>
-				<>
-					{music?.songs.map((song) => (
-						<ResourceItem
-							key={song.id}
-							resource={{
-								parentId: String(song.album.id),
+	if (isLoading) {
+		return (
+			<View className="flex items-center justify-center flex-1">
+				<ActivityIndicator size="large" color="#ff8500" />
+			</View>
+		);
+	}
+
+	const renderItem = ({ item }: { item: Artist | Album | Track }) => {
+		switch (category) {
+			case "SONG":
+				const song = item as Track;
+				return (
+					<ResourceItem
+						key={song.id}
+						resource={{
+							parentId: String(song.album.id),
+							resourceId: String(song.id),
+							category: "SONG",
+						}}
+						onPress={() => {
+							mutate({
 								resourceId: String(song.id),
-								category: "SONG" as const,
-							}}
-							onPress={() => {
-								// addRecent({
-								// 	id: String(song.id),
-								// 	type: "SONG",
-								// 	data: song,
-								// });
-								mutate({
-									resourceId: String(song.id),
-									parentId: String(song.album.id),
-									listId,
-								});
-							}}
-							showLink={false}
-							imageWidthAndHeight={100}
-							className="my-2"
-						/>
-					))}
-					{music?.albums.map((album) => (
-						<ResourceItem
-							key={album.id}
-							resource={{
-								parentId: String(album.artist?.id),
+								parentId: String(song.album.id),
+								listId,
+							});
+						}}
+						showLink={false}
+						imageWidthAndHeight={100}
+						className="my-2"
+					/>
+				);
+			case "ALBUM":
+				const album = item as Album;
+				return (
+					<ResourceItem
+						key={album.id}
+						resource={{
+							parentId: String(album.artist?.id),
+							resourceId: String(album.id),
+							category: "ALBUM",
+						}}
+						onPress={() => {
+							mutate({
 								resourceId: String(album.id),
-								category: "ALBUM" as const,
-							}}
-							onPress={() => {
-								// addRecent({
-								// 	id: String(album.id),
-								// 	type: "ALBUM",
-								// 	data: album,
-								// });
-								mutate({
-									resourceId: String(album.id),
-									parentId: String(album.artist?.id),
-									listId,
-								});
-							}}
-							showLink={false}
-							imageWidthAndHeight={100}
-							className="my-2"
-						/>
-					))}
-					{music?.artists.map((artist) => (
-						<ArtistItem
-							key={artist.id}
-							artistId={String(artist.id)}
-							initialArtist={artist}
-							onClick={() => {
-								// addRecent({
-								// 	id: String(artist.id),
-								// 	type: "ARTIST",
-								// 	data: artist,
-								// });
-								mutate({
-									resourceId: String(artist.id),
-									listId,
-								});
-							}}
-							showLink={false}
-							imageWidthAndHeight={100}
-							className="my-2"
-						/>
-					))}
-				</>
-			</ScrollView>
-		</>
+								parentId: String(album.artist?.id),
+								listId,
+							});
+						}}
+						showLink={false}
+						imageWidthAndHeight={100}
+						className="my-2"
+					/>
+				);
+			case "ARTIST":
+				const artist = item as Artist;
+				return (
+					<ArtistItem
+						key={artist.id}
+						artistId={String(artist.id)}
+						onPress={() => {
+							mutate({
+								resourceId: String(artist.id),
+								listId,
+							});
+						}}
+						showLink={false}
+						imageWidthAndHeight={100}
+						className="my-2"
+					/>
+				);
+		}
+	};
+
+	return (
+		<FlashList
+			data={
+				category === "SONG"
+					? music?.songs
+					: category === "ALBUM"
+						? music?.albums
+						: music?.artists
+			}
+			renderItem={renderItem}
+			keyExtractor={(item) => item.id.toString()}
+			contentContainerStyle={{ padding: 16 }}
+			keyboardShouldPersistTaps="handled"
+			estimatedItemSize={100}
+		/>
 	);
 };
 
@@ -159,38 +161,37 @@ const SearchAddModal = () => {
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
 			<Stack.Screen
 				options={{
-					header: () => (
-						<View className="flex-row w-full items-center pt-4">
-							<ArrowLeft
-								size={26}
-								onPress={() => {
-									router.back();
-								}}
-								className="ml-4 mx-4 text-foreground"
-							/>
-							<View className="flex-row w-96 items-center pr-4 border border-muted rounded-md bg-gray-100">
-								<Search size={20} className="ml-1 mr-2 text-foreground" />
-								<TextInput
-									id="name"
-									autoComplete="off"
-									placeholder="Search"
-									value={query}
-									cursorColor={"#ffb703"}
-									style={{
-										paddingTop: 0,
-										paddingBottom: Platform.OS === "ios" ? 4 : 0,
-										textAlignVertical: "center",
-									}}
-									autoFocus
-									className="flex-1 h-full text-lg text-foreground outline-none p-0"
-									onChangeText={(text) => setQuery(text)}
-								/>
-							</View>
-						</View>
-					),
+					headerShown: false,
 				}}
 			/>
-
+			<View className="flex-row w-full items-center pt-4">
+				<ArrowLeft
+					size={26}
+					onPress={() => {
+						router.back();
+					}}
+					className="ml-2 mx-2 text-foreground"
+				/>
+				<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
+					<Search size={20} className="mx-4 text-foreground" />
+					<TextInput
+						id="name"
+						autoComplete="off"
+						placeholder="Search"
+						value={query}
+						cursorColor={"#ffb703"}
+						style={{
+							paddingTop: 0,
+							paddingBottom: Platform.OS === "ios" ? 4 : 0,
+							textAlignVertical: "center",
+						}}
+						autoCorrect={false}
+						autoFocus
+						className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
+						onChangeText={(text) => setQuery(text)}
+					/>
+				</View>
+			</View>
 			<MusicSearch
 				query={query}
 				category={category}

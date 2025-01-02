@@ -5,7 +5,7 @@ import { Pill } from "@/components/ui/pill";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { AtSign } from "@/lib/icons/AtSign";
+import { AtSign } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";
@@ -102,7 +102,7 @@ function Onboard() {
 		(arg0: string | undefined): void;
 	}) => {
 		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			mediaTypes: ["images"],
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,
@@ -130,7 +130,11 @@ function Onboard() {
 
 	useEffect(() => {
 		if (image && image instanceof File) {
-			setImageUrl(URL.createObjectURL(image));
+			const fileReaderInstance = new FileReader();
+			fileReaderInstance.readAsDataURL(image);
+			fileReaderInstance.onload = () => {
+				setImageUrl(fileReaderInstance.result?.toString());
+			};
 		}
 	}, [image]);
 
