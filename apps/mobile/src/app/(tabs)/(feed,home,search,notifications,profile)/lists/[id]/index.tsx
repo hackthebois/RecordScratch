@@ -5,7 +5,7 @@ import Metadata from "@/components/Metadata";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
-import { Settings } from "@/lib/icons/Settings";
+import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { timeAgo } from "@recordscratch/lib";

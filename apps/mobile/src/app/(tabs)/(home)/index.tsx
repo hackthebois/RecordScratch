@@ -14,7 +14,6 @@ import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../../+not-found";
-import { useAuth } from "~/lib/auth";
 
 const AlbumOfTheDay = () => {
 	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();

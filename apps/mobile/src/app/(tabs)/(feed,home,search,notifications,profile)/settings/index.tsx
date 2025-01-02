@@ -2,25 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { BellOff } from "@/lib/icons/BellOff";
-import { BellRing } from "@/lib/icons/BellRing";
-import { HelpCircle } from "@/lib/icons/HelpCircle";
-import { Moon } from "@/lib/icons/Moon";
-import { Sun } from "@/lib/icons/Sun";
-import { UserMinus } from "@/lib/icons/UserMinus";
-import { UserPen } from "@/lib/icons/UserPen";
+import { BellOff } from "@/lib/icons/IconsLoader";
+import { BellRing } from "@/lib/icons/IconsLoader";
+import { HelpCircle } from "@/lib/icons/IconsLoader";
+import { Moon } from "@/lib/icons/IconsLoader";
+import { Sun } from "@/lib/icons/IconsLoader";
+import { UserMinus } from "@/lib/icons/IconsLoader";
+import { UserPen } from "@/lib/icons/IconsLoader";
 import { useColorScheme } from "@/lib/useColorScheme";
-import { useQueryClient } from "@tanstack/react-query";
 import { reloadAppAsync } from "expo";
 import { Link, Redirect, Stack, useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 
 const SettingsPage = () => {
-	const router = useRouter();
 	const logout = useAuth((s) => s.logout);
 	const profile = useAuth((s) => s.profile);
 	const { setColorScheme, colorScheme } = useColorScheme();
-	const queryClient = useQueryClient();
 	const utils = api.useUtils();
 
 	const { data: user } = api.users.me.useQuery();

@@ -5,7 +5,8 @@ let env = {
 	ENV: "development",
 	R2_PUBLIC_URL: "https://cdn.recordscratch.app",
 	SCHEME: "recordscratch://",
-	SITE_URL: Platform.OS === "android" ? "http://192.168.1.100:3000" : "https://recordscratch.app",
+	// SITE_URL: Platform.OS === "android" ? "http://192.168.1.100:3000" : "https://recordscratch.app",
+	SITE_URL: "https://humane-cockatoo-instantly.ngrok-free.app",
 	DEBUG: false,
 };
 

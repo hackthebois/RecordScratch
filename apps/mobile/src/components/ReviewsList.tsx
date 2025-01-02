@@ -27,8 +27,6 @@ export const ReviewsList = (
 
 	const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
 
-	console.log(data?.pages?.flatMap((page) => page.items));
-
 	return (
 		<FlashList
 			ListHeaderComponent={ListHeaderComponent}

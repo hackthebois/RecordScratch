@@ -2,16 +2,16 @@ import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
 import DistributionChart from "@/components/DistributionChart";
 import { FollowButton } from "@/components/Followers/FollowButton";
-import { ArtistItem } from "@/components/Item/ArtistItem";
-import { ResourceItem } from "@/components/Item/ResourceItem";
-import { ResourcesList } from "@/components/List/TopList";
+import { TopList } from "@/components/List/TopList";
 import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Settings } from "@/lib/icons/Settings";
+import { Eraser } from "@/lib/icons/IconsLoader";
+import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { ListWithResources, Profile } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -26,75 +26,74 @@ const HandlePage = () => {
 	return <ProfilePage profile={profile} isProfile={false} />;
 };
 
+export const EditTopLists = ({ editMode, onPress }: { editMode: boolean; onPress: () => void }) => {
+	return (
+		<View className="flex items-center px-4">
+			<Button
+				className="w-full"
+				variant={editMode ? "destructive" : "outline"}
+				onPress={() => {
+					onPress();
+				}}
+			>
+				<Eraser size={20} className="text-foreground" />
+			</Button>
+		</View>
+	);
+};
+
 const TopListsTab = ({
 	album,
 	song,
 	artist,
-	userId,
 	isProfile,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
-	userId: string;
 	isProfile: boolean;
 }) => {
 	const [value, setValue] = useState("albums");
+	const [editMode, setEditMode] = useState(false);
 
 	return (
-		<Tabs value={value} onValueChange={setValue} className="mt-2">
-			<View className="px-4">
-				<TabsList className="flex-row w-full">
-					<TabsTrigger value="albums" className="flex-1">
-						<Text>Albums</Text>
-					</TabsTrigger>
-					<TabsTrigger value="songs" className="flex-1">
-						<Text>Songs</Text>
-					</TabsTrigger>
-					<TabsTrigger value="artists" className="flex-1">
-						<Text>Artists</Text>
-					</TabsTrigger>
-				</TabsList>
-			</View>
-			<TabsContent value="albums" className="flex-row flex-wrap justify-around p-4">
-				{album?.resources.map((album) => (
-					<ResourceItem
-						key={album.resourceId}
-						resource={{
-							parentId: album.parentId!,
-							resourceId: album.resourceId,
-							category: "ALBUM",
-						}}
-						direction="vertical"
-						titleCss="font-medium line-clamp-2"
-						showArtist={false}
-						className="w-[115px]"
-						imageWidthAndHeight={115}
+		<View>
+			<Tabs value={value} onValueChange={setValue} className="mt-2">
+				<View className="px-4">
+					<TabsList className="flex-row w-full">
+						<TabsTrigger value="albums" className="flex-1">
+							<Text>Albums</Text>
+						</TabsTrigger>
+						<TabsTrigger value="songs" className="flex-1">
+							<Text>Songs</Text>
+						</TabsTrigger>
+						<TabsTrigger value="artists" className="flex-1">
+							<Text>Artists</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
+				<TabsContent value="albums" className="flex-row flex-wrap justify-around p-4">
+					<TopList category="ALBUM" editMode={editMode} list={album} isUser={isProfile} />
+				</TabsContent>
+				<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
+					<TopList category="SONG" editMode={editMode} list={song} isUser={isProfile} />
+				</TabsContent>
+				<TabsContent
+					value="artists"
+					className="flex-row flex-wrap justify-between gap-2 p-4"
+				>
+					<TopList
+						category="ARTIST"
+						editMode={editMode}
+						list={artist}
+						isUser={isProfile}
 					/>
-				))}
-			</TabsContent>
-			<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
-				<ResourcesList
-					category="SONG"
-					// editMode={editMode}
-					userId={userId}
-					list={song}
-					isUser={isProfile}
-				/>
-			</TabsContent>
-			<TabsContent value="artists" className="flex-row flex-wrap justify-between gap-2 p-4">
-				{artist?.resources.map((artist) => (
-					<ArtistItem
-						key={artist.resourceId}
-						artistId={artist.resourceId}
-						direction="vertical"
-						textCss="font-medium line-clamp-2"
-						imageWidthAndHeight={115}
-						className="w-[115px]"
-					/>
-				))}
-			</TabsContent>
-		</Tabs>
+				</TabsContent>
+			</Tabs>
+			{isProfile && (
+				<EditTopLists editMode={editMode} onPress={() => setEditMode(!editMode)} />
+			)}
+		</View>
 	);
 };
 
@@ -112,7 +111,6 @@ export const ProfilePage = ({
 	// const [lists] = api.lists.getUser.useSuspenseQuery({
 	// 	userId: profile.userId,
 	// });
-	const [mobileUserId] = useAuth((s) => s.profile!.userId);
 
 	const { data: streak } = api.ratings.user.streak.useQuery({
 		userId: profile.userId,
@@ -228,7 +226,7 @@ export const ProfilePage = ({
 						</Pressable>
 					</Link>
 				</View>
-				<TopListsTab {...topLists} userId={mobileUserId} isProfile={isProfile} />
+				<TopListsTab {...topLists} isProfile={isProfile} />
 			</ScrollView>
 		</View>
 	);

@@ -14,4 +14,5 @@ export const defaultScreenOptions: ScreenProps["options"] = {
 	headerShadowVisible: false,
 	animation: "fade",
 	title: "",
+	headerTitleAlign: "center",
 };

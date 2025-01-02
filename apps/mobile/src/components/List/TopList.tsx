@@ -3,28 +3,28 @@ import { Button } from "../ui/button";
 import { ArtistItem } from "../Item/ArtistItem";
 import { Category, ListWithResources, UserListItem } from "@recordscratch/types";
 import { ResourceItem } from "../Item/ResourceItem";
-import { useState } from "react";
 import { api } from "@/lib/api";
 import { View } from "react-native";
 import { Link } from "expo-router";
 import { Text } from "@/components/ui/text";
+import { DeleteButton } from "./ModifyResource";
+import { useAuth } from "@/lib/auth";
 
-export const ResourcesList = ({
+export const TopList = ({
 	category,
 	editMode,
-	userId,
 	isUser,
 	list,
 }: {
 	category: Category;
-	editMode?: boolean;
-	userId: string;
+	editMode: boolean;
 	isUser: boolean;
 	list: ListWithResources | undefined;
 }) => {
 	const listId = list?.id;
 	const resources = list?.resources;
 	const utils = api.useUtils();
+	const userId = useAuth((s) => s.profile!.userId);
 
 	const { mutate: deleteResource } = api.lists.resources.delete.useMutation({
 		onSettled: () => {
@@ -42,7 +42,7 @@ export const ResourcesList = ({
 	// eslint-disable-next-line no-unused-vars
 	let renderItem: (resource: UserListItem) => JSX.Element;
 	const resourceOptions = {
-		titleCss: "font-medium line-clamp-2",
+		titleCss: "font-medium line-clamp-2 text-center",
 		showArtist: false,
 		className: "w-[115px]",
 		imageWidthAndHeight: 115,
@@ -77,18 +77,27 @@ export const ResourcesList = ({
 				artistId={resource.resourceId}
 				direction="vertical"
 				textCss="font-medium line-clamp-2 -mt-2 text-center"
-				imageCss="h-auto w-[6rem] sm:min-h-36 sm:w-36"
+				imageWidthAndHeight={115}
 			/>
 		);
 
 	if (!listId || !resources) {
 		return (
-			<View className="flex flex-row">
+			<Link
+				href={{
+					pathname: "(modals)/searchResource",
+					params: {
+						category: category,
+						listId: listId,
+					},
+				}}
+				asChild
+			>
 				{isUser && (
 					<Button
 						variant={"outline"}
 						className={cn(
-							"mb-1 h-[115px] overflow-hidden",
+							"min-w-[115px] min-h-[115px] gap-1 rounded-lg",
 							category == "ARTIST" && "rounded-full"
 						)}
 						onPress={() => {
@@ -105,10 +114,10 @@ export const ResourcesList = ({
 							utils.lists.getUser.invalidate({ userId });
 						}}
 					>
-						Add {category.toLowerCase()}
+						<Text>Add {category.toLowerCase()}</Text>
 					</Button>
 				)}
-			</View>
+			</Link>
 		);
 	}
 
@@ -117,17 +126,17 @@ export const ResourcesList = ({
 			{resources.map((resource) => (
 				<View className="relative mb-1 h-auto overflow-hidden" key={resource.resourceId}>
 					{renderItem(resource)}
-					{/* <DeleteButton
+					<DeleteButton
 						isVisible={editMode}
 						position={resource.position}
 						className="absolute right-0.5 top-0.5"
-						onClick={() => {
+						onPress={() => {
 							deleteResource({
 								resourceId: resource.resourceId,
 								listId: resource.listId,
 							});
 						}}
-					/> */}
+					/>
 				</View>
 			))}
 
@@ -146,7 +155,7 @@ export const ResourcesList = ({
 						variant="secondary"
 						className="min-w-[115px] min-h-[115px] gap-1 rounded-lg"
 					>
-						<Text>Add a Song</Text>
+						<Text>Add {category.toLowerCase()}</Text>
 					</Button>
 				</Link>
 			)}

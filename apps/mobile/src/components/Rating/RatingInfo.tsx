@@ -1,6 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
-import { Star } from "@/lib/icons/Star";
+import { Star } from "@/lib/icons/IconsLoader";
 import { cn } from "@recordscratch/lib";
 import { Resource, ResourceRating } from "@recordscratch/types";
 import { Link } from "expo-router";

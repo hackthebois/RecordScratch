@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { Discord } from "@/lib/icons/Discord";
-import { Mail } from "@/lib/icons/Mail";
+import { Mail } from "@/lib/icons/IconsLoader";
 import { socials } from "@recordscratch/lib";
 import * as Linking from "expo-linking";
 import { Stack } from "expo-router";

@@ -5,7 +5,7 @@ import { Pill } from "@/components/ui/pill";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { AtSign } from "@/lib/icons/AtSign";
+import { AtSign } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
 import type { Onboard } from "@recordscratch/types";

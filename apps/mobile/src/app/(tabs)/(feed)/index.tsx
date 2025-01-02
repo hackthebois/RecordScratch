@@ -2,6 +2,7 @@ import { ReviewsList } from "@/components/ReviewsList";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { Stack } from "expo-router";
+import React from "react";
 import { useState } from "react";
 import { View } from "react-native";
 

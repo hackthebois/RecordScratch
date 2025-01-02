@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { AtSign } from "@/lib/icons/AtSign";
+import { AtSign } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
