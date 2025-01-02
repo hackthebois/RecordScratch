@@ -161,39 +161,37 @@ const SearchAddModal = () => {
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
 			<Stack.Screen
 				options={{
-					header: () => (
-						<View className="flex-row w-full items-center pt-4">
-							<ArrowLeft
-								size={26}
-								onPress={() => {
-									router.back();
-								}}
-								className="ml-2 mx-2 text-foreground"
-							/>
-							<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-								<Search size={20} className="mx-4 text-foreground" />
-								<TextInput
-									id="name"
-									autoComplete="off"
-									placeholder="Search"
-									value={query}
-									cursorColor={"#ffb703"}
-									style={{
-										paddingTop: 0,
-										paddingBottom: Platform.OS === "ios" ? 4 : 0,
-										textAlignVertical: "center",
-									}}
-									autoCorrect={false}
-									autoFocus
-									className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
-									onChangeText={(text) => setQuery(text)}
-								/>
-							</View>
-						</View>
-					),
+					headerShown: false,
 				}}
 			/>
-
+			<View className="flex-row w-full items-center pt-4">
+				<ArrowLeft
+					size={26}
+					onPress={() => {
+						router.back();
+					}}
+					className="ml-2 mx-2 text-foreground"
+				/>
+				<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
+					<Search size={20} className="mx-4 text-foreground" />
+					<TextInput
+						id="name"
+						autoComplete="off"
+						placeholder="Search"
+						value={query}
+						cursorColor={"#ffb703"}
+						style={{
+							paddingTop: 0,
+							paddingBottom: Platform.OS === "ios" ? 4 : 0,
+							textAlignVertical: "center",
+						}}
+						autoCorrect={false}
+						autoFocus
+						className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
+						onChangeText={(text) => setQuery(text)}
+					/>
+				</View>
+			</View>
 			<MusicSearch
 				query={query}
 				category={category}
