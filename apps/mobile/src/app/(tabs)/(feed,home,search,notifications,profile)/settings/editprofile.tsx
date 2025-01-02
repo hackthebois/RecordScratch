@@ -59,7 +59,11 @@ const EditProfile = () => {
 
 	useEffect(() => {
 		if (image && !form.formState.errors.image && image instanceof File) {
-			setImageUrl(URL.createObjectURL(image));
+			const fileReaderInstance = new FileReader();
+			fileReaderInstance.readAsDataURL(image);
+			fileReaderInstance.onload = () => {
+				setImageUrl(fileReaderInstance.result?.toString());
+			};
 		}
 	}, [image, form]);
 
@@ -110,7 +114,7 @@ const EditProfile = () => {
 		(arg0: string | undefined): void;
 	}) => {
 		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			mediaTypes: ["images"],
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,
