@@ -2,6 +2,8 @@ import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
 import DistributionChart from "@/components/DistributionChart";
 import { FollowButton } from "@/components/Followers/FollowButton";
+import ListImage from "@/components/List/ListImage";
+import ListOfLists from "@/components/List/ListOfLists";
 import { TopList } from "@/components/List/TopList";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
@@ -9,7 +11,6 @@ import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
 import { Eraser } from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
@@ -124,9 +125,9 @@ export const ProfilePage = ({
 
 	if (!profile) return <NotFoundScreen />;
 
-	// const [lists] = api.lists.getUser.useSuspenseQuery({
-	// 	userId: profile.userId,
-	// });
+	const [lists] = api.lists.getUser.useSuspenseQuery({
+		userId: profile.userId,
+	});
 
 	const { data: streak } = api.ratings.user.streak.useQuery({
 		userId: profile.userId,
@@ -243,6 +244,7 @@ export const ProfilePage = ({
 					</Link>
 				</View>
 				<TopListsTab {...topLists} isProfile={isProfile} />
+				<ListOfLists lists={lists} type="wrap" />
 			</ScrollView>
 		</View>
 	);

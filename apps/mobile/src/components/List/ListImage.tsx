@@ -17,25 +17,26 @@ const ListSquare = ({
 	section: number;
 }) => {
 	let roundedClass;
+	const radius = 12;
 	switch (section) {
 		case 0: {
-			roundedClass = { borderTopLeftRadius: 20 };
+			roundedClass = { borderTopLeftRadius: radius };
 			break;
 		}
 		case 1: {
-			roundedClass = { borderTopRightRadius: 20 };
+			roundedClass = { borderTopRightRadius: radius };
 			break;
 		}
 		case 2: {
-			roundedClass = { borderBottomLeftRadius: 20 };
+			roundedClass = { borderBottomLeftRadius: radius };
 			break;
 		}
 		case 3: {
-			roundedClass = { borderBottomRightRadius: 20 };
+			roundedClass = { borderBottomRightRadius: radius };
 			break;
 		}
 		default: {
-			roundedClass = { borderRadius: 20 };
+			roundedClass = { borderRadius: radius };
 			break;
 		}
 	}
@@ -113,7 +114,7 @@ const ListImage = ({
 }) => {
 	const noImage = (
 		<View
-			className={`flex items-center justify-center rounded-md bg-muted`}
+			className={`flex items-center justify-center rounded-xl bg-muted`}
 			style={{
 				width: size,
 				height: size,

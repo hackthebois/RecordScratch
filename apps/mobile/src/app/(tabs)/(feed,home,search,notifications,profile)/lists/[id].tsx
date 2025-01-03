@@ -13,15 +13,14 @@ import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
 const ListPage = () => {
-	const { utilsColor } = useColorScheme();
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const listId = id!;
 
 	const [list] = api.lists.get.useSuspenseQuery({ id: listId });
-	const [profile] = api.profiles.me.useSuspenseQuery();
 
 	if (!list) return <NotFoundScreen />;
 
+	const [profile] = api.profiles.get.useSuspenseQuery(list.profile.handle);
 	const userProfile = profile!;
 	const isProfile = userProfile.userId === list?.userId;
 
@@ -60,7 +59,7 @@ const ListPage = () => {
 							},
 						}}
 					>
-						<View className="flex flex-row items-center gap-2 w-full">
+						<View className="flex flex-row items-center gap-2">
 							<UserAvatar imageUrl={getImageUrl(userProfile)} />
 							<Text className="flex text-lg">{userProfile.name}</Text>
 						</View>
