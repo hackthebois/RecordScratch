@@ -2,7 +2,7 @@ import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Platform, TextInput, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
@@ -142,7 +142,7 @@ const MusicSearch = ({
 			keyExtractor={(item) => item.id.toString()}
 			contentContainerStyle={{ padding: 16 }}
 			keyboardShouldPersistTaps="handled"
-			estimatedItemSize={100}
+			estimatedItemSize={125}
 		/>
 	);
 };
@@ -158,53 +158,59 @@ const SearchAddModal = () => {
 	const myProfile = useAuth((s) => s.profile);
 
 	return (
-		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
-			<Stack.Screen
-				options={{
-					headerShown: false,
-				}}
-			/>
-			<View className="flex-row w-full items-center pt-4">
-				<ArrowLeft
-					size={26}
+		<KeyboardAvoidingView
+			behavior={Platform.OS === "ios" ? "padding" : undefined}
+			style={{ flex: 1 }}
+		>
+			<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
+				<Stack.Screen
+					options={{
+						headerShown: false,
+					}}
+				/>
+				<View className="flex-row w-full items-center pt-4">
+					<ArrowLeft
+						size={26}
+						onPress={() => {
+							router.back();
+						}}
+						className="ml-2 mx-2 text-foreground"
+					/>
+					<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
+						<Search size={20} className="mx-4 text-foreground" />
+						<TextInput
+							id="name"
+							autoComplete="off"
+							placeholder={cn("Search for a", category.toLowerCase())}
+							value={query}
+							cursorColor={"#ffb703"}
+							style={{
+								paddingTop: 0,
+								paddingBottom: Platform.OS === "ios" ? 4 : 0,
+								textAlignVertical: "center",
+							}}
+							autoCorrect={false}
+							autoFocus
+							className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
+							onChange={(e) => setQuery(e.nativeEvent.text)}
+							keyboardType="default"
+						/>
+					</View>
+				</View>
+				<MusicSearch
+					query={query}
+					category={category}
+					listId={listId!}
 					onPress={() => {
+						utils.lists.topLists.invalidate({
+							userId: myProfile!.userId,
+						});
+						utils.lists.getUser.invalidate({ userId: myProfile!.userId });
 						router.back();
 					}}
-					className="ml-2 mx-2 text-foreground"
 				/>
-				<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-					<Search size={20} className="mx-4 text-foreground" />
-					<TextInput
-						id="name"
-						autoComplete="off"
-						placeholder={cn("Search for a", category.toLowerCase())}
-						value={query}
-						cursorColor={"#ffb703"}
-						style={{
-							paddingTop: 0,
-							paddingBottom: Platform.OS === "ios" ? 4 : 0,
-							textAlignVertical: "center",
-						}}
-						autoCorrect={false}
-						autoFocus
-						className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
-						onChangeText={(text) => setQuery(text)}
-					/>
-				</View>
-			</View>
-			<MusicSearch
-				query={query}
-				category={category}
-				listId={listId!}
-				onPress={() => {
-					utils.lists.topLists.invalidate({
-						userId: myProfile!.userId,
-					});
-					utils.lists.getUser.invalidate({ userId: myProfile!.userId });
-					router.back();
-				}}
-			/>
-		</SafeAreaView>
+			</SafeAreaView>
+		</KeyboardAvoidingView>
 	);
 };
 export default SearchAddModal;
