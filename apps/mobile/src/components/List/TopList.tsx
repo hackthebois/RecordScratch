@@ -153,7 +153,10 @@ export const TopList = ({
 				>
 					<Button
 						variant="secondary"
-						className="min-w-[115px] min-h-[115px] gap-1 rounded-lg"
+						className={cn(
+							"min-w-[115px] min-h-[115px] gap-1",
+							category === "ARTIST" ? "rounded-full" : "rounded-lg"
+						)}
 					>
 						<Text>Add {category.toLowerCase()}</Text>
 					</Button>
