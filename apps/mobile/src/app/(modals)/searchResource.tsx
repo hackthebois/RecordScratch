@@ -1,4 +1,4 @@
-import { Album, Artist, Track, useDebounce } from "@recordscratch/lib";
+import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -177,7 +177,7 @@ const SearchAddModal = () => {
 					<TextInput
 						id="name"
 						autoComplete="off"
-						placeholder="Search"
+						placeholder={cn("Search for a", category.toLowerCase())}
 						value={query}
 						cursorColor={"#ffb703"}
 						style={{

@@ -72,11 +72,26 @@ const TopListsTab = ({
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent value="albums" className="flex-row flex-wrap justify-around p-4">
-					<TopList category="ALBUM" editMode={editMode} list={album} isUser={isProfile} />
+				<TabsContent
+					value="albums"
+					className="flex-row flex-wrap justify-between gap-2 p-4"
+				>
+					<TopList
+						category="ALBUM"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={album}
+						isUser={isProfile}
+					/>
 				</TabsContent>
 				<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
-					<TopList category="SONG" editMode={editMode} list={song} isUser={isProfile} />
+					<TopList
+						category="SONG"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={song}
+						isUser={isProfile}
+					/>
 				</TabsContent>
 				<TabsContent
 					value="artists"
@@ -84,6 +99,7 @@ const TopListsTab = ({
 				>
 					<TopList
 						category="ARTIST"
+						setEditMode={setEditMode}
 						editMode={editMode}
 						list={artist}
 						isUser={isProfile}

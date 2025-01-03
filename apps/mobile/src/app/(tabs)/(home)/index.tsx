@@ -72,9 +72,6 @@ const HomePage = () => {
 			<ScrollView contentContainerClassName="flex flex-col pb-4" nestedScrollEnabled>
 				<AlbumOfTheDay />
 				<Text variant="h2" className="pt-6 pb-4 px-4">
-					SessionId:`{test}`
-				</Text>
-				<Text variant="h2" className="pt-6 pb-4 px-4">
 					Trending Albums
 				</Text>
 				<FlashList

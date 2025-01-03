@@ -15,11 +15,13 @@ export const TopList = ({
 	editMode,
 	isUser,
 	list,
+	setEditMode,
 }: {
 	category: Category;
 	editMode: boolean;
 	isUser: boolean;
 	list: ListWithResources | undefined;
+	setEditMode: (edit: boolean) => void;
 }) => {
 	const listId = list?.id;
 	const resources = list?.resources;
@@ -85,7 +87,7 @@ export const TopList = ({
 		return (
 			<Link
 				href={{
-					pathname: "(modals)/searchResource",
+					pathname: "/(modals)/searchResource",
 					params: {
 						category: category,
 						listId: listId,
@@ -112,6 +114,7 @@ export const TopList = ({
 							});
 
 							utils.lists.getUser.invalidate({ userId });
+							setEditMode(false);
 						}}
 					>
 						<Text>Add {category.toLowerCase()}</Text>
@@ -135,6 +138,7 @@ export const TopList = ({
 								resourceId: resource.resourceId,
 								listId: resource.listId,
 							});
+							if (resources.length === 1) setEditMode(false);
 						}}
 					/>
 				</View>
@@ -143,7 +147,7 @@ export const TopList = ({
 			{resources.length < 6 && isUser && (
 				<Link
 					href={{
-						pathname: "(modals)/searchResource",
+						pathname: "/(modals)/searchResource",
 						params: {
 							category: category,
 							listId: listId,
@@ -157,6 +161,7 @@ export const TopList = ({
 							"min-w-[115px] min-h-[115px] gap-1",
 							category === "ARTIST" ? "rounded-full" : "rounded-lg"
 						)}
+						onPress={() => setEditMode(false)}
 					>
 						<Text>Add {category.toLowerCase()}</Text>
 					</Button>
