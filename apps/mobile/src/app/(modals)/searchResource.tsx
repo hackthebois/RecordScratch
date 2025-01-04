@@ -1,27 +1,19 @@
-import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
-import { useQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
-import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { deezerHelpers } from "@/lib/deezer";
 import { ArrowLeft, Search } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Album, Artist, Track } from "@recordscratch/lib";
-import { useDebounce } from "@recordscratch/lib/src/hooks";
+import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, Platform, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { deezerHelpers } from "@/lib/deezer";
 import { z } from "zod";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 
 const MusicSearch = ({
 	query,
@@ -75,6 +67,7 @@ const MusicSearch = ({
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
+						className="pl-2"
 					/>
 				);
 			case "ALBUM":
@@ -92,6 +85,7 @@ const MusicSearch = ({
 						}}
 						showLink={false}
 						imageWidthAndHeight={80}
+						className="pl-2"
 					/>
 				);
 			case "ARTIST":
@@ -105,6 +99,7 @@ const MusicSearch = ({
 						}}
 						showLink={false}
 						imageWidthAndHeight={80}
+						className="pl-2"
 					/>
 				);
 		}
@@ -121,8 +116,10 @@ const MusicSearch = ({
 			}
 			renderItem={renderItem}
 			keyExtractor={(item) => item.id.toString()}
-			ItemSeparatorComponent={() => <View className="h-3" />}
-			contentContainerClassName="p-4"
+			ItemSeparatorComponent={() => (
+				<View className="my-1 pl-2 border-muted border-t-[2px]" />
+			)}
+			contentContainerClassName="p-2 px-2"
 			keyboardShouldPersistTaps="handled"
 			estimatedItemSize={125}
 		/>
@@ -145,7 +142,6 @@ const RatingModal = () => {
 
 	const query = watch("query");
 	const debouncedQuery = useDebounce(query, 500);
-	const placeHolder = cn("Search for a", category.toLowerCase());
 
 	const list = api.useUtils().lists.resources.get;
 	const { mutate } = api.lists.resources.create.useMutation({
@@ -165,58 +161,63 @@ const RatingModal = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
-			<Stack.Screen
-				options={{
-					headerShown: false,
-				}}
-			/>
-			<View className="flex-row w-full items-center pt-4">
-				<ArrowLeft
-					size={26}
-					onPress={() => {
-						router.back();
+			<KeyboardAvoidingScrollView>
+				<Stack.Screen
+					options={{
+						headerShown: false,
 					}}
-					className="ml-2 mx-2 text-foreground"
 				/>
-				<View
-					className="flex-row items-center pr-4 h-14 border border-border rounded-xl"
-					style={{ width: `85%` }}
-				>
-					<Search size={20} className="mx-4 text-foreground" />
-					<TextInput
-						id="name"
-						autoComplete="off"
-						placeholder={placeHolder}
-						value={query}
-						cursorColor={"#ffb703"}
-						style={{
-							paddingTop: 0,
-							paddingBottom: Platform.OS === "ios" ? 4 : 0,
-							textAlignVertical: "center",
+				<View className="flex-row items-center" style={{ width: "95%" }}>
+					<ArrowLeft
+						size={26}
+						onPress={() => {
+							router.back();
 						}}
-						autoCorrect={false}
-						autoFocus
-						className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
-						onChangeText={setQuery}
+						className="ml-2 mx-2 text-foreground"
 					/>
+					<View className="flex-row flex-1 items-center pr-4 h-14 border border-border rounded-xl">
+						<Search size={20} className="mx-4 text-foreground" />
+						<Controller
+							control={control}
+							name="query"
+							render={({ field: { onChange, value } }) => (
+								<TextInput
+									autoComplete="off"
+									placeholder={`Search for a ${category.toLowerCase()}`}
+									value={value}
+									cursorColor={"#ffb703"}
+									style={{
+										paddingTop: 0,
+										paddingBottom: Platform.OS === "ios" ? 4 : 0,
+										textAlignVertical: "center",
+									}}
+									autoCorrect={false}
+									autoFocus
+									className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
+									onChangeText={(text) => onChange(text)}
+									keyboardType="default"
+								/>
+							)}
+						/>
+					</View>
 				</View>
-			</View>
-			<MusicSearch
-				query={query}
-				category={category}
-				onPress={(resource: Artist | Album | Track) => {
-					mutate({
-						resourceId: String(resource.id),
-						parentId:
-							"album" in resource
-								? String(resource.album?.id)
-								: "artist" in resource
-									? String(resource.artist?.id)
-									: null,
-						listId,
-					});
-				}}
-			/>
+				<MusicSearch
+					query={debouncedQuery}
+					category={category}
+					onPress={(resource: Artist | Album | Track) => {
+						mutate({
+							resourceId: String(resource.id),
+							parentId:
+								"album" in resource
+									? String(resource.album?.id)
+									: "artist" in resource
+										? String(resource.artist?.id)
+										: null,
+							listId,
+						});
+					}}
+				/>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 };

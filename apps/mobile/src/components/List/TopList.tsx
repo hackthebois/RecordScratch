@@ -120,7 +120,9 @@ export const TopList = ({
 								setEditMode(false);
 							}}
 						>
-							<Text>Add {category.toLowerCase()}</Text>
+							<Text className="capitalize w-20 text-center">
+								Add {category.toLowerCase()}
+							</Text>
 						</Button>
 					)}
 				</Link>
@@ -174,7 +176,9 @@ export const TopList = ({
 						style={{ width: top6Width, height: top6Width }}
 						onPress={() => setEditMode(false)}
 					>
-						<Text>Add {category.toLowerCase()}</Text>
+						<Text className="capitalize w-20 text-center">
+							Add {category.toLowerCase()}
+						</Text>
 					</Button>
 				</Link>
 			)}
