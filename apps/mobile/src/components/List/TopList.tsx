@@ -160,13 +160,15 @@ export const TopList = ({
 					<Button
 						variant="secondary"
 						className={cn(
-							"gap-1",
+							"gap-1 item",
 							category === "ARTIST" ? "rounded-full" : "rounded-lg"
 						)}
 						style={{ width: top6Width, height: top6Width }}
 						onPress={() => setEditMode(false)}
 					>
-						<Text>Add {category.toLowerCase()}</Text>
+						<Text className="text-center w-14 capitalize">
+							Add {category.toLowerCase()}
+						</Text>
 					</Button>
 				</Link>
 			)}

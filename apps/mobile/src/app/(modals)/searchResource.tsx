@@ -2,7 +2,7 @@ import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
+import { ActivityIndicator, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
@@ -17,13 +17,11 @@ import { FlashList } from "@shopify/flash-list";
 const MusicSearch = ({
 	query,
 	category,
-	listId,
 	onPress,
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
-	listId: string;
-	onPress?: () => void;
+	onPress?: (resource: Artist | Album | Track) => void;
 }) => {
 	const options = {
 		filters: {
@@ -41,18 +39,6 @@ const MusicSearch = ({
 			return await deezerHelpers.search({ query: debouncedQuery, ...options });
 		},
 		enabled: debouncedQuery.length > 0,
-	});
-
-	const list = api.useUtils().lists.resources.get;
-	const { mutate } = api.lists.resources.create.useMutation({
-		onSettled: async (_data, _error, variables) => {
-			if (variables) {
-				await list.invalidate({
-					listId: variables.listId,
-				});
-				if (onPress) onPress();
-			}
-		},
 	});
 
 	if (isLoading) {
@@ -76,11 +62,7 @@ const MusicSearch = ({
 							category: "SONG",
 						}}
 						onPress={() => {
-							mutate({
-								resourceId: String(song.id),
-								parentId: String(song.album.id),
-								listId,
-							});
+							if (onPress) onPress(song);
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
@@ -98,11 +80,7 @@ const MusicSearch = ({
 							category: "ALBUM",
 						}}
 						onPress={() => {
-							mutate({
-								resourceId: String(album.id),
-								parentId: String(album.artist?.id),
-								listId,
-							});
+							if (onPress) onPress(album);
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
@@ -116,10 +94,7 @@ const MusicSearch = ({
 						key={artist.id}
 						artistId={String(artist.id)}
 						onPress={() => {
-							mutate({
-								resourceId: String(artist.id),
-								listId,
-							});
+							if (onPress) onPress(artist);
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
@@ -156,61 +131,79 @@ const SearchAddModal = () => {
 	const [query, setQuery] = useState("");
 	const utils = api.useUtils();
 	const myProfile = useAuth((s) => s.profile);
+	const placeHolder = cn("Search for a", category.toLowerCase());
+
+	const list = api.useUtils().lists.resources.get;
+	const { mutate } = api.lists.resources.create.useMutation({
+		onSettled: async (_data, _error, variables) => {
+			if (variables) {
+				await list.invalidate({
+					listId: variables.listId,
+				});
+				utils.lists.topLists.invalidate({
+					userId: myProfile!.userId,
+				});
+				utils.lists.getUser.invalidate({ userId: myProfile!.userId });
+				router.back();
+			}
+		},
+	});
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : undefined}
-			style={{ flex: 1 }}
-		>
-			<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
-				<Stack.Screen
-					options={{
-						headerShown: false,
-					}}
-				/>
-				<View className="flex-row w-full items-center pt-4">
-					<ArrowLeft
-						size={26}
-						onPress={() => {
-							router.back();
-						}}
-						className="ml-2 mx-2 text-foreground"
-					/>
-					<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-						<Search size={20} className="mx-4 text-foreground" />
-						<TextInput
-							id="name"
-							autoComplete="off"
-							placeholder={cn("Search for a", category.toLowerCase())}
-							value={query}
-							cursorColor={"#ffb703"}
-							style={{
-								paddingTop: 0,
-								paddingBottom: Platform.OS === "ios" ? 4 : 0,
-								textAlignVertical: "center",
-							}}
-							autoCorrect={false}
-							autoFocus
-							className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
-							onChange={(e) => setQuery(e.nativeEvent.text)}
-							keyboardType="default"
-						/>
-					</View>
-				</View>
-				<MusicSearch
-					query={query}
-					category={category}
-					listId={listId!}
+		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
+			<Stack.Screen
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<View className="flex-row w-full items-center pt-4">
+				<ArrowLeft
+					size={26}
 					onPress={() => {
-						utils.lists.topLists.invalidate({
-							userId: myProfile!.userId,
-						});
-						utils.lists.getUser.invalidate({ userId: myProfile!.userId });
 						router.back();
 					}}
+					className="ml-2 mx-2 text-foreground"
 				/>
-			</SafeAreaView>
-		</KeyboardAvoidingView>
+				<View
+					className="flex-row items-center pr-4 h-14 border border-border rounded-xl"
+					style={{ width: `85%` }}
+				>
+					<Search size={20} className="mx-4 text-foreground" />
+					<TextInput
+						id="name"
+						autoComplete="off"
+						placeholder={placeHolder}
+						value={query}
+						cursorColor={"#ffb703"}
+						style={{
+							paddingTop: 0,
+							paddingBottom: Platform.OS === "ios" ? 4 : 0,
+							textAlignVertical: "center",
+						}}
+						autoCorrect={false}
+						autoFocus
+						className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
+						onChangeText={setQuery}
+					/>
+				</View>
+			</View>
+			<MusicSearch
+				query={query}
+				category={category}
+				onPress={(resource: Artist | Album | Track) => {
+					mutate({
+						resourceId: String(resource.id),
+						parentId:
+							"album" in resource
+								? String(resource.album?.id)
+								: "artist" in resource
+									? String(resource.artist?.id)
+									: null,
+						listId,
+					});
+				}}
+			/>
+		</SafeAreaView>
 	);
 };
 export default SearchAddModal;
