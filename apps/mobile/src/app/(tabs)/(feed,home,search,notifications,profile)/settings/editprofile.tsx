@@ -17,18 +17,20 @@ import { TextInput, View } from "react-native";
 
 const EditProfile = () => {
 	const profile = useAuth((s) => s.profile!);
-	const [loading, setLoading] = useState(false);
-	const { bio, handle: defaultHandle, name } = profile;
 	const setProfile = useAuth((s) => s.setProfile);
+	const { bio, handle: defaultHandle, name } = profile;
 	const utils = api.useUtils();
-
-	const [imageUrl, setImageUrl] = useState<string | undefined>(getImageUrl(profile));
+	const [loading, setLoading] = useState(false);
 
 	const form = useForm<UpdateProfileForm>({
 		resolver: zodResolver(UpdateProfileFormSchema),
 		defaultValues: {
 			bio: bio ?? undefined,
-			image: undefined,
+			image: {
+				uri: getImageUrl(profile),
+				type: "image/jpeg",
+				size: 0,
+			},
 			name,
 			handle: defaultHandle,
 		},
@@ -36,36 +38,25 @@ const EditProfile = () => {
 
 	const { mutate: updateProfile } = api.profiles.update.useMutation({
 		onSuccess: async (profile, { handle }) => {
-			setLoading(false);
 			await utils.profiles.me.invalidate();
 			await utils.profiles.get.invalidate(handle);
 			setProfile(profile);
-			setImageUrl(getImageUrl(profile));
+			form.reset({
+				bio: profile.bio ?? undefined,
+				image: {
+					uri: getImageUrl(profile),
+					type: "image/jpeg",
+					size: 0,
+				},
+				name,
+				handle,
+			});
 		},
 	});
 	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
 
-	useEffect(() => {
-		form.reset({
-			bio: bio ?? undefined,
-			image: undefined,
-			name,
-			handle: defaultHandle,
-		});
-	}, [bio, defaultHandle, form, name, profile]);
-
 	const image = form.watch("image");
 	const handle = form.watch("handle");
-
-	useEffect(() => {
-		if (image && !form.formState.errors.image && image instanceof File) {
-			const fileReaderInstance = new FileReader();
-			fileReaderInstance.readAsDataURL(image);
-			fileReaderInstance.onload = () => {
-				setImageUrl(fileReaderInstance.result?.toString());
-			};
-		}
-	}, [image, form]);
 
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
@@ -85,59 +76,33 @@ const EditProfile = () => {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({ bio, name, handle, image }: UpdateProfileForm) => {
-		setLoading(true);
-		if (image) {
+	const onSubmit = async (data: UpdateProfileForm) => {
+		await setLoading(true);
+		if (data.image) {
 			const url = await getSignedURL({
-				type: image.type,
-				size: image.size,
+				type: data.image.type,
+				size: data.image.size,
 			});
+
+			const response = await fetch(data.image.uri);
+			const blob = await response.blob();
 
 			await fetch(url, {
 				method: "PUT",
-				body: image,
+				body: blob,
 				headers: {
-					"Content-Type": image?.type,
+					"Content-Type": data.image.type,
 				},
 			});
 		}
-		updateProfile({
+
+		await updateProfile({
 			bio: bio ?? null,
 			name,
 			handle,
 			imageUrl: null,
 		});
-	};
-
-	const handleImagePick = async (onChange: {
-		(...event: any[]): void;
-		(arg0: string | undefined): void;
-	}) => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ["images"],
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		});
-
-		if (!result.canceled && result.assets && result.assets.length > 0) {
-			// ImagePicker saves the taken photo to disk and returns a local URI to it
-			let localUri = result.assets[0]!.uri ?? "";
-			let filename = localUri.split("/").pop() ?? "";
-
-			// Infer the type of the image
-			let match = /\.(\w+)$/.exec(filename);
-			let type = match ? `image/${match[1]}` : `image`;
-
-			// Fetch the image data to create a Blob object
-			const response = await fetch(localUri);
-			const blob = await response.blob();
-
-			// Create a File object from Blob
-			const file = new File([blob], filename || "image.jpg", { type });
-
-			onChange(file);
-		}
+		await setLoading(false);
 	};
 
 	const pageValid = () => {
@@ -147,7 +112,8 @@ const EditProfile = () => {
 			!form.getFieldState("handle").invalid &&
 			handle?.length > 0 &&
 			!form.getFieldState("bio").invalid &&
-			!form.getFieldState("image").invalid
+			!form.getFieldState("image").invalid &&
+			!loading
 		);
 	};
 
@@ -229,13 +195,36 @@ const EditProfile = () => {
 				)}
 			/>
 			<View className="flex flex-row items-center gap-4 ">
-				<UserAvatar imageUrl={imageUrl} size={100} />
+				<UserAvatar imageUrl={image?.uri} size={100} />
 				<Controller
 					control={form.control}
 					name="image"
 					render={({ field: { onChange } }) => (
 						<View>
-							<Button variant="secondary" onPress={() => handleImagePick(onChange)}>
+							<Button
+								variant="secondary"
+								onPress={async () => {
+									let result = await ImagePicker.launchImageLibraryAsync({
+										mediaTypes: ["images"],
+										allowsEditing: true,
+										aspect: [1, 1],
+										quality: 1,
+									});
+
+									if (
+										!result.canceled &&
+										result.assets &&
+										result.assets.length > 0
+									) {
+										const asset = result.assets[0]!;
+										onChange({
+											uri: asset.uri,
+											type: asset.type ?? "image/jpeg",
+											size: asset.fileSize,
+										});
+									}
+								}}
+							>
 								<Text>Pick an image</Text>
 							</Button>
 							{form.formState.errors.image && (

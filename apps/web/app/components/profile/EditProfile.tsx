@@ -25,8 +25,8 @@ import { api } from "@/trpc/react";
 import { useDebounce } from "@recordscratch/lib";
 import {
 	Profile,
-	UpdateProfileForm,
-	UpdateProfileFormSchema,
+	WebUpdateProfile,
+	WebUpdateProfileSchema,
 } from "@recordscratch/types";
 import { useNavigate } from "@tanstack/react-router";
 import { AtSign } from "lucide-react";
@@ -43,8 +43,8 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		getImageUrl(profile)
 	);
 
-	const form = useForm<UpdateProfileForm>({
-		resolver: zodResolver(UpdateProfileFormSchema),
+	const form = useForm<WebUpdateProfile>({
+		resolver: zodResolver(WebUpdateProfileSchema),
 		defaultValues: {
 			bio: bio ?? undefined,
 			image: undefined,
@@ -115,12 +115,7 @@ export const EditProfile = ({ profile }: { profile: Profile }) => {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({
-		bio,
-		name,
-		handle,
-		image,
-	}: UpdateProfileForm) => {
+	const onSubmit = async ({ bio, name, handle, image }: WebUpdateProfile) => {
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,

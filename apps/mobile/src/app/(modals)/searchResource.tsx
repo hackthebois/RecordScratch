@@ -2,17 +2,26 @@ import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Platform, TextInput, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
-// import { useRecents } from "@/components/recents";
-import { deezerHelpers } from "@/lib/deezer";
-import { Search } from "@/lib/icons/IconsLoader";
-import { ArrowLeft } from "@/lib/icons/IconsLoader";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { deezerHelpers } from "@/lib/deezer";
+import { ArrowLeft, Search } from "@/lib/icons/IconsLoader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Album, Artist, Track } from "@recordscratch/lib";
+import { useDebounce } from "@recordscratch/lib/src/hooks";
 import { FlashList } from "@shopify/flash-list";
+import { useQuery } from "@tanstack/react-query";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { ActivityIndicator, Platform, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { z } from "zod";
 
 const MusicSearch = ({
 	query,
@@ -66,7 +75,6 @@ const MusicSearch = ({
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
-						className="my-2"
 					/>
 				);
 			case "ALBUM":
@@ -83,8 +91,7 @@ const MusicSearch = ({
 							if (onPress) onPress(album);
 						}}
 						showLink={false}
-						imageWidthAndHeight={100}
-						className="my-2"
+						imageWidthAndHeight={80}
 					/>
 				);
 			case "ARTIST":
@@ -97,8 +104,7 @@ const MusicSearch = ({
 							if (onPress) onPress(artist);
 						}}
 						showLink={false}
-						imageWidthAndHeight={100}
-						className="my-2"
+						imageWidthAndHeight={80}
 					/>
 				);
 		}
@@ -115,22 +121,30 @@ const MusicSearch = ({
 			}
 			renderItem={renderItem}
 			keyExtractor={(item) => item.id.toString()}
-			contentContainerStyle={{ padding: 16 }}
+			ItemSeparatorComponent={() => <View className="h-3" />}
+			contentContainerClassName="p-4"
 			keyboardShouldPersistTaps="handled"
 			estimatedItemSize={125}
 		/>
 	);
 };
 
-const SearchAddModal = () => {
+const RatingModal = () => {
 	const router = useRouter();
 	const { category, listId } = useLocalSearchParams<{
 		category: "ALBUM" | "SONG" | "ARTIST";
 		listId: string;
 	}>();
-	const [query, setQuery] = useState("");
 	const utils = api.useUtils();
 	const myProfile = useAuth((s) => s.profile);
+
+	const { control, watch } = useForm<{ query: string }>({
+		resolver: zodResolver(z.object({ query: z.string().min(1) })),
+		defaultValues: { query: "" },
+	});
+
+	const query = watch("query");
+	const debouncedQuery = useDebounce(query, 500);
 	const placeHolder = cn("Search for a", category.toLowerCase());
 
 	const list = api.useUtils().lists.resources.get;
@@ -206,4 +220,5 @@ const SearchAddModal = () => {
 		</SafeAreaView>
 	);
 };
-export default SearchAddModal;
+
+export default RatingModal;
