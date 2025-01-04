@@ -60,9 +60,17 @@ export const CreateProfileSchema = ProfileSchema.pick({
 });
 export type CreateProfile = z.infer<typeof CreateProfileSchema>;
 
-export const ProfilePhotoSchema = z
+export const WebProfilePhotoSchema = z
 	.custom<File>((v) => v instanceof File)
-	.refine((file) => file?.size <= 5 * 1024 * 1024, `Max image size is 5MB.`);
+	.refine((file) => file?.size <= 10 * 1024 * 1024, `Max image size is 10MB.`);
+
+export const ProfilePhotoSchema = z
+	.object({
+		uri: z.string(),
+		type: z.string(),
+		size: z.number(),
+	})
+	.refine((file) => file?.size <= 10 * 1024 * 1024, `Max image size is 10MB.`);
 
 export const OnboardSchema = CreateProfileSchema.extend({
 	bio: z.string().optional(),
@@ -72,6 +80,17 @@ export type Onboard = z.infer<typeof OnboardSchema>;
 
 export const UpdateProfileSchema = CreateProfileSchema;
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
+
+export const WebOnboardSchema = OnboardSchema.extend({
+	image: WebProfilePhotoSchema.optional(),
+});
+export type WebOnboard = z.infer<typeof WebOnboardSchema>;
+
+export const WebUpdateProfileSchema = UpdateProfileSchema.extend({
+	bio: ProfileBioSchema.optional(),
+	image: WebProfilePhotoSchema.optional(),
+}).omit({ imageUrl: true });
+export type WebUpdateProfile = z.infer<typeof WebUpdateProfileSchema>;
 
 export const UpdateProfileFormSchema = UpdateProfileSchema.extend({
 	bio: ProfileBioSchema.optional(),

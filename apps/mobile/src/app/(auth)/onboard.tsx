@@ -30,9 +30,6 @@ const SlideWrapper = ({
 	title?: string;
 	children: React.ReactNode;
 }) => {
-	useEffect(() => {
-		console.log(page, pageIndex);
-	}, []);
 	return (
 		<Animated.View
 			className={"flex-col w-full items-center justify-center p-4 gap-4"}
@@ -53,10 +50,9 @@ const SlideWrapper = ({
 const onInvalid = (errors: unknown) => console.error(errors);
 
 function Onboard() {
-	const [loading, setLoading] = useState(false);
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
-	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+	const [loading, setLoading] = useState(false);
 	const status = useAuth((s) => s.status);
 	const setStatus = useAuth((s) => s.setStatus);
 	const setProfile = useAuth((s) => s.setProfile);
@@ -97,47 +93,6 @@ function Onboard() {
 		[handleExists]
 	);
 
-	const handleImagePick = async (onChange: {
-		(...event: any[]): void;
-		(arg0: string | undefined): void;
-	}) => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ["images"],
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		});
-
-		if (!result.canceled && result.assets && result.assets.length > 0) {
-			// ImagePicker saves the taken photo to disk and returns a local URI to it
-			let localUri = result.assets[0]!.uri ?? "";
-			let filename = localUri.split("/").pop() ?? "";
-
-			// Infer the type of the image
-			let match = /\.(\w+)$/.exec(filename);
-			let type = match ? `image/${match[1]}` : `image`;
-
-			// Fetch the image data to create a Blob object
-			const response = await fetch(localUri);
-			const blob = await response.blob();
-
-			// Create a File object from Blob
-			const file = new File([blob], filename || "image.jpg", { type });
-
-			onChange(file);
-		}
-	};
-
-	useEffect(() => {
-		if (image && image instanceof File) {
-			const fileReaderInstance = new FileReader();
-			fileReaderInstance.readAsDataURL(image);
-			fileReaderInstance.onload = () => {
-				setImageUrl(fileReaderInstance.result?.toString());
-			};
-		}
-	}, [image]);
-
 	useEffect(() => {
 		if (handleExists) {
 			form.setError("handle", {
@@ -151,28 +106,31 @@ function Onboard() {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
-		setLoading(true);
-		if (image) {
+	const onSubmit = async (data: Onboard) => {
+		await setLoading(true);
+		if (data.image) {
 			const url = await getSignedURL({
-				type: image.type,
-				size: image.size,
+				type: data.image.type,
+				size: data.image.size,
 			});
+
+			const response = await fetch(data.image.uri);
+			const blob = await response.blob();
 
 			await fetch(url, {
 				method: "PUT",
-				body: image,
+				body: blob,
 				headers: {
-					"Content-Type": image?.type,
+					"Content-Type": data.image.type,
 				},
 			});
 		}
 
-		createProfile({
-			name,
-			handle,
+		await createProfile({
+			name: data.name,
+			handle: data.handle,
 			imageUrl: null,
-			bio: bio ?? null,
+			bio: data.bio ?? null,
 		});
 	};
 
@@ -324,7 +282,7 @@ function Onboard() {
 			case 3:
 				return (
 					<SlideWrapper page={page} pageIndex={3} title="Image" key={3}>
-						<UserAvatar imageUrl={imageUrl} size={200} />
+						<UserAvatar imageUrl={image?.uri} size={200} />
 						<Controller
 							control={form.control}
 							name="image"
@@ -332,7 +290,27 @@ function Onboard() {
 								<View>
 									<Button
 										variant="secondary"
-										onPress={() => handleImagePick(onChange)}
+										onPress={async () => {
+											let result = await ImagePicker.launchImageLibraryAsync({
+												mediaTypes: ["images"],
+												allowsEditing: true,
+												aspect: [1, 1],
+												quality: 1,
+											});
+
+											if (
+												!result.canceled &&
+												result.assets &&
+												result.assets.length > 0
+											) {
+												const asset = result.assets[0]!;
+												onChange({
+													uri: asset.uri,
+													type: asset.type ?? "image/jpeg",
+													size: asset.fileSize,
+												});
+											}
+										}}
 										className="mt-8"
 									>
 										<Text>Pick an image</Text>
