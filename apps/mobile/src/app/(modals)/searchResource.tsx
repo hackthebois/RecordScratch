@@ -161,12 +161,12 @@ const RatingModal = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
-			<KeyboardAvoidingScrollView>
-				<Stack.Screen
-					options={{
-						headerShown: false,
-					}}
-				/>
+			<Stack.Screen
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
 				<View className="flex-row items-center" style={{ width: "95%" }}>
 					<ArrowLeft
 						size={26}
