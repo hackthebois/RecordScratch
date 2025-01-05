@@ -22,24 +22,22 @@ const MusicSearch = ({
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
-	onPress?: (resource: Artist | Album | Track) => void;
+	onPress: (resource: Artist | Album | Track) => void;
 }) => {
-	const options = {
-		filters: {
-			albums: category === "ALBUM",
-			artists: category === "ARTIST",
-			songs: category === "SONG",
-		},
-		limit: 8,
-	};
-	const debouncedQuery = useDebounce(query, 500);
-
 	const { data: music, isLoading } = useQuery({
-		queryKey: ["search", debouncedQuery, options],
+		queryKey: ["search", query, category],
 		queryFn: async () => {
-			return await deezerHelpers.search({ query: debouncedQuery, ...options });
+			return await deezerHelpers.search({
+				query: query,
+				filters: {
+					albums: category === "ALBUM",
+					artists: category === "ARTIST",
+					songs: category === "SONG",
+				},
+				limit: 8,
+			});
 		},
-		enabled: debouncedQuery.length > 0,
+		enabled: query.length > 0,
 	});
 
 	if (isLoading) {
@@ -63,11 +61,10 @@ const MusicSearch = ({
 							category: "SONG",
 						}}
 						onPress={() => {
-							if (onPress) onPress(song);
+							onPress(song);
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
-						className="pl-2"
 					/>
 				);
 			case "ALBUM":
@@ -81,11 +78,10 @@ const MusicSearch = ({
 							category: "ALBUM",
 						}}
 						onPress={() => {
-							if (onPress) onPress(album);
+							onPress(album);
 						}}
 						showLink={false}
 						imageWidthAndHeight={80}
-						className="pl-2"
 					/>
 				);
 			case "ARTIST":
@@ -95,11 +91,10 @@ const MusicSearch = ({
 						key={artist.id}
 						artistId={String(artist.id)}
 						onPress={() => {
-							if (onPress) onPress(artist);
+							onPress(artist);
 						}}
 						showLink={false}
 						imageWidthAndHeight={80}
-						className="pl-2"
 					/>
 				);
 		}
@@ -116,10 +111,8 @@ const MusicSearch = ({
 			}
 			renderItem={renderItem}
 			keyExtractor={(item) => item.id.toString()}
-			ItemSeparatorComponent={() => (
-				<View className="my-1 pl-2 border-muted border-t-[2px]" />
-			)}
-			contentContainerClassName="p-2 px-2"
+			ItemSeparatorComponent={() => <View className="h-3" />}
+			contentContainerClassName="py-4"
 			keyboardShouldPersistTaps="handled"
 			estimatedItemSize={125}
 		/>
