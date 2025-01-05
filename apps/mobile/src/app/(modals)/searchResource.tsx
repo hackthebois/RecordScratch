@@ -1,19 +1,19 @@
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { deezerHelpers } from "@/lib/deezer";
 import { ArrowLeft, Search } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
+import { Album, Artist, Track, useDebounce } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, Platform, TextInput, View } from "react-native";
-import { deezerHelpers } from "@/lib/deezer";
-import { z } from "zod";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
+import { z } from "zod";
 
 const MusicSearch = ({
 	query,
@@ -163,7 +163,7 @@ const RatingModal = () => {
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
 			<Stack.Screen
 				options={{
-					headerShown: false,
+					title: `Search for an ${category.toLowerCase()}`,
 				}}
 			/>
 			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
