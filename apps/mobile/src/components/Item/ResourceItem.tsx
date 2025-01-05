@@ -64,6 +64,7 @@ export const ResourceItem = ({
 	className,
 	imageWidthAndHeight = 150,
 	artistNameCss,
+	width,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
@@ -77,6 +78,7 @@ export const ResourceItem = ({
 	artistNameCss?: string;
 	showArtist?: boolean;
 	className?: string;
+	width?: number;
 }) => {
 	const router = useRouter();
 	const albumId = resource.category === "SONG" ? resource.parentId : resource.resourceId;
@@ -127,10 +129,11 @@ export const ResourceItem = ({
 		>
 			<View
 				className={cn(
-					"flex gap-4 w-full",
+					"flex gap-4 w-full flex-grow",
 					className,
 					direction === "vertical" ? "flex-col" : "flex-row items-center"
 				)}
+				style={{ width: width }}
 			>
 				{album.cover_big ? (
 					<Image

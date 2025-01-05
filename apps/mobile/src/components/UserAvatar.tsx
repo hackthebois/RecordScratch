@@ -1,6 +1,5 @@
 import { User } from "@/lib/icons/IconsLoader";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Text } from "./ui/text";
 
 export const UserAvatar = ({ imageUrl, size = 40 }: { imageUrl?: string; size?: number }) => {
 	return (

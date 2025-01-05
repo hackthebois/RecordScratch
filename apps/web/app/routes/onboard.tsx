@@ -16,8 +16,8 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn, useDebounce } from "@recordscratch/lib";
-import type { Onboard } from "@recordscratch/types";
-import { OnboardSchema, handleRegex } from "@recordscratch/types";
+import type { Onboard, WebOnboard } from "@recordscratch/types";
+import { WebOnboardSchema, handleRegex } from "@recordscratch/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AtSign, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -60,8 +60,8 @@ function Onboard() {
 	const [page, setPage] = useState(0);
 	const navigate = useNavigate();
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-	const form = useForm<Onboard>({
-		resolver: zodResolver(OnboardSchema),
+	const form = useForm<WebOnboard>({
+		resolver: zodResolver(WebOnboardSchema),
 		mode: "onChange",
 		defaultValues: {
 			handle: "",
@@ -114,7 +114,7 @@ function Onboard() {
 		}
 	}, [form, handleExists]);
 
-	const onSubmit = async ({ name, handle, image, bio }: Onboard) => {
+	const onSubmit = async ({ name, handle, image, bio }: WebOnboard) => {
 		if (image) {
 			const url = await getSignedURL({
 				type: image.type,

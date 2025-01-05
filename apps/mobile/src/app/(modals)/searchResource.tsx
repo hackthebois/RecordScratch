@@ -1,58 +1,43 @@
-import { Album, Artist, cn, Track, useDebounce } from "@recordscratch/lib";
-import { useQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
-import { ActivityIndicator, Platform, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
-// import { useRecents } from "@/components/recents";
-import { deezerHelpers } from "@/lib/deezer";
-import { Search } from "@/lib/icons/IconsLoader";
-import { ArrowLeft } from "@/lib/icons/IconsLoader";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { deezerHelpers } from "@/lib/deezer";
+import { ArrowLeft, Search } from "@/lib/icons/IconsLoader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Album, Artist, Track, useDebounce } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";
+import { useQuery } from "@tanstack/react-query";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { ActivityIndicator, Platform, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { z } from "zod";
 
 const MusicSearch = ({
 	query,
 	category,
-	listId,
 	onPress,
 }: {
 	query: string;
 	category: "ALBUM" | "SONG" | "ARTIST";
-	listId: string;
-	onPress?: () => void;
+	onPress: (resource: Artist | Album | Track) => void;
 }) => {
-	const options = {
-		filters: {
-			albums: category === "ALBUM",
-			artists: category === "ARTIST",
-			songs: category === "SONG",
-		},
-		limit: 8,
-	};
-	const debouncedQuery = useDebounce(query, 500);
-
 	const { data: music, isLoading } = useQuery({
-		queryKey: ["search", debouncedQuery, options],
+		queryKey: ["search", query, category],
 		queryFn: async () => {
-			return await deezerHelpers.search({ query: debouncedQuery, ...options });
+			return await deezerHelpers.search({
+				query: query,
+				filters: {
+					albums: category === "ALBUM",
+					artists: category === "ARTIST",
+					songs: category === "SONG",
+				},
+				limit: 8,
+			});
 		},
-		enabled: debouncedQuery.length > 0,
-	});
-
-	const list = api.useUtils().lists.resources.get;
-	const { mutate } = api.lists.resources.create.useMutation({
-		onSettled: async (_data, _error, variables) => {
-			if (variables) {
-				await list.invalidate({
-					listId: variables.listId,
-				});
-				if (onPress) onPress();
-			}
-		},
+		enabled: query.length > 0,
 	});
 
 	if (isLoading) {
@@ -76,15 +61,10 @@ const MusicSearch = ({
 							category: "SONG",
 						}}
 						onPress={() => {
-							mutate({
-								resourceId: String(song.id),
-								parentId: String(song.album.id),
-								listId,
-							});
+							onPress(song);
 						}}
 						showLink={false}
 						imageWidthAndHeight={100}
-						className="my-2"
 					/>
 				);
 			case "ALBUM":
@@ -98,15 +78,10 @@ const MusicSearch = ({
 							category: "ALBUM",
 						}}
 						onPress={() => {
-							mutate({
-								resourceId: String(album.id),
-								parentId: String(album.artist?.id),
-								listId,
-							});
+							onPress(album);
 						}}
 						showLink={false}
-						imageWidthAndHeight={100}
-						className="my-2"
+						imageWidthAndHeight={80}
 					/>
 				);
 			case "ARTIST":
@@ -116,14 +91,10 @@ const MusicSearch = ({
 						key={artist.id}
 						artistId={String(artist.id)}
 						onPress={() => {
-							mutate({
-								resourceId: String(artist.id),
-								listId,
-							});
+							onPress(artist);
 						}}
 						showLink={false}
-						imageWidthAndHeight={100}
-						className="my-2"
+						imageWidthAndHeight={80}
 					/>
 				);
 		}
@@ -140,71 +111,108 @@ const MusicSearch = ({
 			}
 			renderItem={renderItem}
 			keyExtractor={(item) => item.id.toString()}
-			contentContainerStyle={{ padding: 16 }}
+			ItemSeparatorComponent={() => <View className="h-3" />}
+			contentContainerClassName="py-4"
 			keyboardShouldPersistTaps="handled"
-			estimatedItemSize={100}
+			estimatedItemSize={125}
 		/>
 	);
 };
 
-const SearchAddModal = () => {
+const RatingModal = () => {
 	const router = useRouter();
 	const { category, listId } = useLocalSearchParams<{
 		category: "ALBUM" | "SONG" | "ARTIST";
 		listId: string;
 	}>();
-	const [query, setQuery] = useState("");
 	const utils = api.useUtils();
 	const myProfile = useAuth((s) => s.profile);
+
+	const { control, watch } = useForm<{ query: string }>({
+		resolver: zodResolver(z.object({ query: z.string().min(1) })),
+		defaultValues: { query: "" },
+	});
+
+	const query = watch("query");
+	const debouncedQuery = useDebounce(query, 500);
+
+	const list = api.useUtils().lists.resources.get;
+	const { mutate } = api.lists.resources.create.useMutation({
+		onSettled: async (_data, _error, variables) => {
+			if (variables) {
+				await list.invalidate({
+					listId: variables.listId,
+				});
+				utils.lists.topLists.invalidate({
+					userId: myProfile!.userId,
+				});
+				utils.lists.getUser.invalidate({ userId: myProfile!.userId });
+				router.back();
+			}
+		},
+	});
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
 			<Stack.Screen
 				options={{
-					headerShown: false,
+					title: `Search for an ${category.toLowerCase()}`,
 				}}
 			/>
-			<View className="flex-row w-full items-center pt-4">
-				<ArrowLeft
-					size={26}
-					onPress={() => {
-						router.back();
-					}}
-					className="ml-2 mx-2 text-foreground"
-				/>
-				<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-					<Search size={20} className="mx-4 text-foreground" />
-					<TextInput
-						id="name"
-						autoComplete="off"
-						placeholder={cn("Search for a", category.toLowerCase())}
-						value={query}
-						cursorColor={"#ffb703"}
-						style={{
-							paddingTop: 0,
-							paddingBottom: Platform.OS === "ios" ? 4 : 0,
-							textAlignVertical: "center",
+			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
+				<View className="flex-row items-center" style={{ width: "95%" }}>
+					<ArrowLeft
+						size={26}
+						onPress={() => {
+							router.back();
 						}}
-						autoCorrect={false}
-						autoFocus
-						className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
-						onChangeText={(text) => setQuery(text)}
+						className="ml-2 mx-2 text-foreground"
 					/>
+					<View className="flex-row flex-1 items-center pr-4 h-14 border border-border rounded-xl">
+						<Search size={20} className="mx-4 text-foreground" />
+						<Controller
+							control={control}
+							name="query"
+							render={({ field: { onChange, value } }) => (
+								<TextInput
+									autoComplete="off"
+									placeholder={`Search for a ${category.toLowerCase()}`}
+									value={value}
+									cursorColor={"#ffb703"}
+									style={{
+										paddingTop: 0,
+										paddingBottom: Platform.OS === "ios" ? 4 : 0,
+										textAlignVertical: "center",
+									}}
+									autoCorrect={false}
+									autoFocus
+									className="flex-1 h-full text-xl text-foreground outline-none p-0 w-full"
+									onChangeText={(text) => onChange(text)}
+									keyboardType="default"
+								/>
+							)}
+						/>
+					</View>
 				</View>
-			</View>
-			<MusicSearch
-				query={query}
-				category={category}
-				listId={listId!}
-				onPress={() => {
-					utils.lists.topLists.invalidate({
-						userId: myProfile!.userId,
-					});
-					utils.lists.getUser.invalidate({ userId: myProfile!.userId });
-					router.back();
-				}}
-			/>
+				<MusicSearch
+					query={debouncedQuery}
+					category={category}
+					onPress={(resource: Artist | Album | Track) => {
+						mutate({
+							resourceId: String(resource.id),
+							parentId:
+								"album" in resource
+									? String(resource.album?.id)
+									: "artist" in resource
+										? String(resource.artist?.id)
+										: null,
+							listId,
+						});
+					}}
+				/>
+			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
 };
-export default SearchAddModal;
+
+export default RatingModal;

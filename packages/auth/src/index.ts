@@ -78,6 +78,7 @@ export const setSessionCookie = (event: H3Event, token: string | undefined): voi
 			httpOnly: true,
 			sameSite: "lax",
 			path: "/",
+			maxAge: 60 * 60 * 24 * 14, // 14 days
 		});
 	} else {
 		deleteCookie(event, "session");
