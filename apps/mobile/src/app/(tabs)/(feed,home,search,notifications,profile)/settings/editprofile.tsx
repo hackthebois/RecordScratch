@@ -18,21 +18,20 @@ import { TextInput, View } from "react-native";
 const EditProfile = () => {
 	const profile = useAuth((s) => s.profile!);
 	const setProfile = useAuth((s) => s.setProfile);
-	const { bio, handle: defaultHandle, name } = profile;
 	const utils = api.useUtils();
 	const [loading, setLoading] = useState(false);
 
 	const form = useForm<UpdateProfileForm>({
 		resolver: zodResolver(UpdateProfileFormSchema),
 		defaultValues: {
-			bio: bio ?? undefined,
+			bio: profile.bio ?? undefined,
 			image: {
 				uri: getImageUrl(profile),
 				type: "image/jpeg",
 				size: 0,
 			},
-			name,
-			handle: defaultHandle,
+			name: profile.name,
+			handle: profile.handle,
 		},
 	});
 
@@ -40,16 +39,16 @@ const EditProfile = () => {
 		onSuccess: async (profile, { handle }) => {
 			await utils.profiles.me.invalidate();
 			await utils.profiles.get.invalidate(handle);
-			setProfile(profile);
-			form.reset({
+			await setProfile(profile);
+			await form.reset({
 				bio: profile.bio ?? undefined,
 				image: {
 					uri: getImageUrl(profile),
 					type: "image/jpeg",
 					size: 0,
 				},
-				name,
-				handle,
+				name: profile.name,
+				handle: handle,
 			});
 		},
 	});
@@ -57,10 +56,11 @@ const EditProfile = () => {
 
 	const image = form.watch("image");
 	const handle = form.watch("handle");
+	const name = form.watch("name");
 
 	const debouncedHandle = useDebounce(handle, 500);
 	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
-		enabled: debouncedHandle.length > 0 && debouncedHandle !== defaultHandle,
+		enabled: debouncedHandle.length > 0 && debouncedHandle !== profile.handle,
 	});
 
 	useEffect(() => {
@@ -77,6 +77,7 @@ const EditProfile = () => {
 	}, [form, handleExists]);
 
 	const onSubmit = async (data: UpdateProfileForm) => {
+		console.log(data);
 		await setLoading(true);
 		if (data.image) {
 			const url = await getSignedURL({
@@ -97,9 +98,9 @@ const EditProfile = () => {
 		}
 
 		await updateProfile({
-			bio: bio ?? null,
-			name,
-			handle,
+			bio: data.bio ?? null,
+			name: data.name,
+			handle: data.handle,
 			imageUrl: null,
 		});
 		await setLoading(false);
