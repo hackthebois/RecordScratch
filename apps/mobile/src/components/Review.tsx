@@ -3,16 +3,12 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
-import { Heart } from "@/lib/icons/IconsLoader";
-import { MessageCircle } from "@/lib/icons/IconsLoader";
-import { Reply } from "@/lib/icons/IconsLoader";
-import { Star } from "@/lib/icons/IconsLoader";
+import { Heart, MessageCircle, Reply, Star } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
 import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
 import { Link } from "expo-router";
-import React from "react";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { Pressable, View } from "react-native";
 
 const IconSize = 30;
@@ -56,7 +52,9 @@ const LikeButton = (props: SelectLike) => {
 			<Heart
 				size={25}
 				className={cn(
-					liked ? "text-red-500 fill-red-500" : "text-muted-foreground fill-background"
+					liked
+						? "stroke-red-500 fill-red-500"
+						: "stroke-muted-foreground fill-background"
 				)}
 			/>
 			<Text className="font-bold">{likesCount}</Text>
