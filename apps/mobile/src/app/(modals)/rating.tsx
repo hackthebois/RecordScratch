@@ -33,12 +33,12 @@ const RatingInput = ({
 					<View className="flex flex-col items-center">
 						{rating ? (
 							index <= rating ? (
-								<Star size={28} className="text-star fill-star" />
+								<Star size={28} className="stroke-star fill-star" />
 							) : (
-								<Star size={28} className="text-star fill-background" />
+								<Star size={28} className="stroke-star fill-background" />
 							)
 						) : (
-							<Star size={28} className="text-star fill-background" />
+							<Star size={28} className="stroke-star fill-background" />
 						)}
 						<Text className="text-muted-foreground">{index}</Text>
 					</View>
