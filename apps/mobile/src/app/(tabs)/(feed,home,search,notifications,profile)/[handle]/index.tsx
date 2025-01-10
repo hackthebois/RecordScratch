@@ -27,7 +27,7 @@ const HandlePage = () => {
 	return <ProfilePage profile={profile} isProfile={false} />;
 };
 
-export const EditTopLists = ({ editMode, onPress }: { editMode: boolean; onPress: () => void }) => {
+export const EditButton = ({ editMode, onPress }: { editMode: boolean; onPress: () => void }) => {
 	return (
 		<View className="flex items-center px-4">
 			<Button
@@ -107,9 +107,7 @@ const TopListsTab = ({
 					/>
 				</TabsContent>
 			</Tabs>
-			{isProfile && (
-				<EditTopLists editMode={editMode} onPress={() => setEditMode(!editMode)} />
-			)}
+			{isProfile && <EditButton editMode={editMode} onPress={() => setEditMode(!editMode)} />}
 		</View>
 	);
 };
@@ -244,7 +242,7 @@ export const ProfilePage = ({
 					</Link>
 				</View>
 				<TopListsTab {...topLists} isProfile={isProfile} />
-				<ListOfLists lists={lists} type="wrap" />
+				<ListOfLists lists={lists} type="wrap" size={100} />
 			</ScrollView>
 		</View>
 	);

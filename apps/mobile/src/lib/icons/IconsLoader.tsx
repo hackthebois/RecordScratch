@@ -1,6 +1,7 @@
 import { cn } from "@recordscratch/lib";
 import {
 	AlertCircle as LucideAlertCircle,
+	AlignJustify as LucideAlignJustify,
 	CheckCircle as LucideCheckCircle,
 	XCircle as LucideXCircle,
 	ArrowLeft as LucideArrowLeft,
@@ -66,6 +67,7 @@ function iconWithClassName(icon: LucideIcon) {
 
 // Export all icons
 export const AlertCircle = iconWithClassName(LucideAlertCircle);
+export const AlignJustify = iconWithClassName(LucideAlignJustify);
 export const CheckCircle = iconWithClassName(LucideCheckCircle);
 export const XCircle = iconWithClassName(LucideXCircle);
 export const ArrowLeft = iconWithClassName(LucideArrowLeft);

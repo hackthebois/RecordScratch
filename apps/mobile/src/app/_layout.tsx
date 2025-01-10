@@ -27,6 +27,7 @@ import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -143,80 +144,92 @@ const RootLayout = () => {
 	}
 
 	return (
-		<AuthProvider>
-			<TRPCProvider>
-				<SafeAreaProvider>
-					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-						<PrefetchProfile />
-						<Stack
-							screenOptions={{
-								animation: "fade",
-								headerTitle: (props) => <Text variant="h4">{props.children}</Text>,
-								headerTitleAlign: "center",
-							}}
-						>
-							<Stack.Screen
-								name="index"
-								options={{
-									headerShown: false,
+		<GestureHandlerRootView>
+			<AuthProvider>
+				<TRPCProvider>
+					<SafeAreaProvider>
+						<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+							<PrefetchProfile />
+							<Stack
+								screenOptions={{
+									animation: "fade",
+									headerTitle: (props) => (
+										<Text variant="h4">{props.children}</Text>
+									),
+									headerTitleAlign: "center",
 								}}
-							/>
-							<Stack.Screen
-								name="(tabs)"
-								options={{
-									headerShown: false,
-								}}
-							/>
-							<Stack.Screen
-								name="(auth)/signin"
-								options={{
-									headerShown: false,
-								}}
-							/>
-							<Stack.Screen
-								name="(auth)/onboard"
-								options={{
-									headerShown: false,
-								}}
-							/>
-							<Stack.Screen
-								name="(modals)/rating"
-								options={{
-									title: "",
-									presentation: "modal",
-									animation: "slide_from_bottom",
-								}}
-							/>
-							<Stack.Screen
-								name="(modals)/searchResource"
-								options={{
-									title: "SEARCH",
-									presentation: "modal",
-									animation: "slide_from_bottom",
-								}}
-							/>
-							<Stack.Screen
-								name="(modals)/reply/rating"
-								options={{
-									title: "",
-									presentation: "modal",
-									animation: "slide_from_bottom",
-								}}
-							/>
-							<Stack.Screen
-								name="(modals)/reply/comment"
-								options={{
-									title: "",
-									presentation: "modal",
-									animation: "slide_from_bottom",
-								}}
-							/>
-						</Stack>
-						<PortalHost />
-					</ThemeProvider>
-				</SafeAreaProvider>
-			</TRPCProvider>
-		</AuthProvider>
+							>
+								<Stack.Screen
+									name="index"
+									options={{
+										headerShown: false,
+									}}
+								/>
+								<Stack.Screen
+									name="(tabs)"
+									options={{
+										headerShown: false,
+									}}
+								/>
+								<Stack.Screen
+									name="(auth)/signin"
+									options={{
+										headerShown: false,
+									}}
+								/>
+								<Stack.Screen
+									name="(auth)/onboard"
+									options={{
+										headerShown: false,
+									}}
+								/>
+								<Stack.Screen
+									name="(modals)/rating"
+									options={{
+										title: "",
+										presentation: "modal",
+										animation: "slide_from_bottom",
+									}}
+								/>
+								<Stack.Screen
+									name="(modals)/searchResource"
+									options={{
+										title: "SEARCH",
+										presentation: "modal",
+										animation: "slide_from_bottom",
+									}}
+								/>
+								<Stack.Screen
+									name="(modals)/listRearrange"
+									options={{
+										title: "List Rearrange",
+										presentation: "modal",
+										animation: "slide_from_bottom",
+									}}
+								/>
+								<Stack.Screen
+									name="(modals)/reply/rating"
+									options={{
+										title: "",
+										presentation: "modal",
+										animation: "slide_from_bottom",
+									}}
+								/>
+								<Stack.Screen
+									name="(modals)/reply/comment"
+									options={{
+										title: "",
+										presentation: "modal",
+										animation: "slide_from_bottom",
+									}}
+								/>
+							</Stack>
+							<PortalHost />
+						</ThemeProvider>
+					</SafeAreaProvider>
+				</TRPCProvider>
+			</AuthProvider>
+		</GestureHandlerRootView>
 	);
 };
 

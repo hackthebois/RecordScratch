@@ -44,7 +44,7 @@ const ListPage = () => {
 						) : null,
 				}}
 			/>
-			<Metadata
+			{/* <Metadata
 				title={list.name}
 				type={`${list.category} list`}
 				cover={<ListImage listItems={listItems} category={list.category} size={250} />}
@@ -66,7 +66,7 @@ const ListPage = () => {
 					</Link>
 					<Text className="text-muted-foreground">• {timeAgo(list.updatedAt)}</Text>
 				</View>
-			</Metadata>
+			</Metadata> */}
 			<ListResources items={listItems} category={list.category} />
 		</ScrollView>
 	);
