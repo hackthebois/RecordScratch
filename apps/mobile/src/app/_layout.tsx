@@ -187,7 +187,7 @@ const RootLayout = () => {
 									name="(modals)/rating"
 									options={{
 										title: "",
-										presentation: "modal",
+										presentation: "fullScreenModal",
 										animation: "slide_from_bottom",
 									}}
 								/>

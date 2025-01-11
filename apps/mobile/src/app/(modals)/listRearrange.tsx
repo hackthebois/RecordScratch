@@ -12,10 +12,9 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { api } from "@/lib/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "@/components/ui/text";
 
 const AnimatedResource = ({
 	index,
@@ -29,23 +28,31 @@ const AnimatedResource = ({
 	scrollY: SharedValue<number>;
 }) => {
 	const [moving, setMoving] = useState(false);
-	const top = useSharedValue(item.position * 60);
+	const top = useSharedValue((item.position - 1) * 60);
 	const gestureHandler = Gesture.Pan()
 		.onStart(() => {
 			setMoving(true); // Mark the current item as active
 		})
 		.onUpdate((event) => {
-			const positionY = event.absoluteY + scrollY.value;
+			const positionY = event.x + scrollY.value;
 
-			top.value = withTiming(positionY - 300, { duration: 16 });
+			top.value = withTiming(positionY, { duration: 16 });
+			console.log(
+				"absoluteY:",
+				event.absoluteY.toFixed(0),
+				"scrollY:",
+				scrollY.value.toFixed(0),
+				"positionY:",
+				positionY.toFixed(0)
+			);
 		})
 		.onEnd(() => {
 			setMoving(false); // Reset active state on gesture end
 		})
 		.runOnJS(true);
 	const animatedStyle = useAnimatedStyle(() => ({
+		position: "absolute",
 		left: 5,
-		marginRight: 20,
 		top: top.value,
 		shadowColor: "black",
 		zIndex: moving ? 1 : 0,
@@ -53,10 +60,8 @@ const AnimatedResource = ({
 		shadowOpacity: withSpring(moving ? 1 : 0),
 		shadowRadius: moving ? 10 : 0,
 		flexDirection: "row",
-		alignItems: "center",
 		backgroundColor: moving ? "white" : "",
 		borderRadius: 10,
-		width: "80%",
 	}));
 	return (
 		<View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -85,7 +90,7 @@ const AnimatedResource = ({
 							titleCss="font-medium"
 							showArtist={false}
 							showLink={false}
-							className="min-w-72 min-h-24"
+							className="min-w-72"
 						/>
 					)}
 				</Animated.View>
@@ -109,23 +114,31 @@ const ListRearrangeModal = () => {
 
 	return (
 		<SafeAreaProvider>
+			<Stack.Screen
+				options={{
+					title: `${list?.name}`,
+				}}
+			/>
 			<SafeAreaView style={{ flex: 1 }}>
-				<Text variant={"h4"}>Scroll Value: {scrollY.value}</Text>
-				<Animated.ScrollView className="flex flex-col" onScroll={handleScroll}>
-					<View className="flex flex-col w-full h-full">
-						{listItems.map((item, index) => (
-							<AnimatedResource
-								key={index}
-								index={index}
-								item={item}
-								category={list!.category}
-								scrollY={scrollY}
-							/>
-						))}
-					</View>
+				<Animated.ScrollView
+					onScroll={handleScroll}
+					scrollEventThrottle={16}
+					style={{ flex: 1, position: "relative" }}
+				>
+					{listItems.map((item, index) => (
+						<AnimatedResource
+							key={index}
+							index={index}
+							item={item}
+							category={list!.category}
+							scrollY={scrollY}
+						/>
+					))}
 				</Animated.ScrollView>
 			</SafeAreaView>
 		</SafeAreaProvider>
 	);
 };
 export default ListRearrangeModal;
+
+// 10.0.0.141:8081
