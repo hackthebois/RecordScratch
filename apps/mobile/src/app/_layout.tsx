@@ -27,6 +27,7 @@ import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
+import Animated from "react-native-reanimated";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -183,7 +184,7 @@ const RootLayout = () => {
 								name="(modals)/rating"
 								options={{
 									title: "",
-									presentation: "fullScreenModal",
+									presentation: "modal",
 									animation: "slide_from_bottom",
 								}}
 							/>

@@ -93,6 +93,7 @@ export const TopList = ({
 						params: {
 							category: category,
 							listId: listId,
+							isTopList: "true",
 						},
 					}}
 					asChild

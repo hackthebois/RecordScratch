@@ -23,6 +23,7 @@ import {
 	Moon as LucideMoon,
 	MoonStar as LucideMoonStar,
 	MoreHorizontal as LucideMoreHorizontal,
+	Pencil as LucidePencil,
 	Rows3 as LucideRows3,
 	Reply as LucideReply,
 	Search as LucideSearch,
@@ -89,6 +90,7 @@ export const MessageSquareText = iconWithClassName(LucideMessageSquareText);
 export const Moon = iconWithClassName(LucideMoon);
 export const MoonStar = iconWithClassName(LucideMoonStar);
 export const MoreHorizontal = iconWithClassName(LucideMoreHorizontal);
+export const Pencil = iconWithClassName(LucidePencil);
 export const Rows3 = iconWithClassName(LucideRows3);
 export const Reply = iconWithClassName(LucideReply);
 export const Search = iconWithClassName(LucideSearch);

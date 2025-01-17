@@ -3,20 +3,29 @@ import { ResourceItem } from "@/components/Item/ResourceItem";
 import { Category, ListItem, ListWithResources, UserListItem } from "@recordscratch/types";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
+	cancelAnimation,
+	scrollTo,
 	runOnJS,
 	SharedValue,
 	useAnimatedReaction,
+	useAnimatedRef,
 	useAnimatedScrollHandler,
 	useAnimatedStyle,
 	useSharedValue,
 	withSpring,
 	withTiming,
+	useAnimatedProps,
 } from "react-native-reanimated";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { api } from "@/lib/api";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { AlignJustify } from "@/lib/icons/IconsLoader";
+import { useWindowDimensions, View } from "react-native";
+import AnimateableText from "react-native-animateable-text";
+import ReText from "@/components/ui/retext";
+
+const SONG_HEIGHT = 70;
 
 function clamp(value: number, lowerBound: number, upperBound: number) {
 	"worklet";
@@ -48,34 +57,48 @@ const AnimatedResource = ({
 	resources: SharedValue<Record<string, ListItem>>;
 	resourcesCount: number;
 }) => {
-	const SONG_HEIGHT = 70;
-	const [moving, setMoving] = useState(false);
-	const [position, setPosition] = useState(resources.value[item.resourceId].position);
+	const moving = useSharedValue<boolean>(false);
+	const position = useSharedValue<string>(resources.value[item.resourceId].position.toString());
 	const top = useSharedValue<number>(
 		(resources.value[item.resourceId].position - 1) * SONG_HEIGHT
 	);
+	const dimensions = useWindowDimensions();
+	const insets = useSafeAreaInsets();
 
 	useAnimatedReaction(
 		() => resources.value[item.resourceId].position,
 		(currentPosition, previousPosition) => {
 			if (currentPosition !== previousPosition)
-				if (!moving) {
+				if (!moving.value) {
 					top.value = withSpring((currentPosition - 1) * SONG_HEIGHT);
-					runOnJS(setPosition)(currentPosition);
+					position.set(currentPosition.toString());
 				}
 		},
-		[moving]
+		[moving.value, position.value]
 	);
 
-	const gestureHandler = Gesture.Pan()
+	const panHandler = Gesture.Pan()
 		.runOnJS(true)
 		.onStart(() => {
-			setMoving(true);
+			moving.set(true);
 		})
 		.onUpdate((event) => {
 			const positionY = event.absoluteY + scrollY.value;
 
-			top.value = withTiming(positionY - SONG_HEIGHT * 2.5, { duration: 32 });
+			if (positionY <= scrollY.value + SONG_HEIGHT) {
+				// scroll up
+				scrollY.value = withTiming(0, { duration: 1500 });
+			} else if (positionY >= scrollY.value + dimensions.height - SONG_HEIGHT) {
+				// scroll down
+				const contentHeight = resourcesCount * SONG_HEIGHT;
+				const containerHeight = dimensions.height - insets.top - insets.bottom;
+				const maxScroll = contentHeight - containerHeight;
+				scrollY.value = withTiming(maxScroll, { duration: 1500 });
+			} else {
+				cancelAnimation(scrollY);
+			}
+
+			top.value = withTiming(positionY - SONG_HEIGHT * 2.5, { duration: 16 });
 
 			const newPosition = clamp(Math.floor(positionY / SONG_HEIGHT), 0, resourcesCount);
 
@@ -87,36 +110,38 @@ const AnimatedResource = ({
 						newPosition
 					)
 				);
-				setPosition(newPosition);
+				position.set(newPosition.toString());
 			}
 		})
 		.onEnd(() => {
 			top.value = withSpring((resources.value[item.resourceId].position - 1) * SONG_HEIGHT);
-			setMoving(false);
-		});
+			moving.set(false);
+		})
+		.hitSlop({ right: 0, width: 60 });
 
 	const animatedStyle = useAnimatedStyle(() => ({
-		left: 5,
 		position: "absolute",
 		top: top.value,
 		shadowColor: "black",
-		zIndex: moving ? 1 : 0,
-		shadowOpacity: withSpring(moving ? 1 : 0),
-		shadowRadius: withSpring(moving ? 10 : 0),
-		flexDirection: "row",
-		backgroundColor: moving ? "white" : "transparent",
+		zIndex: moving.value ? 1 : 0,
+		backgroundColor: moving.value ? "white" : "transparent",
 		borderRadius: 10,
+		shadowOffset: {
+			height: 0,
+			width: 0,
+		},
+		shadowOpacity: withSpring(moving ? 0.2 : 0),
+		shadowRadius: 10,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-around",
+		width: "100%",
 	}));
 
 	return (
-		<GestureDetector gesture={gestureHandler}>
+		<GestureDetector gesture={panHandler}>
 			<Animated.View style={animatedStyle}>
-				<Animated.Text
-					style={{ fontSize: 12, marginLeft: 15, marginTop: 20 }}
-					className="text-muted-foreground font-bold w-6"
-				>
-					{position}
-				</Animated.Text>
+				<ReText text={position} style={{ fontSize: 14, marginRight: -15, marginLeft: 0 }} />
 				{category === "ARTIST" ? (
 					<ArtistItem
 						artistId={item.resourceId}
@@ -134,9 +159,11 @@ const AnimatedResource = ({
 						titleCss="font-medium"
 						showArtist={false}
 						showLink={false}
-						className="min-w-96"
+						className=" min-w-80"
 					/>
 				)}
+
+				<AlignJustify className="text-foreground" style={{ marginRight: 20 }} />
 			</Animated.View>
 		</GestureDetector>
 	);
@@ -153,27 +180,36 @@ const ListRearrangeModal = () => {
 		return map;
 	}, {});
 	const resources = useSharedValue(map);
-
 	const scrollY = useSharedValue(0);
+	const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
+
+	useAnimatedReaction(
+		() => scrollY.value,
+		(scrolling) => {
+			scrollTo(scrollViewRef, 0, scrolling, false);
+		}
+	);
+
 	const handleScroll = useAnimatedScrollHandler((event) => {
 		scrollY.value = event.contentOffset.y;
 	});
 
 	return (
-		<SafeAreaProvider>
-			<SafeAreaView style={{ flex: 1 }}>
-				<Stack.Screen
-					options={{
-						title: `${list?.name}`,
-					}}
-				/>
-				<GestureHandlerRootView>
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<SafeAreaProvider>
+				<SafeAreaView style={{ flex: 1 }}>
+					<Stack.Screen
+						options={{
+							title: `${list?.name}`,
+						}}
+					/>
 					<Animated.ScrollView
+						ref={scrollViewRef}
 						onScroll={handleScroll}
 						scrollEventThrottle={16}
 						nestedScrollEnabled={true}
 						style={{ flex: 1, position: "relative" }}
-						contentContainerStyle={{ flexGrow: 1 }}
+						contentContainerStyle={{ height: (listItems.length + 1) * SONG_HEIGHT }}
 					>
 						{listItems.map((item, index) => (
 							<AnimatedResource
@@ -186,9 +222,9 @@ const ListRearrangeModal = () => {
 							/>
 						))}
 					</Animated.ScrollView>
-				</GestureHandlerRootView>
-			</SafeAreaView>
-		</SafeAreaProvider>
+				</SafeAreaView>
+			</SafeAreaProvider>
+		</GestureHandlerRootView>
 	);
 };
 export default ListRearrangeModal;

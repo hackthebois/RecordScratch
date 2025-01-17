@@ -52,13 +52,7 @@ const ListsItem = ({
 						}
 					}}
 					// {...(onClick ? {} : link)}
-					// href={`/lists/${listsItem.id}`}
-					href={{
-						pathname: "/(modals)/listRearrange",
-						params: {
-							listId: listsItem.id,
-						},
-					}}
+					href={`/lists/${listsItem.id}`}
 					className="flex w-full cursor-pointer flex-col"
 				>
 					{ListItemContent}

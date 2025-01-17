@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
+import React from "react";
 import { useState } from "react";
 import { View } from "react-native";
 
