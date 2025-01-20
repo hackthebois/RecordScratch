@@ -17,9 +17,12 @@ import Animated, {
 import { Stack, useLocalSearchParams } from "expo-router";
 import { api } from "@/lib/api";
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { AlignJustify } from "@/lib/icons/IconsLoader";
+import { AlignJustify, Trash2 } from "@/lib/icons/IconsLoader";
 import { useWindowDimensions } from "react-native";
 import ReText from "@/components/ui/retext";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@recordscratch/lib";
 
 const SONG_HEIGHT = 70;
 
@@ -27,18 +30,50 @@ function clamp(value: number, lowerBound: number, upperBound: number) {
 	"worklet";
 	return Math.max(lowerBound, Math.min(value, upperBound));
 }
-function objectMove(resources: Record<string, ListItem>, from: number, to: number) {
+function objectMove(resources: Record<string, number>, from: number, to: number) {
 	"worklet";
-	const newResources: Record<string, ListItem> = Object.assign({}, resources);
+	const newResources: Record<string, number> = { ...resources };
 	for (const id in resources) {
-		if (resources[id].position === from) {
-			newResources[id].position = to;
-		} else if (resources[id].position === to) {
-			newResources[id].position = from;
+		if (resources[id] === from) {
+			newResources[id] = to;
+		} else if (resources[id] === to) {
+			newResources[id] = from;
 		}
 	}
 	return newResources;
 }
+function objectDelete(resources: Record<string, number>, resourceId: string) {
+	"worklet";
+	const newResources: Record<string, number> = {};
+	const positionToDelete = resources[resourceId];
+	for (const id in resources) {
+		if (id !== resourceId) {
+			const currentItem = resources[id];
+			newResources[id] = currentItem > positionToDelete ? currentItem - 1 : currentItem;
+		}
+	}
+
+	return newResources;
+}
+
+export const DeleteButton = ({
+	onPress,
+	className,
+}: {
+	className?: string;
+	onPress: () => void;
+}) => {
+	return (
+		<Button
+			className={cn("size-9", className)}
+			onPress={onPress}
+			variant="destructive"
+			size="icon"
+		>
+			<Trash2 size={18} />
+		</Button>
+	);
+};
 
 const Resource = ({
 	resourceId,
@@ -76,41 +111,40 @@ const Resource = ({
 const AnimatedResource = ({
 	item,
 	category,
+	scrollY,
 	resourcesSharedMap,
 	resourcesCount,
-	scrollY,
-	containerHeight,
+	deleteResource,
 	contentHeight,
+	containerHeight,
 	screenHeight,
 }: {
 	item: ListItem;
 	category: Category;
 	scrollY: SharedValue<number>;
-	resourcesSharedMap: SharedValue<Record<string, ListItem>>;
+	resourcesSharedMap: SharedValue<Record<string, number>>;
 	resourcesCount: number;
+	deleteResource: (resourceId: string) => void;
 	containerHeight: number;
 	contentHeight: number;
 	screenHeight: number;
 }) => {
 	const moving = useSharedValue<boolean>(false);
-	const position = useSharedValue<string>(
-		resourcesSharedMap.value[item.resourceId].position.toString()
-	);
+	const position = useSharedValue<string>(resourcesSharedMap.value[item.resourceId].toString());
 	const top = useSharedValue<number>(
-		(resourcesSharedMap.value[item.resourceId].position - 1) * SONG_HEIGHT
+		(resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT
 	);
-	resourcesSharedMap.value;
 
 	useAnimatedReaction(
-		() => resourcesSharedMap.value[item.resourceId].position,
+		() => resourcesSharedMap.value[item.resourceId],
 		(currentPosition, previousPosition) => {
-			if (currentPosition !== previousPosition)
+			if (currentPosition !== previousPosition && currentPosition != -1)
 				if (!moving.value) {
 					top.value = withSpring((currentPosition - 1) * SONG_HEIGHT);
 					position.value = currentPosition.toString();
 				}
 		},
-		[moving, position]
+		[moving]
 	);
 
 	const panHandler = Gesture.Pan()
@@ -141,10 +175,10 @@ const AnimatedResource = ({
 
 			const newPosition = clamp(Math.floor(positionY / SONG_HEIGHT), 1, resourcesCount);
 
-			if (newPosition !== resourcesSharedMap.value[item.resourceId].position) {
+			if (newPosition !== resourcesSharedMap.value[item.resourceId]) {
 				resourcesSharedMap.value = objectMove(
 					resourcesSharedMap.value,
-					resourcesSharedMap.value[item.resourceId].position,
+					resourcesSharedMap.value[item.resourceId],
 					newPosition
 				);
 
@@ -152,9 +186,7 @@ const AnimatedResource = ({
 			}
 		})
 		.onEnd(() => {
-			top.value = withSpring(
-				(resourcesSharedMap.value[item.resourceId].position - 1) * SONG_HEIGHT
-			);
+			top.value = withSpring((resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT);
 			moving.value = false;
 		})
 		.hitSlop({ right: 0, width: 60 });
@@ -184,11 +216,16 @@ const AnimatedResource = ({
 	return (
 		<GestureDetector gesture={panHandler}>
 			<Animated.View style={animatedStyle}>
-				<ReText text={position} style={{ fontSize: 14, marginRight: -15, marginLeft: 0 }} />
+				<ReText text={position} style={{ fontSize: 14, marginRight: 0, marginLeft: 0 }} />
 				<Resource
 					resourceId={item.resourceId}
 					parentId={item.parentId}
 					category={category}
+				/>
+				<DeleteButton
+					onPress={() => {
+						deleteResource(item.resourceId);
+					}}
 				/>
 				<AlignJustify className="text-foreground" style={{ marginRight: 20 }} />
 			</Animated.View>
@@ -196,20 +233,22 @@ const AnimatedResource = ({
 	);
 };
 
-const SortableList = ({
-	resources,
-	resourcesMap,
-	category,
-}: {
-	resources: ListItem[];
-	resourcesMap: Record<string, ListItem>;
-	category: Category;
-}) => {
-	const resourcesSharedMap = useSharedValue(resourcesMap);
+const SortableList = ({ resources, category }: { resources: ListItem[]; category: Category }) => {
+	const [resourcesState, setResourcesState] = useState<ListItem[]>(resources);
 	const scrollY = useSharedValue(0);
 	const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
 	const dimensions = useWindowDimensions();
 	const insets = useSafeAreaInsets();
+
+	const resourcesSharedMap = useSharedValue(
+		resourcesState.reduce<Record<string, number>>(
+			(map: { [resourceId: string]: number }, obj: ListItem) => {
+				map[obj.resourceId] = obj.position;
+				return map;
+			},
+			{}
+		)
+	);
 
 	// useAnimatedReaction(
 	// 	() => scrollY.value,
@@ -221,9 +260,16 @@ const SortableList = ({
 	const handleScroll = useAnimatedScrollHandler((event) => {
 		scrollY.value = event.contentOffset.y;
 	});
+	const deleteResource = (resourceId: string) => {
+		setResourcesState((prevResources) =>
+			prevResources.filter((resource) => resource.resourceId !== resourceId)
+		);
+
+		resourcesSharedMap.value = objectDelete(resourcesSharedMap.value, resourceId);
+	};
 
 	const containerHeight = dimensions.height - insets.top - insets.bottom;
-	const contentHeight = resources.length * SONG_HEIGHT;
+	const contentHeight = resourcesState.length * SONG_HEIGHT;
 
 	return (
 		<Animated.ScrollView
@@ -234,13 +280,14 @@ const SortableList = ({
 			style={{ flex: 1, position: "relative" }}
 			contentContainerStyle={{ height: contentHeight }}
 		>
-			{resources.map((item, index) => (
+			{resourcesState.map((item, index) => (
 				<AnimatedResource
 					key={index}
 					item={item}
 					category={category}
+					deleteResource={deleteResource}
 					resourcesSharedMap={resourcesSharedMap}
-					resourcesCount={resources.length}
+					resourcesCount={resourcesState.length}
 					scrollY={scrollY}
 					contentHeight={contentHeight}
 					containerHeight={containerHeight}
@@ -258,10 +305,6 @@ const ListRearrangeModal = () => {
 		listId,
 		userId: list!.userId,
 	});
-	const ListItemsMap = listItems.reduce<Record<string, ListItem>>((map, obj) => {
-		map[obj.resourceId] = obj;
-		return map;
-	}, {});
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
@@ -272,11 +315,7 @@ const ListRearrangeModal = () => {
 							title: `${list?.name}`,
 						}}
 					/>
-					<SortableList
-						resources={listItems}
-						resourcesMap={ListItemsMap}
-						category={list!.category}
-					/>
+					<SortableList resources={listItems} category={list!.category} />
 				</SafeAreaView>
 			</SafeAreaProvider>
 		</GestureHandlerRootView>

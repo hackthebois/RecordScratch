@@ -27,7 +27,7 @@ import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import Animated from "react-native-reanimated";
+import Animated, { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -88,6 +88,12 @@ const RootLayout = () => {
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 	const ref = useNavigationContainerRef();
 	const [updatesHandled, setUpdatesHandled] = useState(false);
+
+	// This is the default configuration
+	configureReanimatedLogger({
+		level: ReanimatedLogLevel.error,
+		strict: false, // Reanimated runs in strict mode by default
+	});
 
 	useEffect(() => {
 		const preload = async () => {
