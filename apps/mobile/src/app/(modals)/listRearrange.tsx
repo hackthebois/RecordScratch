@@ -10,6 +10,7 @@ import Animated, {
 	useAnimatedRef,
 	useAnimatedScrollHandler,
 	useAnimatedStyle,
+	useDerivedValue,
 	useSharedValue,
 	withSpring,
 	withTiming,
@@ -42,18 +43,29 @@ function objectMove(resources: Record<string, number>, from: number, to: number)
 	}
 	return newResources;
 }
-function objectDelete(resources: Record<string, number>, resourceId: string) {
-	"worklet";
-	const newResources: Record<string, number> = {};
-	const positionToDelete = resources[resourceId];
-	for (const id in resources) {
-		if (id !== resourceId) {
-			const currentItem = resources[id];
-			newResources[id] = currentItem > positionToDelete ? currentItem - 1 : currentItem;
-		}
-	}
+// function objectDelete(resources: Record<string, number>, resourceId: string) {
+// 	"worklet";
+// 	const newResources: Record<string, number> = {};
+// 	const positionToDelete = resources[resourceId];
+// 	for (const id in resources) {
+// 		if (id !== resourceId) {
+// 			const currentItem = resources[id];
+// 			newResources[id] = currentItem > positionToDelete ? currentItem - 1 : currentItem;
+// 		}
+// 	}
 
-	return newResources;
+// 	return newResources;
+// }
+
+function setMap(resources: ListItem[]) {
+	"worklet";
+	return resources.reduce<Record<string, number>>(
+		(map: { [resourceId: string]: number }, obj: ListItem) => {
+			map[obj.resourceId] = obj.position;
+			return map;
+		},
+		{}
+	);
 }
 
 export const DeleteButton = ({
@@ -138,7 +150,7 @@ const AnimatedResource = ({
 	useAnimatedReaction(
 		() => resourcesSharedMap.value[item.resourceId],
 		(currentPosition, previousPosition) => {
-			if (currentPosition !== previousPosition && currentPosition != -1)
+			if (currentPosition && currentPosition !== previousPosition)
 				if (!moving.value) {
 					top.value = withSpring((currentPosition - 1) * SONG_HEIGHT);
 					position.value = currentPosition.toString();
@@ -154,17 +166,6 @@ const AnimatedResource = ({
 		})
 		.onUpdate((event) => {
 			const positionY = event.absoluteY + scrollY.value;
-
-			// if (positionY <= scrollY.value + SONG_HEIGHT) {
-			// 	// scroll up
-			// 	scrollY.set(withTiming(0, { duration: 200 }));
-			// } else if (positionY >= scrollY.value + screenHeight - SONG_HEIGHT) {
-			// 	// scroll down
-			// 	const maxScroll = contentHeight - containerHeight;
-			// 	scrollY.set(withTiming(maxScroll, { duration: 200 }));
-			// } else {
-			// 	cancelAnimation(scrollY);
-			// }
 
 			top.value = withTiming(
 				clamp(positionY - SONG_HEIGHT * 2, 0, contentHeight - SONG_HEIGHT),
@@ -209,6 +210,7 @@ const AnimatedResource = ({
 			alignItems: "center",
 			justifyContent: "space-around",
 			width: "100%",
+			visibility: "false",
 		}),
 		[moving]
 	);
@@ -240,36 +242,35 @@ const SortableList = ({ resources, category }: { resources: ListItem[]; category
 	const dimensions = useWindowDimensions();
 	const insets = useSafeAreaInsets();
 
-	const resourcesSharedMap = useSharedValue(
-		resourcesState.reduce<Record<string, number>>(
-			(map: { [resourceId: string]: number }, obj: ListItem) => {
-				map[obj.resourceId] = obj.position;
-				return map;
-			},
-			{}
-		)
-	);
-
-	// useAnimatedReaction(
-	// 	() => scrollY.value,
-	// 	(scrolling) => {
-	// 		scrollTo(scrollViewRef, 0, scrolling, false);
-	// 	}
-	// );
-
 	const handleScroll = useAnimatedScrollHandler((event) => {
 		scrollY.value = event.contentOffset.y;
 	});
-	const deleteResource = (resourceId: string) => {
-		setResourcesState((prevResources) =>
-			prevResources.filter((resource) => resource.resourceId !== resourceId)
-		);
-
-		resourcesSharedMap.value = objectDelete(resourcesSharedMap.value, resourceId);
-	};
 
 	const containerHeight = dimensions.height - insets.top - insets.bottom;
 	const contentHeight = resourcesState.length * SONG_HEIGHT;
+
+	const resourcesSharedMap = useDerivedValue(() => {
+		const derived = setMap(resourcesState);
+		console.log("derived: ", derived);
+		return derived;
+	}, [resourcesState]);
+
+	const deleteResource = (resourceId: string) => {
+		setResourcesState((prevResources) => {
+			const removedResourcePosition = resourcesSharedMap.value[resourceId];
+
+			// Filter out the resource to be removed and adjust positions
+			const updatedResources = prevResources.filter((item) => item.resourceId != resourceId);
+
+			return updatedResources.map((resource) => ({
+				...resource,
+				position:
+					resourcesSharedMap.value[resource.resourceId] >= removedResourcePosition
+						? resourcesSharedMap.value[resource.resourceId] - 1 // Shift positions lower for resources after the removed one
+						: resourcesSharedMap.value[resource.resourceId],
+			}));
+		});
+	};
 
 	return (
 		<Animated.ScrollView
@@ -280,9 +281,9 @@ const SortableList = ({ resources, category }: { resources: ListItem[]; category
 			style={{ flex: 1, position: "relative" }}
 			contentContainerStyle={{ height: contentHeight }}
 		>
-			{resourcesState.map((item, index) => (
+			{resourcesState.map((item) => (
 				<AnimatedResource
-					key={index}
+					key={item.resourceId}
 					item={item}
 					category={category}
 					deleteResource={deleteResource}

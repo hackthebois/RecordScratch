@@ -11,7 +11,6 @@
 	"dependencies": {
 		"@types/uuid": "^10.0.0",
 		"dotenv": "^16.4.5",
-		"expo-haptics": "^14.0.1",
 		"ngrok": "^5.0.0-beta.2",
 		"turbo": "^1.13.3",
 		"typescript": "~5.3.3"
@@ -32,5 +31,6 @@
 		"esbuild",
 		"ngrok",
 		"protobufjs"
-	]
+	],
+	"packageManager": "^bun@1.1.43"
 }
