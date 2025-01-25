@@ -6,11 +6,12 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { ListPlus, Pencil, Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { timeAgo } from "@recordscratch/lib";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
-import { Pressable, ScrollView, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ScrollView, TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 const ListPage = () => {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,7 +21,7 @@ const ListPage = () => {
 
 	if (!list) return <NotFoundScreen />;
 
-	const [profile] = api.profiles.get.useSuspenseQuery(list.profile.handle);
+	const profile = useAuth((s) => s.profile);
 	const userProfile = profile!;
 	const isProfile = userProfile.userId === list?.userId;
 
@@ -37,11 +38,14 @@ const ListPage = () => {
 					title: "",
 					headerRight: () =>
 						isProfile ? (
-							<TouchableOpacity
-								onPress={() => router.navigate(`/lists/${listId}/settings`)}
+							<Link
+								href={{ pathname: "/lists/[id]/settings", params: { id: listId } }}
+								asChild
 							>
-								<Settings size={30} className="mr-6 text-foreground" />
-							</TouchableOpacity>
+								<TouchableOpacity>
+									<Settings size={22} className="mr-6 text-foreground" />
+								</TouchableOpacity>
+							</Link>
 						) : null,
 				}}
 			/>
@@ -80,7 +84,7 @@ const ListPage = () => {
 					}}
 					asChild
 				>
-					<Button variant="outline" style={{ width: (dimensions.width * 2) / 5 }}>
+					<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
 						<ListPlus />
 					</Button>
 				</Link>
@@ -93,7 +97,7 @@ const ListPage = () => {
 					}}
 					asChild
 				>
-					<Button variant="outline" style={{ width: (dimensions.width * 2) / 5 }}>
+					<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
 						<Pencil />
 					</Button>
 				</Link>

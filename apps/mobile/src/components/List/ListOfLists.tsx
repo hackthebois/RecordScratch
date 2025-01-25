@@ -38,7 +38,7 @@ const ListsItem = ({
 
 	return (
 		<View
-			className="flex h-full flex-col gap-96"
+			className="flex flex-col gap-96"
 			style={{
 				width: size,
 			}}
@@ -52,7 +52,7 @@ const ListsItem = ({
 						}
 					}}
 					// {...(onClick ? {} : link)}
-					href={`/lists/${listsItem.id}`}
+					href={{ pathname: `/lists/[id]`, params: { id: listsItem.id } }}
 					className="flex w-full cursor-pointer flex-col"
 				>
 					{ListItemContent}
@@ -63,12 +63,11 @@ const ListsItem = ({
 };
 const ListOfLists = ({
 	lists,
-	type = "scroll",
 	onPress: onClick,
 	size = 125,
+	orientation,
 }: {
 	lists: ListsType[] | undefined;
-	type?: "wrap" | "scroll";
 	orientation?: "vertical" | "horizontal";
 	size?: number;
 	onPress?: (listId: string) => void;
@@ -79,22 +78,16 @@ const ListOfLists = ({
 		</View>
 	);
 
-	if (type === "scroll") {
+	if (orientation === "vertical") {
 		return (
 			<FlatList
 				data={lists}
 				keyExtractor={(index) => index.id}
 				renderItem={renderItem}
-				contentContainerStyle={{
-					flexGrow: 1,
-					maxWidth: "100%",
-				}}
 				showsVerticalScrollIndicator={false}
 				horizontal={false}
-				style={{
-					maxHeight: 288, // Tailwind's "max-h-72" in pixels
-					width: "100%",
-				}}
+				columnWrapperStyle={{ justifyContent: "space-around" }}
+				numColumns={3}
 			/>
 		);
 	} else {
@@ -111,7 +104,8 @@ const ListOfLists = ({
 					marginLeft: 8,
 					marginVertical: 16,
 				}}
-				showsHorizontalScrollIndicator={true}
+				style={{ marginLeft: 10 }}
+				showsHorizontalScrollIndicator={false}
 				horizontal={true}
 			/>
 		);
@@ -119,42 +113,3 @@ const ListOfLists = ({
 };
 
 export default ListOfLists;
-
-// const ListOfLists = ({
-// 	lists,
-// 	type = "scroll",
-// 	onClick,
-// 	size = 125,
-// }: {
-// 	lists: ListsType[] | undefined;
-// 	type?: "wrap" | "scroll";
-// 	orientation?: "vertical" | "horizontal";
-// 	size?: number;
-// 	onClick?: (listId: string) => void;
-// }) => {
-// 	if (type === "scroll") {
-// 		return (
-// 			<ScrollView className="w-full max-w-[calc(100vw-32px)] sm:max-w-[calc(100vw-48px)]">
-// 				<View className="flex max-h-60 flex-wrap gap-4 sm:max-h-72 md:max-h-72 lg:max-h-72 xl:max-h-72">
-// 					{lists &&
-// 						lists.map((list, index) => (
-// 							<View className="mb-3" key={index}>
-// 								<ListsItem listsItem={list} size={size} onClick={onClick} />
-// 							</View>
-// 						))}
-// 				</View>
-// 			</ScrollView>
-// 		);
-// 	} else {
-// 		return (
-// 			<View className="flex flex-row flex-wrap justify-center ">
-// 				{lists &&
-// 					lists.map((list, index) => (
-// 						<ListsItem key={index} listsItem={list} size={size} onClick={onClick} />
-// 					))}
-// 			</View>
-// 		);
-// 	}
-// };
-
-// export default ListOfLists;

@@ -4,7 +4,6 @@ import { Category, ListItem } from "@recordscratch/types";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
 	cancelAnimation,
-	scrollTo,
 	SharedValue,
 	useAnimatedReaction,
 	useAnimatedRef,
@@ -15,15 +14,15 @@ import Animated, {
 	withSpring,
 	withTiming,
 } from "react-native-reanimated";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams, useRouter } from "expo-router";
 import { api } from "@/lib/api";
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { AlignJustify, Trash2 } from "@/lib/icons/IconsLoader";
-import { useWindowDimensions } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { AlignJustify, ChevronLeft, Save, Trash2 } from "@/lib/icons/IconsLoader";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import ReText from "@/components/ui/retext";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@recordscratch/lib";
+import { Text } from "@/components/ui/text";
 
 const SONG_HEIGHT = 70;
 
@@ -31,31 +30,18 @@ function clamp(value: number, lowerBound: number, upperBound: number) {
 	"worklet";
 	return Math.max(lowerBound, Math.min(value, upperBound));
 }
-function objectMove(resources: Record<string, number>, from: number, to: number) {
+function objectMove(positions: Record<string, number>, from: number, to: number) {
 	"worklet";
-	const newResources: Record<string, number> = { ...resources };
-	for (const id in resources) {
-		if (resources[id] === from) {
-			newResources[id] = to;
-		} else if (resources[id] === to) {
-			newResources[id] = from;
+	const newPositions: Record<string, number> = { ...positions };
+	for (const id in positions) {
+		if (positions[id] === from) {
+			newPositions[id] = to;
+		} else if (positions[id] === to) {
+			newPositions[id] = from;
 		}
 	}
-	return newResources;
+	return newPositions;
 }
-// function objectDelete(resources: Record<string, number>, resourceId: string) {
-// 	"worklet";
-// 	const newResources: Record<string, number> = {};
-// 	const positionToDelete = resources[resourceId];
-// 	for (const id in resources) {
-// 		if (id !== resourceId) {
-// 			const currentItem = resources[id];
-// 			newResources[id] = currentItem > positionToDelete ? currentItem - 1 : currentItem;
-// 		}
-// 	}
-
-// 	return newResources;
-// }
 
 function setMap(resources: ListItem[]) {
 	"worklet";
@@ -68,20 +54,34 @@ function setMap(resources: ListItem[]) {
 	);
 }
 
-export const DeleteButton = ({
-	onPress,
-	className,
-}: {
-	className?: string;
-	onPress: () => void;
-}) => {
+function getUpdatedResources(
+	resources: ListItem[],
+	resourceId: string,
+	positions: Record<string, number>
+) {
+	const updatedResources: ListItem[] = [];
+	let deletedResource: ListItem | null = null;
+
+	for (const resource of resources) {
+		if (resource.resourceId === resourceId) {
+			deletedResource = resource;
+		} else {
+			updatedResources.push({
+				...resource,
+				position:
+					positions[resource.resourceId] >= positions[resourceId]
+						? positions[resource.resourceId] - 1 // Adjust positions
+						: positions[resource.resourceId],
+			});
+		}
+	}
+
+	return { updatedResources, deletedResource };
+}
+
+export const DeleteButton = ({ onPress }: { onPress: () => void }) => {
 	return (
-		<Button
-			className={cn("size-9", className)}
-			onPress={onPress}
-			variant="destructive"
-			size="icon"
-		>
+		<Button className="size-9" onPress={onPress} variant="destructive" size="icon">
 			<Trash2 size={18} />
 		</Button>
 	);
@@ -115,7 +115,7 @@ const Resource = ({
 			titleCss="font-medium"
 			showArtist={false}
 			showLink={false}
-			className=" min-w-80"
+			className="min-w-72"
 		/>
 	);
 };
@@ -127,19 +127,17 @@ const AnimatedResource = ({
 	resourcesSharedMap,
 	resourcesCount,
 	deleteResource,
+	hasListChanged,
 	contentHeight,
-	containerHeight,
-	screenHeight,
 }: {
 	item: ListItem;
 	category: Category;
 	scrollY: SharedValue<number>;
 	resourcesSharedMap: SharedValue<Record<string, number>>;
 	resourcesCount: number;
+	hasListChanged: SharedValue<boolean>;
 	deleteResource: (resourceId: string) => void;
-	containerHeight: number;
 	contentHeight: number;
-	screenHeight: number;
 }) => {
 	const moving = useSharedValue<boolean>(false);
 	const position = useSharedValue<string>(resourcesSharedMap.value[item.resourceId].toString());
@@ -154,6 +152,7 @@ const AnimatedResource = ({
 				if (!moving.value) {
 					top.value = withSpring((currentPosition - 1) * SONG_HEIGHT);
 					position.value = currentPosition.toString();
+					if (!hasListChanged.value) hasListChanged.value = true;
 				}
 		},
 		[moving]
@@ -168,9 +167,9 @@ const AnimatedResource = ({
 			const positionY = event.absoluteY + scrollY.value;
 
 			top.value = withTiming(
-				clamp(positionY - SONG_HEIGHT * 2, 0, contentHeight - SONG_HEIGHT),
+				clamp(positionY - SONG_HEIGHT * 2, 0, contentHeight - SONG_HEIGHT), // modal causing song_height offset
 				{
-					duration: 32,
+					duration: 16,
 				}
 			);
 
@@ -208,7 +207,7 @@ const AnimatedResource = ({
 			shadowRadius: 10,
 			flexDirection: "row",
 			alignItems: "center",
-			justifyContent: "space-around",
+			justifyContent: "space-between",
 			width: "100%",
 			visibility: "false",
 		}),
@@ -218,7 +217,7 @@ const AnimatedResource = ({
 	return (
 		<GestureDetector gesture={panHandler}>
 			<Animated.View style={animatedStyle}>
-				<ReText text={position} style={{ fontSize: 14, marginRight: 0, marginLeft: 0 }} />
+				<ReText text={position} style={{ fontSize: 14, width: 20, paddingLeft: 10 }} />
 				<Resource
 					resourceId={item.resourceId}
 					parentId={item.parentId}
@@ -226,6 +225,7 @@ const AnimatedResource = ({
 				/>
 				<DeleteButton
 					onPress={() => {
+						cancelAnimation(top);
 						deleteResource(item.resourceId);
 					}}
 				/>
@@ -235,41 +235,37 @@ const AnimatedResource = ({
 	);
 };
 
-const SortableList = ({ resources, category }: { resources: ListItem[]; category: Category }) => {
-	const [resourcesState, setResourcesState] = useState<ListItem[]>(resources);
+const SortableList = ({
+	resourcesState,
+	setResourcesState,
+	deletedResourcesRef,
+	resourcesSharedMap,
+	hasListChanged,
+	category,
+}: {
+	resourcesState: ListItem[];
+	setResourcesState: (resources: ListItem[]) => void;
+	deletedResourcesRef: React.MutableRefObject<ListItem[]>;
+	resourcesSharedMap: SharedValue<Record<string, number>>;
+	hasListChanged: SharedValue<boolean>;
+	category: Category;
+}) => {
 	const scrollY = useSharedValue(0);
 	const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
-	const dimensions = useWindowDimensions();
-	const insets = useSafeAreaInsets();
+	const contentHeight = resourcesState.length * SONG_HEIGHT;
 
 	const handleScroll = useAnimatedScrollHandler((event) => {
 		scrollY.value = event.contentOffset.y;
 	});
 
-	const containerHeight = dimensions.height - insets.top - insets.bottom;
-	const contentHeight = resourcesState.length * SONG_HEIGHT;
-
-	const resourcesSharedMap = useDerivedValue(() => {
-		const derived = setMap(resourcesState);
-		console.log("derived: ", derived);
-		return derived;
-	}, [resourcesState]);
-
 	const deleteResource = (resourceId: string) => {
-		setResourcesState((prevResources) => {
-			const removedResourcePosition = resourcesSharedMap.value[resourceId];
-
-			// Filter out the resource to be removed and adjust positions
-			const updatedResources = prevResources.filter((item) => item.resourceId != resourceId);
-
-			return updatedResources.map((resource) => ({
-				...resource,
-				position:
-					resourcesSharedMap.value[resource.resourceId] >= removedResourcePosition
-						? resourcesSharedMap.value[resource.resourceId] - 1 // Shift positions lower for resources after the removed one
-						: resourcesSharedMap.value[resource.resourceId],
-			}));
-		});
+		const { updatedResources, deletedResource } = getUpdatedResources(
+			resourcesState,
+			resourceId,
+			resourcesSharedMap.value
+		);
+		setResourcesState(updatedResources);
+		deletedResourcesRef.current = [...deletedResourcesRef.current, deletedResource!];
 	};
 
 	return (
@@ -289,10 +285,9 @@ const SortableList = ({ resources, category }: { resources: ListItem[]; category
 					deleteResource={deleteResource}
 					resourcesSharedMap={resourcesSharedMap}
 					resourcesCount={resourcesState.length}
+					hasListChanged={hasListChanged}
 					scrollY={scrollY}
 					contentHeight={contentHeight}
-					containerHeight={containerHeight}
-					screenHeight={dimensions.height}
 				/>
 			))}
 		</Animated.ScrollView>
@@ -300,6 +295,7 @@ const SortableList = ({ resources, category }: { resources: ListItem[]; category
 };
 
 const ListRearrangeModal = () => {
+	const router = useRouter();
 	const { listId } = useLocalSearchParams<{ listId: string }>();
 	const [list] = api.lists.get.useSuspenseQuery({ id: listId });
 	const [listItems] = api.lists.resources.get.useSuspenseQuery({
@@ -307,16 +303,80 @@ const ListRearrangeModal = () => {
 		userId: list!.userId,
 	});
 
+	const [resourcesState, setResourcesState] = useState<ListItem[]>(listItems);
+	const deletedResourcesRef = useRef<ListItem[]>([]);
+	const resourcesSharedMap = useDerivedValue(() => setMap(resourcesState), [resourcesState]);
+	const hasListChanged = useSharedValue<boolean>(false);
+
+	const invalidate = async () => {
+		await utils.lists.resources.get.invalidate({
+			listId,
+		});
+		await utils.lists.getUser.invalidate({
+			userId: list?.profile.userId,
+		});
+	};
+
+	const utils = api.useUtils();
+	const { mutateAsync: updatePositions } = api.lists.resources.updatePositions.useMutation();
+	const { mutateAsync: deletePositions } = api.lists.resources.multipleDelete.useMutation();
+
+	const handleSave = async () => {
+		if (deletedResourcesRef.current.length || hasListChanged.value)
+			await updatePositions({
+				listId,
+				resources: resourcesState.map((resource) => ({
+					...resource,
+					position: resourcesSharedMap.value[resource.resourceId],
+				})),
+			});
+		if (deletedResourcesRef.current.length) {
+			await deletePositions({
+				listId,
+				resources: deletedResourcesRef.current,
+			});
+		}
+		await invalidate();
+	};
+
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<SafeAreaProvider>
 				<SafeAreaView style={{ flex: 1 }}>
 					<Stack.Screen
 						options={{
-							title: `${list?.name}`,
+							headerTitle: () => (
+								<View className="flex flex-row justify-between items-center w-full pr-10">
+									<TouchableOpacity
+										className="flex flex-row items-center -m-5"
+										onPress={() => {
+											router.back();
+										}}
+									>
+										<ChevronLeft />
+										<Text className=" text-xl">Back</Text>
+									</TouchableOpacity>
+									<Text variant="h4">Edit {list?.name}</Text>
+									<TouchableOpacity
+										onPress={() => {
+											handleSave();
+											router.back();
+										}}
+									>
+										<Save />
+									</TouchableOpacity>
+								</View>
+							),
 						}}
 					/>
-					<SortableList resources={listItems} category={list!.category} />
+					<SortableList
+						resourcesState={resourcesState}
+						setResourcesState={setResourcesState}
+						deletedResourcesRef={deletedResourcesRef}
+						resourcesSharedMap={resourcesSharedMap}
+						hasListChanged={hasListChanged}
+						category={list!.category}
+					/>
 				</SafeAreaView>
 			</SafeAreaProvider>
 		</GestureHandlerRootView>

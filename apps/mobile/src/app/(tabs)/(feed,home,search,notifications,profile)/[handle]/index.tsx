@@ -2,7 +2,6 @@ import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
 import DistributionChart from "@/components/DistributionChart";
 import { FollowButton } from "@/components/Followers/FollowButton";
-import ListImage from "@/components/List/ListImage";
 import ListOfLists from "@/components/List/ListOfLists";
 import { TopList } from "@/components/List/TopList";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -11,13 +10,13 @@ import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
-import { Eraser } from "@/lib/icons/IconsLoader";
+import { ChevronRight, Eraser } from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
-import { ListWithResources, Profile } from "@recordscratch/types";
+import { ListWithResources, ListsType, Profile } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, TouchableOpacity, View } from "react-native";
 
 const HandlePage = () => {
 	const { handle } = useLocalSearchParams<{ handle: string }>();
@@ -39,6 +38,25 @@ export const EditButton = ({ editMode, onPress }: { editMode: boolean; onPress: 
 			>
 				<Eraser size={20} className="text-foreground" />
 			</Button>
+		</View>
+	);
+};
+
+const Lists = ({ handle, name, lists }: { handle: string; name: string; lists: ListsType[] }) => {
+	return (
+		<View className="px-4">
+			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }} asChild>
+				<Button
+					variant="outline"
+					className="flex flex-row items-center justify-center pl-4"
+				>
+					<Text variant="h2">{name}'s Lists</Text>
+					<ChevronRight />
+				</Button>
+			</Link>
+			<View className="px-2">
+				<ListOfLists lists={lists} orientation="horizontal" size={100} />
+			</View>
 		</View>
 	);
 };
@@ -242,7 +260,7 @@ export const ProfilePage = ({
 					</Link>
 				</View>
 				<TopListsTab {...topLists} isProfile={isProfile} />
-				<ListOfLists lists={lists} type="wrap" size={100} />
+				<Lists handle={profile.handle} name={profile.name} lists={lists} />
 			</ScrollView>
 		</View>
 	);

@@ -201,10 +201,10 @@ export const listsRouter = router({
 						.set({ updatedAt: new Date() })
 						.where(eq(lists.id, listId)),
 						await Promise.all(
-							resources.map((item, index) => {
+							resources.map((item) => {
 								return db
 									.update(listResources)
-									.set({ position: index + 1 })
+									.set({ position: item.position })
 									.where(
 										and(
 											eq(listResources.resourceId, item.resourceId),

@@ -211,6 +211,14 @@ const RootLayout = () => {
 								}}
 							/>
 							<Stack.Screen
+								name="(modals)/createList"
+								options={{
+									title: "Create List",
+									presentation: "modal",
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
 								name="(modals)/reply/rating"
 								options={{
 									title: "",
