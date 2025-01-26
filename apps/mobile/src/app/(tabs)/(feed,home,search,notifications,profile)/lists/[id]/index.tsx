@@ -21,9 +21,8 @@ const ListPage = () => {
 
 	if (!list) return <NotFoundScreen />;
 
-	const profile = useAuth((s) => s.profile);
-	const userProfile = profile!;
-	const isProfile = userProfile.userId === list?.userId;
+	const profile = useAuth((s) => s.profile!);
+	const isProfile = profile.userId === list?.userId;
 
 	const [listItems] = api.lists.resources.get.useSuspenseQuery({
 		listId,
@@ -35,7 +34,7 @@ const ListPage = () => {
 		<ScrollView className="flex flex-col gap-6">
 			<Stack.Screen
 				options={{
-					title: "",
+					title: `${list.name}`,
 					headerRight: () =>
 						isProfile ? (
 							<Link
@@ -50,58 +49,61 @@ const ListPage = () => {
 				}}
 			/>
 			<Metadata
-				title={list.name}
-				type={`${list.category} list`}
 				cover={<ListImage listItems={listItems} category={list.category} size={200} />}
 				size="sm"
 			>
-				<View className="flex flex-row items-center gap-2">
-					<Link
-						href={{
-							pathname: "/[handle]",
-							params: {
-								handle: String(userProfile.handle),
-							},
-						}}
-					>
-						<View className="flex flex-row items-center gap-2">
-							<UserAvatar imageUrl={getImageUrl(userProfile)} />
-							<Text className="flex text-lg">{userProfile.name}</Text>
-						</View>
-					</Link>
-					<Text className="text-muted-foreground">• {timeAgo(list.updatedAt)}</Text>
+				<View className="flex flex-col items-center -mt-4">
+					<Text>{list.category} LIST</Text>
+					<View className="flex flex-row items-center gap-2  mb-5">
+						<Link
+							href={{
+								pathname: "/[handle]",
+								params: {
+									handle: String(list.profile.handle),
+								},
+							}}
+						>
+							<View className="flex flex-row items-center gap-2">
+								<UserAvatar imageUrl={getImageUrl(list.profile)} />
+								<Text className="flex text-lg">{list.profile.name}</Text>
+							</View>
+						</Link>
+						<Text className="text-muted-foreground">• {timeAgo(list.updatedAt)}</Text>
+					</View>
 				</View>
 			</Metadata>
-			<View className="flex flex-row my-4 justify-around">
-				<Link
-					href={{
-						pathname: "/(modals)/searchResource",
-						params: {
-							listId,
-							category: list.category,
-							isTopList: list.onProfile.toString(),
-						},
-					}}
-					asChild
-				>
-					<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
-						<ListPlus />
-					</Button>
-				</Link>
-				<Link
-					href={{
-						pathname: "/(modals)/listRearrange",
-						params: {
-							listId,
-						},
-					}}
-					asChild
-				>
-					<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
-						<Pencil />
-					</Button>
-				</Link>
-			</View>
+			{isProfile && (
+				<View className="flex flex-row my-4 justify-around">
+					<Link
+						href={{
+							pathname: "/(modals)/searchResource",
+							params: {
+								listId,
+								category: list.category,
+								isTopList: list.onProfile.toString(),
+							},
+						}}
+						asChild
+					>
+						<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
+							<ListPlus />
+						</Button>
+					</Link>
+					<Link
+						href={{
+							pathname: "/(modals)/listRearrange",
+							params: {
+								listId,
+							},
+						}}
+						asChild
+					>
+						<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
+							<Pencil />
+						</Button>
+					</Link>
+				</View>
+			)}
 			<ListResources items={listItems} category={list.category} />
 		</ScrollView>
 	);

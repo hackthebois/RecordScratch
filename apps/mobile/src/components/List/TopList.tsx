@@ -10,6 +10,38 @@ import { ResourceItem } from "../Item/ResourceItem";
 import { Button } from "../ui/button";
 import { DeleteButton } from "./ModifyResource";
 
+const Resource = ({
+	resource,
+	category,
+	top6Width,
+}: {
+	resource: UserListItem;
+	category: Category;
+	top6Width: number;
+}) => {
+	return category != "ARTIST" ? (
+		<ResourceItem
+			resource={{
+				parentId: resource.parentId!,
+				resourceId: resource.resourceId,
+				category,
+			}}
+			direction="vertical"
+			titleCss="font-medium line-clamp-2 text-center text-base"
+			showArtist={false}
+			imageWidthAndHeight={top6Width}
+			width={top6Width}
+		/>
+	) : (
+		<ArtistItem
+			artistId={resource.resourceId}
+			direction="vertical"
+			textCss="font-medium line-clamp-2 -mt-2 text-center text-base"
+			imageWidthAndHeight={top6Width}
+		/>
+	);
+};
+
 export const TopList = ({
 	category,
 	editMode,
@@ -42,47 +74,6 @@ export const TopList = ({
 			utils.lists.getUser.invalidate({ userId });
 		},
 	});
-
-	let renderItem: (resource: UserListItem) => JSX.Element;
-	const resourceOptions = {
-		titleCss: "font-medium line-clamp-2 text-center text-base",
-		showArtist: false,
-		imageWidthAndHeight: top6Width,
-		width: top6Width,
-	};
-	if (category == "ALBUM")
-		renderItem = (resource: UserListItem) => (
-			<ResourceItem
-				resource={{
-					parentId: resource.parentId!,
-					resourceId: resource.resourceId,
-					category: "ALBUM",
-				}}
-				direction="vertical"
-				{...resourceOptions}
-			/>
-		);
-	else if (category == "SONG")
-		renderItem = (resource: UserListItem) => (
-			<ResourceItem
-				resource={{
-					parentId: resource.parentId!,
-					resourceId: resource.resourceId,
-					category: "SONG",
-				}}
-				direction="vertical"
-				{...resourceOptions}
-			/>
-		);
-	else
-		renderItem = (resource: UserListItem) => (
-			<ArtistItem
-				artistId={resource.resourceId}
-				direction="vertical"
-				textCss="font-medium line-clamp-2 -mt-2 text-center text-base"
-				imageWidthAndHeight={top6Width}
-			/>
-		);
 
 	if (!listId || !resources) {
 		return (
@@ -141,7 +132,7 @@ export const TopList = ({
 		>
 			{resources.map((resource) => (
 				<View className="relative mb-1 h-auto overflow-hidden" key={resource.resourceId}>
-					{renderItem(resource)}
+					<Resource resource={resource} category={category} top6Width={top6Width} />
 					<DeleteButton
 						isVisible={editMode}
 						position={resource.position}

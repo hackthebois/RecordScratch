@@ -1,5 +1,5 @@
 import { ListsType } from "@recordscratch/types";
-import { FlatList, View } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 import ListImage from "./ListImage";
 import { Link } from "expo-router";
 import React from "react";
@@ -30,7 +30,7 @@ const ListsItem = ({
 			>
 				<ListImage listItems={listResources} category={listsItem.category} size={size} />
 			</View>
-			<Text className="truncate pl-1 pt-1 text-center text-sm font-medium">
+			<Text className="truncate pl-1 pt-1 text-center text-md font-medium">
 				{listsItem.name}
 			</Text>
 		</View>
@@ -66,19 +66,23 @@ const ListOfLists = ({
 	onPress: onClick,
 	size = 125,
 	orientation,
+	HeaderComponent,
 }: {
 	lists: ListsType[] | undefined;
 	orientation?: "vertical" | "horizontal";
 	size?: number;
 	onPress?: (listId: string) => void;
+	HeaderComponent?: React.ReactNode;
 }) => {
-	const renderItem = ({ item }: { item: ListsType }) => (
-		<View className="mb-3">
-			<ListsItem listsItem={item} size={size} onClick={onClick} />
-		</View>
-	);
-
 	if (orientation === "vertical") {
+		const dimensions = useWindowDimensions();
+
+		const renderItem = ({ item }: { item: ListsType }) => (
+			<View className="">
+				<ListsItem listsItem={item} size={dimensions.width / 3.5} onClick={onClick} />
+			</View>
+		);
+
 		return (
 			<FlatList
 				data={lists}
@@ -86,30 +90,36 @@ const ListOfLists = ({
 				renderItem={renderItem}
 				showsVerticalScrollIndicator={false}
 				horizontal={false}
-				columnWrapperStyle={{ justifyContent: "space-around" }}
-				numColumns={3}
-			/>
-		);
-	} else {
-		return (
-			<FlatList
-				data={lists}
-				keyExtractor={(index) => index.id}
-				renderItem={renderItem}
-				contentContainerStyle={{
-					flexDirection: "row",
+				columnWrapperStyle={{
+					marginLeft: dimensions.width / 32,
 					flexWrap: "wrap",
-					justifyContent: "center",
-					gap: 14,
-					marginLeft: 8,
-					marginVertical: 16,
+					gap: 15,
+					marginBottom: 20,
 				}}
-				style={{ marginLeft: 10 }}
-				showsHorizontalScrollIndicator={false}
-				horizontal={true}
+				numColumns={3}
+				className="h-full mt-4"
+				ListHeaderComponent={() => HeaderComponent}
 			/>
 		);
 	}
+	return (
+		<FlatList
+			data={lists}
+			keyExtractor={(index) => index.id}
+			renderItem={({ item }) => <ListsItem listsItem={item} size={size} onClick={onClick} />}
+			contentContainerStyle={{
+				flexDirection: "row",
+				flexWrap: "wrap",
+				justifyContent: "center",
+				gap: 14,
+				marginLeft: 8,
+				marginVertical: 16,
+			}}
+			style={{ marginLeft: 10 }}
+			showsHorizontalScrollIndicator={false}
+			horizontal={true}
+		/>
+	);
 };
 
 export default ListOfLists;

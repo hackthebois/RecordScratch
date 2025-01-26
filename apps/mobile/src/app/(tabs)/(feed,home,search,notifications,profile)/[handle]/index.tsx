@@ -2,62 +2,113 @@ import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
 import DistributionChart from "@/components/DistributionChart";
 import { FollowButton } from "@/components/Followers/FollowButton";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
 import ListOfLists from "@/components/List/ListOfLists";
-import { TopList } from "@/components/List/TopList";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import { ChevronRight, Eraser } from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
-import { ListWithResources, ListsType, Profile } from "@recordscratch/types";
-import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Category, ListWithResources, ListsType, Profile } from "@recordscratch/types";
+import { Href, Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
-import { Pressable, ScrollView, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, TouchableOpacity, View, useWindowDimensions } from "react-native";
 
-const HandlePage = () => {
-	const { handle } = useLocalSearchParams<{ handle: string }>();
-
-	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-
-	return <ProfilePage profile={profile} isProfile={false} />;
-};
-
-export const EditButton = ({ editMode, onPress }: { editMode: boolean; onPress: () => void }) => {
-	return (
-		<View className="flex items-center px-4">
-			<Button
-				className="w-full"
-				variant={editMode ? "destructive" : "outline"}
-				onPress={() => {
-					onPress();
-				}}
-			>
-				<Eraser size={20} className="text-foreground" />
-			</Button>
-		</View>
-	);
-};
-
-const Lists = ({ handle, name, lists }: { handle: string; name: string; lists: ListsType[] }) => {
+const ListsTab = ({
+	handle,
+	name,
+	lists,
+}: {
+	handle: string;
+	name: string;
+	lists: ListsType[];
+}) => {
 	return (
 		<View className="px-4">
 			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }} asChild>
-				<Button
-					variant="outline"
-					className="flex flex-row items-center justify-center pl-4"
-				>
-					<Text variant="h2">{name}'s Lists</Text>
+				<Button variant="outline" className="flex flex-row items-center justify-center">
+					<Text className="text-md">{name}'s Lists</Text>
 					<ChevronRight />
 				</Button>
 			</Link>
 			<View className="px-2">
-				<ListOfLists lists={lists} orientation="horizontal" size={100} />
+				<ListOfLists lists={lists} orientation="horizontal" size={110} />
 			</View>
 		</View>
+	);
+};
+
+const TopList = ({
+	category,
+	list,
+}: {
+	category: Category;
+	list: ListWithResources | undefined;
+}) => {
+	if (!list) return null;
+	const resources = list?.resources;
+	const top6Width = useWindowDimensions().width / 4;
+
+	return (
+		<View
+			className="flex flex-row flex-wrap gap-5"
+			style={{
+				marginLeft: resources.length > 0 ? top6Width / 4 : 0,
+				height: top6Width * 3.5,
+			}}
+		>
+			{resources.map((resource) => (
+				<View className="relative mb-1 h-auto overflow-hidden" key={resource.resourceId}>
+					{category != "ARTIST" ? (
+						<ResourceItem
+							resource={{
+								parentId: resource.parentId!,
+								resourceId: resource.resourceId,
+								category,
+							}}
+							direction="vertical"
+							titleCss="font-medium line-clamp-2 text-center text-base"
+							showArtist={false}
+							imageWidthAndHeight={top6Width}
+							width={top6Width}
+						/>
+					) : (
+						<ArtistItem
+							artistId={resource.resourceId}
+							direction="vertical"
+							textCss="font-medium line-clamp-2 -mt-2 text-center text-base"
+							imageWidthAndHeight={top6Width}
+						/>
+					)}
+				</View>
+			))}
+		</View>
+	);
+};
+
+const RenderedLink = ({
+	children,
+	disabled = false,
+	href,
+	className,
+}: {
+	children: React.ReactNode;
+	disabled: boolean;
+	href: Href;
+	className?: string;
+}) => {
+	return disabled ? (
+		<View className={className}>{children}</View>
+	) : (
+		<Link href={href}>
+			<View className={className}>{children}</View>
+		</Link>
 	);
 };
 
@@ -66,14 +117,15 @@ const TopListsTab = ({
 	song,
 	artist,
 	isProfile,
+	handle,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
 	isProfile: boolean;
+	handle: string;
 }) => {
 	const [value, setValue] = useState("albums");
-	const [editMode, setEditMode] = useState(false);
 
 	return (
 		<View>
@@ -91,52 +143,54 @@ const TopListsTab = ({
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent
-					value="albums"
-					className="flex-row flex-wrap justify-between gap-2 p-4"
-				>
-					<TopList
-						category="ALBUM"
-						setEditMode={setEditMode}
-						editMode={editMode}
-						list={album}
-						isUser={isProfile}
-					/>
+				<TabsContent value="albums">
+					<RenderedLink
+						href={{
+							pathname: "/[handle]/top6",
+							params: { handle: `${handle}`, tab: "ALBUM" },
+						}}
+						disabled={!isProfile}
+						className="flex-row flex-wrap justify-between gap-2 p-4"
+					>
+						<TopList category="ALBUM" list={album} />
+					</RenderedLink>
 				</TabsContent>
-				<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
-					<TopList
-						category="SONG"
-						setEditMode={setEditMode}
-						editMode={editMode}
-						list={song}
-						isUser={isProfile}
-					/>
+				<TabsContent value="songs">
+					<RenderedLink
+						href={{
+							pathname: "/[handle]/top6",
+							params: { handle: `${handle}`, tab: "SONG" },
+						}}
+						disabled={!isProfile}
+						className="flex-row flex-wrap justify-between gap-2 p-4"
+					>
+						<TopList category="SONG" list={song} />
+					</RenderedLink>
 				</TabsContent>
-				<TabsContent
-					value="artists"
-					className="flex-row flex-wrap justify-between gap-2 p-4"
-				>
-					<TopList
-						category="ARTIST"
-						setEditMode={setEditMode}
-						editMode={editMode}
-						list={artist}
-						isUser={isProfile}
-					/>
+				<TabsContent value="artists">
+					<RenderedLink
+						href={{
+							pathname: "/[handle]/top6",
+							params: { handle: `${handle}`, tab: "ARTIST" },
+						}}
+						disabled={!isProfile}
+						className="flex-row flex-wrap justify-between gap-2 p-4"
+					>
+						<TopList category="ARTIST" list={artist} />
+					</RenderedLink>
 				</TabsContent>
 			</Tabs>
-			{isProfile && <EditButton editMode={editMode} onPress={() => setEditMode(!editMode)} />}
 		</View>
 	);
 };
 
-export const ProfilePage = ({
-	profile,
-	isProfile,
-}: {
-	profile: Profile | null;
-	isProfile: boolean;
-}) => {
+export const ProfilePage = () => {
+	const { handle } = useLocalSearchParams<{ handle: string }>();
+
+	const [profile] = api.profiles.get.useSuspenseQuery(handle);
+
+	const userProfile = useAuth((s) => s.profile);
+	const isProfile = userProfile?.userId == profile?.userId;
 	const router = useRouter();
 
 	if (!profile) return <NotFoundScreen />;
@@ -259,11 +313,11 @@ export const ProfilePage = ({
 						</Pressable>
 					</Link>
 				</View>
-				<TopListsTab {...topLists} isProfile={isProfile} />
-				<Lists handle={profile.handle} name={profile.name} lists={lists} />
+				<TopListsTab {...topLists} isProfile={isProfile} handle={profile.handle} />
+				<ListsTab handle={profile.handle} name={profile.name} lists={lists} />
 			</ScrollView>
 		</View>
 	);
 };
 
-export default HandlePage;
+export default ProfilePage;
