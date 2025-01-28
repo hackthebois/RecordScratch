@@ -76,12 +76,11 @@ const AddToListModal = () => {
 							</Button>
 						</Link>
 						{!lists?.length && (
-							<Text
-								variant="h3"
-								className="text-muted-foreground capitalize text-center mt-40"
-							>
-								Make sure to create a list first
-							</Text>
+							<View className="items-center justify-center mt-40 w-full">
+								<Text variant="h3" className="text-muted-foreground capitalize">
+									Make sure to create a list first
+								</Text>
+							</View>
 						)}
 					</>
 				}

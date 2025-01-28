@@ -65,23 +65,25 @@ const ListsItem = ({
 	);
 };
 const ListOfLists = ({
-	lists,
-	onPress,
 	size = 125,
+	showLink = true,
 	orientation,
+	onPress,
+	lists,
 	HeaderComponent,
 	FooterComponent,
 	LastItemComponent,
-	showLink = true,
+	EmptyComponent,
 }: {
-	lists: ListsType[] | undefined;
-	orientation?: "vertical" | "horizontal";
 	size?: number;
-	onPress?: (listId: string) => void;
 	showLink?: boolean;
+	orientation?: "vertical" | "horizontal";
+	onPress?: (listId: string) => void;
+	lists: ListsType[] | undefined;
 	HeaderComponent?: React.ReactNode;
 	FooterComponent?: React.ReactNode;
 	LastItemComponent?: React.ReactNode;
+	EmptyComponent?: React.ReactNode;
 }) => {
 	if (orientation === "vertical") {
 		const dimensions = useWindowDimensions();
@@ -125,6 +127,7 @@ const ListOfLists = ({
 				className="h-full mt-4"
 				ListHeaderComponent={() => HeaderComponent}
 				ListFooterComponent={() => FooterComponent}
+				ListEmptyComponent={() => EmptyComponent}
 			/>
 		);
 	}
