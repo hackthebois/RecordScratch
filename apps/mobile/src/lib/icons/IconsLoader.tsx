@@ -1,8 +1,14 @@
 import { cn } from "@recordscratch/lib";
 import {
 	AlertCircle as LucideAlertCircle,
+	AlignJustify as LucideAlignJustify,
 	CheckCircle as LucideCheckCircle,
 	XCircle as LucideXCircle,
+	Check as LucideCheck,
+	ChevronLeft as LucideChevronLeft,
+	ChevronRight as LucideChevronRight,
+	ChevronUp as LucideChevronUp,
+	ChevronDown as LucideChevronDown,
 	ArrowLeft as LucideArrowLeft,
 	AtSign as LucideAtSign,
 	Bell as LucideBell,
@@ -22,13 +28,16 @@ import {
 	Moon as LucideMoon,
 	MoonStar as LucideMoonStar,
 	MoreHorizontal as LucideMoreHorizontal,
+	Pencil as LucidePencil,
 	Rows3 as LucideRows3,
 	Reply as LucideReply,
+	Save as LucideSave,
 	Search as LucideSearch,
 	Send as LucideSend,
 	Settings as LucideSettings,
 	Square as LucideSquare,
 	SquareCheck as LucideSquareCheck,
+	SquarePlus as LucideSquarePlus,
 	Star as LucideStar,
 	Sun as LucideSun,
 	Trash as LucideTrash,
@@ -37,6 +46,7 @@ import {
 	UserMinus as LucideUserMinus,
 	UserPen as LucideUserPen,
 	X as LucideX,
+	Frown as LuicideFrown,
 	LucideProps,
 	LucideIcon,
 } from "lucide-react-native";
@@ -45,7 +55,6 @@ import React from "react";
 
 function iconWithClassName(icon: LucideIcon) {
 	return (props: LucideProps) => {
-		// Apply cssInterop if necessary for styles
 		cssInterop(icon, {
 			className: {
 				target: "style",
@@ -56,7 +65,6 @@ function iconWithClassName(icon: LucideIcon) {
 			},
 		});
 
-		// Return the icon component with the added "text-foreground" class
 		return React.createElement(icon, {
 			...props,
 			className: cn(props.className, props.color ?? "text-foreground"), // Append "text-foreground" class
@@ -66,7 +74,13 @@ function iconWithClassName(icon: LucideIcon) {
 
 // Export all icons
 export const AlertCircle = iconWithClassName(LucideAlertCircle);
+export const AlignJustify = iconWithClassName(LucideAlignJustify);
 export const CheckCircle = iconWithClassName(LucideCheckCircle);
+export const Check = iconWithClassName(LucideCheck);
+export const ChevronLeft = iconWithClassName(LucideChevronLeft);
+export const ChevronRight = iconWithClassName(LucideChevronRight);
+export const ChevronUp = iconWithClassName(LucideChevronUp);
+export const ChevronDown = iconWithClassName(LucideChevronDown);
 export const XCircle = iconWithClassName(LucideXCircle);
 export const ArrowLeft = iconWithClassName(LucideArrowLeft);
 export const AtSign = iconWithClassName(LucideAtSign);
@@ -87,13 +101,16 @@ export const MessageSquareText = iconWithClassName(LucideMessageSquareText);
 export const Moon = iconWithClassName(LucideMoon);
 export const MoonStar = iconWithClassName(LucideMoonStar);
 export const MoreHorizontal = iconWithClassName(LucideMoreHorizontal);
+export const Pencil = iconWithClassName(LucidePencil);
 export const Rows3 = iconWithClassName(LucideRows3);
 export const Reply = iconWithClassName(LucideReply);
+export const Save = iconWithClassName(LucideSave);
 export const Search = iconWithClassName(LucideSearch);
 export const Send = iconWithClassName(LucideSend);
 export const Settings = iconWithClassName(LucideSettings);
 export const Square = iconWithClassName(LucideSquare);
 export const SquareCheck = iconWithClassName(LucideSquareCheck);
+export const SquarePlus = iconWithClassName(LucideSquarePlus);
 export const Star = iconWithClassName(LucideStar);
 export const Sun = iconWithClassName(LucideSun);
 export const Trash = iconWithClassName(LucideTrash);
@@ -102,3 +119,4 @@ export const User = iconWithClassName(LucideUser);
 export const UserMinus = iconWithClassName(LucideUserMinus);
 export const UserPen = iconWithClassName(LucideUserPen);
 export const X = iconWithClassName(LucideX);
+export const Frown = iconWithClassName(LuicideFrown);

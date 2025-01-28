@@ -16,6 +16,7 @@ import { Pressable } from "react-native";
 export default function TabLayout() {
 	const router = useRouter();
 	const sessionId = useAuth((s) => s.sessionId);
+	const handle = useAuth((s) => s.profile!.handle);
 	const { data: notifications } = api.notifications.getUnseen.useQuery(undefined, {
 		enabled: !!sessionId,
 	});

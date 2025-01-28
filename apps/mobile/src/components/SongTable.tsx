@@ -14,21 +14,18 @@ const SongTable = ({ songs }: { songs: Track[] }) => {
 					href={`/albums/${String(song.album.id)}/songs/${String(song.id)}`}
 					className={cn(
 						"w-full",
-						index != songs.length - 1 &&
-							"border-muted border-b-[2px]"
+						index != songs.length - 1 && "border-muted border-b-[2px]"
 					)}
 					asChild
 				>
 					<Pressable className="flex flex-row py-2 items-center justify-between gap-6 px-4">
 						<View className="flex flex-row items-center max-w-52 gap-2">
-							<Text className="text-muted-foreground font-bold w-6">
-								{index + 1}
-							</Text>
+							<Text className="text-muted-foreground font-bold w-6">{index + 1}</Text>
 							<Text numberOfLines={1}>
 								{song.title.replace(/ *\([^)]*\) */g, "")}
 							</Text>
 						</View>
-						<View className="flex flex-row gap-4 items-center">
+						<View className="flex flex-row gap-2 items-center">
 							<RatingInfo
 								resource={{
 									resourceId: String(song.id),

@@ -1,22 +1,109 @@
 import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
+import { TopList } from "@/components/List/TopList";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { AtSign } from "@/lib/icons/IconsLoader";
+import { AtSign, Eraser } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@recordscratch/lib";
-import { UpdateProfileForm, UpdateProfileFormSchema } from "@recordscratch/types";
+import {
+	ListWithResources,
+	UpdateProfileForm,
+	UpdateProfileFormSchema,
+} from "@recordscratch/types";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { TextInput, View } from "react-native";
+import { ScrollView, TextInput, View } from "react-native";
+
+const TopListTab = ({
+	tab = "ALBUM",
+	album,
+	song,
+	artist,
+}: {
+	tab: string;
+	album: ListWithResources | undefined;
+	song: ListWithResources | undefined;
+	artist: ListWithResources | undefined;
+}) => {
+	const [value, setValue] = useState(tab);
+	const [editMode, setEditMode] = useState(false);
+
+	return (
+		<>
+			<Text variant="h4" className="text-center">
+				My Top Lists
+			</Text>
+			<Tabs value={value} onValueChange={setValue}>
+				<View className="">
+					<TabsList className="flex-row w-full">
+						<TabsTrigger value="ALBUM" className="flex-1">
+							<Text>Albums</Text>
+						</TabsTrigger>
+						<TabsTrigger value="SONG" className="flex-1">
+							<Text>Songs</Text>
+						</TabsTrigger>
+						<TabsTrigger value="ARTIST" className="flex-1">
+							<Text>Artists</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
+				<TabsContent value="ALBUM">
+					<TopList
+						category="ALBUM"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={album}
+						isUser={true}
+					/>
+				</TabsContent>
+				<TabsContent value="SONG">
+					<TopList
+						category="SONG"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={song}
+						isUser={true}
+					/>
+				</TabsContent>
+				<TabsContent value="ARTIST">
+					<TopList
+						category="ARTIST"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={artist}
+						isUser={true}
+					/>
+				</TabsContent>
+			</Tabs>
+
+			<Button
+				className="w-full flex items-center"
+				variant={editMode ? "destructive" : "outline"}
+				onPress={() => {
+					setEditMode(!editMode);
+				}}
+			>
+				<Eraser size={20} className="text-foreground" />
+			</Button>
+			<View className="h-28"></View>
+		</>
+	);
+};
 
 const EditProfile = () => {
+	const { tab } = useLocalSearchParams<{ tab: string }>();
 	const profile = useAuth((s) => s.profile!);
+	const [topLists] = api.lists.topLists.useSuspenseQuery({
+		userId: profile!.userId,
+	});
+
 	const setProfile = useAuth((s) => s.setProfile);
 	const utils = api.useUtils();
 	const [loading, setLoading] = useState(false);
@@ -77,7 +164,6 @@ const EditProfile = () => {
 	}, [form, handleExists]);
 
 	const onSubmit = async (data: UpdateProfileForm) => {
-		console.log(data);
 		await setLoading(true);
 		if (data.image) {
 			const url = await getSignedURL({
@@ -119,12 +205,54 @@ const EditProfile = () => {
 	};
 
 	return (
-		<KeyboardAvoidingScrollView contentContainerClassName="p-4 gap-6">
+		<KeyboardAvoidingScrollView contentContainerClassName="p-4 gap-3">
 			<Stack.Screen
 				options={{
 					title: "Edit Profile",
 				}}
 			/>
+			<View className="flex flex-row items-center gap-4 ">
+				<UserAvatar imageUrl={image?.uri} size={100} />
+				<Controller
+					control={form.control}
+					name="image"
+					render={({ field: { onChange } }) => (
+						<View>
+							<Button
+								variant="secondary"
+								onPress={async () => {
+									let result = await ImagePicker.launchImageLibraryAsync({
+										mediaTypes: ["images"],
+										allowsEditing: true,
+										aspect: [1, 1],
+										quality: 1,
+									});
+
+									if (
+										!result.canceled &&
+										result.assets &&
+										result.assets.length > 0
+									) {
+										const asset = result.assets[0]!;
+										onChange({
+											uri: asset.uri,
+											type: asset.type ?? "image/jpeg",
+											size: asset.fileSize,
+										});
+									}
+								}}
+							>
+								<Text>Pick an image</Text>
+							</Button>
+							{form.formState.errors.image && (
+								<Text className="mt-2 text-destructive">
+									{form.formState.errors.image.message}
+								</Text>
+							)}
+						</View>
+					)}
+				/>
+			</View>
 			<Controller
 				control={form.control}
 				name="name"
@@ -195,48 +323,6 @@ const EditProfile = () => {
 					</View>
 				)}
 			/>
-			<View className="flex flex-row items-center gap-4 ">
-				<UserAvatar imageUrl={image?.uri} size={100} />
-				<Controller
-					control={form.control}
-					name="image"
-					render={({ field: { onChange } }) => (
-						<View>
-							<Button
-								variant="secondary"
-								onPress={async () => {
-									let result = await ImagePicker.launchImageLibraryAsync({
-										mediaTypes: ["images"],
-										allowsEditing: true,
-										aspect: [1, 1],
-										quality: 1,
-									});
-
-									if (
-										!result.canceled &&
-										result.assets &&
-										result.assets.length > 0
-									) {
-										const asset = result.assets[0]!;
-										onChange({
-											uri: asset.uri,
-											type: asset.type ?? "image/jpeg",
-											size: asset.fileSize,
-										});
-									}
-								}}
-							>
-								<Text>Pick an image</Text>
-							</Button>
-							{form.formState.errors.image && (
-								<Text className="mt-2 text-destructive">
-									{form.formState.errors.image.message}
-								</Text>
-							)}
-						</View>
-					)}
-				/>
-			</View>
 			<Button
 				onPress={form.handleSubmit(onSubmit)}
 				disabled={!pageValid()}
@@ -245,6 +331,12 @@ const EditProfile = () => {
 			>
 				{loading ? <Text>Loading...</Text> : <Text>Save</Text>}
 			</Button>
+			<TopListTab
+				tab={tab}
+				album={topLists.album}
+				song={topLists.song}
+				artist={topLists.artist}
+			/>
 		</KeyboardAvoidingScrollView>
 	);
 };

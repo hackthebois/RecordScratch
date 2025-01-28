@@ -46,7 +46,7 @@ export const ReviewsList = (
 					{isLoading ? (
 						<ActivityIndicator size="large" color="#ff8500" />
 					) : (
-						<Text className="text-center text-lg">
+						<Text variant="h3" className="text-muted-foreground text-center">
 							{emptyText ? emptyText : "No reviews found"}
 						</Text>
 					)}

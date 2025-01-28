@@ -2,7 +2,9 @@ import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
 import DistributionChart from "@/components/DistributionChart";
 import { FollowButton } from "@/components/Followers/FollowButton";
-import { TopList } from "@/components/List/TopList";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
+import ListOfLists from "@/components/List/ListOfLists";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
@@ -10,34 +12,114 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { Eraser } from "@/lib/icons/IconsLoader";
+import { ChevronRight } from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
-import { ListWithResources, Profile } from "@recordscratch/types";
+import {
+	Category,
+	ListWithResources,
+	ListsType,
+	Profile,
+	listResourceType,
+} from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 
-const HandlePage = () => {
-	const { handle } = useLocalSearchParams<{ handle: string }>();
+const ListsTab = ({
+	handle,
+	lists,
+	isProfile,
+}: {
+	handle: string;
+	lists: ListsType[];
+	isProfile: boolean;
+}) => {
+	return (
+		<View className="px-4">
+			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }}>
+				<View className=" w-full flex flex-row items-center p-2">
+					<Text variant="h3">{isProfile ? "My" : `${handle}'s`} Lists</Text>
+					<ChevronRight size={30} className=" color-muted-foreground" />
+				</View>
+			</Link>
 
-	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-
-	return <ProfilePage profile={profile} isProfile={false} />;
+			<ListOfLists lists={lists} orientation="horizontal" size={110} />
+		</View>
+	);
 };
 
-export const EditTopLists = ({ editMode, onPress }: { editMode: boolean; onPress: () => void }) => {
-	return (
-		<View className="flex items-center px-4">
+const TopList = ({
+	category,
+	list,
+	isProfile,
+}: {
+	category: Category;
+	list: ListWithResources | undefined;
+	isProfile?: boolean;
+}) => {
+	const resources = list?.resources ?? [];
+	const top6Width = useWindowDimensions().width / 4;
+	const router = useRouter();
+
+	const renderAddButton = () => (
+		<View className="flex flex-col items-center justify-center w-full gap-6">
+			<Text variant="h4" className="text-muted-foreground capitalize">
+				Add Your Top 6 {category.toLocaleLowerCase() + "s"}
+			</Text>
 			<Button
-				className="w-full"
-				variant={editMode ? "destructive" : "outline"}
-				onPress={() => {
-					onPress();
-				}}
+				className="w-40"
+				variant="outline"
+				onPress={() => router.push(`/settings/editprofile`)}
 			>
-				<Eraser size={20} className="text-foreground" />
+				<Text className="capitalize w-24 text-center">Add {category.toLowerCase()}</Text>
 			</Button>
+		</View>
+	);
+
+	const renderResourceItem = (resource: listResourceType) => (
+		<View className="relative mb-1 h-auto overflow-hidden ml-1" key={resource.resourceId}>
+			{category !== "ARTIST" ? (
+				<ResourceItem
+					resource={{
+						parentId: resource.parentId!,
+						resourceId: resource.resourceId,
+						category,
+					}}
+					direction="vertical"
+					titleCss={`font-medium line-clamp-2 text-center text-base`}
+					showArtist={false}
+					imageWidthAndHeight={top6Width}
+					style={{ width: top6Width }}
+				/>
+			) : (
+				<ArtistItem
+					artistId={resource.resourceId}
+					direction="vertical"
+					textCss="font-medium line-clamp-2 text-center text-base"
+					imageWidthAndHeight={top6Width}
+					style={{ width: top6Width, marginLeft: top6Width / 4 }}
+				/>
+			)}
+		</View>
+	);
+
+	return (
+		<View
+			className="flex flex-row flex-wrap gap-5"
+			style={{
+				marginLeft: top6Width / 4,
+				height:
+					resources.length === 0 && !isProfile
+						? 0
+						: resources.length < 4
+							? top6Width * 1.75
+							: top6Width * 3.75,
+			}}
+		>
+			{resources.length === 0 && isProfile
+				? renderAddButton()
+				: resources.map(renderResourceItem)}
 		</View>
 	);
 };
@@ -54,10 +136,9 @@ const TopListsTab = ({
 	isProfile: boolean;
 }) => {
 	const [value, setValue] = useState("albums");
-	const [editMode, setEditMode] = useState(false);
 
 	return (
-		<View>
+		<>
 			<Tabs value={value} onValueChange={setValue} className="mt-2">
 				<View className="px-4">
 					<TabsList className="flex-row w-full">
@@ -72,61 +153,36 @@ const TopListsTab = ({
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent
-					value="albums"
-					className="flex-row flex-wrap justify-between gap-2 p-4"
-				>
-					<TopList
-						category="ALBUM"
-						setEditMode={setEditMode}
-						editMode={editMode}
-						list={album}
-						isUser={isProfile}
-					/>
+				<TabsContent value="albums" className="mt-2">
+					<TopList category="ALBUM" list={album} isProfile={isProfile} />
 				</TabsContent>
-				<TabsContent value="songs" className="flex-row flex-wrap justify-between gap-2 p-4">
-					<TopList
-						category="SONG"
-						setEditMode={setEditMode}
-						editMode={editMode}
-						list={song}
-						isUser={isProfile}
-					/>
+				<TabsContent value="songs" className="mt-2">
+					<TopList category="SONG" list={song} isProfile={isProfile} />
 				</TabsContent>
-				<TabsContent
-					value="artists"
-					className="flex-row flex-wrap justify-between gap-2 p-4"
-				>
-					<TopList
-						category="ARTIST"
-						setEditMode={setEditMode}
-						editMode={editMode}
-						list={artist}
-						isUser={isProfile}
-					/>
+				<TabsContent value="artists" className="mt-2">
+					<TopList category="ARTIST" list={artist} isProfile={isProfile} />
 				</TabsContent>
 			</Tabs>
-			{isProfile && (
-				<EditTopLists editMode={editMode} onPress={() => setEditMode(!editMode)} />
-			)}
-		</View>
+		</>
 	);
 };
 
-export const ProfilePage = ({
-	profile,
-	isProfile,
-}: {
-	profile: Profile | null;
-	isProfile: boolean;
-}) => {
+export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
+	let profile: Profile | null = null;
+	if (isProfile) {
+		profile = useAuth((s) => s.profile);
+	} else {
+		const { handle } = useLocalSearchParams<{ handle: string }>();
+		[profile] = api.profiles.get.useSuspenseQuery(handle);
+		isProfile = profile?.userId === useAuth((s) => s.profile?.userId);
+	}
 	const router = useRouter();
 
 	if (!profile) return <NotFoundScreen />;
 
-	// const [lists] = api.lists.getUser.useSuspenseQuery({
-	// 	userId: profile.userId,
-	// });
+	const [lists] = api.lists.getUser.useSuspenseQuery({
+		userId: profile.userId,
+	});
 
 	const { data: streak } = api.ratings.user.streak.useQuery({
 		userId: profile.userId,
@@ -163,7 +219,7 @@ export const ProfilePage = ({
 							</Link>
 						) : (
 							<Suspense fallback={null}>
-								<FollowButton profileId={profile.userId} size={"sm"} />
+								<FollowButton profileId={profile!.userId} size={"sm"} />
 							</Suspense>
 						),
 				}}
@@ -233,7 +289,7 @@ export const ProfilePage = ({
 									router.push({
 										pathname: "/[handle]/ratings",
 										params: {
-											handle: profile.handle,
+											handle: profile!.handle,
 											rating: value ? String(value) : undefined,
 										},
 									});
@@ -243,9 +299,10 @@ export const ProfilePage = ({
 					</Link>
 				</View>
 				<TopListsTab {...topLists} isProfile={isProfile} />
+				<ListsTab handle={profile.handle} lists={lists} isProfile={isProfile} />
 			</ScrollView>
 		</View>
 	);
 };
 
-export default HandlePage;
+export default ProfilePage;

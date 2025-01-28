@@ -12,7 +12,7 @@ const Metadata = ({
 	children,
 	size = "base",
 }: {
-	title: string;
+	title?: string;
 	cover?: string | React.ReactNode;
 	type?: string;
 	tags?: (string | undefined)[];
@@ -44,9 +44,11 @@ const Metadata = ({
 			<View className="flex flex-col justify-center items-center gap-4 sm:justify-center">
 				<View className="flex flex-col justify-center items-center gap-4 px-4">
 					{!!type && <Text className="text-muted-foreground">{type.toUpperCase()}</Text>}
-					<Text variant={"h1"} className="text-center">
-						{title}
-					</Text>
+					{title && (
+						<Text variant={"h1"} className="text-center">
+							{title}
+						</Text>
+					)}
 					{tags && (
 						<View className="flex flex-row flex-wrap justify-center gap-3 sm:justify-start">
 							{tags

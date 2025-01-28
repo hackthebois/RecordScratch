@@ -31,5 +31,6 @@
 		"esbuild",
 		"ngrok",
 		"protobufjs"
-	]
+	],
+	"packageManager": "^bun@1.1.43"
 }

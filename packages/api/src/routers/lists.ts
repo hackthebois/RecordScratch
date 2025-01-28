@@ -94,7 +94,9 @@ export const listsRouter = router({
 	create: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-			await db.insert(lists).values({ id: uuidv4(), userId, ...inputs });
+			const id = uuidv4();
+			await db.insert(lists).values({ id, userId, ...inputs });
+			return id;
 		}),
 
 	update: protectedProcedure
@@ -201,10 +203,10 @@ export const listsRouter = router({
 						.set({ updatedAt: new Date() })
 						.where(eq(lists.id, listId)),
 						await Promise.all(
-							resources.map((item, index) => {
+							resources.map((item) => {
 								return db
 									.update(listResources)
-									.set({ position: index + 1 })
+									.set({ position: item.position })
 									.where(
 										and(
 											eq(listResources.resourceId, item.resourceId),

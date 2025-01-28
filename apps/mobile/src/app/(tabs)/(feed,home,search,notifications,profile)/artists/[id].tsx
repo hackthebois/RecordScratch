@@ -1,5 +1,6 @@
 import AlbumItem from "@/components/Item/AlbumItem";
 import { ArtistItem } from "@/components/Item/ArtistItem";
+import AddToListButton from "@/components/List/AddToListButton";
 import Metadata from "@/components/Metadata";
 import { RatingInfo } from "@/components/Rating/RatingInfo";
 import SongTable from "@/components/SongTable";
@@ -68,11 +69,8 @@ const ArtistPage = () => {
 										parentId: "",
 									}}
 								/>
-								{/*
-										<AddToList
-											resourceId={String(artist.id)}
-											category="ARTIST"
-										/> */}
+
+								<AddToListButton resourceId={String(artist.id)} category="ARTIST" />
 							</View>
 						</Metadata>
 					</View>

@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getImageUrl } from "@/lib/image";
 import { api, apiUtils } from "@/trpc/react";
+import { Item } from "@radix-ui/react-select";
 import { timeAgo } from "@recordscratch/lib";
 import { ListItem, ListType, Profile } from "@recordscratch/types";
 import {
@@ -151,7 +152,10 @@ function List() {
 		if (isChanged) {
 			await updatePositions({
 				listId,
-				resources: itemsOrder,
+				resources: itemsOrder.map((item, index) => ({
+					...item,
+					position: index + 1,
+				})),
 			});
 			if (deletedItems.length) {
 				await deletePositions({

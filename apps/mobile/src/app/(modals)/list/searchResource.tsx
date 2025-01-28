@@ -13,7 +13,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { z } from "zod";
+import { boolean, z } from "zod";
 
 const MusicSearch = ({
 	query,
@@ -64,7 +64,7 @@ const MusicSearch = ({
 							onPress(song);
 						}}
 						showLink={false}
-						imageWidthAndHeight={100}
+						imageWidthAndHeight={80}
 					/>
 				);
 			case "ALBUM":
@@ -121,9 +121,10 @@ const MusicSearch = ({
 
 const RatingModal = () => {
 	const router = useRouter();
-	const { category, listId } = useLocalSearchParams<{
+	const { category, listId, isTopList } = useLocalSearchParams<{
 		category: "ALBUM" | "SONG" | "ARTIST";
 		listId: string;
+		isTopList: "true" | "false";
 	}>();
 	const utils = api.useUtils();
 	const myProfile = useAuth((s) => s.profile);
@@ -143,9 +144,11 @@ const RatingModal = () => {
 				await list.invalidate({
 					listId: variables.listId,
 				});
-				utils.lists.topLists.invalidate({
-					userId: myProfile!.userId,
-				});
+				if (isTopList === "true") {
+					utils.lists.topLists.invalidate({
+						userId: myProfile!.userId,
+					});
+				}
 				utils.lists.getUser.invalidate({ userId: myProfile!.userId });
 				router.back();
 			}
@@ -160,14 +163,7 @@ const RatingModal = () => {
 				}}
 			/>
 			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
-				<View className="flex-row items-center" style={{ width: "95%" }}>
-					<ArrowLeft
-						size={26}
-						onPress={() => {
-							router.back();
-						}}
-						className="ml-2 mx-2 text-foreground"
-					/>
+				<View className="flex-row items-center">
 					<View className="flex-row flex-1 items-center pr-4 h-14 border border-border rounded-xl">
 						<Search size={20} className="mx-4 text-foreground" />
 						<Controller

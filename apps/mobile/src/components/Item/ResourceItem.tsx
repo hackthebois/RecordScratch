@@ -5,8 +5,10 @@ import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
+import { Link, LinkProps, useRouter } from "expo-router";
+import { StyleProp, ViewStyle } from "react-native";
 import { Pressable, View } from "react-native";
+import ReLink from "../ReLink";
 
 export const ResourceItemSkeleton = ({
 	direction = "horizontal",
@@ -64,7 +66,7 @@ export const ResourceItem = ({
 	className,
 	imageWidthAndHeight = 150,
 	artistNameCss,
-	width,
+	style,
 }: {
 	initialAlbum?: Album;
 	resource: Resource;
@@ -79,8 +81,8 @@ export const ResourceItem = ({
 	showArtist?: boolean;
 	className?: string;
 	width?: number;
+	style?: StyleProp<ViewStyle>;
 }) => {
-	const router = useRouter();
 	const albumId = resource.category === "SONG" ? resource.parentId : resource.resourceId;
 
 	const { data: album, isLoading } = useQuery({
@@ -114,49 +116,53 @@ export const ResourceItem = ({
 		resource.category === "SONG"
 			? tracks?.data.find((track) => track.id === Number(resource.resourceId))?.title
 			: album?.title;
-
-	const link =
-		resource.category === "SONG"
-			? `/albums/${resource.parentId}/songs/${resource.resourceId}`
-			: `/albums/${resource.resourceId}`;
-
 	return (
-		<Pressable
+		<ReLink
+			disabled={!showLink}
+			href={
+				resource.category === "SONG"
+					? `/albums/${resource.parentId}/songs/${resource.resourceId}`
+					: `/albums/${resource.resourceId}`
+			}
 			onPress={() => {
-				if (showLink) router.push(link as any);
-				if (onPress) onPress();
+				if (onPress) {
+					onPress();
+				}
 			}}
 		>
 			<View
 				className={cn(
-					"flex gap-4 w-full flex-grow",
+					"flex items-center gap-4",
 					className,
-					direction === "vertical" ? "flex-col" : "flex-row items-center"
+					direction === "vertical" ? "flex-col" : "flex-row"
 				)}
-				style={{ width: width }}
+				style={style}
 			>
-				{album.cover_big ? (
-					<Image
-						source={album.cover_big}
-						style={{
-							width: imageWidthAndHeight,
-							height: imageWidthAndHeight,
-							borderRadius: 12,
-						}}
-						className={cn("h-full w-full", imageCss)}
-					/>
-				) : (
-					<View className="h-full w-full bg-muted"></View>
-				)}
+				<View className="items-center justify-center overflow-hidden">
+					{album.cover_big ? (
+						<Image
+							source={album.cover_big}
+							style={{
+								width: imageWidthAndHeight,
+								height: imageWidthAndHeight,
+								borderRadius: 12,
+							}}
+							className={cn("h-full w-full", imageCss)}
+						/>
+					) : (
+						<View className="h-full w-full bg-muted"></View>
+					)}
+				</View>
 				<View
 					className={cn(
-						"flex flex-col gap-2",
+						"flex flex-col gap-2 overflow-hidden",
 						direction === "horizontal" ? "flex-1" : ""
 					)}
 				>
 					<Text
-						className={cn("font-semibold mr-3", titleCss)}
+						className={cn("font-semibold mr-3 text-ellipsis", titleCss)}
 						numberOfLines={direction === "horizontal" ? 2 : 1}
+						style={{ flexWrap: "wrap" }}
 					>
 						{name}
 					</Text>
@@ -175,6 +181,6 @@ export const ResourceItem = ({
 					</View>
 				</View>
 			</View>
-		</Pressable>
+		</ReLink>
 	);
 };

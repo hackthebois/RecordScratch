@@ -85,7 +85,6 @@ export const createAuthStore = () =>
 						},
 					})
 				);
-			console.log(`${JSON.stringify(data)}`);
 			if (parsedData.error || !parsedData.data.user) {
 				set({ sessionId: null, profile: null, status: "unauthenticated" });
 				return { status: "unauthenticated" };

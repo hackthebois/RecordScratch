@@ -4,8 +4,9 @@ import { Artist, cn } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Link, LinkProps } from "expo-router";
-import { View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { Skeleton } from "../ui/skeleton";
+import ReLink from "../ReLink";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -18,6 +19,7 @@ export const ArtistItem = ({
 	className,
 	imageWidthAndHeight = 100,
 	showType = false,
+	style,
 }: {
 	initialArtist?: Artist;
 	artistId: string;
@@ -29,6 +31,7 @@ export const ArtistItem = ({
 	imageWidthAndHeight?: number;
 	className?: string;
 	showType?: boolean;
+	style?: StyleProp<ViewStyle>;
 }) => {
 	const { data: artist } = useQuery({
 		...getQueryOptions({
@@ -66,11 +69,11 @@ export const ArtistItem = ({
 	}
 
 	const artistImage = artist.picture_big;
-	const link = `/artists/${String(artist.id)}`;
 
 	return (
-		<Link
-			href={(showLink ? link : "") as LinkProps["href"]}
+		<ReLink
+			disabled={!showLink}
+			href={`/artists/${String(artist.id)}`}
 			onPress={(e) => {
 				if (onPress) {
 					onPress();
@@ -87,20 +90,18 @@ export const ArtistItem = ({
 					className,
 					direction === "vertical" ? "flex-col" : "flex-row"
 				)}
-				style={{
-					width: direction === "vertical" ? imageWidthAndHeight : "100%",
-				}}
+				style={style}
 			>
 				<View className="items-center justify-center rounded-full overflow-hidden">
 					{artistImage ? (
 						<Image
 							source={artistImage}
-							className={cn("w-full border-2", imageCss)}
+							className={cn("border-2", imageCss)}
 							contentFit="cover"
 							style={{ width: imageWidthAndHeight, height: imageWidthAndHeight }}
 						/>
 					) : (
-						<View className="h-full w-full bg-muted"></View>
+						<View className="h-full bg-muted"></View>
 					)}
 				</View>
 				<View className="justify-center gap-1">
@@ -117,6 +118,6 @@ export const ArtistItem = ({
 					{showType && <Text className="text-muted-foreground">{"Artist"}</Text>}
 				</View>
 			</View>
-		</Link>
+		</ReLink>
 	);
 };

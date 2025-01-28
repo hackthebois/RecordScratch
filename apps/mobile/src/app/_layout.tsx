@@ -27,6 +27,7 @@ import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
+import Animated, { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
@@ -87,6 +88,12 @@ const RootLayout = () => {
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 	const ref = useNavigationContainerRef();
 	const [updatesHandled, setUpdatesHandled] = useState(false);
+
+	// This is the default configuration
+	configureReanimatedLogger({
+		level: ReanimatedLogLevel.error,
+		strict: false, // Reanimated runs in strict mode by default
+	});
 
 	useEffect(() => {
 		const preload = async () => {
@@ -188,9 +195,33 @@ const RootLayout = () => {
 								}}
 							/>
 							<Stack.Screen
-								name="(modals)/searchResource"
+								name="(modals)/list/searchResource"
 								options={{
 									title: "SEARCH",
+									presentation: "modal",
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="(modals)/list/rearrangeList"
+								options={{
+									title: "Rearrange the List",
+									presentation: "modal",
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="(modals)/list/createList"
+								options={{
+									title: "Create List",
+									presentation: "modal",
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="(modals)/list/addToList"
+								options={{
+									title: "Add it to a List",
 									presentation: "modal",
 									animation: "slide_from_bottom",
 								}}
