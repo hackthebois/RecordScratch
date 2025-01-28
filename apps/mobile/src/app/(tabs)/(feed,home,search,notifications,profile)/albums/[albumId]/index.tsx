@@ -1,5 +1,6 @@
 import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
+import AddToListButton from "@/components/List/AddToListButton";
 import Metadata from "@/components/Metadata";
 import RateButton from "@/components/Rating/RateButton";
 import { RatingInfo } from "@/components/Rating/RatingInfo";
@@ -71,12 +72,17 @@ export default function AlbumLayout() {
 						>
 							<Text className="text-muted-foreground">{album.artist?.name}</Text>
 						</Pressable>
-						<View className="flex-row gap-4 my-4">
+						<View className="flex-row gap-4 my-4 items-center">
 							<RatingInfo resource={resource} size="lg" />
 							<RateButton
 								imageUrl={album.cover_big}
 								resource={resource}
 								name={album.title}
+							/>
+							<AddToListButton
+								resourceId={String(album.id)}
+								parentId={String(album.artist?.id)}
+								category={"ALBUM"}
 							/>
 						</View>
 						<View className="flex-row w-full px-4 pb-4">

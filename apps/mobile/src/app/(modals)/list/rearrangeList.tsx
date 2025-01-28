@@ -23,6 +23,10 @@ import ReText from "@/components/ui/retext";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { useColorScheme } from "@/lib/useColorScheme";
+import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
+import color from "color";
 
 const SONG_HEIGHT = 70;
 
@@ -79,14 +83,6 @@ function getUpdatedResources(
 	return { updatedResources, deletedResource };
 }
 
-export const DeleteButton = ({ onPress }: { onPress: () => void }) => {
-	return (
-		<Button className="size-9" onPress={onPress} variant="destructive" size="icon">
-			<Trash2 size={18} />
-		</Button>
-	);
-};
-
 const Resource = ({
 	resourceId,
 	parentId,
@@ -102,6 +98,8 @@ const Resource = ({
 				artistId={resourceId}
 				imageWidthAndHeight={SONG_HEIGHT - 5}
 				showLink={false}
+				className="w-64"
+				textCss="w-48"
 			/>
 		);
 	return (
@@ -112,10 +110,10 @@ const Resource = ({
 				category,
 			}}
 			imageWidthAndHeight={SONG_HEIGHT - 5}
-			titleCss="font-medium"
+			titleCss="font-medium w-48"
 			showArtist={false}
 			showLink={false}
-			className="min-w-72"
+			className="w-64"
 		/>
 	);
 };
@@ -144,6 +142,8 @@ const AnimatedResource = ({
 	const top = useSharedValue<number>(
 		(resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT
 	);
+	const { colorScheme } = useColorScheme();
+	const backgroundColor = color("hsl(240, 10%, 3.9%)").rgb().string();
 
 	useAnimatedReaction(
 		() => resourcesSharedMap.value[item.resourceId],
@@ -162,12 +162,13 @@ const AnimatedResource = ({
 		.runOnJS(true)
 		.onStart(() => {
 			moving.value = true;
+			Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 		})
 		.onUpdate((event) => {
 			const positionY = event.absoluteY + scrollY.value;
 
 			top.value = withTiming(
-				clamp(positionY - SONG_HEIGHT * 2, 0, contentHeight - SONG_HEIGHT), // modal causing song_height offset
+				clamp(positionY - SONG_HEIGHT * 2, 0, contentHeight - SONG_HEIGHT), // modal causes song_height offset
 				{
 					duration: 16,
 				}
@@ -195,9 +196,13 @@ const AnimatedResource = ({
 		() => ({
 			position: "absolute",
 			top: top.value,
-			shadowColor: "black",
+			shadowColor: colorScheme === "light" ? "white" : "black",
 			zIndex: moving.value ? 1 : 0,
-			backgroundColor: moving.value ? "white" : "transparent",
+			backgroundColor: moving.value
+				? colorScheme === "light"
+					? "white"
+					: backgroundColor
+				: "transparent",
 			borderRadius: 10,
 			shadowOffset: {
 				height: 0,
@@ -217,18 +222,33 @@ const AnimatedResource = ({
 	return (
 		<GestureDetector gesture={panHandler}>
 			<Animated.View style={animatedStyle}>
-				<ReText text={position} style={{ fontSize: 14, width: 20, paddingLeft: 10 }} />
+				<ReText
+					text={position}
+					style={{
+						fontSize: 14,
+						width: 20,
+						paddingLeft: 15,
+						color: colorScheme ? "#6b7280" : "white",
+						fontWeight: "bold",
+					}}
+				/>
 				<Resource
 					resourceId={item.resourceId}
 					parentId={item.parentId}
 					category={category}
 				/>
-				<DeleteButton
+				<Button
+					className="size-9"
 					onPress={() => {
 						cancelAnimation(top);
 						deleteResource(item.resourceId);
 					}}
-				/>
+					variant="destructive"
+					size="icon"
+				>
+					<Trash2 size={18} />
+				</Button>
+
 				<AlignJustify className="text-foreground" style={{ marginRight: 20 }} />
 			</Animated.View>
 		</GestureDetector>
@@ -294,7 +314,7 @@ const SortableList = ({
 	);
 };
 
-const ListRearrangeModal = () => {
+const RearrangeListModal = () => {
 	const router = useRouter();
 	const { listId } = useLocalSearchParams<{ listId: string }>();
 	const [list] = api.lists.get.useSuspenseQuery({ id: listId });
@@ -382,4 +402,4 @@ const ListRearrangeModal = () => {
 		</GestureHandlerRootView>
 	);
 };
-export default ListRearrangeModal;
+export default RearrangeListModal;

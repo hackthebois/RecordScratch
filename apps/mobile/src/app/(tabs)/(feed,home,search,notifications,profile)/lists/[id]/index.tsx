@@ -1,17 +1,81 @@
 import NotFoundScreen from "@/app/+not-found";
+import { ArtistItem } from "@/components/Item/ArtistItem";
+import { ResourceItem } from "@/components/Item/ResourceItem";
 import ListImage from "@/components/List/ListImage";
-import ListResources from "@/components/List/ListResources";
 import Metadata from "@/components/Metadata";
+import { RatingInfo } from "@/components/Rating/RatingInfo";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { ListPlus, Pencil, Settings } from "@/lib/icons/IconsLoader";
+import { Frown, ListPlus, Pencil, Settings, Star } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
-import { timeAgo } from "@recordscratch/lib";
+import { cn, timeAgo } from "@recordscratch/lib";
+import { Category, ListItem } from "@recordscratch/types";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import { ScrollView, TouchableOpacity, useWindowDimensions, View } from "react-native";
+
+const Review = ({ rating, size = "lg" }: { rating: number | null; size?: string }) => {
+	if (!rating) return;
+
+	return (
+		<View className="flex flex-row items-center justify-center">
+			<Star color="#ffb703" fill="#ffb703" size={size === "lg" ? 22 : 18} className="mr-2" />
+			<View>
+				<Text
+					className={cn({
+						"text-lg font-semibold": size === "lg",
+						"font-medium": size === "sm",
+						"w-8": true,
+						" text-end": true,
+					})}
+				>
+					{rating}
+				</Text>
+			</View>
+		</View>
+	);
+};
+
+const ListResources = ({ items, category }: { items: ListItem[]; category: Category }) => {
+	return (
+		<View className="flex flex-col w-full">
+			{items.map((item, index) => (
+				<View key={index} className="border-b border-muted rounded-xl">
+					<View className={cn("flex flex-row items-center gap-3 my-2")}>
+						<Text
+							style={{ fontSize: 12, marginLeft: 15 }}
+							className="text-muted-foreground font-bold w-6"
+						>
+							{index + 1}
+						</Text>
+						{category === "ARTIST" ? (
+							<ArtistItem
+								artistId={item.resourceId}
+								imageWidthAndHeight={60}
+								className="w-72"
+							/>
+						) : (
+							<ResourceItem
+								resource={{
+									parentId: item.parentId!,
+									resourceId: item.resourceId,
+									category: category,
+								}}
+								imageWidthAndHeight={60}
+								titleCss="font-medium"
+								showArtist={false}
+								className="w-72"
+							/>
+						)}
+						<Review rating={item.rating} />
+					</View>
+				</View>
+			))}
+		</View>
+	);
+};
 
 const ListPage = () => {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -52,9 +116,9 @@ const ListPage = () => {
 				cover={<ListImage listItems={listItems} category={list.category} size={200} />}
 				size="sm"
 			>
-				<View className="flex flex-col items-center -mt-4">
+				<View className="flex flex-col items-center -mt-6">
 					<Text>{list.category} LIST</Text>
-					<View className="flex flex-row items-center gap-2  mb-5">
+					<View className="flex flex-row items-center gap-2">
 						<Link
 							href={{
 								pathname: "/[handle]",
@@ -76,7 +140,7 @@ const ListPage = () => {
 				<View className="flex flex-row my-4 justify-around">
 					<Link
 						href={{
-							pathname: "/(modals)/searchResource",
+							pathname: "/(modals)/list/searchResource",
 							params: {
 								listId,
 								category: list.category,
@@ -85,26 +149,51 @@ const ListPage = () => {
 						}}
 						asChild
 					>
-						<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
-							<ListPlus />
+						<Button
+							variant="outline"
+							style={{
+								width: dimensions.width / 2 - 5,
+								flexDirection: "row",
+								gap: 15,
+							}}
+						>
+							<Text variant="h4">Add</Text>
+							<ListPlus size={22} />
 						</Button>
 					</Link>
 					<Link
 						href={{
-							pathname: "/(modals)/listRearrange",
+							pathname: "/(modals)/list/rearrangeList",
 							params: {
 								listId,
 							},
 						}}
 						asChild
 					>
-						<Button variant="outline" style={{ width: dimensions.width / 2 - 10 }}>
-							<Pencil />
+						<Button
+							variant="outline"
+							style={{
+								width: dimensions.width / 2 - 5,
+								flexDirection: "row",
+								gap: 15,
+							}}
+						>
+							<Text variant="h4">Edit</Text>
+							<Pencil size={18} />
 						</Button>
 					</Link>
 				</View>
 			)}
 			<ListResources items={listItems} category={list.category} />
+
+			{listItems.length == 0 && isProfile && (
+				<View className="flex flex-col gap-2 items-center justify-center h-56">
+					<ListPlus size={30} />
+					<Text variant="h4" className=" text-muted-foreground">
+						Make Sure to Add to Your List
+					</Text>
+				</View>
+			)}
 		</ScrollView>
 	);
 };

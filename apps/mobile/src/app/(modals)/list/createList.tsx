@@ -21,18 +21,25 @@ import { Platform, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React from "react";
 import { useAuth } from "@/lib/auth";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const CUSTOM_PORTAL_HOST_NAME = "modal-create-list";
 const WindowOverlay = Platform.OS === "ios" ? FullWindowOverlay : React.Fragment;
 
 const CreateListModal = () => {
+	const { categoryProp } = useLocalSearchParams<{
+		categoryProp: string;
+	}>();
+
 	const router = useRouter();
 	const utils = api.useUtils();
 	const [loading, setLoading] = useState(false);
 
 	const form = useForm<InsertList>({
 		resolver: zodResolver(insertListSchema),
+		defaultValues: {
+			category: categoryProp as Category,
+		},
 	});
 
 	const name = form.watch("name");
@@ -87,7 +94,7 @@ const CreateListModal = () => {
 						<TextInput
 							{...field}
 							placeholder="Name"
-							className="self-stretch text-foreground border-border border rounded-md px-4 py-3"
+							className="self-stretch border-border border rounded-md px-4 py-3 text-muted-foreground"
 							autoComplete="off"
 							onChangeText={field.onChange}
 						/>
@@ -99,47 +106,52 @@ const CreateListModal = () => {
 					</View>
 				)}
 			/>
-			<Controller
-				control={form.control}
-				name="category"
-				render={({ field }) => (
-					<View>
-						<Text>Category</Text>
-						<Select
-							{...field}
-							value={{ label: field.value, value: field.value }}
-							onValueChange={(option) => field.onChange(option?.value)}
-						>
-							<SelectTrigger>
-								<SelectValue placeholder={"Select a Category..."} />
-							</SelectTrigger>
-							<SelectContent
-								insets={contentInsets}
-								className="w-full mt-[68px]"
-								portalHost={CUSTOM_PORTAL_HOST_NAME}
+			{!categoryProp && (
+				<Controller
+					control={form.control}
+					name="category"
+					render={({ field }) => (
+						<View>
+							<Text>Category</Text>
+							<Select
+								{...field}
+								value={{ label: field.value, value: field.value }}
+								onValueChange={(option) => field.onChange(option?.value)}
 							>
-								<SelectGroup>
-									<SelectItem label="ALBUM" value="ALBUM">
-										ALBUMS
-									</SelectItem>
-									<SelectItem label="SONG" value="SONG">
-										SONGS
-									</SelectItem>
-									<SelectItem label="ARTIST" value="ARTIST">
-										ARTISTS
-									</SelectItem>
-								</SelectGroup>
-							</SelectContent>
-						</Select>
-						{form.formState.errors.category && (
-							<Text className="mt-2 text-destructive">
-								{form.formState.errors.category.message}
-							</Text>
-						)}
-					</View>
-				)}
-			/>
-
+								<SelectTrigger>
+									<SelectValue
+										className=" text-muted-foreground"
+										placeholder={"Select a Category..."}
+									/>
+								</SelectTrigger>
+								<SelectContent
+									insets={contentInsets}
+									className="w-full mt-[68px]"
+									portalHost={CUSTOM_PORTAL_HOST_NAME}
+									style={{ shadowOpacity: 0 }}
+								>
+									<SelectGroup>
+										<SelectItem label="ALBUM" value="ALBUM">
+											ALBUMS
+										</SelectItem>
+										<SelectItem label="SONG" value="SONG">
+											SONGS
+										</SelectItem>
+										<SelectItem label="ARTIST" value="ARTIST">
+											ARTISTS
+										</SelectItem>
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+							{form.formState.errors.category && (
+								<Text className="mt-2 text-destructive">
+									{form.formState.errors.category.message}
+								</Text>
+							)}
+						</View>
+					)}
+				/>
+			)}
 			<Controller
 				control={form.control}
 				name="description"
@@ -149,7 +161,7 @@ const CreateListModal = () => {
 						<TextInput
 							{...field}
 							placeholder="description"
-							className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
+							className="self-stretch text-muted-foreground border-border border rounded-md p-4 h-40"
 							multiline
 							autoComplete="off"
 							onChangeText={field.onChange}
@@ -163,9 +175,9 @@ const CreateListModal = () => {
 					</View>
 				)}
 			/>
+
 			<Button
 				onPress={() => {
-					console.log("Button pressed, attempting to submit form...");
 					form.handleSubmit(onSubmit)();
 				}}
 				disabled={!pageValid()}

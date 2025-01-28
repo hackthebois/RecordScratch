@@ -4,15 +4,18 @@ import ListImage from "./ListImage";
 import { Link } from "expo-router";
 import React from "react";
 import { Text } from "../ui/text";
+import ReLink from "../ReLink";
 
 const ListsItem = ({
 	listsItem,
 	size,
-	onClick,
+	onPress,
+	showLink = true,
 }: {
 	listsItem: ListsType;
 	size: number;
-	onClick?: (listId: string) => void;
+	onPress?: (listId: string) => void;
+	showLink?: boolean;
 }) => {
 	if (!listsItem.id || !listsItem.profile) return null;
 	const listResources = listsItem.resources;
@@ -44,54 +47,76 @@ const ListsItem = ({
 			}}
 		>
 			{
-				<Link
+				<ReLink
+					disabled={!showLink}
 					onPress={(event) => {
-						if (onClick) {
+						if (onPress) {
 							event.preventDefault();
-							onClick(listsItem.id);
+							onPress(listsItem.id);
 						}
 					}}
-					// {...(onClick ? {} : link)}
 					href={{ pathname: `/lists/[id]`, params: { id: listsItem.id } }}
 					className="flex w-full cursor-pointer flex-col"
 				>
 					{ListItemContent}
-				</Link>
+				</ReLink>
 			}
 		</View>
 	);
 };
 const ListOfLists = ({
 	lists,
-	onPress: onClick,
+	onPress,
 	size = 125,
 	orientation,
 	HeaderComponent,
+	FooterComponent,
+	LastItemComponent,
+	showLink = true,
 }: {
 	lists: ListsType[] | undefined;
 	orientation?: "vertical" | "horizontal";
 	size?: number;
 	onPress?: (listId: string) => void;
+	showLink?: boolean;
 	HeaderComponent?: React.ReactNode;
+	FooterComponent?: React.ReactNode;
+	LastItemComponent?: React.ReactNode;
 }) => {
 	if (orientation === "vertical") {
 		const dimensions = useWindowDimensions();
-
-		const renderItem = ({ item }: { item: ListsType }) => (
-			<View className="">
-				<ListsItem listsItem={item} size={dimensions.width / 3.5} onClick={onClick} />
-			</View>
-		);
+		let listoflists;
+		if (LastItemComponent) {
+			const emptyList: ListsType = {
+				id: "",
+				userId: "",
+				name: "",
+				category: "ALBUM",
+				resources: [],
+				profile: null,
+			};
+			listoflists = [...(lists || []), emptyList];
+		} else listoflists = lists;
 
 		return (
 			<FlatList
-				data={lists}
+				data={listoflists}
 				keyExtractor={(index) => index.id}
-				renderItem={renderItem}
+				renderItem={({ item }) => {
+					if (item.id === "") return <>{LastItemComponent}</>;
+
+					return (
+						<ListsItem
+							listsItem={item}
+							size={dimensions.width / 3.25}
+							onPress={onPress}
+							showLink={showLink}
+						/>
+					);
+				}}
 				showsVerticalScrollIndicator={false}
 				horizontal={false}
 				columnWrapperStyle={{
-					marginLeft: dimensions.width / 32,
 					flexWrap: "wrap",
 					gap: 15,
 					marginBottom: 20,
@@ -99,6 +124,7 @@ const ListOfLists = ({
 				numColumns={3}
 				className="h-full mt-4"
 				ListHeaderComponent={() => HeaderComponent}
+				ListFooterComponent={() => FooterComponent}
 			/>
 		);
 	}
@@ -106,7 +132,9 @@ const ListOfLists = ({
 		<FlatList
 			data={lists}
 			keyExtractor={(index) => index.id}
-			renderItem={({ item }) => <ListsItem listsItem={item} size={size} onClick={onClick} />}
+			renderItem={({ item }) => (
+				<ListsItem listsItem={item} size={size} onPress={onPress} showLink={showLink} />
+			)}
 			contentContainerStyle={{
 				flexDirection: "row",
 				flexWrap: "wrap",
@@ -118,6 +146,8 @@ const ListOfLists = ({
 			style={{ marginLeft: 10 }}
 			showsHorizontalScrollIndicator={false}
 			horizontal={true}
+			ListFooterComponent={() => FooterComponent}
+			ListHeaderComponent={() => HeaderComponent}
 		/>
 	);
 };

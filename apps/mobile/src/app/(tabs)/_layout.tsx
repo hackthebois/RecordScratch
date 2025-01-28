@@ -137,7 +137,6 @@ export default function TabLayout() {
 							className={cn(focused ? "text-primary" : "text-muted-foreground")}
 						/>
 					),
-					href: { pathname: "/[handle]", params: { handle } },
 					headerShown: false,
 				}}
 			/>

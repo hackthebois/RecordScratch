@@ -106,8 +106,6 @@ export const authRoutes: Route[] = [
 			const { user } = await validateSessionToken(session);
 			if (!user) return new Response(null, { status: 401 });
 
-			console.log("Deleting user", user.id);
-
 			// Delete user ratings and comments
 			const db = getDB();
 			await Promise.all([
@@ -189,8 +187,6 @@ export const authRoutes: Route[] = [
 				// Delete user
 				db.delete(users).where(eq(users.id, user.id)),
 			]);
-
-			console.log("Deleted user", user.id);
 
 			return { success: true };
 		},

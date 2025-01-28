@@ -44,6 +44,7 @@ const SettingsPage = () => {
 		onSettled: () => {
 			utils.lists.getUser.invalidate({ userId: list!.userId });
 			utils.lists.get.invalidate({ id: listId });
+			if (list?.onProfile) utils.lists.topLists.invalidate({ userId: list!.userId });
 		},
 	}).mutate;
 
@@ -75,7 +76,8 @@ const SettingsPage = () => {
 	const handleDelete = () => {
 		if (!loading) {
 			deleteResource({ id: listId });
-			router.replace("/");
+			router.dismissAll();
+			router.dismissTo({ pathname: "/[handle]", params: { handle: profile!.handle } });
 		}
 	};
 

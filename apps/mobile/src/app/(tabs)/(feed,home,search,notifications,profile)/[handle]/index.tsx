@@ -12,34 +12,39 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { ChevronRight, Eraser } from "@/lib/icons/IconsLoader";
+import { ChevronRight } from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
-import { Category, ListWithResources, ListsType, Profile } from "@recordscratch/types";
-import { Href, Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import {
+	Category,
+	ListWithResources,
+	ListsType,
+	Profile,
+	listResourceType,
+} from "@recordscratch/types";
+import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
-import { Pressable, ScrollView, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 
 const ListsTab = ({
 	handle,
-	name,
 	lists,
+	isProfile,
 }: {
 	handle: string;
-	name: string;
 	lists: ListsType[];
+	isProfile: boolean;
 }) => {
 	return (
 		<View className="px-4">
-			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }} asChild>
-				<Button variant="outline" className="flex flex-row items-center justify-center">
-					<Text className="text-md">{name}'s Lists</Text>
-					<ChevronRight />
-				</Button>
+			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }}>
+				<View className=" w-full flex flex-row items-center p-2">
+					<Text variant="h3">{isProfile ? "My" : `${handle}'s`} Lists</Text>
+					<ChevronRight size={30} className=" color-muted-foreground" />
+				</View>
 			</Link>
-			<View className="px-2">
-				<ListOfLists lists={lists} orientation="horizontal" size={110} />
-			</View>
+
+			<ListOfLists lists={lists} orientation="horizontal" size={110} />
 		</View>
 	);
 };
@@ -47,68 +52,75 @@ const ListsTab = ({
 const TopList = ({
 	category,
 	list,
+	isProfile,
 }: {
 	category: Category;
 	list: ListWithResources | undefined;
+	isProfile?: boolean;
 }) => {
-	if (!list) return null;
-	const resources = list?.resources;
+	const resources = list?.resources ?? [];
 	const top6Width = useWindowDimensions().width / 4;
+	const router = useRouter();
+
+	const renderAddButton = () => (
+		<View className="flex flex-col items-center justify-center w-full gap-6">
+			<Text variant="h4" className="text-muted-foreground capitalize">
+				Add Your Top 6 {category.toLocaleLowerCase() + "s"}
+			</Text>
+			<Button
+				className="w-40"
+				variant="outline"
+				onPress={() => router.push(`/settings/editprofile`)}
+			>
+				<Text className="capitalize w-24 text-center">Add {category.toLowerCase()}</Text>
+			</Button>
+		</View>
+	);
+
+	const renderResourceItem = (resource: listResourceType) => (
+		<View className="relative mb-1 h-auto overflow-hidden ml-1" key={resource.resourceId}>
+			{category !== "ARTIST" ? (
+				<ResourceItem
+					resource={{
+						parentId: resource.parentId!,
+						resourceId: resource.resourceId,
+						category,
+					}}
+					direction="vertical"
+					titleCss={`font-medium line-clamp-2 text-center text-base`}
+					showArtist={false}
+					imageWidthAndHeight={top6Width}
+					style={{ width: top6Width }}
+				/>
+			) : (
+				<ArtistItem
+					artistId={resource.resourceId}
+					direction="vertical"
+					textCss="font-medium line-clamp-2 text-center text-base"
+					imageWidthAndHeight={top6Width}
+					style={{ width: top6Width, marginLeft: top6Width / 4 }}
+				/>
+			)}
+		</View>
+	);
 
 	return (
 		<View
 			className="flex flex-row flex-wrap gap-5"
 			style={{
-				marginLeft: resources.length > 0 ? top6Width / 4 : 0,
-				height: top6Width * 3.5,
+				marginLeft: top6Width / 4,
+				height:
+					resources.length === 0 && !isProfile
+						? 0
+						: resources.length < 4
+							? top6Width * 1.75
+							: top6Width * 3.75,
 			}}
 		>
-			{resources.map((resource) => (
-				<View className="relative mb-1 h-auto overflow-hidden" key={resource.resourceId}>
-					{category != "ARTIST" ? (
-						<ResourceItem
-							resource={{
-								parentId: resource.parentId!,
-								resourceId: resource.resourceId,
-								category,
-							}}
-							direction="vertical"
-							titleCss="font-medium line-clamp-2 text-center text-base"
-							showArtist={false}
-							imageWidthAndHeight={top6Width}
-							width={top6Width}
-						/>
-					) : (
-						<ArtistItem
-							artistId={resource.resourceId}
-							direction="vertical"
-							textCss="font-medium line-clamp-2 -mt-2 text-center text-base"
-							imageWidthAndHeight={top6Width}
-						/>
-					)}
-				</View>
-			))}
+			{resources.length === 0 && isProfile
+				? renderAddButton()
+				: resources.map(renderResourceItem)}
 		</View>
-	);
-};
-
-const RenderedLink = ({
-	children,
-	disabled = false,
-	href,
-	className,
-}: {
-	children: React.ReactNode;
-	disabled: boolean;
-	href: Href;
-	className?: string;
-}) => {
-	return disabled ? (
-		<View className={className}>{children}</View>
-	) : (
-		<Link href={href}>
-			<View className={className}>{children}</View>
-		</Link>
 	);
 };
 
@@ -117,18 +129,16 @@ const TopListsTab = ({
 	song,
 	artist,
 	isProfile,
-	handle,
 }: {
 	album: ListWithResources | undefined;
 	song: ListWithResources | undefined;
 	artist: ListWithResources | undefined;
 	isProfile: boolean;
-	handle: string;
 }) => {
 	const [value, setValue] = useState("albums");
 
 	return (
-		<View>
+		<>
 			<Tabs value={value} onValueChange={setValue} className="mt-2">
 				<View className="px-4">
 					<TabsList className="flex-row w-full">
@@ -143,54 +153,29 @@ const TopListsTab = ({
 						</TabsTrigger>
 					</TabsList>
 				</View>
-				<TabsContent value="albums">
-					<RenderedLink
-						href={{
-							pathname: "/[handle]/top6",
-							params: { handle: `${handle}`, tab: "ALBUM" },
-						}}
-						disabled={!isProfile}
-						className="flex-row flex-wrap justify-between gap-2 p-4"
-					>
-						<TopList category="ALBUM" list={album} />
-					</RenderedLink>
+				<TabsContent value="albums" className="mt-2">
+					<TopList category="ALBUM" list={album} isProfile={isProfile} />
 				</TabsContent>
-				<TabsContent value="songs">
-					<RenderedLink
-						href={{
-							pathname: "/[handle]/top6",
-							params: { handle: `${handle}`, tab: "SONG" },
-						}}
-						disabled={!isProfile}
-						className="flex-row flex-wrap justify-between gap-2 p-4"
-					>
-						<TopList category="SONG" list={song} />
-					</RenderedLink>
+				<TabsContent value="songs" className="mt-2">
+					<TopList category="SONG" list={song} isProfile={isProfile} />
 				</TabsContent>
-				<TabsContent value="artists">
-					<RenderedLink
-						href={{
-							pathname: "/[handle]/top6",
-							params: { handle: `${handle}`, tab: "ARTIST" },
-						}}
-						disabled={!isProfile}
-						className="flex-row flex-wrap justify-between gap-2 p-4"
-					>
-						<TopList category="ARTIST" list={artist} />
-					</RenderedLink>
+				<TabsContent value="artists" className="mt-2">
+					<TopList category="ARTIST" list={artist} isProfile={isProfile} />
 				</TabsContent>
 			</Tabs>
-		</View>
+		</>
 	);
 };
 
-export const ProfilePage = () => {
-	const { handle } = useLocalSearchParams<{ handle: string }>();
-
-	const [profile] = api.profiles.get.useSuspenseQuery(handle);
-
-	const userProfile = useAuth((s) => s.profile);
-	const isProfile = userProfile?.userId == profile?.userId;
+export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
+	let profile: Profile | null = null;
+	if (isProfile) {
+		profile = useAuth((s) => s.profile);
+	} else {
+		const { handle } = useLocalSearchParams<{ handle: string }>();
+		[profile] = api.profiles.get.useSuspenseQuery(handle);
+		isProfile = profile?.userId === useAuth((s) => s.profile?.userId);
+	}
 	const router = useRouter();
 
 	if (!profile) return <NotFoundScreen />;
@@ -234,7 +219,7 @@ export const ProfilePage = () => {
 							</Link>
 						) : (
 							<Suspense fallback={null}>
-								<FollowButton profileId={profile.userId} size={"sm"} />
+								<FollowButton profileId={profile!.userId} size={"sm"} />
 							</Suspense>
 						),
 				}}
@@ -304,7 +289,7 @@ export const ProfilePage = () => {
 									router.push({
 										pathname: "/[handle]/ratings",
 										params: {
-											handle: profile.handle,
+											handle: profile!.handle,
 											rating: value ? String(value) : undefined,
 										},
 									});
@@ -313,8 +298,8 @@ export const ProfilePage = () => {
 						</Pressable>
 					</Link>
 				</View>
-				<TopListsTab {...topLists} isProfile={isProfile} handle={profile.handle} />
-				<ListsTab handle={profile.handle} name={profile.name} lists={lists} />
+				<TopListsTab {...topLists} isProfile={isProfile} />
+				<ListsTab handle={profile.handle} lists={lists} isProfile={isProfile} />
 			</ScrollView>
 		</View>
 	);

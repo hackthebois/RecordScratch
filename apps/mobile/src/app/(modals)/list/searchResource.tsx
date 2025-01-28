@@ -164,13 +164,6 @@ const RatingModal = () => {
 			/>
 			<KeyboardAvoidingScrollView contentContainerClassName="p-4" modal>
 				<View className="flex-row items-center">
-					{/* <ArrowLeft
-						size={26}
-						onPress={() => {
-							router.back();
-						}}
-						className="ml-2 mx-2 text-foreground"
-					/> */}
 					<View className="flex-row flex-1 items-center pr-4 h-14 border border-border rounded-xl">
 						<Search size={20} className="mx-4 text-foreground" />
 						<Controller

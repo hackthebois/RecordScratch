@@ -3,12 +3,37 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@recordscratch/lib";
 import { Category, ListWithResources, UserListItem } from "@recordscratch/types";
-import { Link } from "expo-router";
-import { Dimensions, View } from "react-native";
+import { Link, Stack, useRouter } from "expo-router";
+import { Dimensions, View, useWindowDimensions } from "react-native";
 import { ArtistItem } from "../Item/ArtistItem";
 import { ResourceItem } from "../Item/ResourceItem";
 import { Button } from "../ui/button";
-import { DeleteButton } from "./ModifyResource";
+import { Trash2 } from "@/lib/icons/IconsLoader";
+
+export const DeleteButton = ({
+	isVisible = false,
+	position,
+	onPress,
+	className,
+}: {
+	isVisible: boolean;
+	position: number;
+	className?: string;
+	onPress: (position: number) => void;
+}) => {
+	return (
+		isVisible && (
+			<Button
+				className={cn("size-9", className)}
+				onPress={() => onPress(position)}
+				variant="destructive"
+				size="icon"
+			>
+				<Trash2 size={18} />
+			</Button>
+		)
+	);
+};
 
 const Resource = ({
 	resource,
@@ -19,6 +44,12 @@ const Resource = ({
 	category: Category;
 	top6Width: number;
 }) => {
+	const props = {
+		direction: "vertical" as any,
+		textCss: "font-medium line-clamp-2 text-center text-base",
+		imageWidthAndHeight: top6Width,
+		style: { width: top6Width },
+	};
 	return category != "ARTIST" ? (
 		<ResourceItem
 			resource={{
@@ -26,19 +57,11 @@ const Resource = ({
 				resourceId: resource.resourceId,
 				category,
 			}}
-			direction="vertical"
-			titleCss="font-medium line-clamp-2 text-center text-base"
 			showArtist={false}
-			imageWidthAndHeight={top6Width}
-			width={top6Width}
+			{...props}
 		/>
 	) : (
-		<ArtistItem
-			artistId={resource.resourceId}
-			direction="vertical"
-			textCss="font-medium line-clamp-2 -mt-2 text-center text-base"
-			imageWidthAndHeight={top6Width}
-		/>
+		<ArtistItem artistId={resource.resourceId} {...props} />
 	);
 };
 
@@ -55,83 +78,44 @@ export const TopList = ({
 	list: ListWithResources | undefined;
 	setEditMode: (edit: boolean) => void;
 }) => {
-	const listId = list?.id;
-	const resources = list?.resources;
+	const { id: listId, resources = [] } = list || {};
 	const utils = api.useUtils();
 	const userId = useAuth((s) => s.profile!.userId);
-	const windowWidth = Dimensions.get("window").width;
-	const top6Width = windowWidth / 4;
+	const top6Width = useWindowDimensions().width / 4;
+	const router = useRouter();
 
 	const { mutate: deleteResource } = api.lists.resources.delete.useMutation({
-		onSettled: () => {
+		onSuccess: () => {
 			utils.lists.topLists.invalidate({ userId });
 			utils.lists.getUser.invalidate({ userId });
 		},
 	});
 	const { mutate: createList } = api.lists.create.useMutation({
-		onSettled: () => {
+		onSuccess: (id) => {
 			utils.lists.topLists.invalidate({ userId });
 			utils.lists.getUser.invalidate({ userId });
+
+			router.push({
+				pathname: "/(modals)/list/searchResource",
+				params: {
+					category: category,
+					listId: id,
+					isTopList: "true",
+				},
+			});
 		},
 	});
-
-	if (!listId || !resources) {
-		return (
-			<View className="flex flex-row flex-wrap gap-5" style={{ height: top6Width * 3.5 }}>
-				<Link
-					href={{
-						pathname: "/(modals)/searchResource",
-						params: {
-							category: category,
-							listId: listId,
-							isTopList: "true",
-						},
-					}}
-					asChild
-				>
-					{isUser && (
-						<Button
-							variant={"outline"}
-							className={cn(
-								"gap-1 rounded-lg",
-								category == "ARTIST" && "rounded-full"
-							)}
-							style={{ width: top6Width, height: top6Width }}
-							onPress={() => {
-								createList({
-									name: `My Top 6 ${category.toLowerCase()}s`,
-									category,
-									onProfile: true,
-								});
-
-								utils.lists.topLists.invalidate({
-									userId,
-								});
-
-								utils.lists.getUser.invalidate({ userId });
-								setEditMode(false);
-							}}
-						>
-							<Text className="capitalize w-20 text-center">
-								Add {category.toLowerCase()}
-							</Text>
-						</Button>
-					)}
-				</Link>
-			</View>
-		);
-	}
-
+	const className = "relative mb-1 h-auto overflow-hidden mt-2";
 	return (
 		<View
-			className="flex flex-row flex-wrap gap-5"
+			className="flex flex-row flex-wrap gap-3"
 			style={{
 				marginLeft: resources.length > 0 ? top6Width / 4 : 0,
-				height: top6Width * 3.5,
+				height: resources.length < 3 ? top6Width * 1.5 : top6Width * 3.4,
 			}}
 		>
 			{resources.map((resource) => (
-				<View className="relative mb-1 h-auto overflow-hidden" key={resource.resourceId}>
+				<View className={className} key={resource.resourceId}>
 					<Resource resource={resource} category={category} top6Width={top6Width} />
 					<DeleteButton
 						isVisible={editMode}
@@ -147,33 +131,39 @@ export const TopList = ({
 					/>
 				</View>
 			))}
-
 			{resources.length < 6 && isUser && (
-				<Link
-					href={{
-						pathname: "/(modals)/searchResource",
-						params: {
-							category: category,
-							listId: listId,
-							isTopList: "true",
-						},
+				<Button
+					variant={"outline"}
+					className={cn(className, category === "ARTIST" ? "rounded-full" : "rounded-lg")}
+					style={{
+						width: top6Width,
+						height: top6Width,
+						marginLeft: !resources.length ? top6Width / 4 : 0,
 					}}
-					asChild
+					onPress={() => {
+						if (!list)
+							createList({
+								name: `My Top 6 ${category.toLowerCase()}s`,
+								category,
+								onProfile: true,
+							});
+						else
+							router.push({
+								pathname: "/(modals)/list/searchResource",
+								params: {
+									category: category,
+									listId: listId,
+									isTopList: "true",
+								},
+							});
+
+						setEditMode(false);
+					}}
 				>
-					<Button
-						variant={"outline"}
-						className={cn(
-							"gap-1 item",
-							category === "ARTIST" ? "rounded-full" : "rounded-lg"
-						)}
-						style={{ width: top6Width, height: top6Width }}
-						onPress={() => setEditMode(false)}
-					>
-						<Text className="capitalize w-20 text-center">
-							Add {category.toLowerCase()}
-						</Text>
-					</Button>
-				</Link>
+					<Text className="capitalize w-20 text-center">
+						Add {category.toLowerCase()}
+					</Text>
+				</Button>
 			)}
 		</View>
 	);

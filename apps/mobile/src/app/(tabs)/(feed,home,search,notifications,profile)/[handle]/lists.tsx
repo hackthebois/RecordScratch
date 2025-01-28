@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth";
 const CreateListButton = ({ isProfile }: { isProfile: boolean }) => {
 	return (
 		isProfile && (
-			<Link asChild href="/(modals)/createList">
+			<Link asChild href="/(modals)/list/createList">
 				<Button variant="outline" className=" flex items-center flex-row my-2 gap-3">
 					<SquarePlus />
 					<Text>Create A List</Text>
@@ -36,7 +36,9 @@ const AllListsPage = () => {
 
 	return (
 		<View>
-			<Stack.Screen options={{ title: `${profile.handle}'s Lists` }} />
+			<Stack.Screen
+				options={{ title: `${isProfile ? "My" : `${profile.handle}'s`} Lists` }}
+			/>
 
 			<ListOfLists
 				HeaderComponent={<CreateListButton isProfile={isProfile} />}

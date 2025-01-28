@@ -46,6 +46,7 @@ import {
 	UserMinus as LucideUserMinus,
 	UserPen as LucideUserPen,
 	X as LucideX,
+	Frown as LuicideFrown,
 	LucideProps,
 	LucideIcon,
 } from "lucide-react-native";
@@ -118,3 +119,4 @@ export const User = iconWithClassName(LucideUser);
 export const UserMinus = iconWithClassName(LucideUserMinus);
 export const UserPen = iconWithClassName(LucideUserPen);
 export const X = iconWithClassName(LucideX);
+export const Frown = iconWithClassName(LuicideFrown);

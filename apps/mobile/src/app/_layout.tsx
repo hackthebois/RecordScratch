@@ -195,7 +195,7 @@ const RootLayout = () => {
 								}}
 							/>
 							<Stack.Screen
-								name="(modals)/searchResource"
+								name="(modals)/list/searchResource"
 								options={{
 									title: "SEARCH",
 									presentation: "modal",
@@ -203,17 +203,25 @@ const RootLayout = () => {
 								}}
 							/>
 							<Stack.Screen
-								name="(modals)/listRearrange"
+								name="(modals)/list/rearrangeList"
 								options={{
-									title: "List Rearrange",
+									title: "Rearrange the List",
 									presentation: "modal",
 									animation: "slide_from_bottom",
 								}}
 							/>
 							<Stack.Screen
-								name="(modals)/createList"
+								name="(modals)/list/createList"
 								options={{
 									title: "Create List",
+									presentation: "modal",
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="(modals)/list/addToList"
+								options={{
+									title: "Add it to a List",
 									presentation: "modal",
 									animation: "slide_from_bottom",
 								}}

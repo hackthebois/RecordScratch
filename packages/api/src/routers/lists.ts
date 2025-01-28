@@ -94,7 +94,9 @@ export const listsRouter = router({
 	create: protectedProcedure
 		.input(insertListSchema)
 		.mutation(async ({ ctx: { db, userId }, input: inputs }) => {
-			await db.insert(lists).values({ id: uuidv4(), userId, ...inputs });
+			const id = uuidv4();
+			await db.insert(lists).values({ id, userId, ...inputs });
+			return id;
 		}),
 
 	update: protectedProcedure

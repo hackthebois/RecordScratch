@@ -22,14 +22,12 @@ const ListResources = ({ items, category }: { items: ListItem[]; category: Categ
 						{index + 1}
 					</Text>
 					{category === "ARTIST" ? (
-						<View className="h-20">
-							<ArtistItem
-								artistId={item.resourceId}
-								imageWidthAndHeight={60}
-								showLink={false}
-								className="min-w-80 min-h-40"
-							/>
-						</View>
+						<ArtistItem
+							artistId={item.resourceId}
+							imageWidthAndHeight={60}
+							showLink={false}
+							className="w-72"
+						/>
 					) : (
 						<ResourceItem
 							resource={{
@@ -41,7 +39,7 @@ const ListResources = ({ items, category }: { items: ListItem[]; category: Categ
 							titleCss="font-medium"
 							showArtist={false}
 							showLink={false}
-							className="min-w-80 min-h-20"
+							className="w-72"
 						/>
 					)}
 				</View>

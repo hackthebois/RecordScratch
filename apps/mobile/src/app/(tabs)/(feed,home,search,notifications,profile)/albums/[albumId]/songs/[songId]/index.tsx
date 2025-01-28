@@ -1,5 +1,6 @@
 import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
+import AddToListButton from "@/components/List/AddToListButton";
 import Metadata from "@/components/Metadata";
 import RateButton from "@/components/Rating/RateButton";
 import { RatingInfo } from "@/components/Rating/RatingInfo";
@@ -69,12 +70,17 @@ const SongPage = () => {
 							formatDuration(song.duration),
 						]}
 					>
-						<View className="flex-row gap-4 my-4">
+						<View className="flex-row gap-4 my-4 items-center">
 							<RatingInfo resource={resource} />
 							<RateButton
 								imageUrl={album.cover_big}
 								resource={resource}
 								name={song.title}
+							/>
+							<AddToListButton
+								resourceId={String(song.id)}
+								parentId={String(song.album.id)}
+								category="SONG"
 							/>
 						</View>
 						<View className="flex-row w-full px-4 pb-4">
