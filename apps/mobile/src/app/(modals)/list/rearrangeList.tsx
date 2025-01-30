@@ -29,6 +29,7 @@ import * as Haptics from "expo-haptics";
 import color from "color";
 
 const SONG_HEIGHT = 70;
+const MARGIN_TOP_OFFSET = 20;
 
 function clamp(value: number, lowerBound: number, upperBound: number) {
 	"worklet";
@@ -140,7 +141,7 @@ const AnimatedResource = ({
 	const moving = useSharedValue<boolean>(false);
 	const position = useSharedValue<string>(resourcesSharedMap.value[item.resourceId].toString());
 	const top = useSharedValue<number>(
-		(resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT
+		(resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT + MARGIN_TOP_OFFSET
 	);
 	const { colorScheme } = useColorScheme();
 	const backgroundColor = color("hsl(240, 10%, 3.9%)").rgb().string();
@@ -150,9 +151,8 @@ const AnimatedResource = ({
 		(currentPosition, previousPosition) => {
 			if (currentPosition && currentPosition !== previousPosition)
 				if (!moving.value) {
-					top.value = withSpring((currentPosition - 1) * SONG_HEIGHT);
+					top.value = withSpring((currentPosition - 1) * SONG_HEIGHT + MARGIN_TOP_OFFSET);
 					position.value = currentPosition.toString();
-					if (!hasListChanged.value) hasListChanged.value = true;
 				}
 		},
 		[moving]
@@ -174,7 +174,11 @@ const AnimatedResource = ({
 				}
 			);
 
-			const newPosition = clamp(Math.floor(positionY / SONG_HEIGHT), 1, resourcesCount);
+			const newPosition = clamp(
+				Math.floor((positionY - MARGIN_TOP_OFFSET) / SONG_HEIGHT),
+				1,
+				resourcesCount
+			);
 
 			if (newPosition !== resourcesSharedMap.value[item.resourceId]) {
 				resourcesSharedMap.value = objectMove(
@@ -187,8 +191,11 @@ const AnimatedResource = ({
 			}
 		})
 		.onEnd(() => {
-			top.value = withSpring((resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT);
+			top.value = withSpring(
+				(resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT + MARGIN_TOP_OFFSET
+			);
 			moving.value = false;
+			hasListChanged.value = true;
 		})
 		.hitSlop({ right: 0, width: 60 });
 
@@ -272,7 +279,7 @@ const SortableList = ({
 }) => {
 	const scrollY = useSharedValue(0);
 	const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
-	const contentHeight = resourcesState.length * SONG_HEIGHT;
+	const contentHeight = resourcesState.length * SONG_HEIGHT + MARGIN_TOP_OFFSET * 2;
 
 	const handleScroll = useAnimatedScrollHandler((event) => {
 		scrollY.value = event.contentOffset.y;

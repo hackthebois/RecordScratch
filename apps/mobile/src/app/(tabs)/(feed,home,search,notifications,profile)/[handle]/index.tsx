@@ -36,7 +36,7 @@ const ListsTab = ({
 	isProfile: boolean;
 }) => {
 	return (
-		<View className="px-4">
+		<>
 			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }}>
 				<View className=" w-full flex flex-row items-center p-2">
 					<Text variant="h3">{isProfile ? "My" : `${handle}'s`} Lists</Text>
@@ -45,7 +45,7 @@ const ListsTab = ({
 			</Link>
 
 			<ListOfLists lists={lists} orientation="horizontal" size={110} />
-		</View>
+		</>
 	);
 };
 

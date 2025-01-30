@@ -41,7 +41,6 @@ const ListsItem = ({
 
 	return (
 		<View
-			className="flex flex-col gap-96"
 			style={{
 				width: size,
 			}}
@@ -85,35 +84,36 @@ const ListOfLists = ({
 	LastItemComponent?: React.ReactNode;
 	EmptyComponent?: React.ReactNode;
 }) => {
-	if (orientation === "vertical") {
-		const dimensions = useWindowDimensions();
-		let listoflists;
-		if (LastItemComponent) {
-			const emptyList: ListsType = {
-				id: "",
-				userId: "",
-				name: "",
-				category: "ALBUM",
-				resources: [],
-				profile: null,
-			};
-			listoflists = [...(lists || []), emptyList];
-		} else listoflists = lists;
+	const dimensions = useWindowDimensions();
+	let listoflists;
+	if (LastItemComponent) {
+		const emptyList: ListsType = {
+			id: "",
+			userId: "",
+			name: "",
+			category: "ALBUM",
+			resources: [],
+			profile: null,
+		};
+		listoflists = [...(lists || []), emptyList];
+	} else listoflists = lists;
 
+	if (orientation === "vertical") {
 		return (
 			<FlatList
 				data={listoflists}
 				keyExtractor={(index) => index.id}
 				renderItem={({ item }) => {
 					if (item.id === "") return <>{LastItemComponent}</>;
-
 					return (
-						<ListsItem
-							listsItem={item}
-							size={dimensions.width / 3.25}
-							onPress={onPress}
-							showLink={showLink}
-						/>
+						<View className=" py-3">
+							<ListsItem
+								listsItem={item}
+								size={dimensions.width / 3.25}
+								onPress={onPress}
+								showLink={showLink}
+							/>
+						</View>
 					);
 				}}
 				showsVerticalScrollIndicator={false}
@@ -121,13 +121,16 @@ const ListOfLists = ({
 				columnWrapperStyle={{
 					flexWrap: "wrap",
 					gap: 15,
-					marginBottom: 20,
 				}}
+				snapToAlignment="start"
+				decelerationRate="fast"
+				snapToInterval={dimensions.width}
 				numColumns={3}
-				className="h-full mt-4"
 				ListHeaderComponent={() => HeaderComponent}
 				ListFooterComponent={() => FooterComponent}
 				ListEmptyComponent={() => EmptyComponent}
+				keyboardShouldPersistTaps="always"
+				automaticallyAdjustKeyboardInsets={true}
 			/>
 		);
 	}

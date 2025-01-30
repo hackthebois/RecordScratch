@@ -38,7 +38,7 @@ const TopListTab = ({
 	return (
 		<>
 			<Text variant="h4" className="text-center">
-				My Top Lists
+				My Top 6
 			</Text>
 			<Tabs value={value} onValueChange={setValue}>
 				<View className="">
