@@ -36,10 +36,10 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
 
   const trpcClient = api.createClient({
     links: [
-      loggerLink({
-        enabled: () => env.DEBUG,
-        colorMode: "ansi",
-      }),
+      //loggerLink({
+      //  enabled: () => env.DEBUG,
+      //  colorMode: "ansi",
+      //}),
       httpBatchLink({
         transformer: superjson,
         url: `${env.SITE_URL}/trpc`,

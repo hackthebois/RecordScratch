@@ -14,141 +14,142 @@ import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../../+not-found";
-import { useAuth } from "@/lib/auth";
 
 const AlbumOfTheDay = () => {
-	const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
-	const { data: album } = useSuspenseQuery(
-		getQueryOptions({
-			route: "/album/{id}",
-			input: { id: albumOfTheDay.albumId },
-		})
-	);
+  const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
+  const { data: album } = useSuspenseQuery(
+    getQueryOptions({
+      route: "/album/{id}",
+      input: { id: albumOfTheDay.albumId },
+    }),
+  );
 
-	if (!album) return <NotFound />;
-	const router = useRouter();
+  if (!album) return <NotFound />;
+  const router = useRouter();
 
-	return (
-		<Metadata
-			title={album.title}
-			cover={album.cover_big}
-			type="ALBUM OF THE DAY"
-			tags={[
-				album.release_date,
-				album.duration ? `${formatDuration(album.duration)}` : undefined,
-				...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
-			]}
-		>
-			<Button
-				variant="secondary"
-				onPress={() => {
-					router.navigate(`/albums/${albumOfTheDay.albumId}`);
-				}}
-			>
-				<Text>Go to Album</Text>
-			</Button>
-		</Metadata>
-	);
+  return (
+    <Metadata
+      title={album.title}
+      cover={album.cover_big}
+      type="ALBUM OF THE DAY"
+      tags={[
+        album.release_date,
+        album.duration ? `${formatDuration(album.duration)}` : undefined,
+        ...(album.genres?.data.map((genre: { name: any }) => genre.name) ?? []),
+      ]}
+    >
+      <Button
+        variant="secondary"
+        onPress={() => {
+          router.navigate(`/albums/${albumOfTheDay.albumId}`);
+        }}
+      >
+        <Text>Go to Album</Text>
+      </Button>
+    </Metadata>
+  );
 };
 
 const HomePage = () => {
-	const { data: trending } = api.ratings.trending.useQuery();
-	const { data: top } = api.ratings.top.useQuery();
-	const { data: popular } = api.ratings.popular.useQuery();
-	const { data: topArtists } = api.ratings.topArtists.useQuery();
+  const { data: trending } = api.ratings.trending.useQuery();
+  const { data: top } = api.ratings.top.useQuery();
+  const { data: popular } = api.ratings.popular.useQuery();
+  const { data: topArtists } = api.ratings.topArtists.useQuery();
 
-	const test = useAuth((s) => s.sessionId);
-	useEffect(() => {
-		SplashScreen.hide();
-	}, []);
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
-	return (
-		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-			<Stack.Screen
-				options={{
-					title: "Home",
-				}}
-			/>
-			<ScrollView contentContainerClassName="flex flex-col pb-4" nestedScrollEnabled>
-				<AlbumOfTheDay />
-				<Text variant="h2" className="pt-6 pb-4 px-4">
-					Trending Albums
-				</Text>
-				<FlashList
-					data={trending}
-					renderItem={({ item }) => <AlbumItem {...item} />}
-					horizontal
-					contentContainerClassName="px-4 h-64"
-					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={150}
-					ListEmptyComponent={
-						<ScrollView horizontal contentContainerClassName="gap-4">
-							<ResourceItemSkeleton direction="vertical" />
-							<ResourceItemSkeleton direction="vertical" />
-							<ResourceItemSkeleton direction="vertical" />
-						</ScrollView>
-					}
-					showsHorizontalScrollIndicator={false}
-				/>
-				<Text variant="h2" className="pt-6 pb-4 px-4">
-					Top Albums
-				</Text>
-				<FlashList
-					data={top}
-					renderItem={({ item }) => <AlbumItem {...item} />}
-					horizontal
-					contentContainerClassName="px-4 h-64"
-					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={150}
-					ListEmptyComponent={
-						<ScrollView horizontal contentContainerClassName="gap-4">
-							<ResourceItemSkeleton direction="vertical" />
-							<ResourceItemSkeleton direction="vertical" />
-							<ResourceItemSkeleton direction="vertical" />
-						</ScrollView>
-					}
-					showsHorizontalScrollIndicator={false}
-				/>
-				<Text variant="h2" className="pt-6 pb-4 px-4">
-					Most Popular Albums
-				</Text>
-				<FlashList
-					data={popular}
-					renderItem={({ item }) => <AlbumItem {...item} />}
-					horizontal
-					contentContainerClassName="px-4 h-64"
-					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={150}
-					ListEmptyComponent={
-						<ScrollView horizontal contentContainerClassName="gap-4">
-							<ResourceItemSkeleton direction="vertical" />
-							<ResourceItemSkeleton direction="vertical" />
-							<ResourceItemSkeleton direction="vertical" />
-						</ScrollView>
-					}
-					showsHorizontalScrollIndicator={false}
-				/>
-				<Text variant="h2" className="pt-6 pb-4 px-4">
-					Top Artists
-				</Text>
-				<FlashList
-					data={topArtists}
-					renderItem={({ item: { artistId } }) => (
-						<ArtistItem
-							artistId={artistId}
-							direction="vertical"
-							imageWidthAndHeight={105}
-						/>
-					)}
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					contentContainerClassName="px-4 h-48"
-					ItemSeparatorComponent={() => <View className="w-4" />}
-					estimatedItemSize={105}
-				/>
-			</ScrollView>
-		</SafeAreaView>
-	);
+  return (
+    <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+      <Stack.Screen
+        options={{
+          title: "Home",
+        }}
+      />
+      <ScrollView
+        contentContainerClassName="flex flex-col pb-4"
+        nestedScrollEnabled
+      >
+        <AlbumOfTheDay />
+        <Text variant="h2" className="pt-6 pb-4 px-4">
+          Trending Albums
+        </Text>
+        <FlashList
+          data={trending}
+          renderItem={({ item }) => <AlbumItem {...item} />}
+          horizontal
+          contentContainerClassName="px-4 h-64"
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          estimatedItemSize={150}
+          ListEmptyComponent={
+            <ScrollView horizontal contentContainerClassName="gap-4">
+              <ResourceItemSkeleton direction="vertical" />
+              <ResourceItemSkeleton direction="vertical" />
+              <ResourceItemSkeleton direction="vertical" />
+            </ScrollView>
+          }
+          showsHorizontalScrollIndicator={false}
+        />
+        <Text variant="h2" className="pt-6 pb-4 px-4">
+          Top Albums
+        </Text>
+        <FlashList
+          data={top}
+          renderItem={({ item }) => <AlbumItem {...item} />}
+          horizontal
+          contentContainerClassName="px-4 h-64"
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          estimatedItemSize={150}
+          ListEmptyComponent={
+            <ScrollView horizontal contentContainerClassName="gap-4">
+              <ResourceItemSkeleton direction="vertical" />
+              <ResourceItemSkeleton direction="vertical" />
+              <ResourceItemSkeleton direction="vertical" />
+            </ScrollView>
+          }
+          showsHorizontalScrollIndicator={false}
+        />
+        <Text variant="h2" className="pt-6 pb-4 px-4">
+          Most Popular Albums
+        </Text>
+        <FlashList
+          data={popular}
+          renderItem={({ item }) => <AlbumItem {...item} />}
+          horizontal
+          contentContainerClassName="px-4 h-64"
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          estimatedItemSize={150}
+          ListEmptyComponent={
+            <ScrollView horizontal contentContainerClassName="gap-4">
+              <ResourceItemSkeleton direction="vertical" />
+              <ResourceItemSkeleton direction="vertical" />
+              <ResourceItemSkeleton direction="vertical" />
+            </ScrollView>
+          }
+          showsHorizontalScrollIndicator={false}
+        />
+        <Text variant="h2" className="pt-6 pb-4 px-4">
+          Top Artists
+        </Text>
+        <FlashList
+          data={topArtists}
+          renderItem={({ item: { artistId } }) => (
+            <ArtistItem
+              artistId={artistId}
+              direction="vertical"
+              imageWidthAndHeight={105}
+            />
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerClassName="px-4 h-48"
+          ItemSeparatorComponent={() => <View className="w-4" />}
+          estimatedItemSize={105}
+        />
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
 export default HomePage;

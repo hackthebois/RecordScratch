@@ -137,7 +137,7 @@ export const handleLoginRedirect = async ({
 }) => {
   console.log(`status: ${status}`);
   if (status === "authenticated") {
-    router.replace("/(tabs)/(home)");
+    router.replace("/(tabs)");
   } else if (status === "needsonboarding") {
     router.replace("/(auth)/onboard");
   } else {

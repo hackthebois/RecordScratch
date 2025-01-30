@@ -26,7 +26,7 @@ export const googleRoutes: Route[] = [
 			const state = generateState();
 			const codeVerifier = generateCodeVerifier();
 
-			const url: URL = await google.createAuthorizationURL(
+			const url: URL = google.createAuthorizationURL(
 				state,
 				codeVerifier,
 				["profile", "email"]

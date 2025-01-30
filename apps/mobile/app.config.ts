@@ -31,6 +31,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile:
       process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
   },
+  web: {
+    favicon: "./assets/icon.png",
+  },
   plugins: [
     "expo-router",
     [

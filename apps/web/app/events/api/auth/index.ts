@@ -29,9 +29,14 @@ export const authRoutes: Route[] = [
 		async (event) => {
 			const db = getDB();
 			const query = getQuery(event);
-			const sessionId =
-				getHeader(event, "Authorization") ??
-				(query.sessionId as string | undefined);
+			const authorization = getHeader(event, "Authorization");
+			const cookie = getCookie(event, "session");
+			console.log("cookie", cookie);
+			const sessionId: string | undefined =
+				(query.sessionId as string | undefined) ??
+				authorization ??
+				cookie;
+			console.log("sessionId", sessionId);
 			if (!sessionId) return { user: null };
 
 			const { user } = await validateSessionToken(sessionId);

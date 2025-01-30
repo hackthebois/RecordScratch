@@ -21,12 +21,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const SlideWrapper = ({
   page,
-  pageIndex,
   children,
   title,
 }: {
   page: number;
-  pageIndex: number;
   title?: string;
   children: React.ReactNode;
 }) => {
@@ -70,7 +68,7 @@ function Onboard() {
 
   useEffect(() => {
     if (status !== "needsonboarding") {
-      router.replace("/(tabs)/(home)");
+      router.replace("/(tabs)/");
     }
   }, [status, router]);
 
@@ -78,7 +76,7 @@ function Onboard() {
     onSuccess: (profile) => {
       utils.profiles.me.invalidate();
       setProfile(profile);
-      router.navigate("/(tabs)/(home)");
+      router.navigate("/(tabs)");
       setStatus("authenticated");
     },
   });
