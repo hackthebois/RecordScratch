@@ -12,6 +12,7 @@ import { Tabs, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
 import { Pressable } from "react-native";
+import { Platform } from "react-native";
 
 export default function TabLayout() {
   const router = useRouter();
@@ -32,14 +33,12 @@ export default function TabLayout() {
         headerTitleAlign: "center",
         tabBarShowLabel: false,
         sceneStyle: {
-          paddingBottom: 80,
+          paddingBottom: Platform.OS === "web" ? 0 : 80,
         },
         headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
         tabBarStyle: {
-          height: 80,
+          height: Platform.OS === "web" ? 0 : 80,
           position: "absolute",
-          // backgroundColor:
-          // 	colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)",
         },
         tabBarButton: ({ style, ...props }) => (
           <Pressable

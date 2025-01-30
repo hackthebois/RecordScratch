@@ -1,15 +1,11 @@
 import env from "@/env";
 import { Profile, ProfileSchema, UserSchema } from "@recordscratch/types";
-import { reloadAppAsync } from "expo";
-import { Router, useRouter } from "expo-router";
+import { Router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import * as SplashScreen from "expo-splash-screen";
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
 import { createStore, useStore } from "zustand";
-import { api } from "./api";
-import { catchError } from "./errors";
 import { registerForPushNotificationsAsync } from "./notifications";
 import { Platform } from "react-native";
 
@@ -94,8 +90,6 @@ export const createAuthStore = () =>
           }),
         );
 
-      console.log(parsedData);
-
       if (parsedData.error || !parsedData.data.user) {
         set({ sessionId: null, profile: null, status: "unauthenticated" });
         return { status: "unauthenticated" };
@@ -135,7 +129,6 @@ export const handleLoginRedirect = async ({
   status: Auth["status"];
   router: Router;
 }) => {
-  console.log(`status: ${status}`);
   if (status === "authenticated") {
     router.replace("/(tabs)");
   } else if (status === "needsonboarding") {
@@ -145,81 +138,8 @@ export const handleLoginRedirect = async ({
   }
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const store = useRef(createAuthStore()).current;
-  const login = useStore(store, (s) => s.login);
-  const status = useStore(store, (s) => s.status);
-
-  // Hide the splash screen when the user isn't going to home page
-  useEffect(() => {
-    if (status !== "authenticated" && status !== "loading") {
-      SplashScreen.hide();
-    }
-  }, [status]);
-
-  useEffect(() => {
-    login()
-      .then(({ status }) => handleLoginRedirect({ status, router }))
-      .catch((e) => {
-        catchError(e);
-        reloadAppAsync();
-      });
-  }, [login]);
-
-  if (status === "loading") {
-    return null;
-  }
-
-  return <AuthContext.Provider value={store}>{children}</AuthContext.Provider>;
-};
-
 export function useAuth<T>(selector: (state: Auth) => T): T {
   const store = useContext(AuthContext);
   if (!store) throw new Error("Missing AuthContext.Provider in the tree");
   return useStore(store, selector);
 }
-
-export const Prefetch = ({
-  handle,
-  userId,
-}: {
-  handle: string;
-  userId: string;
-}) => {
-  api.profiles.get.usePrefetchQuery(handle);
-  api.ratings.user.streak.usePrefetchQuery({ userId });
-  api.ratings.user.totalLikes.usePrefetchQuery({ userId });
-  api.profiles.distribution.usePrefetchQuery({ userId });
-  api.lists.topLists.usePrefetchQuery({ userId });
-  api.profiles.getTotalRatings.usePrefetchQuery({ userId });
-  api.profiles.followCount.usePrefetchQuery({
-    profileId: userId,
-    type: "followers",
-  });
-  api.profiles.followCount.usePrefetchQuery({
-    profileId: userId,
-    type: "following",
-  });
-  api.ratings.trending.usePrefetchQuery();
-  api.ratings.top.usePrefetchQuery();
-  api.ratings.popular.usePrefetchQuery();
-  api.ratings.topArtists.usePrefetchQuery();
-
-  return null;
-};
-
-export const PrefetchProfile = (props: {
-  handle?: string;
-  userId?: string;
-}) => {
-  const profile = useAuth((s) => s.profile);
-  const handle = props.handle ?? profile?.handle ?? "";
-  const userId = props.userId ?? profile?.userId ?? "";
-
-  if (handle && userId) {
-    return <Prefetch handle={handle} userId={userId} />;
-  }
-
-  return null;
-};
