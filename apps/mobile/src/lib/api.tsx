@@ -1,4 +1,8 @@
-import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import React, { useState } from "react";
@@ -19,39 +23,47 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
  */ export function TRPCProvider(props: { children: React.ReactNode }) {
-	const sessionId = useAuth((s) => s.sessionId);
+  const sessionId = useAuth((s) => s.sessionId);
 
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				queryCache: new QueryCache({
-					onError: catchError,
-				}),
-			})
-	);
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        queryCache: new QueryCache({
+          onError: catchError,
+        }),
+      }),
+  );
 
-	const trpcClient = api.createClient({
-		links: [
-			loggerLink({
-				enabled: () => env.DEBUG,
-				colorMode: "ansi",
-			}),
-			httpBatchLink({
-				transformer: superjson,
-				url: `${env.SITE_URL}/trpc`,
-				async headers() {
-					const headers = new Map<string, string>();
-					headers.set("x-trpc-source", "expo-react");
-					headers.set("Authorization", `${sessionId}`);
-					return Object.fromEntries(headers);
-				},
-			}),
-		],
-	});
+  const trpcClient = api.createClient({
+    links: [
+      loggerLink({
+        enabled: () => env.DEBUG,
+        colorMode: "ansi",
+      }),
+      httpBatchLink({
+        transformer: superjson,
+        url: `${env.SITE_URL}/trpc`,
+        async headers() {
+          const headers = new Map<string, string>();
+          headers.set("x-trpc-source", "expo-react");
+          headers.set("Authorization", `${sessionId}`);
+          return Object.fromEntries(headers);
+        },
+        fetch(url, options) {
+          return fetch(url, {
+            ...options,
+            credentials: "include",
+          });
+        },
+      }),
+    ],
+  });
 
-	return (
-		<api.Provider client={trpcClient} queryClient={queryClient}>
-			<QueryClientProvider client={queryClient}>{props.children}</QueryClientProvider>
-		</api.Provider>
-	);
+  return (
+    <api.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        {props.children}
+      </QueryClientProvider>
+    </api.Provider>
+  );
 }
