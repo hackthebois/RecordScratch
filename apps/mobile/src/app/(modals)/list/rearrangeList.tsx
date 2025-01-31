@@ -134,7 +134,7 @@ const AnimatedResource = ({
 	scrollY: SharedValue<number>;
 	resourcesSharedMap: SharedValue<Record<string, number>>;
 	resourcesCount: number;
-	hasListChanged: SharedValue<boolean>;
+	hasListChanged: React.MutableRefObject<boolean>;
 	deleteResource: (resourceId: string) => void;
 	contentHeight: number;
 }) => {
@@ -186,8 +186,8 @@ const AnimatedResource = ({
 					resourcesSharedMap.value[item.resourceId],
 					newPosition
 				);
-
 				position.value = newPosition.toString();
+				hasListChanged.current = true;
 			}
 		})
 		.onEnd(() => {
@@ -195,7 +195,6 @@ const AnimatedResource = ({
 				(resourcesSharedMap.value[item.resourceId] - 1) * SONG_HEIGHT + MARGIN_TOP_OFFSET
 			);
 			moving.value = false;
-			hasListChanged.value = true;
 		})
 		.hitSlop({ right: 0, width: 60 });
 
@@ -274,7 +273,7 @@ const SortableList = ({
 	setResourcesState: (resources: ListItem[]) => void;
 	deletedResourcesRef: React.MutableRefObject<ListItem[]>;
 	resourcesSharedMap: SharedValue<Record<string, number>>;
-	hasListChanged: SharedValue<boolean>;
+	hasListChanged: React.MutableRefObject<boolean>;
 	category: Category;
 }) => {
 	const scrollY = useSharedValue(0);
@@ -303,6 +302,7 @@ const SortableList = ({
 			nestedScrollEnabled={true}
 			style={{ flex: 1, position: "relative" }}
 			contentContainerStyle={{ height: contentHeight }}
+			showsVerticalScrollIndicator={false}
 		>
 			{resourcesState.map((item) => (
 				<AnimatedResource
@@ -332,8 +332,8 @@ const RearrangeListModal = () => {
 
 	const [resourcesState, setResourcesState] = useState<ListItem[]>(listItems);
 	const deletedResourcesRef = useRef<ListItem[]>([]);
+	const hasListChanged = useRef<boolean>(false);
 	const resourcesSharedMap = useDerivedValue(() => setMap(resourcesState), [resourcesState]);
-	const hasListChanged = useSharedValue<boolean>(false);
 
 	const invalidate = async () => {
 		await utils.lists.resources.get.invalidate({
@@ -349,7 +349,7 @@ const RearrangeListModal = () => {
 	const { mutateAsync: deletePositions } = api.lists.resources.multipleDelete.useMutation();
 
 	const handleSave = async () => {
-		if (deletedResourcesRef.current.length || hasListChanged.value)
+		if (deletedResourcesRef.current.length > 0 || hasListChanged.current)
 			await updatePositions({
 				listId,
 				resources: resourcesState.map((resource) => ({
