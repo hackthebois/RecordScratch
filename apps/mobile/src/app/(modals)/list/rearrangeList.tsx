@@ -285,6 +285,7 @@ const SortableList = ({
 	});
 
 	const deleteResource = (resourceId: string) => {
+		hasListChanged.current = true;
 		const { updatedResources, deletedResource } = getUpdatedResources(
 			resourcesState,
 			resourceId,
@@ -349,7 +350,7 @@ const RearrangeListModal = () => {
 	const { mutateAsync: deletePositions } = api.lists.resources.multipleDelete.useMutation();
 
 	const handleSave = async () => {
-		if (deletedResourcesRef.current.length > 0 || hasListChanged.current)
+		if (hasListChanged.current)
 			await updatePositions({
 				listId,
 				resources: resourcesState.map((resource) => ({
