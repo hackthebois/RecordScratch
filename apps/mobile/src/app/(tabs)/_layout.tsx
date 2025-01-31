@@ -37,8 +37,9 @@ export default function TabLayout() {
         },
         headerTitle: (props: any) => <Text variant="h4">{props.children}</Text>,
         tabBarStyle: {
-          height: Platform.OS === "web" ? 0 : 80,
+          height: 80,
           position: "absolute",
+          display: Platform.OS === "web" ? "none" : "flex",
         },
         tabBarButton: ({ style, ...props }) => (
           <Pressable
