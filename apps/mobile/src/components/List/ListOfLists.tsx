@@ -1,22 +1,24 @@
 import { ListsType } from "@recordscratch/types";
-import { FlatList, View, useWindowDimensions } from "react-native";
+import { FlatList, Pressable, View, useWindowDimensions } from "react-native";
 import ListImage from "./ListImage";
-import { Link } from "expo-router";
 import React from "react";
 import { Text } from "../ui/text";
 import ReLink from "../ReLink";
+import { FlashList } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
 
 const ListsItem = ({
 	listsItem,
 	size,
 	onPress,
-	showLink = true,
+	showLink,
 }: {
 	listsItem: ListsType;
 	size: number;
 	onPress?: (listId: string) => void;
 	showLink?: boolean;
 }) => {
+	const router = useRouter();
 	if (!listsItem.id || !listsItem.profile) return null;
 	const listResources = listsItem.resources;
 
@@ -46,19 +48,17 @@ const ListsItem = ({
 			}}
 		>
 			{
-				<ReLink
-					disabled={!showLink}
-					onPress={(event) => {
+				<Pressable
+					onPress={() => {
 						if (onPress) {
-							event.preventDefault();
 							onPress(listsItem.id);
 						}
+						if (showLink) router.push(`/lists/${listsItem.id}`);
 					}}
-					href={{ pathname: `/lists/[id]`, params: { id: listsItem.id } }}
 					className="flex w-full cursor-pointer flex-col"
 				>
 					{ListItemContent}
-				</ReLink>
+				</Pressable>
 			}
 		</View>
 	);
@@ -101,36 +101,34 @@ const ListOfLists = ({
 	if (orientation === "vertical") {
 		return (
 			<FlatList
+				ListHeaderComponent={() => HeaderComponent}
+				ListFooterComponent={() => FooterComponent}
+				ListEmptyComponent={() => EmptyComponent}
 				data={listoflists}
 				keyExtractor={(index) => index.id}
 				renderItem={({ item }) => {
 					if (item.id === "") return <>{LastItemComponent}</>;
 					return (
-						<View className=" py-3">
-							<ListsItem
-								listsItem={item}
-								size={dimensions.width / 3.25}
-								onPress={onPress}
-								showLink={showLink}
-							/>
-						</View>
+						<ListsItem
+							listsItem={item}
+							size={dimensions.width / 3.25}
+							onPress={onPress}
+							showLink={showLink}
+						/>
 					);
 				}}
-				showsVerticalScrollIndicator={false}
-				horizontal={false}
 				columnWrapperStyle={{
+					flexDirection: "row",
 					flexWrap: "wrap",
-					gap: 15,
+					justifyContent: "space-between",
+					marginBlock: 10,
 				}}
-				snapToAlignment="start"
-				decelerationRate="fast"
-				snapToInterval={dimensions.width}
-				numColumns={3}
-				ListHeaderComponent={() => HeaderComponent}
-				ListFooterComponent={() => FooterComponent}
-				ListEmptyComponent={() => EmptyComponent}
 				keyboardShouldPersistTaps="always"
-				automaticallyAdjustKeyboardInsets={true}
+				keyboardDismissMode="interactive"
+				numColumns={3}
+				scrollEnabled={true}
+				horizontal={false}
+				showsVerticalScrollIndicator={false}
 			/>
 		);
 	}

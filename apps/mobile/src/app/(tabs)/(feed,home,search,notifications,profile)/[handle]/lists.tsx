@@ -35,17 +35,16 @@ const AllListsPage = () => {
 	});
 
 	return (
-		<KeyboardAvoidingView className="h-full">
+		<View style={{ flex: 1 }}>
 			<Stack.Screen
 				options={{ title: `${isProfile ? "My" : `${profile.handle}'s`} Lists` }}
 			/>
-
 			<ListOfLists
 				HeaderComponent={<CreateListButton isProfile={isProfile} />}
 				lists={lists}
 				orientation="vertical"
 			/>
-		</KeyboardAvoidingView>
+		</View>
 	);
 };
 

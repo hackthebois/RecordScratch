@@ -68,11 +68,11 @@ const TopList = ({
 				Add Your Top 6 {category.toLocaleLowerCase() + "s"}
 			</Text>
 			<Button
-				className="w-40"
+				style={{ width: "40%" }}
 				variant="outline"
 				onPress={() => router.push(`/settings/editprofile`)}
 			>
-				<Text className="capitalize w-24 text-center">Add {category.toLowerCase()}</Text>
+				<Text className="capitalize w-full text-center">Add {category.toLowerCase()}</Text>
 			</Button>
 		</View>
 	);
