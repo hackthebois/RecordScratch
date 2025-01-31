@@ -13,6 +13,7 @@ import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { deezerHelpers } from "@/lib/deezer";
 import { Search } from "@/lib/icons/IconsLoader";
+import { WebWrapper } from "@/components/WebWrapper";
 
 const tabs = {
   all: {
@@ -84,130 +85,136 @@ export default function SearchPage() {
           headerShown: false,
         }}
       />
-      <View className="px-4 gap-2">
-        <View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-          <Search size={20} className="mx-4 text-foreground" />
-          <TextInput
-            id="name"
-            autoComplete="off"
-            placeholder="Search"
-            value={query}
-            cursorColor={"#ffb703"}
-            style={{
-              paddingTop: 0,
-              paddingBottom: Platform.OS === "ios" ? 4 : 0,
-              textAlignVertical: "center",
-            }}
-            autoCorrect={false}
-            autoFocus
-            className="flex-1 h-full text-xl text-foreground outline-none p-0"
-            onChangeText={(text) => setQuery(text)}
-          />
-        </View>
-        <Tabs
-          value={tab}
-          onValueChange={(value) =>
-            value !== tab ? setTab(value as keyof typeof tabs) : setTab("all")
-          }
-        >
-          <TabsList className="flex-row">
-            {Object.entries(tabs)
-              .filter(([key]) => key !== "all")
-              .map(([key, tab]) => (
-                <TabsTrigger key={key} value={key} className="flex-1">
-                  <Text>{tab.label}</Text>
-                </TabsTrigger>
-              ))}
-          </TabsList>
-        </Tabs>
-      </View>
-      <KeyboardAvoidingScrollView contentContainerClassName="p-4 gap-3">
-        {isLoading || isLoadingProfiles ? (
-          <View className="flex items-center justify-center pt-40">
-            <ActivityIndicator size="large" color="#ff8500" />
+      <WebWrapper>
+        <View className="px-4 gap-2 sm:mt-4">
+          <View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
+            <Search size={20} className="mx-4 text-foreground" />
+            <TextInput
+              id="name"
+              autoComplete="off"
+              placeholder="Search"
+              value={query}
+              cursorColor={"#ffb703"}
+              style={{
+                paddingTop: 0,
+                paddingBottom: Platform.OS === "ios" ? 4 : 0,
+                textAlignVertical: "center",
+              }}
+              autoCorrect={false}
+              autoFocus
+              className="flex-1 h-full text-xl text-foreground outline-none p-0"
+              onChangeText={(text) => setQuery(text)}
+            />
           </View>
-        ) : (
-          <>
-            {tab !== "profiles"
-              ? music?.songs.map((song) => (
-                  <ResourceItem
-                    key={song.id}
-                    resource={{
-                      parentId: String(song.album.id),
-                      resourceId: String(song.id),
-                      category: "SONG" as const,
-                    }}
-                    onPress={() => {
-                      // addRecent({
-                      // 	id: String(song.id),
-                      // 	type: "SONG",
-                      // 	data: song,
-                      // });
-                    }}
-                    imageWidthAndHeight={80}
-                    showType
-                  />
-                ))
-              : null}
-            {tab !== "profiles"
-              ? music?.albums.map((album) => (
-                  <ResourceItem
-                    key={album.id}
-                    resource={{
-                      parentId: String(album.artist?.id),
-                      resourceId: String(album.id),
-                      category: "ALBUM" as const,
-                    }}
-                    onPress={() => {
-                      // addRecent({
-                      // 	id: String(album.id),
-                      // 	type: "ALBUM",
-                      // 	data: album,
-                      // });
-                    }}
-                    imageWidthAndHeight={80}
-                    showType
-                  />
-                ))
-              : null}
-            {tab !== "profiles"
-              ? music?.artists.map((artist) => (
-                  <ArtistItem
-                    key={artist.id}
-                    artistId={String(artist.id)}
-                    initialArtist={artist}
-                    onPress={() => {
-                      // addRecent({
-                      // 	id: String(artist.id),
-                      // 	type: "ARTIST",
-                      // 	data: artist,
-                      // });
-                    }}
-                    imageWidthAndHeight={80}
-                    showType
-                  />
-                ))
-              : null}
-            {tab === "profiles" || tab === "all"
-              ? profiles?.items.map((profile, index) => (
-                  <ProfileItem
-                    profile={profile}
-                    key={index}
-                    size={80}
-                    onPress={() => {
-                      // addRecent({
-                      // 	id: profile.userId,
-                      // 	type: "PROFILE",
-                      // 	data: profile,
-                      // });
-                    }}
-                    showType={tab === "all"}
-                    isUser
-                  />
-                ))
-              : null}
-          </>
-        )}
+          <Tabs
+            value={tab}
+            onValueChange={(value) =>
+              value !== tab ? setTab(value as keyof typeof tabs) : setTab("all")
+            }
+          >
+            <TabsList className="flex-row">
+              {Object.entries(tabs)
+                .filter(([key]) => key !== "all")
+                .map(([key, tab]) => (
+                  <TabsTrigger key={key} value={key} className="flex-1">
+                    <Text>{tab.label}</Text>
+                  </TabsTrigger>
+                ))}
+            </TabsList>
+          </Tabs>
+        </View>
+      </WebWrapper>
+      <KeyboardAvoidingScrollView>
+        <WebWrapper>
+          <View className="p-4 gap-2">
+            {isLoading || isLoadingProfiles ? (
+              <View className="flex items-center justify-center pt-40">
+                <ActivityIndicator size="large" color="#ff8500" />
+              </View>
+            ) : (
+              <>
+                {tab !== "profiles"
+                  ? music?.songs.map((song) => (
+                      <ResourceItem
+                        key={song.id}
+                        resource={{
+                          parentId: String(song.album.id),
+                          resourceId: String(song.id),
+                          category: "SONG" as const,
+                        }}
+                        onPress={() => {
+                          // addRecent({
+                          // 	id: String(song.id),
+                          // 	type: "SONG",
+                          // 	data: song,
+                          // });
+                        }}
+                        imageWidthAndHeight={80}
+                        showType
+                      />
+                    ))
+                  : null}
+                {tab !== "profiles"
+                  ? music?.albums.map((album) => (
+                      <ResourceItem
+                        key={album.id}
+                        resource={{
+                          parentId: String(album.artist?.id),
+                          resourceId: String(album.id),
+                          category: "ALBUM" as const,
+                        }}
+                        onPress={() => {
+                          // addRecent({
+                          // 	id: String(album.id),
+                          // 	type: "ALBUM",
+                          // 	data: album,
+                          // });
+                        }}
+                        imageWidthAndHeight={80}
+                        showType
+                      />
+                    ))
+                  : null}
+                {tab !== "profiles"
+                  ? music?.artists.map((artist) => (
+                      <ArtistItem
+                        key={artist.id}
+                        artistId={String(artist.id)}
+                        initialArtist={artist}
+                        onPress={() => {
+                          // addRecent({
+                          // 	id: String(artist.id),
+                          // 	type: "ARTIST",
+                          // 	data: artist,
+                          // });
+                        }}
+                        imageWidthAndHeight={80}
+                        showType
+                      />
+                    ))
+                  : null}
+                {tab === "profiles" || tab === "all"
+                  ? profiles?.items.map((profile, index) => (
+                      <ProfileItem
+                        profile={profile}
+                        key={index}
+                        size={80}
+                        onPress={() => {
+                          // addRecent({
+                          // 	id: profile.userId,
+                          // 	type: "PROFILE",
+                          // 	data: profile,
+                          // });
+                        }}
+                        showType={tab === "all"}
+                        isUser
+                      />
+                    ))
+                  : null}
+              </>
+            )}
+          </View>
+        </WebWrapper>
       </KeyboardAvoidingScrollView>
     </SafeAreaView>
   );

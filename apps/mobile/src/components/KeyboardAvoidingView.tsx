@@ -28,6 +28,8 @@ export const KeyboardAvoidingScrollView: React.FC<Props> = ({
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
 
+  if (Platform.OS === "web") return <ScrollView>{children}</ScrollView>;
+
   const renderScrollView = (
     <ScrollView
       contentContainerClassName={contentContainerClassName}
