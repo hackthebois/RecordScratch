@@ -91,7 +91,7 @@ const WebHeader = () => {
   if (!profile) return null;
 
   return (
-    <View className="h-16 w-full border-b border-border bg-background mb-4 justify-center items-center">
+    <View className="h-16 w-full border-b border-border bg-background justify-center items-center">
       <View className="flex-row gap-2 justify-between items-center flex-row max-w-screen-lg w-full px-4">
         <Link href="/" asChild>
           <Image
@@ -206,101 +206,97 @@ const RootLayout = () => {
           <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
             <PrefetchProfile />
             <WebHeader />
-            <View className="w-full items-center h-full">
-              <View className="max-w-screen-lg w-full h-full">
-                <Stack
-                  screenOptions={{
-                    animation: "fade",
-                    headerTitle: (props) => (
-                      <Text variant="h4">{props.children}</Text>
-                    ),
-                    headerTitleAlign: "center",
-                  }}
-                >
-                  <Stack.Screen
-                    name="index"
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(auth)/signin"
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(auth)/onboard"
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/rating"
-                    options={{
-                      title: "",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/list/searchResource"
-                    options={{
-                      title: "SEARCH",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/list/rearrangeList"
-                    options={{
-                      title: "Rearrange the List",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/list/createList"
-                    options={{
-                      title: "Create List",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/list/addToList"
-                    options={{
-                      title: "Add it to a List",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/reply/rating"
-                    options={{
-                      title: "",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="(modals)/reply/comment"
-                    options={{
-                      title: "",
-                      presentation: "modal",
-                      animation: "slide_from_bottom",
-                    }}
-                  />
-                </Stack>
-                <PortalHost />
-              </View>
-            </View>
+            <Stack
+              screenOptions={{
+                animation: "fade",
+                headerTitle: (props) => (
+                  <Text variant="h4">{props.children}</Text>
+                ),
+                headerTitleAlign: "center",
+              }}
+            >
+              <Stack.Screen
+                name="index"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="(auth)/signin"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="(auth)/onboard"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/rating"
+                options={{
+                  title: "",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/list/searchResource"
+                options={{
+                  title: "SEARCH",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/list/rearrangeList"
+                options={{
+                  title: "Rearrange the List",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/list/createList"
+                options={{
+                  title: "Create List",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/list/addToList"
+                options={{
+                  title: "Add it to a List",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/reply/rating"
+                options={{
+                  title: "",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+              <Stack.Screen
+                name="(modals)/reply/comment"
+                options={{
+                  title: "",
+                  presentation: "modal",
+                  animation: "slide_from_bottom",
+                }}
+              />
+            </Stack>
+            <PortalHost />
           </ThemeProvider>
         </SafeAreaProvider>
       </TRPCProvider>
