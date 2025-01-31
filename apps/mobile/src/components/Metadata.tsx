@@ -2,7 +2,7 @@ import { Pill } from "@/components/ui/pill";
 import { Text } from "@/components/ui/text";
 import { Image } from "expo-image";
 import React from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 const Metadata = ({
   title,
@@ -27,7 +27,7 @@ const Metadata = ({
           source={cover}
           style={[
             {
-              alignSelf: "center",
+              alignSelf: Platform.OS !== "web" ? "center" : "flex-start",
               borderRadius: 12,
             },
             size === "sm"
@@ -61,7 +61,7 @@ const Metadata = ({
             </View>
           )}
         </View>
-        <View className="px-4">{children}</View>
+        <View className="px-4 items-center sm:items-start">{children}</View>
       </View>
     </View>
   );
