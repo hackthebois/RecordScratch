@@ -92,7 +92,7 @@ const WebHeader = () => {
 
   return (
     <View className="h-16 w-full border-b border-border bg-background justify-center items-center">
-      <View className="flex-row gap-2 justify-between items-center flex-row max-w-screen-lg w-full px-4">
+      <View className="flex-row gap-2 justify-between items-center max-w-screen-lg w-full px-4">
         <Link href="/" asChild>
           <Image
             source={require("../../assets/icon.png")}
