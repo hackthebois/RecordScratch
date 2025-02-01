@@ -174,18 +174,15 @@ const RootLayout = () => {
   useEffect(() => {
     (async () => {
       const theme = await AsyncStorage.getItem("theme");
+      console.log("base", theme);
       if (!theme) {
-        await AsyncStorage.setItem("theme", colorScheme);
+        setColorScheme(colorScheme);
         setIsColorSchemeLoaded(true);
         return;
       }
-      const colorTheme = theme === "dark" ? "dark" : "light";
-      if (colorTheme !== colorScheme) {
-        setColorScheme(colorTheme);
 
-        setIsColorSchemeLoaded(true);
-        return;
-      }
+      const colorTheme = theme === "dark" ? "dark" : "light";
+      setColorScheme(colorTheme);
       setIsColorSchemeLoaded(true);
     })();
   }, []);
