@@ -6,16 +6,9 @@ import {
 import { getDB, sessions, users } from "@recordscratch/db";
 import type { Session, User } from "@recordscratch/types";
 import { eq, or } from "drizzle-orm";
-import { alphabet, generateRandomString } from "oslo/crypto";
-import {
-  H3Event,
-  deleteCookie,
-  getCookie,
-  getQuery,
-  readFormData,
-  sendRedirect,
-  setCookie,
-} from "vinxi/http";
+import type { Context } from "hono";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { generateRandomString, type RandomReader } from "@oslojs/crypto/random";
 import { z } from "zod";
 
 export const generateSessionToken = (): string => {
@@ -75,16 +68,27 @@ export async function invalidateSession(sessionId: string): Promise<void> {
   await db.delete(sessions).where(eq(sessions.id, sessionId));
 }
 
-export function generateId(length: number): string {
-  return generateRandomString(length, alphabet("a-z", "0-9"));
+const random: RandomReader = {
+  read(bytes) {
+    crypto.getRandomValues(bytes);
+  },
+};
+
+export function generateId(length: number, alphabet?: string): string {
+  return generateRandomString(
+    random,
+    alphabet ??
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    length,
+  );
 }
 
 export const setSessionCookie = (
-  event: H3Event,
+  c: Context,
   token: string | undefined,
 ): void => {
   if (token) {
-    setCookie(event, "session", token, {
+    setCookie(c, "session", token, {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: "lax",
@@ -92,44 +96,23 @@ export const setSessionCookie = (
       maxAge: 60 * 60 * 24 * 14, // 14 days
     });
   } else {
-    deleteCookie(event, "session");
+    deleteCookie(c, "session");
   }
 };
 
-export const setOAuthCookies = (
-  event: H3Event,
-  state: string,
-  verifier?: string,
-): void => {
-  setCookie(event, "state", state, {
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    httpOnly: true,
-    maxAge: 60 * 10, // 10 min
-  });
-  if (verifier) {
-    setCookie(event, "codeVerifier", verifier, {
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      httpOnly: true,
-      maxAge: 60 * 10, // 10 min
-    });
-  }
-};
-
-export const validateState = async (event: H3Event, PKCE: boolean) => {
-  const query = getQuery(event);
-  const formData = await readFormData(event).catch(() => new FormData());
+export const validateState = async (c: Context, PKCE: boolean) => {
+  const query = c.req.query();
+  const formData = await c.req.formData().catch(() => new FormData());
   const code = z.string().parse(query.code ?? formData.get("code"));
   const state = z.string().parse(query.state ?? formData.get("state"));
-  const storedState = getCookie(event, "state");
+  const storedState = getCookie(c, "state");
 
   if (!code || !storedState || state !== storedState) {
     throw new Error("Invalid state");
   }
 
   if (PKCE) {
-    const codeVerifier = getCookie(event, "codeVerifier");
+    const codeVerifier = getCookie(c, "codeVerifier");
     if (!codeVerifier) {
       throw new Error("Invalid code verifier");
     }
@@ -140,7 +123,7 @@ export const validateState = async (event: H3Event, PKCE: boolean) => {
 };
 
 export const handleUser = async (
-  event: H3Event,
+  c: Context,
   options: {
     googleId?: string;
     appleId?: string;
@@ -150,7 +133,7 @@ export const handleUser = async (
 ) => {
   const { googleId, appleId, email, onReturn = "redirect" } = options;
   const db = getDB();
-  const query = getQuery(event);
+  const query = c.req.query();
   let userId: string;
   let redirect: string;
   const expoAddress = query.expoAddress as string;
@@ -181,13 +164,13 @@ export const handleUser = async (
 
   if (expoAddress) redirect = `${expoAddress}?session_id=${token}`;
 
-  setSessionCookie(event, token);
+  setSessionCookie(c, token);
 
   if (onReturn === "sessionId")
-    return {
+    return c.json({
       sessionId: token,
-    };
-  else return sendRedirect(event, redirect);
+    });
+  else return c.redirect(redirect);
 };
 
 export type SessionValidationResult =
