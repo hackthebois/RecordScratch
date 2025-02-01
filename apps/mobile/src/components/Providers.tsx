@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth";
 import { catchError } from "@/lib/errors";
 import { api } from "@/lib/api";
 import { handleLoginRedirect, createAuthStore, AuthContext } from "@/lib/auth";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef } from "react";
 import { reloadAppAsync } from "expo";
@@ -78,7 +78,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     login()
-      .then(({ status }) => handleLoginRedirect({ status, router }))
+      .then(({ status }) => {
+        if (status !== "authenticated") {
+          handleLoginRedirect({ status, router });
+        }
+      })
       .catch((e) => {
         catchError(e);
         reloadAppAsync();

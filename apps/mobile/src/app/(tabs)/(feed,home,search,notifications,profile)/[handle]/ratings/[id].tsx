@@ -1,6 +1,7 @@
 import NotFoundScreen from "@/app/+not-found";
 import { Comment } from "@/components/Comment";
 import { Review } from "@/components/Review";
+import { WebWrapper } from "@/components/WebWrapper";
 import { api } from "@/lib/api";
 import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
@@ -36,14 +37,22 @@ const RatingPage = () => {
       <View className="flex-1">
         <FlashList
           ListHeaderComponent={
-            <>
+            <WebWrapper>
               <Review {...rating} profile={profile} />
               <View className="h-1 bg-muted" />
-            </>
+            </WebWrapper>
           }
           data={comments}
-          renderItem={({ item }) => <Comment comment={item} />}
-          ItemSeparatorComponent={() => <View className="h-1 bg-muted" />}
+          renderItem={({ item }) => (
+            <WebWrapper>
+              <Comment comment={item} />
+            </WebWrapper>
+          )}
+          ItemSeparatorComponent={() => (
+            <WebWrapper>
+              <View className="h-1 bg-muted" />
+            </WebWrapper>
+          )}
           estimatedItemSize={200}
           refreshing={isRefetchingByUser}
           onRefresh={refetchByUser}
