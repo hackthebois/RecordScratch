@@ -12,8 +12,12 @@
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
 		"@recordscratch/db": "workspace:*",
+		"arctic": "^3.2.2",
 		"drizzle-zod": "^0.5.1",
+		"hono": "^4.6.20",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {

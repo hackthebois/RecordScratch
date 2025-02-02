@@ -6,12 +6,14 @@
 		"@recordscratch/auth": "workspace:*",
 		"@recordscratch/db": "workspace:*",
 		"@recordscratch/lib": "workspace:*",
-		"@trpc/server": "^11.0.0-rc.364",
+		"@trpc/server": "next",
 		"aws4fetch": "^1.0.18",
 		"drizzle-zod": "^0.5.1",
+		"expo-server-sdk": "^3.13.0",
+		"hono": "^4.6.20",
 		"posthog-node": "^4.0.0",
-		"zod": "^3.22.4",
-		"uuid": "^10.0.0"
+		"uuid": "^10.0.0",
+		"zod": "^3.22.4"
 	},
 	"devDependencies": {
 		"@types/bun": "latest"

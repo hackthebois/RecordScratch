@@ -32,3 +32,5 @@ dist-ssr
 
 wrangler.toml
 .turbo
+
+.dev.vars

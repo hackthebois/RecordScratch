@@ -5,13 +5,13 @@ import { relationSchemas, tableSchemas } from "./schema";
 export * from "./schema";
 
 const schema = {
-	...tableSchemas,
-	...relationSchemas,
+  ...tableSchemas,
+  ...relationSchemas,
 };
 
 // create the connection
 
-export const getDB = () => {
-	const sql = neon(process.env.DATABASE_URL!);
-	return drizzle(sql, { schema });
+export const getDB = (url: string) => {
+  const sql = neon(url);
+  return drizzle(sql, { schema });
 };
