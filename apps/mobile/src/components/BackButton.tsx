@@ -10,7 +10,7 @@ export const BackButton = () => {
     <Link
       href={".."}
       style={{ marginLeft: width > 1024 ? (width - 1024) / 2 : 0 }}
-      className="p-4"
+      className="px-4 h-full flex flex-row items-center justify-center"
     >
       <ArrowLeft size={28} className="text-primary" />
     </Link>

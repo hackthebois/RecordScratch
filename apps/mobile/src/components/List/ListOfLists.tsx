@@ -1,22 +1,24 @@
 import { ListsType } from "@recordscratch/types";
-import { FlatList, View, useWindowDimensions } from "react-native";
+import { FlatList, Pressable, View, useWindowDimensions } from "react-native";
 import ListImage from "./ListImage";
-import { Link } from "expo-router";
 import React from "react";
 import { Text } from "../ui/text";
 import ReLink from "../ReLink";
+import { FlashList } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
 
 const ListsItem = ({
 	listsItem,
 	size,
 	onPress,
-	showLink = true,
+	showLink,
 }: {
 	listsItem: ListsType;
 	size: number;
 	onPress?: (listId: string) => void;
 	showLink?: boolean;
 }) => {
+	const router = useRouter();
 	if (!listsItem.id || !listsItem.profile) return null;
 	const listResources = listsItem.resources;
 
@@ -41,25 +43,22 @@ const ListsItem = ({
 
 	return (
 		<View
-			className="flex flex-col gap-96"
 			style={{
 				width: size,
 			}}
 		>
 			{
-				<ReLink
-					disabled={!showLink}
-					onPress={(event) => {
+				<Pressable
+					onPress={() => {
 						if (onPress) {
-							event.preventDefault();
 							onPress(listsItem.id);
 						}
+						if (showLink) router.push(`/lists/${listsItem.id}`);
 					}}
-					href={{ pathname: `/lists/[id]`, params: { id: listsItem.id } }}
 					className="flex w-full cursor-pointer flex-col"
 				>
 					{ListItemContent}
-				</ReLink>
+				</Pressable>
 			}
 		</View>
 	);
@@ -85,28 +84,30 @@ const ListOfLists = ({
 	LastItemComponent?: React.ReactNode;
 	EmptyComponent?: React.ReactNode;
 }) => {
-	if (orientation === "vertical") {
-		const dimensions = useWindowDimensions();
-		let listoflists;
-		if (LastItemComponent) {
-			const emptyList: ListsType = {
-				id: "",
-				userId: "",
-				name: "",
-				category: "ALBUM",
-				resources: [],
-				profile: null,
-			};
-			listoflists = [...(lists || []), emptyList];
-		} else listoflists = lists;
+	const dimensions = useWindowDimensions();
+	let listoflists;
+	if (LastItemComponent) {
+		const emptyList: ListsType = {
+			id: "",
+			userId: "",
+			name: "",
+			category: "ALBUM",
+			resources: [],
+			profile: null,
+		};
+		listoflists = [...(lists || []), emptyList];
+	} else listoflists = lists;
 
+	if (orientation === "vertical") {
 		return (
 			<FlatList
+				ListHeaderComponent={() => HeaderComponent}
+				ListFooterComponent={() => FooterComponent}
+				ListEmptyComponent={() => EmptyComponent}
 				data={listoflists}
 				keyExtractor={(index) => index.id}
 				renderItem={({ item }) => {
 					if (item.id === "") return <>{LastItemComponent}</>;
-
 					return (
 						<ListsItem
 							listsItem={item}
@@ -116,18 +117,18 @@ const ListOfLists = ({
 						/>
 					);
 				}}
-				showsVerticalScrollIndicator={false}
-				horizontal={false}
 				columnWrapperStyle={{
+					flexDirection: "row",
 					flexWrap: "wrap",
-					gap: 15,
-					marginBottom: 20,
+					justifyContent: "space-between",
+					marginBlock: 10,
 				}}
+				keyboardShouldPersistTaps="always"
+				keyboardDismissMode="interactive"
 				numColumns={3}
-				className="h-full mt-4"
-				ListHeaderComponent={() => HeaderComponent}
-				ListFooterComponent={() => FooterComponent}
-				ListEmptyComponent={() => EmptyComponent}
+				scrollEnabled={true}
+				horizontal={false}
+				showsVerticalScrollIndicator={false}
 			/>
 		);
 	}

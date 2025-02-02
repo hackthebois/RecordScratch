@@ -11,7 +11,7 @@ let env = {
   SITE_URL:
     Platform.OS === "android"
       ? "https://humane-cockatoo-instantly.ngrok-free.app"
-      : "https://server.recordscratchapp.workers.dev",
+      : "https://f60d-76-69-148-22.ngrok-free.app",
   DEBUG: true,
 };
 

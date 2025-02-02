@@ -3,7 +3,7 @@ import ListOfLists from "@/components/List/ListOfLists";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { KeyboardAvoidingView, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { SquarePlus } from "@/lib/icons/IconsLoader";
 import { useAuth } from "@/lib/auth";
@@ -35,11 +35,10 @@ const AllListsPage = () => {
 	});
 
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<Stack.Screen
 				options={{ title: `${isProfile ? "My" : `${profile.handle}'s`} Lists` }}
 			/>
-
 			<ListOfLists
 				HeaderComponent={<CreateListButton isProfile={isProfile} />}
 				lists={lists}

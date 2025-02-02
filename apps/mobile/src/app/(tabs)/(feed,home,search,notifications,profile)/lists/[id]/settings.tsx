@@ -82,7 +82,7 @@ const SettingsPage = () => {
 	};
 
 	return (
-		<KeyboardAvoidingScrollView contentContainerClassName="p-4 gap-8">
+		<KeyboardAvoidingScrollView contentContainerClassName="h-full p-4 gap-8">
 			<Stack.Screen
 				options={{
 					title: `Edit List`,
@@ -154,7 +154,7 @@ const SettingsPage = () => {
 				className="self-stretch"
 				variant="secondary"
 			>
-				{loading ? <Text>Loading...</Text> : <Text>Save</Text>}
+				<Text>{loading ? "Loading..." : "Save"}</Text>
 			</Button>
 			<Button disabled={loading} variant="destructive" onPress={handleDelete}>
 				<Text>Delete List</Text>

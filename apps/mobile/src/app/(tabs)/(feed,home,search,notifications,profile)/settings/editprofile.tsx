@@ -36,53 +36,53 @@ const TopListTab = ({
   const [value, setValue] = useState(tab);
   const [editMode, setEditMode] = useState(false);
 
-  return (
-    <>
-      <Text variant="h4" className="text-center">
-        My Top Lists
-      </Text>
-      <Tabs value={value} onValueChange={setValue}>
-        <View className="">
-          <TabsList className="flex-row w-full">
-            <TabsTrigger value="ALBUM" className="flex-1">
-              <Text>Albums</Text>
-            </TabsTrigger>
-            <TabsTrigger value="SONG" className="flex-1">
-              <Text>Songs</Text>
-            </TabsTrigger>
-            <TabsTrigger value="ARTIST" className="flex-1">
-              <Text>Artists</Text>
-            </TabsTrigger>
-          </TabsList>
-        </View>
-        <TabsContent value="ALBUM">
-          <TopList
-            category="ALBUM"
-            setEditMode={setEditMode}
-            editMode={editMode}
-            list={album}
-            isUser={true}
-          />
-        </TabsContent>
-        <TabsContent value="SONG">
-          <TopList
-            category="SONG"
-            setEditMode={setEditMode}
-            editMode={editMode}
-            list={song}
-            isUser={true}
-          />
-        </TabsContent>
-        <TabsContent value="ARTIST">
-          <TopList
-            category="ARTIST"
-            setEditMode={setEditMode}
-            editMode={editMode}
-            list={artist}
-            isUser={true}
-          />
-        </TabsContent>
-      </Tabs>
+	return (
+		<>
+			<Text variant="h4" className="text-center">
+				My Top 6
+			</Text>
+			<Tabs value={value} onValueChange={setValue}>
+				<View className="">
+					<TabsList className="flex-row w-full">
+						<TabsTrigger value="ALBUM" className="flex-1">
+							<Text>Albums</Text>
+						</TabsTrigger>
+						<TabsTrigger value="SONG" className="flex-1">
+							<Text>Songs</Text>
+						</TabsTrigger>
+						<TabsTrigger value="ARTIST" className="flex-1">
+							<Text>Artists</Text>
+						</TabsTrigger>
+					</TabsList>
+				</View>
+				<TabsContent value="ALBUM">
+					<TopList
+						category="ALBUM"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={album}
+						isUser={true}
+					/>
+				</TabsContent>
+				<TabsContent value="SONG">
+					<TopList
+						category="SONG"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={song}
+						isUser={true}
+					/>
+				</TabsContent>
+				<TabsContent value="ARTIST">
+					<TopList
+						category="ARTIST"
+						setEditMode={setEditMode}
+						editMode={editMode}
+						list={artist}
+						isUser={true}
+					/>
+				</TabsContent>
+			</Tabs>
 
       <Button
         className="w-full flex items-center"

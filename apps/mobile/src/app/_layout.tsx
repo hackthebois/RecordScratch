@@ -1,4 +1,3 @@
-import { Text } from "@/components/ui/text";
 import env from "@/env";
 import { AuthProvider, TRPCProvider } from "@/components/Providers";
 import { PrefetchProfile } from "@/components/Prefetch";
@@ -156,11 +155,7 @@ const RootLayout = () => {
         <SafeAreaProvider>
           <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
             <PrefetchProfile />
-            <Stack
-              screenOptions={{
-                ...defaultScreenOptions,
-              }}
-            >
+            <Stack screenOptions={defaultScreenOptions}>
               <Stack.Screen
                 name="index"
                 options={{
