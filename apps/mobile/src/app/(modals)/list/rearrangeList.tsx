@@ -18,7 +18,7 @@ import { Stack, router, useLocalSearchParams, useRouter } from "expo-router";
 import { api } from "@/lib/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AlignJustify, ChevronLeft, Save, Trash2 } from "@/lib/icons/IconsLoader";
-import { TouchableOpacity, View, Pressable } from "react-native";
+import { TouchableOpacity, View, Pressable, Alert } from "react-native";
 import ReText from "@/components/ui/retext";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -336,6 +336,41 @@ const RearrangeListModal = () => {
 	const hasListChanged = useRef<boolean>(false);
 	const resourcesSharedMap = useDerivedValue(() => setMap(resourcesState), [resourcesState]);
 
+	const utils = api.useUtils();
+	const { mutate: updatePositions } = api.lists.resources.updatePositions.useMutation({
+		onSettled: async () => {
+			const print = resourcesState.map(
+				(resource) =>
+					`ResourceID: ${resource.resourceId} Position: ${resourcesSharedMap.value[resource.resourceId]} `
+			);
+			Alert.alert(print.toString());
+		},
+		onError: (error) => {
+			Alert.alert(error.message);
+		},
+	});
+	const { mutate: deletePositions } = api.lists.resources.multipleDelete.useMutation();
+
+	const handleSave = async () => {
+		if (hasListChanged.current) {
+			updatePositions({
+				listId,
+				resources: resourcesState.map((resource) => ({
+					...resource,
+					position: resourcesSharedMap.value[resource.resourceId],
+				})),
+			});
+		}
+		if (deletedResourcesRef.current.length) {
+			deletePositions({
+				listId,
+				resources: deletedResourcesRef.current,
+			});
+		}
+		await invalidate();
+		router.back();
+	};
+
 	const invalidate = async () => {
 		await utils.lists.resources.get.invalidate({
 			listId,
@@ -348,30 +383,6 @@ const RearrangeListModal = () => {
 				userId: list?.userId,
 			});
 		}
-	};
-
-	const utils = api.useUtils();
-	const { mutateAsync: updatePositions } = api.lists.resources.updatePositions.useMutation();
-	const { mutateAsync: deletePositions } = api.lists.resources.multipleDelete.useMutation();
-
-	const handleSave = async () => {
-		if (hasListChanged.current) {
-			await updatePositions({
-				listId,
-				resources: resourcesState.map((resource) => ({
-					...resource,
-					position: resourcesSharedMap.value[resource.resourceId],
-				})),
-			});
-		}
-		if (deletedResourcesRef.current.length) {
-			await deletePositions({
-				listId,
-				resources: deletedResourcesRef.current,
-			});
-		}
-		await invalidate();
-		router.back();
 	};
 
 	return (
