@@ -49,21 +49,23 @@ const SongPage = () => {
     category: "SONG",
   };
 
+  const options =
+    Platform.OS !== "web"
+      ? {
+          headerRight: () => (
+            <Link href={`/albums/${album.id}`} asChild>
+              <Button variant="secondary" size={"sm"}>
+                <Text>Go to album</Text>
+              </Button>
+            </Link>
+          ),
+        }
+      : {};
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View className="flex flex-1">
-        <Stack.Screen
-          options={{
-            headerRight: () => (
-              <Link href={`/albums/${album.id}`} asChild>
-                <Button variant="secondary" size={"sm"}>
-                  <Text>Go to album</Text>
-                </Button>
-              </Link>
-            ),
-            headerShown: Platform.OS !== "web",
-          }}
-        />
+        <Stack.Screen options={options} />
         <ScrollView>
           <WebWrapper>
             <Metadata

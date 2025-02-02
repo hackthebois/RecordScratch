@@ -6,14 +6,11 @@ console.log("PROCESS.ENV", process.env);
 let env = {
   ENV: "development",
   R2_PUBLIC_URL: "https://cdn.recordscratch.app",
-  SCHEME:
-    Platform.OS === "web"
-      ? "https://recordscratch-refactor.pages.dev/"
-      : "recordscratch://",
+  SCHEME: Platform.OS === "web" ? "http://localhost:8081/" : "recordscratch://",
   SITE_URL:
     Platform.OS === "android"
       ? "https://humane-cockatoo-instantly.ngrok-free.app"
-      : "https://server.recordscratchapp.workers.dev",
+      : "http://localhost:3000",
   DEBUG: true,
 };
 

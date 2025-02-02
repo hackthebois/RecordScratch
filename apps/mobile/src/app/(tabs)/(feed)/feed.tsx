@@ -5,7 +5,7 @@ import { Text } from "@/components/ui/text";
 import { Stack } from "expo-router";
 import React from "react";
 import { useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 const FeedPage = () => {
   const [tab, setTab] = useState("for-you");
@@ -15,7 +15,6 @@ const FeedPage = () => {
       <Stack.Screen
         options={{
           title: "Feed",
-          headerShown: Platform.OS !== "web",
         }}
       />
       <WebWrapper>

@@ -18,9 +18,9 @@ import {
 } from "@recordscratch/types";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 
 const TopListTab = ({
   tab = "ALBUM",
@@ -215,7 +215,6 @@ const EditProfile = () => {
           <Stack.Screen
             options={{
               title: "Edit Profile",
-              headerShown: Platform.OS !== "web",
             }}
           />
           <View className="flex flex-row items-center gap-4 ">

@@ -7,7 +7,7 @@ import { socials } from "@recordscratch/lib";
 import * as Linking from "expo-linking";
 import { Stack } from "expo-router";
 import * as React from "react";
-import { Platform, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 function RouteComponent() {
   const openUrl = async (url: string) => {
@@ -24,7 +24,6 @@ function RouteComponent() {
           <Stack.Screen
             options={{
               title: "Support",
-              headerShown: Platform.OS !== "web",
             }}
           />
           <Text className="text-lg">

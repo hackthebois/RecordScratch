@@ -13,7 +13,7 @@ import { UserPen } from "@/lib/icons/IconsLoader";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { reloadAppAsync } from "expo";
 import { Link, Redirect, Stack, useRouter } from "expo-router";
-import { Platform, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 const SettingsPage = () => {
   const logout = useAuth((s) => s.logout);
@@ -37,7 +37,6 @@ const SettingsPage = () => {
           <Stack.Screen
             options={{
               title: "Settings",
-              headerShown: Platform.OS !== "web",
             }}
           />
           <Link href={`/settings/editprofile`} asChild>

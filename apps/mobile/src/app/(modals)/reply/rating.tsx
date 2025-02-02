@@ -10,8 +10,11 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Platform, TextInput, View } from "react-native";
 import { z } from "zod";
+import { useWindowDimensions } from "react-native";
+import { Send } from "@/lib/icons/IconsLoader";
 
 const Reply = () => {
+  const { width } = useWindowDimensions();
   const router = useRouter();
   const { resourceId, handle } = useLocalSearchParams<{
     resourceId: string;
@@ -76,12 +79,13 @@ const Reply = () => {
                   onPress={form.handleSubmit(onSubmit)}
                   disabled={isPending}
                   variant="secondary"
-                  size="sm"
+                  style={{ marginRight: width > 1024 ? (width - 1024) / 2 : 0 }}
+                  className="flex-row items-center gap-2"
                 >
+                  <Send size={16} className="text-foreground" />
                   <Text>Post</Text>
                 </Button>
               ),
-              headerShown: Platform.OS !== "web",
             }}
           />
           <Review {...rating} profile={profile} hideActions />
@@ -103,16 +107,6 @@ const Reply = () => {
               </View>
             )}
           />
-          {Platform.OS === "web" ? (
-            <Button
-              onPress={form.handleSubmit(onSubmit)}
-              disabled={isPending}
-              variant="secondary"
-              size="sm"
-            >
-              <Text>Post</Text>
-            </Button>
-          ) : null}
         </View>
       </WebWrapper>
     </KeyboardAvoidingScrollView>

@@ -129,9 +129,7 @@ export default function Notifications() {
 
   return (
     <>
-      <Stack.Screen
-        options={{ title: "Notifications", headerShown: Platform.OS !== "web" }}
-      />
+      <Stack.Screen options={{ title: "Notifications" }} />
       {emptyNotifications ? (
         <View className="my-[20vh] flex w-full flex-col items-center justify-center gap-6">
           <BellOff size={64} className="text-muted-foreground" />

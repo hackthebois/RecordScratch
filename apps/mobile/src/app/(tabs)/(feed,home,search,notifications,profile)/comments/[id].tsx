@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 const CommentPage = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,7 +23,6 @@ const CommentPage = () => {
       <Stack.Screen
         options={{
           title: `${comment.profile.name}'s Comment`,
-          headerShown: Platform.OS !== "web",
         }}
       />
       <View className="flex-1">

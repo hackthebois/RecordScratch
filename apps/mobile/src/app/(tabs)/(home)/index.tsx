@@ -11,9 +11,10 @@ import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { Platform, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../../+not-found";
+import { WebHeaderRight } from "@/components/WebHeaderRight";
 
 const AlbumOfTheDay = () => {
   const [albumOfTheDay] = api.misc.albumOfTheDay.useSuspenseQuery();
@@ -64,8 +65,8 @@ const HomePage = () => {
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
       <Stack.Screen
         options={{
-          headerShown: Platform.OS === "web" ? false : true,
           title: "Home",
+          headerRight: () => <WebHeaderRight />,
         }}
       />
       <ScrollView

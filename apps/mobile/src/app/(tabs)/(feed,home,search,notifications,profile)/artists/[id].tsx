@@ -10,7 +10,7 @@ import { getQueryOptions } from "@/lib/deezer";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Platform, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ArtistPage = () => {
@@ -53,7 +53,7 @@ const ArtistPage = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-      <Stack.Screen options={{ headerShown: Platform.OS !== "web" }} />
+      <Stack.Screen />
       <View className="flex-1">
         <ScrollView>
           <WebWrapper>

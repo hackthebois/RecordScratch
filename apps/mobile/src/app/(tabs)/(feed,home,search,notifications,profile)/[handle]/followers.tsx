@@ -10,7 +10,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 const Followers = () => {
   const { handle, type } = useLocalSearchParams<{
@@ -38,7 +38,6 @@ const Followers = () => {
         options={{
           title: tab === "followers" ? "Followers" : "Following",
           headerBackVisible: true,
-          headerShown: Platform.OS !== "web",
         }}
       />
       <Tabs value={tab} onValueChange={setTab} className="flex-1 sm:mt-4">

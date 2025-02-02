@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 const RatingPage = () => {
   const { id, handle } = useLocalSearchParams<{ id: string; handle: string }>();
@@ -31,7 +31,6 @@ const RatingPage = () => {
       <Stack.Screen
         options={{
           title: `${profile.name}'s Rating`,
-          headerShown: Platform.OS !== "web",
         }}
       />
       <View className="flex-1">

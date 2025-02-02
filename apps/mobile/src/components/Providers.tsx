@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     login()
       .then(({ status }) => {
-        if (status !== "authenticated" || !pathname.startsWith("/(tabs)")) {
+        if (status !== "authenticated" || pathname === "/signin") {
           handleLoginRedirect({ status, router });
         }
       })

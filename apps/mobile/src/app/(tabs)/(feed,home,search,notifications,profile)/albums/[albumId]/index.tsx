@@ -14,7 +14,7 @@ import { Resource } from "@recordscratch/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Platform, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AlbumLayout() {
@@ -53,11 +53,7 @@ export default function AlbumLayout() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-      <Stack.Screen
-        options={{
-          headerShown: Platform.OS !== "web",
-        }}
-      />
+      <Stack.Screen />
       <View className="flex flex-1">
         <ScrollView contentContainerClassName="pb-4">
           <WebWrapper>

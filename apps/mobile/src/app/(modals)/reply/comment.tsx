@@ -4,13 +4,15 @@ import { WebWrapper } from "@/components/WebWrapper";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
+import { Send } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { TextInput, View, Platform } from "react-native";
+import { TextInput, View, Platform, useWindowDimensions } from "react-native";
 import { z } from "zod";
 
 const CommentModal = () => {
+  const { width } = useWindowDimensions();
   const router = useRouter();
   const { id } = useLocalSearchParams<{
     id: string;
@@ -70,12 +72,13 @@ const CommentModal = () => {
                   onPress={form.handleSubmit(onSubmit)}
                   disabled={isPending}
                   variant="secondary"
-                  size="sm"
+                  style={{ marginRight: width > 1024 ? (width - 1024) / 2 : 0 }}
+                  className="flex-row items-center gap-2"
                 >
+                  <Send size={16} />
                   <Text>Post</Text>
                 </Button>
               ),
-              headerShown: Platform.OS !== "web",
             }}
           />
           <Comment comment={comment} hideActions />

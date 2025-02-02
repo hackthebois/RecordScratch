@@ -82,7 +82,7 @@ export default function SearchPage() {
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
       <Stack.Screen
         options={{
-          headerShown: false,
+          headerShown: Platform.OS === "web",
         }}
       />
       <WebWrapper>

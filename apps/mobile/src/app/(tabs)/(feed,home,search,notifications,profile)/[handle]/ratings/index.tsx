@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 import { keepPreviousData } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 type RatingCategory = "all" | "ALBUM" | "SONG";
 
@@ -45,7 +45,6 @@ const Reviews = () => {
         options={{
           title: handle + " Ratings",
           headerBackVisible: true,
-          headerShown: Platform.OS !== "web",
         }}
       />
       <ReviewsList

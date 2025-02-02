@@ -8,13 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { reloadAppAsync } from "expo";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  ScrollView,
-  Switch,
-  View,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Switch, View } from "react-native";
 
 export default function DeleteAccount() {
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -44,7 +38,6 @@ export default function DeleteAccount() {
             options={{
               title: "Delete Account",
               headerBackVisible: !isPending,
-              headerShown: Platform.OS !== "web",
             }}
           />
           <Text className="text-lg font-bold mb-3">

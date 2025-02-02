@@ -217,10 +217,9 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
     userId: profile.userId,
   });
 
-  return (
-    <View className="flex flex-1">
-      <Stack.Screen
-        options={{
+  const options =
+    Platform.OS !== "web"
+      ? {
           title: profile.name,
           headerRight: () =>
             isProfile ? (
@@ -232,9 +231,12 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
                 <FollowButton profileId={profile!.userId} size={"sm"} />
               </Suspense>
             ),
-          headerShown: Platform.OS !== "web",
-        }}
-      />
+        }
+      : {};
+
+  return (
+    <View className="flex flex-1">
+      <Stack.Screen options={options} />
       <ScrollView>
         <WebWrapper>
           <View className="mt-4 px-4 gap-2">

@@ -113,7 +113,6 @@ const RatingModal = () => {
       <Stack.Screen
         options={{
           title: `Rate ${resource.category === "ALBUM" ? "Album" : "Song"}`,
-          headerShown: Platform.OS !== "web",
         }}
       />
       <KeyboardAvoidingScrollView modal>

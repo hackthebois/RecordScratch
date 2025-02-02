@@ -31,6 +31,7 @@ import {
   ReanimatedLogLevel,
 } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { defaultScreenOptions } from "@/lib/navigation";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -157,11 +158,7 @@ const RootLayout = () => {
             <PrefetchProfile />
             <Stack
               screenOptions={{
-                animation: "fade",
-                headerTitle: (props) => (
-                  <Text variant="h4">{props.children}</Text>
-                ),
-                headerTitleAlign: "center",
+                ...defaultScreenOptions,
               }}
             >
               <Stack.Screen
