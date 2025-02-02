@@ -18,7 +18,7 @@ import { Stack, router, useLocalSearchParams, useRouter } from "expo-router";
 import { api } from "@/lib/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AlignJustify, ChevronLeft, Save, Trash2 } from "@/lib/icons/IconsLoader";
-import { TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { TouchableOpacity, View, Pressable } from "react-native";
 import ReText from "@/components/ui/retext";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -343,6 +343,11 @@ const RearrangeListModal = () => {
 		await utils.lists.getUser.invalidate({
 			userId: list?.profile.userId,
 		});
+		if (list?.onProfile) {
+			await utils.lists.topLists.invalidate({
+				userId: list?.userId,
+			});
+		}
 	};
 
 	const utils = api.useUtils();
@@ -350,7 +355,7 @@ const RearrangeListModal = () => {
 	const { mutateAsync: deletePositions } = api.lists.resources.multipleDelete.useMutation();
 
 	const handleSave = async () => {
-		if (hasListChanged.current)
+		if (hasListChanged.current) {
 			await updatePositions({
 				listId,
 				resources: resourcesState.map((resource) => ({
@@ -358,6 +363,7 @@ const RearrangeListModal = () => {
 					position: resourcesSharedMap.value[resource.resourceId],
 				})),
 			});
+		}
 		if (deletedResourcesRef.current.length) {
 			await deletePositions({
 				listId,
@@ -365,6 +371,7 @@ const RearrangeListModal = () => {
 			});
 		}
 		await invalidate();
+		router.back();
 	};
 
 	return (
@@ -375,24 +382,18 @@ const RearrangeListModal = () => {
 						options={{
 							headerTitle: () => (
 								<View className="flex flex-row justify-between items-center w-full pr-10">
-									<TouchableOpacity
+									<Button
+										variant="link"
 										className="flex flex-row items-center -m-5"
-										onPress={() => {
-											router.back();
-										}}
+										onPress={router.back}
 									>
 										<ChevronLeft />
 										<Text className=" text-xl">Back</Text>
-									</TouchableOpacity>
+									</Button>
 									<Text variant="h4">Edit {list?.name}</Text>
-									<TouchableOpacity
-										onPress={() => {
-											handleSave();
-											router.back();
-										}}
-									>
+									<Button variant="link" onPress={handleSave}>
 										<Save />
-									</TouchableOpacity>
+									</Button>
 								</View>
 							),
 						}}
