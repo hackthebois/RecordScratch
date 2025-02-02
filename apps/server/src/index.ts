@@ -27,8 +27,17 @@ import { getCookie, setCookie } from "hono/cookie";
 import { contextStorage } from "hono/context-storage";
 import type { ServerEnv } from "@recordscratch/types";
 import { createTRPCContext } from "@recordscratch/api";
+import { cors } from "hono/cors";
 
 const app = new Hono<{ Bindings: ServerEnv }>();
+
+app.use(
+  cors({
+    origin: ["https://recordscratch-refactor.pages.dev"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+  }),
+);
 
 app.use(contextStorage());
 
@@ -47,12 +56,12 @@ app.use(
 
 // Proxy route for Deezer API
 app.get("/music/**", async (c) => {
-  const url = c.req.path.replace("/music/", "https://api.deezer.com/");
+  const url = "https://api.deezer.com" + c.req.url.split("/music")[1];
   return fetch(url, { ...c.req.raw });
 });
 
 app.get("/ingest/**", async (c) => {
-  const url = c.req.path.replace("/ingest/", "https://app.posthog.com/");
+  const url = "https://app.posthog.com" + c.req.url.split("/ingest")[1];
   return fetch(url, { ...c.req.raw });
 });
 
