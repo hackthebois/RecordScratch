@@ -16,6 +16,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef } from "react";
 import { reloadAppAsync } from "expo";
 import { useStore } from "zustand";
+import { Platform } from "react-native";
 
 export const TRPCProvider = (props: { children: React.ReactNode }) => {
   const sessionId = useAuth((s) => s.sessionId);
@@ -86,7 +87,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       })
       .catch((e) => {
         catchError(e);
-        reloadAppAsync();
+        if (Platform.OS !== "web") {
+          reloadAppAsync();
+        }
       });
   }, [login]);
 
