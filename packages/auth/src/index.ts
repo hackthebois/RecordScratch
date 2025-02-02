@@ -19,10 +19,11 @@ export const generateSessionToken = (): string => {
 };
 
 export const createSession = async (
+  c: Context,
   token: string,
   userId: string,
 ): Promise<Session> => {
-  const db = getDB();
+  const db = getDB(c.env.DATABASE_URL);
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const session: Session = {
     id: sessionId,
@@ -34,9 +35,10 @@ export const createSession = async (
 };
 
 export async function validateSessionToken(
+  c: Context,
   token: string,
 ): Promise<SessionValidationResult> {
-  const db = getDB();
+  const db = getDB(c.env.DATABASE_URL);
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const result = await db
     .select({ user: users, session: sessions })
@@ -63,8 +65,11 @@ export async function validateSessionToken(
   return { session, user };
 }
 
-export async function invalidateSession(sessionId: string): Promise<void> {
-  const db = getDB();
+export async function invalidateSession(
+  c: Context,
+  sessionId: string,
+): Promise<void> {
+  const db = getDB(c.env.DATABASE_URL);
   await db.delete(sessions).where(eq(sessions.id, sessionId));
 }
 
@@ -132,7 +137,7 @@ export const handleUser = async (
   },
 ) => {
   const { googleId, appleId, email, onReturn = "redirect" } = options;
-  const db = getDB();
+  const db = getDB(c.env.DATABASE_URL);
   const query = c.req.query();
   let userId: string;
   let redirect: string;
@@ -160,7 +165,7 @@ export const handleUser = async (
   }
 
   const token = generateSessionToken();
-  await createSession(token, userId);
+  await createSession(c, token, userId);
 
   if (expoAddress) redirect = `${expoAddress}?session_id=${token}`;
 

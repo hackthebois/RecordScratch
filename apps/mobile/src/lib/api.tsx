@@ -3,10 +3,9 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
+import { loggerLink, httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import React, { useState } from "react";
-import superjson from "superjson";
 
 import env from "@/env";
 import type { AppRouter } from "@recordscratch/api";
@@ -36,15 +35,15 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
 
   const trpcClient = api.createClient({
     links: [
-      //loggerLink({
-      //  enabled: () => env.DEBUG,
-      //  colorMode: "ansi",
-      //}),
+      loggerLink({
+        enabled: () => env.DEBUG,
+        colorMode: "ansi",
+      }),
       httpBatchLink({
-        transformer: superjson,
         url: `${env.SITE_URL}/trpc`,
         async headers() {
           const headers = new Map<string, string>();
+          console.log("sessionId", sessionId);
           headers.set("x-trpc-source", "expo-react");
           headers.set("Authorization", `${sessionId}`);
           return Object.fromEntries(headers);

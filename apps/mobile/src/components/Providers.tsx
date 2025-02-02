@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const store = useRef(createAuthStore()).current;
   const login = useStore(store, (s) => s.login);
   const status = useStore(store, (s) => s.status);
+  const pathname = usePathname();
 
   // Hide the splash screen when the user isn't going to home page
   useEffect(() => {
@@ -79,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     login()
       .then(({ status }) => {
-        if (status !== "authenticated") {
+        if (status !== "authenticated" || !pathname.startsWith("/(tabs)")) {
           handleLoginRedirect({ status, router });
         }
       })

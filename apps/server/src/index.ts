@@ -1,11 +1,7 @@
 import { Context, Hono } from "hono";
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter } from "@recordscratch/api";
-import {
-  invalidateSession,
-  setSessionCookie,
-  validateSessionToken,
-} from "@recordscratch/auth";
+import { validateSessionToken } from "@recordscratch/auth";
 import {
   commentNotifications,
   comments,
@@ -24,33 +20,52 @@ import {
 } from "@recordscratch/db";
 import { eq, inArray, or } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import {
-  handleUser,
-  setOAuthCookies,
-  validateState,
-} from "@recordscratch/auth";
+import { handleUser, validateState } from "@recordscratch/auth";
 import { Google, generateCodeVerifier, generateState } from "arctic";
-import { H3Event, getQuery, sendRedirect } from "vinxi/http";
 import { z } from "zod";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
+import { contextStorage } from "hono/context-storage";
+import type { ServerEnv } from "@recordscratch/types";
+import { createTRPCContext } from "@recordscratch/api";
 
-const app = new Hono();
+const app = new Hono<{ Bindings: ServerEnv }>();
+
+app.use(contextStorage());
 
 app.use(
   "/trpc/*",
   trpcServer({
     router: appRouter,
+    createContext: (_, c) => {
+      return createTRPCContext({
+        sessionId: c.req.header("Authorization") ?? getCookie(c, "session"),
+        c,
+      });
+    },
   }),
 );
 
+// Proxy route for Deezer API
+app.get("/music/**", async (c) => {
+  const url = c.req.path.replace("/music/", "https://api.deezer.com/");
+  return fetch(url, { ...c.req.raw });
+});
+
+app.get("/ingest/**", async (c) => {
+  const url = c.req.path.replace("/ingest/", "https://app.posthog.com/");
+  return fetch(url, { ...c.req.raw });
+});
+
 app.get("/api/auth/me", async (c) => {
-  const db = getDB();
+  const db = getDB(c.env.DATABASE_URL);
   const query = c.req.query();
   const sessionId =
-    c.req.header("Authorization") ?? (query.sessionId as string | undefined);
+    (query.sessionId as string | undefined) ??
+    c.req.header("Authorization") ??
+    getCookie(c, "session");
   if (!sessionId) return c.json({ user: null });
 
-  const { user } = await validateSessionToken(sessionId);
+  const { user } = await validateSessionToken(c, sessionId);
 
   if (!user) {
     return c.json({ user: null });
@@ -92,14 +107,14 @@ app.get("/api/auth/me", async (c) => {
 app.delete("/api/auth/delete", async (c) => {
   const session = c.req.header("Authorization");
   if (!session) throw new HTTPException(401, { message: "Unauthorized" });
-  const { user } = await validateSessionToken(session);
+  const { user } = await validateSessionToken(c, session);
 
   if (!user) {
     throw new HTTPException(401, { message: "Unauthorized" });
   }
 
   // Delete user ratings and comments
-  const db = getDB();
+  const db = getDB(c.env.DATABASE_URL);
   await Promise.all([
     // Delete comments from user or to user
     db
@@ -173,9 +188,9 @@ app.delete("/api/auth/delete", async (c) => {
 const getGoogle = (c: Context) => {
   const expoAddress = c.req.query("expoAddress");
   return new Google(
-    process.env.GOOGLE_CLIENT_ID!,
-    process.env.GOOGLE_CLIENT_SECRET!,
-    `${process.env.CF_PAGES_URL}/api/auth/google/callback${expoAddress ? `?expoAddress=${expoAddress}` : ""}`,
+    c.env.GOOGLE_CLIENT_ID,
+    c.env.GOOGLE_CLIENT_SECRET,
+    `${c.env.SERVER_URL}/api/auth/google/callback${expoAddress ? `?expoAddress=${expoAddress}` : ""}`,
   );
 };
 

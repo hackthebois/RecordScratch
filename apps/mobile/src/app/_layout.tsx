@@ -21,12 +21,7 @@ import { DefaultTheme, Theme, ThemeProvider } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
 import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
-import {
-  Link,
-  SplashScreen,
-  Stack,
-  useNavigationContainerRef,
-} from "expo-router";
+import { SplashScreen, Stack, useNavigationContainerRef } from "expo-router";
 import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -36,11 +31,6 @@ import {
   ReanimatedLogLevel,
 } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform, View } from "react-native";
-import { Image } from "expo-image";
-import { useAuth } from "@/lib/auth";
-import { UserAvatar } from "@/components/UserAvatar";
-import { getImageUrl } from "@/lib/image";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -84,43 +74,6 @@ Sentry.init({
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-const WebHeader = () => {
-  if (Platform.OS !== "web") return null;
-  const profile = useAuth((s) => s.profile);
-  if (!profile) return null;
-
-  return (
-    <View className="h-16 w-full border-b border-border bg-background justify-center items-center">
-      <View className="flex-row gap-2 justify-between items-center max-w-screen-lg w-full px-4">
-        <Link href="/" asChild>
-          <Image
-            source={require("../../assets/icon.png")}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 9999,
-            }}
-          />
-        </Link>
-        <View className="flex-row gap-2 items-center">
-          <Link href="/search" className="p-2">
-            <Text>Search</Text>
-          </Link>
-          <Link href="/feed" className="p-2">
-            <Text>Feed</Text>
-          </Link>
-          <Link href="/notifications" className="p-2">
-            <Text>Notifications</Text>
-          </Link>
-          <Link href="/profile" className="p-2">
-            <UserAvatar imageUrl={getImageUrl(profile)} size={40} />
-          </Link>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const RootLayout = () => {
   const [fontLoaded, fontError] = useFonts({
@@ -202,7 +155,6 @@ const RootLayout = () => {
         <SafeAreaProvider>
           <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
             <PrefetchProfile />
-            <WebHeader />
             <Stack
               screenOptions={{
                 animation: "fade",

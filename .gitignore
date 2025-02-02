@@ -31,5 +31,6 @@ dist-ssr
 .env*.local
 
 wrangler.toml
-wrangler.json
 .turbo
+
+.dev.vars
