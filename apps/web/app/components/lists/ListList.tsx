@@ -59,6 +59,7 @@ const ListsItem = ({
 			}}
 		>
 			{
+				// @ts-expect-error conditional type error
 				<Link
 					onClick={(event) => {
 						if (onClick) {

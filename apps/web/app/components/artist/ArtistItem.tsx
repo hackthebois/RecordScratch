@@ -38,6 +38,7 @@ export const ArtistItem = ({
 	};
 
 	return (
+		// @ts-expect-error conditional type error
 		<Link
 			onClick={(e) => {
 				if (onClick) {
