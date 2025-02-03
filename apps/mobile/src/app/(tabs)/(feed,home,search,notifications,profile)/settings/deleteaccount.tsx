@@ -11,75 +11,72 @@ import { useState } from "react";
 import { ActivityIndicator, ScrollView, Switch, View } from "react-native";
 
 export default function DeleteAccount() {
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const deleteAccount = useAuth((s) => s.delete);
+	const [confirmDelete, setConfirmDelete] = useState(false);
+	const deleteAccount = useAuth((s) => s.delete);
 
-  const { mutate: handleDeleteAccount, isPending } = useMutation({
-    mutationFn: async () => {
-      await deleteAccount().catch(catchError);
-      await reloadAppAsync();
-    },
-  });
+	const { mutate: handleDeleteAccount, isPending } = useMutation({
+		mutationFn: async () => {
+			await deleteAccount().catch(catchError);
+			await reloadAppAsync();
+		},
+	});
 
-  if (isPending) {
-    return (
-      <View className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
-        <ActivityIndicator size="large" className="text-muted-foreground" />
-        <Text className="mt-4 text-muted-foreground">Deleting account.</Text>
-      </View>
-    );
-  }
+	if (isPending) {
+		return (
+			<View className="mx-auto flex min-h-[100svh] w-full max-w-screen-lg flex-1 flex-col items-center justify-center p-4 sm:p-6">
+				<ActivityIndicator size="large" className="text-muted-foreground" />
+				<Text className="mt-4 text-muted-foreground">Deleting account.</Text>
+			</View>
+		);
+	}
 
-  return (
-    <ScrollView>
-      <WebWrapper>
-        <View className="p-4 gap-6">
-          <Stack.Screen
-            options={{
-              title: "Delete Account",
-              headerBackVisible: !isPending,
-            }}
-          />
-          <Text className="text-lg font-bold mb-3">
-            Warning: This action cannot be undone
-          </Text>
-          <View>
-            <Text className="mb-2">
-              Deleting your Account will permanently remove:
-            </Text>
-            <View className="flex-row items-center">
-              <Dot className="text-muted-foreground" size={30} />
-              <Text>All your ratings and comments</Text>
-            </View>
-            <View className="flex-row items-center">
-              <Dot className="text-muted-foreground" size={30} />
-              <Text>All your connections and followers</Text>
-            </View>
-            <View className="flex-row items-center">
-              <Dot className="text-muted-foreground" size={30} />
-              <Text>Any saved content</Text>
-            </View>
-          </View>
-          <View className="flex-row items-center gap-4">
-            <Switch
-              value={confirmDelete}
-              onValueChange={setConfirmDelete}
-              trackColor={{ false: "#767577", true: "#767577" }}
-            />
-            <Text className="flex-1">
-              I understand that this action is permanent and cannot be reversed
-            </Text>
-          </View>
-          <Button
-            onPress={() => handleDeleteAccount()}
-            disabled={!confirmDelete}
-            variant="destructive"
-            className="w-full"
-          >
-            <Text>Delete Account</Text>
-          </Button>
-        </View>
-      </WebWrapper>
-    </ScrollView>
-  );
+	return (
+		<ScrollView>
+			<WebWrapper>
+				<View className="p-4 gap-6">
+					<Stack.Screen
+						options={{
+							title: "Delete Account",
+						}}
+					/>
+					<Text className="text-lg font-bold mb-3">
+						Warning: This action cannot be undone
+					</Text>
+					<View>
+						<Text className="mb-2">Deleting your Account will permanently remove:</Text>
+						<View className="flex-row items-center">
+							<Dot className="text-muted-foreground" size={30} />
+							<Text>All your ratings and comments</Text>
+						</View>
+						<View className="flex-row items-center">
+							<Dot className="text-muted-foreground" size={30} />
+							<Text>All your connections and followers</Text>
+						</View>
+						<View className="flex-row items-center">
+							<Dot className="text-muted-foreground" size={30} />
+							<Text>Any saved content</Text>
+						</View>
+					</View>
+					<View className="flex-row items-center gap-4">
+						<Switch
+							value={confirmDelete}
+							onValueChange={setConfirmDelete}
+							trackColor={{ false: "#767577", true: "#767577" }}
+						/>
+						<Text className="flex-1">
+							I understand that this action is permanent and cannot be reversed
+						</Text>
+					</View>
+					<Button
+						onPress={() => handleDeleteAccount()}
+						disabled={!confirmDelete}
+						variant="destructive"
+						className="w-full"
+					>
+						<Text>Delete Account</Text>
+					</Button>
+				</View>
+			</WebWrapper>
+		</ScrollView>
+	);
 }

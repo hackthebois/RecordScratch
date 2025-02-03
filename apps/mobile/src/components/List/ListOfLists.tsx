@@ -120,8 +120,9 @@ const ListOfLists = ({
 				columnWrapperStyle={{
 					flexDirection: "row",
 					flexWrap: "wrap",
-					justifyContent: "space-between",
-					marginBlock: 10,
+					marginVertical: 10,
+					gap: 10,
+					marginLeft: 5,
 				}}
 				keyboardShouldPersistTaps="always"
 				keyboardDismissMode="interactive"
@@ -141,13 +142,10 @@ const ListOfLists = ({
 			)}
 			contentContainerStyle={{
 				flexDirection: "row",
-				flexWrap: "wrap",
-				justifyContent: "center",
-				gap: 14,
-				marginLeft: 8,
+				gap: 17,
 				marginVertical: 16,
 			}}
-			style={{ marginLeft: 10 }}
+			style={{ marginLeft: -8 }}
 			showsHorizontalScrollIndicator={false}
 			horizontal={true}
 			ListFooterComponent={() => FooterComponent}

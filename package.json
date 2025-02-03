@@ -1,37 +1,38 @@
 {
-	"scripts": {
-		"build": "dotenv -- turbo build",
-		"build-cloudflare": "dotenv -- turbo build-cloudflare",
-		"type-check": "tsc",
-		"dev": "dotenv -- turbo dev",
-		"studio": "dotenv -- turbo studio",
-		"clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb",
-		"ngrok": "ngrok http --url=humane-cockatoo-instantly.ngrok-free.app 3000"
-	},
-	"dependencies": {
-		"@types/uuid": "^10.0.0",
-		"dotenv": "^16.4.5",
-		"hono": "^4.6.20",
-		"ngrok": "^5.0.0-beta.2",
-		"turbo": "^1.13.3",
-		"typescript": "~5.3.3"
-	},
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
-	"name": "root",
-	"devDependencies": {
-		"dotenv-cli": "^7.4.1"
-	},
-	"trustedDependencies": [
-		"@parcel/watcher",
-		"@sentry/cli",
-		"core-js",
-		"es5-ext",
-		"esbuild",
-		"ngrok",
-		"protobufjs"
-	],
-	"packageManager": "^bun@1.1.43"
+  "scripts": {
+    "build": "dotenv -- turbo build",
+    "build-cloudflare": "dotenv -- turbo build-cloudflare",
+    "type-check": "tsc",
+    "dev": "dotenv -- turbo dev",
+    "studio": "dotenv -- turbo studio",
+    "clean": "rm -rf node_modules && turbo clean && rm -rf bun.lockb",
+    "ngrok": "ngrok http --url=humane-cockatoo-instantly.ngrok-free.app 3000"
+  },
+  "dependencies": {
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^16.4.5",
+    "hono": "^4.6.20",
+    "ngrok": "^5.0.0-beta.2",
+    "turbo": "^1.13.3",
+    "typescript": "~5.3.3"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "name": "root",
+  "devDependencies": {
+    "dotenv-cli": "^7.4.1"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@sentry/cli",
+    "core-js",
+    "es5-ext",
+    "esbuild",
+    "ngrok",
+    "protobufjs",
+    "workerd"
+  ],
+  "packageManager": "^bun@1.1.43"
 }
