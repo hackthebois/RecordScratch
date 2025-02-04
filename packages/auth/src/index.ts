@@ -151,10 +151,9 @@ export const handleUser = async (
 ) => {
   const { googleId, appleId, email, onReturn = "redirect" } = options;
   const db = getDB(c.env.DATABASE_URL);
-  const query = c.req.query();
+  const expoAddress = c.req.query("expoAddress");
   let userId: string;
   let redirect: string;
-  const expoAddress = query.expoAddress as string;
 
   const existingUser = await db.query.users.findFirst({
     where: or(
@@ -183,6 +182,8 @@ export const handleUser = async (
   if (expoAddress) redirect = `${expoAddress}?session_id=${token}`;
 
   setSessionCookie(c, token);
+
+  console.log("redirect", redirect, onReturn);
 
   if (onReturn === "sessionId")
     return c.json({

@@ -2,7 +2,7 @@ import { Pill } from "@/components/ui/pill";
 import { Text } from "@/components/ui/text";
 import { Image } from "expo-image";
 import React from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 
 const Metadata = ({
   title,
@@ -25,11 +25,8 @@ const Metadata = ({
         <Image
           alt={`${title} cover`}
           source={cover}
+          className="rounded-xl self-center sm:self-start"
           style={[
-            {
-              alignSelf: Platform.OS !== "web" ? "center" : "flex-start",
-              borderRadius: 12,
-            },
             size === "sm"
               ? { width: 150, height: 150 }
               : {
