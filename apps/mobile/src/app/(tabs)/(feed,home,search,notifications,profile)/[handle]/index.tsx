@@ -261,6 +261,31 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
                     <Text className="text-wrap truncate">
                       {profile.bio || "No bio yet"}
                     </Text>
+                    {Platform.OS === "web" ? (
+                      <>
+                        {isProfile ? (
+                          <Link href={`/settings`} asChild>
+                            <Button
+                              variant="secondary"
+                              className="flex-row items-center"
+                            >
+                              <Settings
+                                size={16}
+                                className="mr-2 text-foreground"
+                              />
+                              <Text>Settings</Text>
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Suspense fallback={null}>
+                            <FollowButton
+                              profileId={profile!.userId}
+                              size={"sm"}
+                            />
+                          </Suspense>
+                        )}
+                      </>
+                    ) : null}
                   </View>
                 </View>
                 <View className="flex flex-col items-center sm:items-start w-full">
