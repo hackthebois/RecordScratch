@@ -94,9 +94,10 @@ export const setSessionCookie = (
 ): void => {
   if (token) {
     setCookie(c, "session", token, {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV !== "development",
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "none",
+      domain: ".recordscratch.app",
       path: "/",
       maxAge: 60 * 60 * 24 * 14, // 14 days
     });
