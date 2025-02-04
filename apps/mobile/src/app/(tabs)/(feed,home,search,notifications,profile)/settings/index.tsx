@@ -12,7 +12,7 @@ import { UserMinus } from "@/lib/icons/IconsLoader";
 import { UserPen } from "@/lib/icons/IconsLoader";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { reloadAppAsync } from "expo";
-import { Link, Redirect, Stack, useRouter } from "expo-router";
+import { Link, Redirect, Stack } from "expo-router";
 import { ScrollView, View } from "react-native";
 
 const SettingsPage = () => {

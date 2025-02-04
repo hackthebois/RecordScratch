@@ -1,7 +1,11 @@
 import { Context, Hono } from "hono";
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter } from "@recordscratch/api";
-import { validateSessionToken } from "@recordscratch/auth";
+import {
+  invalidateSession,
+  setSessionCookie,
+  validateSessionToken,
+} from "@recordscratch/auth";
 import {
   commentNotifications,
   comments,
@@ -65,13 +69,18 @@ app.get("/ingest/**", async (c) => {
   return fetch(url, { ...c.req.raw });
 });
 
-app.get("/api/auth/me", async (c) => {
-  const db = getDB(c.env.DATABASE_URL);
+const getSession = (c: Context) => {
   const query = c.req.query();
-  const sessionId =
+  return (
     (query.sessionId as string | undefined) ??
     c.req.header("Authorization") ??
-    getCookie(c, "session");
+    getCookie(c, "session")
+  );
+};
+
+app.get("/api/auth/me", async (c) => {
+  const db = getDB(c.env.DATABASE_URL);
+  const sessionId = getSession(c);
   if (!sessionId) return c.json({ user: null });
 
   const { user } = await validateSessionToken(c, sessionId);
@@ -114,7 +123,7 @@ app.get("/api/auth/me", async (c) => {
 });
 
 app.delete("/api/auth/delete", async (c) => {
-  const session = c.req.header("Authorization");
+  const session = getSession(c);
   if (!session) throw new HTTPException(401, { message: "Unauthorized" });
   const { user } = await validateSessionToken(c, session);
 
@@ -190,6 +199,24 @@ app.delete("/api/auth/delete", async (c) => {
     // Delete user
     db.delete(users).where(eq(users.id, user.id)),
   ]);
+
+  return c.json({ success: true });
+});
+
+app.get("/api/auth/signout", async (c) => {
+  const session = getSession(c);
+  if (!session) throw new HTTPException(401, { message: "Unauthorized" });
+
+  setSessionCookie(c, undefined);
+  await invalidateSession(c, session);
+
+  const expoPushToken = c.req.header("Expo-Push-Token");
+  // If expo push token, delete it to prevent signed out notifications
+  if (expoPushToken) {
+    const db = getDB(c.env.DATABASE_URL);
+
+    await db.delete(pushTokens).where(eq(pushTokens.token, expoPushToken));
+  }
 
   return c.json({ success: true });
 });

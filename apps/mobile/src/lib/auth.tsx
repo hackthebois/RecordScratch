@@ -42,11 +42,12 @@ export const createAuthStore = () =>
     profile: null,
     setProfile: (profile) => set({ profile }),
     logout: async () => {
+      const sessionId = get().sessionId;
       await fetch(env.SITE_URL + "/api/auth/signout", {
         credentials: "include",
         headers: {
-          Authorization: `${get().sessionId}`,
           "Expo-Push-Token": get().pushToken ?? "",
+          ...(sessionId ? { Authorization: sessionId } : {}),
         },
       });
       if (Platform.OS !== "web") {
