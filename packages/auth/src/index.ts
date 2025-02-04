@@ -67,9 +67,10 @@ export async function validateSessionToken(
 
 export async function invalidateSession(
   c: Context,
-  sessionId: string,
+  token: string,
 ): Promise<void> {
   const db = getDB(c.env.DATABASE_URL);
+  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   await db.delete(sessions).where(eq(sessions.id, sessionId));
 }
 

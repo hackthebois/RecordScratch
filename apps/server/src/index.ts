@@ -24,14 +24,13 @@ import {
 } from "@recordscratch/db";
 import { eq, inArray, or } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { handleUser, validateState } from "@recordscratch/auth";
-import { Google, generateCodeVerifier, generateState } from "arctic";
-import { z } from "zod";
-import { getCookie, setCookie } from "hono/cookie";
+import { getCookie } from "hono/cookie";
 import { contextStorage } from "hono/context-storage";
 import type { ServerEnv } from "@recordscratch/types";
 import { createTRPCContext } from "@recordscratch/api";
 import { cors } from "hono/cors";
+import { googleHandler } from "./auth/google";
+import { appleHandler } from "./auth/apple";
 
 const app = new Hono<{ Bindings: ServerEnv }>();
 
@@ -68,6 +67,9 @@ app.get("/ingest/**", async (c) => {
   const url = "https://app.posthog.com" + c.req.url.split("/ingest")[1];
   return fetch(url, { ...c.req.raw });
 });
+
+app.route("/api/auth/google", googleHandler);
+app.route("/api/auth/apple", appleHandler);
 
 const getSession = (c: Context) => {
   const query = c.req.query();
@@ -110,7 +112,6 @@ app.get("/api/auth/me", async (c) => {
     await db
       .insert(pushTokens)
       .values({ token: expoPushToken, userId: user.id });
-
     return c.json({
       user: {
         ...existingUser,
@@ -221,66 +222,4 @@ app.get("/api/auth/signout", async (c) => {
   return c.json({ success: true });
 });
 
-const getGoogle = (c: Context) => {
-  const expoAddress = c.req.query("expoAddress");
-  return new Google(
-    c.env.GOOGLE_CLIENT_ID,
-    c.env.GOOGLE_CLIENT_SECRET,
-    `${c.env.SERVER_URL}/api/auth/google/callback${expoAddress ? `?expoAddress=${expoAddress}` : ""}`,
-  );
-};
-
-app.get("/api/auth/google", async (c) => {
-  const google = getGoogle(c);
-
-  const state = generateState();
-  const codeVerifier = generateCodeVerifier();
-
-  const url: URL = google.createAuthorizationURL(state, codeVerifier, [
-    "profile",
-    "email",
-  ]);
-
-  setCookie(c, "state", state, {
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    httpOnly: true,
-    maxAge: 60 * 10, // 10 min
-  });
-  setCookie(c, "codeVerifier", codeVerifier, {
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    httpOnly: true,
-    maxAge: 60 * 10, // 10 min
-  });
-
-  return c.redirect(url.toString());
-});
-
-app.get("/api/auth/google/callback", async (c) => {
-  const google = getGoogle(c);
-
-  const { code, codeVerifier } = await validateState(c, true);
-
-  const tokens = await google.validateAuthorizationCode(code, codeVerifier);
-
-  // Get user email and googleId
-  const response = await fetch(
-    "https://openidconnect.googleapis.com/v1/userinfo",
-    {
-      headers: {
-        Authorization: `Bearer ${tokens.accessToken()}`,
-      },
-    },
-  );
-  const user: unknown = await response.json();
-  const { sub: googleId, email } = z
-    .object({
-      sub: z.string(),
-      email: z.string(),
-    })
-    .parse(user);
-
-  return handleUser(c, { googleId, email });
-});
 export default app;
