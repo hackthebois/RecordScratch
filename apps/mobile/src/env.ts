@@ -12,7 +12,7 @@ let env = {
 if (Platform.OS === "web" && process.env.NODE_ENV !== "development") {
   env.ENV = "production";
   env.SCHEME = "https://recordscratch-refactor.pages.dev/";
-  env.SITE_URL = "http://localhost:3000";
+  env.SITE_URL = "https://server.recordscratchapp.workers.dev";
   env.DEBUG = false;
 }
 
