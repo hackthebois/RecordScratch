@@ -95,10 +95,9 @@ export const setSessionCookie = (
 ): void => {
   if (token) {
     setCookie(c, "session", token, {
-      secure: process.env.NODE_ENV !== "development",
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: "none",
-      ...(process.env.NODE_ENV !== "development"
+      ...(process.env.NODE_ENV === "production"
         ? { domain: ".recordscratch.app" }
         : {}),
       path: "/",
@@ -106,10 +105,9 @@ export const setSessionCookie = (
     });
   } else {
     setCookie(c, "session", "", {
-      secure: process.env.NODE_ENV !== "development",
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: "none",
-      ...(process.env.NODE_ENV !== "development"
+      ...(process.env.NODE_ENV === "production"
         ? { domain: ".recordscratch.app" }
         : {}),
       path: "/",
