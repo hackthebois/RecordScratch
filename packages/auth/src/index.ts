@@ -102,7 +102,14 @@ export const setSessionCookie = (
       maxAge: 60 * 60 * 24 * 14, // 14 days
     });
   } else {
-    deleteCookie(c, "session");
+    setCookie(c, "session", "", {
+      secure: process.env.NODE_ENV !== "development",
+      httpOnly: true,
+      sameSite: "none",
+      domain: ".recordscratch.app",
+      path: "/",
+      expires: new Date(0),
+    });
   }
 };
 
