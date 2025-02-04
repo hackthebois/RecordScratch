@@ -98,7 +98,9 @@ export const setSessionCookie = (
       secure: process.env.NODE_ENV !== "development",
       httpOnly: true,
       sameSite: "none",
-      domain: ".recordscratch.app",
+      ...(process.env.NODE_ENV !== "development"
+        ? { domain: ".recordscratch.app" }
+        : {}),
       path: "/",
       maxAge: 60 * 60 * 24 * 14, // 14 days
     });
@@ -107,7 +109,9 @@ export const setSessionCookie = (
       secure: process.env.NODE_ENV !== "development",
       httpOnly: true,
       sameSite: "none",
-      domain: ".recordscratch.app",
+      ...(process.env.NODE_ENV !== "development"
+        ? { domain: ".recordscratch.app" }
+        : {}),
       path: "/",
       expires: new Date(0),
     });

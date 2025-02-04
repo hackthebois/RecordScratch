@@ -1,75 +1,69 @@
-import { cn } from "@recordscratch/lib";
 import {
-	AlertCircle as LucideAlertCircle,
-	AlignJustify as LucideAlignJustify,
-	CheckCircle as LucideCheckCircle,
-	XCircle as LucideXCircle,
-	Check as LucideCheck,
-	ChevronLeft as LucideChevronLeft,
-	ChevronRight as LucideChevronRight,
-	ChevronUp as LucideChevronUp,
-	ChevronDown as LucideChevronDown,
-	ArrowLeft as LucideArrowLeft,
-	AtSign as LucideAtSign,
-	Bell as LucideBell,
-	BellOff as LucideBellOff,
-	BellRing as LucideBellRing,
-	Dot as LucideDot,
-	Eraser as LucideEraser,
-	Heart as LucideHeart,
-	Home as LucideHome,
-	HelpCircle as LucideHelpCircle,
-	ListMusic as LucideListMusic,
-	ListPlus as LucideListPlus,
-	Loader2 as LucideLoader2,
-	Mail as LucideMail,
-	MessageCircle as LucideMessageCircle,
-	MessageSquareText as LucideMessageSquareText,
-	Moon as LucideMoon,
-	MoonStar as LucideMoonStar,
-	MoreHorizontal as LucideMoreHorizontal,
-	Pencil as LucidePencil,
-	Rows3 as LucideRows3,
-	Reply as LucideReply,
-	Save as LucideSave,
-	Search as LucideSearch,
-	Send as LucideSend,
-	Settings as LucideSettings,
-	Square as LucideSquare,
-	SquareCheck as LucideSquareCheck,
-	SquarePlus as LucideSquarePlus,
-	Star as LucideStar,
-	Sun as LucideSun,
-	Trash as LucideTrash,
-	Trash2 as LucideTrash2,
-	User as LucideUser,
-	UserMinus as LucideUserMinus,
-	UserPen as LucideUserPen,
-	X as LucideX,
-	Frown as LuicideFrown,
-	LucideProps,
-	LucideIcon,
+  AlertCircle as LucideAlertCircle,
+  AlignJustify as LucideAlignJustify,
+  CheckCircle as LucideCheckCircle,
+  XCircle as LucideXCircle,
+  Check as LucideCheck,
+  ChevronLeft as LucideChevronLeft,
+  ChevronRight as LucideChevronRight,
+  ChevronUp as LucideChevronUp,
+  ChevronDown as LucideChevronDown,
+  ArrowLeft as LucideArrowLeft,
+  AtSign as LucideAtSign,
+  Bell as LucideBell,
+  BellOff as LucideBellOff,
+  BellRing as LucideBellRing,
+  Dot as LucideDot,
+  Eraser as LucideEraser,
+  Heart as LucideHeart,
+  Home as LucideHome,
+  HelpCircle as LucideHelpCircle,
+  ListMusic as LucideListMusic,
+  ListPlus as LucideListPlus,
+  Loader2 as LucideLoader2,
+  Mail as LucideMail,
+  MessageCircle as LucideMessageCircle,
+  MessageSquareText as LucideMessageSquareText,
+  Moon as LucideMoon,
+  MoonStar as LucideMoonStar,
+  MoreHorizontal as LucideMoreHorizontal,
+  Pencil as LucidePencil,
+  Rows3 as LucideRows3,
+  Reply as LucideReply,
+  Save as LucideSave,
+  Search as LucideSearch,
+  Send as LucideSend,
+  Settings as LucideSettings,
+  Square as LucideSquare,
+  SquareCheck as LucideSquareCheck,
+  SquarePlus as LucideSquarePlus,
+  Star as LucideStar,
+  Sun as LucideSun,
+  Trash as LucideTrash,
+  Trash2 as LucideTrash2,
+  User as LucideUser,
+  UserMinus as LucideUserMinus,
+  UserPen as LucideUserPen,
+  X as LucideX,
+  Frown as LuicideFrown,
+  LucideIcon,
+  ReceiptText as LucideReceiptText,
+  ShieldCheck as LucideShieldCheck,
 } from "lucide-react-native";
 import { cssInterop } from "nativewind";
-import React from "react";
 
 function iconWithClassName(icon: LucideIcon) {
-	return (props: LucideProps) => {
-		cssInterop(icon, {
-			className: {
-				target: "style",
-				nativeStyleToProp: {
-					color: true,
-					opacity: true,
-				},
-			},
-		});
+  cssInterop(icon, {
+    className: {
+      target: "style",
+      nativeStyleToProp: {
+        color: true,
+        opacity: true,
+      },
+    },
+  });
 
-		return React.createElement(icon, {
-			...props,
-			className: cn(props.className, props.color ?? "text-foreground"), // Append "text-foreground" class
-		});
-	};
+  return icon;
 }
 
 // Export all icons
@@ -120,3 +114,5 @@ export const UserMinus = iconWithClassName(LucideUserMinus);
 export const UserPen = iconWithClassName(LucideUserPen);
 export const X = iconWithClassName(LucideX);
 export const Frown = iconWithClassName(LuicideFrown);
+export const ReceiptText = iconWithClassName(LucideReceiptText);
+export const ShieldCheck = iconWithClassName(LucideShieldCheck);

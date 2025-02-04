@@ -10,6 +10,8 @@ import { Moon } from "@/lib/icons/IconsLoader";
 import { Sun } from "@/lib/icons/IconsLoader";
 import { UserMinus } from "@/lib/icons/IconsLoader";
 import { UserPen } from "@/lib/icons/IconsLoader";
+import { ReceiptText } from "@/lib/icons/IconsLoader";
+import { ShieldCheck } from "@/lib/icons/IconsLoader";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { reloadAppAsync } from "expo";
 import { Link, Redirect, Stack } from "expo-router";
@@ -106,6 +108,24 @@ const SettingsPage = () => {
               )}
             </View>
           </Button>
+          <Link href={`/settings/privacy`} asChild>
+            <Button
+              variant="outline"
+              className="gap-2 flex-row justify-between"
+            >
+              <Text>Privacy Policy</Text>
+              <ShieldCheck size={20} className="text-muted-foreground" />
+            </Button>
+          </Link>
+          <Link href={`/settings/terms`} asChild>
+            <Button
+              variant="outline"
+              className="gap-2 flex-row justify-between"
+            >
+              <Text>Terms of Use</Text>
+              <ReceiptText size={20} className="text-muted-foreground" />
+            </Button>
+          </Link>
           <Link href={`/settings/deleteaccount`} asChild>
             <Button
               variant="outline"
