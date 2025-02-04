@@ -72,7 +72,7 @@ function Onboard() {
     }
   }, [status, router]);
 
-  const { mutate: createProfile } = api.profiles.create.useMutation({
+  const { mutateAsync: createProfile } = api.profiles.create.useMutation({
     onSuccess: (profile) => {
       utils.profiles.me.invalidate();
       setProfile(profile);
@@ -128,7 +128,7 @@ function Onboard() {
       });
     }
 
-    createProfile({
+    await createProfile({
       name: data.name,
       handle: data.handle,
       imageUrl: null,
