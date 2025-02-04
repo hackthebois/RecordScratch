@@ -41,20 +41,20 @@ export const appleHandler = new Hono()
 
     c.redirect(url.toString());
   })
-  .get("/callback", async (event) => {
-    const apple = getApple(event);
+  .get("/callback", async (c) => {
+    const apple = getApple(c);
 
-    const { code, formData } = await validateState(event, false);
+    const { code, formData } = await validateState(c, false);
 
     const email = (formData.get("email") as string) ?? undefined;
 
     const tokens = await apple.validateAuthorizationCode(code);
     const { sub } = decodeIdToken(tokens.idToken()) as { sub: string };
 
-    return handleUser(event, { appleId: sub, email });
+    return handleUser(c, { appleId: sub, email });
   })
   .post("/mobile/callback", async (c) => {
-    const body = c.req.json();
+    const body = await c.req.json();
 
     const { idToken, email } = z
       .object({
