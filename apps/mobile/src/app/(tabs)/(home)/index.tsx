@@ -75,81 +75,83 @@ const HomePage = () => {
       >
         <View className="max-w-screen-lg w-full">
           <AlbumOfTheDay />
-          <Text variant="h2" className="pt-6 pb-4 px-4">
-            Trending Albums
-          </Text>
-          <FlashList
-            data={trending}
-            renderItem={({ item }) => <AlbumItem {...item} />}
-            horizontal
-            contentContainerClassName="px-4 h-64"
-            ItemSeparatorComponent={() => <View className="w-4" />}
-            estimatedItemSize={150}
-            ListEmptyComponent={
-              <ScrollView horizontal contentContainerClassName="gap-4">
-                <ResourceItemSkeleton direction="vertical" />
-                <ResourceItemSkeleton direction="vertical" />
-                <ResourceItemSkeleton direction="vertical" />
-              </ScrollView>
-            }
-            showsHorizontalScrollIndicator={Platform.OS === "web"}
-          />
-          <Text variant="h2" className="pt-6 pb-4 px-4">
-            Top Albums
-          </Text>
-          <FlashList
-            data={top}
-            renderItem={({ item }) => <AlbumItem {...item} />}
-            horizontal
-            contentContainerClassName="px-4 h-64"
-            ItemSeparatorComponent={() => <View className="w-4" />}
-            estimatedItemSize={150}
-            ListEmptyComponent={
-              <ScrollView horizontal contentContainerClassName="gap-4">
-                <ResourceItemSkeleton direction="vertical" />
-                <ResourceItemSkeleton direction="vertical" />
-                <ResourceItemSkeleton direction="vertical" />
-              </ScrollView>
-            }
-            showsHorizontalScrollIndicator={Platform.OS === "web"}
-          />
-          <Text variant="h2" className="pt-6 pb-4 px-4">
-            Most Popular Albums
-          </Text>
-          <FlashList
-            data={popular}
-            renderItem={({ item }) => <AlbumItem {...item} />}
-            horizontal
-            contentContainerClassName="px-4 h-64"
-            ItemSeparatorComponent={() => <View className="w-4" />}
-            estimatedItemSize={150}
-            ListEmptyComponent={
-              <ScrollView horizontal contentContainerClassName="gap-4">
-                <ResourceItemSkeleton direction="vertical" />
-                <ResourceItemSkeleton direction="vertical" />
-                <ResourceItemSkeleton direction="vertical" />
-              </ScrollView>
-            }
-            showsHorizontalScrollIndicator={Platform.OS === "web"}
-          />
-          <Text variant="h2" className="pt-6 pb-4 px-4">
-            Top Artists
-          </Text>
-          <FlashList
-            data={topArtists}
-            renderItem={({ item: { artistId } }) => (
-              <ArtistItem
-                artistId={artistId}
-                direction="vertical"
-                imageWidthAndHeight={105}
-              />
-            )}
-            horizontal
-            showsHorizontalScrollIndicator={Platform.OS === "web"}
-            contentContainerClassName="px-4 h-48"
-            ItemSeparatorComponent={() => <View className="w-4" />}
-            estimatedItemSize={105}
-          />
+          <View className="px-4">
+            <Text variant="h2" className="pt-6 pb-4">
+              Trending Albums
+            </Text>
+            <FlashList
+              data={trending}
+              renderItem={({ item }) => <AlbumItem {...item} />}
+              horizontal
+              contentContainerClassName="h-60"
+              ItemSeparatorComponent={() => <View className="w-4" />}
+              estimatedItemSize={150}
+              ListEmptyComponent={
+                <ScrollView horizontal contentContainerClassName="gap-4">
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                </ScrollView>
+              }
+              showsHorizontalScrollIndicator={Platform.OS === "web"}
+            />
+            <Text variant="h2" className="pt-6 pb-4">
+              Top Albums
+            </Text>
+            <FlashList
+              data={top}
+              renderItem={({ item }) => <AlbumItem {...item} />}
+              horizontal
+              contentContainerClassName="h-60"
+              ItemSeparatorComponent={() => <View className="w-4" />}
+              estimatedItemSize={150}
+              ListEmptyComponent={
+                <ScrollView horizontal contentContainerClassName="gap-4">
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                </ScrollView>
+              }
+              showsHorizontalScrollIndicator={Platform.OS === "web"}
+            />
+            <Text variant="h2" className="pt-6 pb-4">
+              Most Popular Albums
+            </Text>
+            <FlashList
+              data={popular}
+              renderItem={({ item }) => <AlbumItem {...item} />}
+              horizontal
+              contentContainerClassName="h-60"
+              ItemSeparatorComponent={() => <View className="w-4" />}
+              estimatedItemSize={150}
+              ListEmptyComponent={
+                <ScrollView horizontal contentContainerClassName="gap-4">
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                </ScrollView>
+              }
+              showsHorizontalScrollIndicator={Platform.OS === "web"}
+            />
+            <Text variant="h2" className="pt-6 pb-4">
+              Top Artists
+            </Text>
+            <FlashList
+              data={topArtists}
+              renderItem={({ item: { artistId } }) => (
+                <ArtistItem
+                  artistId={artistId}
+                  direction="vertical"
+                  imageWidthAndHeight={105}
+                />
+              )}
+              horizontal
+              showsHorizontalScrollIndicator={Platform.OS === "web"}
+              contentContainerClassName="h-40"
+              ItemSeparatorComponent={() => <View className="w-4" />}
+              estimatedItemSize={105}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

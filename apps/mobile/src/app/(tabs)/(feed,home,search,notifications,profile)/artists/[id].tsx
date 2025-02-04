@@ -79,44 +79,46 @@ const ArtistPage = () => {
                 </View>
               </Metadata>
             </View>
-            <Text variant="h2" className="pt-6 pb-4 px-4">
-              Top Songs
-            </Text>
-            <SongTable songs={top.data} />
-            <View className="pb-4">
-              <Text variant="h2" className="pt-6 pb-4 px-4">
-                Related Artists
+            <View className="px-4">
+              <Text variant="h2" className="pt-6 pb-4">
+                Top Songs
               </Text>
-              <FlashList
-                data={artists.data}
-                renderItem={({ item: artist }) => (
-                  <ArtistItem
-                    artistId={String(artist.id)}
-                    initialArtist={artist}
-                    direction="vertical"
-                    imageWidthAndHeight={105}
-                  />
-                )}
-                horizontal
-                showsHorizontalScrollIndicator={Platform.OS === "web"}
-                contentContainerClassName="px-4"
-                ItemSeparatorComponent={() => <View className="w-4" />}
-                estimatedItemSize={105}
-              />
-              <Text variant="h2" className="pt-6 pb-4 px-4">
-                Discography
-              </Text>
-              <FlashList
-                data={albums.data}
-                renderItem={({ item }) => (
-                  <AlbumItem resourceId={String(item.id)} />
-                )}
-                horizontal
-                showsHorizontalScrollIndicator={Platform.OS === "web"}
-                estimatedItemSize={160}
-                contentContainerClassName="px-4"
-                ItemSeparatorComponent={() => <View className="w-4" />}
-              />
+              <SongTable songs={top.data} />
+              <View className="pb-4">
+                <Text variant="h2" className="pt-6 pb-4">
+                  Related Artists
+                </Text>
+                <FlashList
+                  data={artists.data}
+                  renderItem={({ item: artist }) => (
+                    <ArtistItem
+                      artistId={String(artist.id)}
+                      initialArtist={artist}
+                      direction="vertical"
+                      imageWidthAndHeight={105}
+                    />
+                  )}
+                  horizontal
+                  showsHorizontalScrollIndicator={Platform.OS === "web"}
+                  contentContainerClassName="h-40"
+                  ItemSeparatorComponent={() => <View className="w-4" />}
+                  estimatedItemSize={105}
+                />
+                <Text variant="h2" className="pt-6 pb-4">
+                  Discography
+                </Text>
+                <FlashList
+                  data={albums.data}
+                  renderItem={({ item }) => (
+                    <AlbumItem resourceId={String(item.id)} />
+                  )}
+                  horizontal
+                  showsHorizontalScrollIndicator={Platform.OS === "web"}
+                  estimatedItemSize={160}
+                  contentContainerClassName="h-60"
+                  ItemSeparatorComponent={() => <View className="w-4" />}
+                />
+              </View>
             </View>
           </WebWrapper>
         </ScrollView>

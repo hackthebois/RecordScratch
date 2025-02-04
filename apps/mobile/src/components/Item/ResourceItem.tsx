@@ -5,9 +5,8 @@ import { Album, cn } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Link, LinkProps, useRouter } from "expo-router";
 import { StyleProp, ViewStyle } from "react-native";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import ReLink from "../ReLink";
 
 export const ResourceItemSkeleton = ({
@@ -146,16 +145,24 @@ export const ResourceItem = ({
         )}
         style={style}
       >
-        <View className="overflow-hidden">
+        <View
+          className="overflow-hidden rounded-xl w-full"
+          style={{
+            width: imageWidthAndHeight,
+            height: imageWidthAndHeight,
+          }}
+        >
           {album.cover_big ? (
             <Image
               source={album.cover_big}
               style={{
                 width: imageWidthAndHeight,
                 height: imageWidthAndHeight,
-                borderRadius: 12,
               }}
-              className={cn("h-full w-full", imageCss)}
+              className={cn(
+                "aspect-square h-auto w-auto rounded-xl overflow-hidden transition-all hover:scale-105",
+                imageCss,
+              )}
             />
           ) : (
             <View className="h-full w-full bg-muted"></View>

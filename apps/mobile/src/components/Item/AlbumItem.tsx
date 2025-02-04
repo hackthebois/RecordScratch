@@ -10,7 +10,7 @@ const AlbumItem = ({
   className?: string;
 }) => {
   return (
-    <View className={cn(className)}>
+    <View className={cn(className, "sm:w-40")}>
       <ResourceItem
         direction="vertical"
         resource={{
