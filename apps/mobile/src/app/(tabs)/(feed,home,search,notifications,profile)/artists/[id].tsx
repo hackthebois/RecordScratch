@@ -10,7 +10,7 @@ import { getQueryOptions } from "@/lib/deezer";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ArtistPage = () => {
@@ -98,7 +98,7 @@ const ArtistPage = () => {
                   />
                 )}
                 horizontal
-                showsHorizontalScrollIndicator={false}
+                showsHorizontalScrollIndicator={Platform.OS === "web"}
                 contentContainerClassName="px-4"
                 ItemSeparatorComponent={() => <View className="w-4" />}
                 estimatedItemSize={105}
@@ -112,7 +112,7 @@ const ArtistPage = () => {
                   <AlbumItem resourceId={String(item.id)} />
                 )}
                 horizontal
-                showsHorizontalScrollIndicator={false}
+                showsHorizontalScrollIndicator={Platform.OS === "web"}
                 estimatedItemSize={160}
                 contentContainerClassName="px-4"
                 ItemSeparatorComponent={() => <View className="w-4" />}

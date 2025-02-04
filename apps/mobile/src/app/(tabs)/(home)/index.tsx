@@ -11,7 +11,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotFound from "../../+not-found";
 import { WebHeaderRight } from "@/components/WebHeaderRight";
@@ -92,7 +92,7 @@ const HomePage = () => {
                 <ResourceItemSkeleton direction="vertical" />
               </ScrollView>
             }
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={Platform.OS === "web"}
           />
           <Text variant="h2" className="pt-6 pb-4 px-4">
             Top Albums
@@ -111,7 +111,7 @@ const HomePage = () => {
                 <ResourceItemSkeleton direction="vertical" />
               </ScrollView>
             }
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={Platform.OS === "web"}
           />
           <Text variant="h2" className="pt-6 pb-4 px-4">
             Most Popular Albums
@@ -130,7 +130,7 @@ const HomePage = () => {
                 <ResourceItemSkeleton direction="vertical" />
               </ScrollView>
             }
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={Platform.OS === "web"}
           />
           <Text variant="h2" className="pt-6 pb-4 px-4">
             Top Artists
@@ -145,7 +145,7 @@ const HomePage = () => {
               />
             )}
             horizontal
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={Platform.OS === "web"}
             contentContainerClassName="px-4 h-48"
             ItemSeparatorComponent={() => <View className="w-4" />}
             estimatedItemSize={105}
