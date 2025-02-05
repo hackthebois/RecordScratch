@@ -7,17 +7,22 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { useState } from "react";
 import { View } from "react-native";
 
+const types = ["followers", "following"];
+
 const Followers = () => {
-  const { handle, type } = useLocalSearchParams<{
+  const router = useRouter();
+  const { handle, ...params } = useLocalSearchParams<{
     handle: string;
-    type: string;
+    type?: string;
   }>();
-  const [tab, setTab] = useState(type ?? "followers");
+  const type = (
+    params.type && types.includes(params.type) ? params.type : "followers"
+  ) as "followers" | "following";
+
   const profile = useAuth((s) => s.profile);
 
   const [userProfile] = api.profiles.get.useSuspenseQuery(handle);
@@ -27,7 +32,7 @@ const Followers = () => {
   const { data: followProfiles, refetch } =
     api.profiles.followProfiles.useQuery({
       profileId: userProfile.userId,
-      type: tab === "followers" ? "followers" : "following",
+      type,
     });
 
   const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
@@ -36,11 +41,16 @@ const Followers = () => {
     <>
       <Stack.Screen
         options={{
-          title: tab === "followers" ? "Followers" : "Following",
-          headerBackVisible: true,
+          title: type === "followers" ? "Followers" : "Following",
         }}
       />
-      <Tabs value={tab} onValueChange={setTab} className="flex-1 sm:mt-4">
+      <Tabs
+        value={type}
+        onValueChange={(value) =>
+          router.setParams({ type: value === "followers" ? undefined : value })
+        }
+        className="flex-1 sm:mt-4"
+      >
         <WebWrapper>
           <View className="w-full px-4">
             <TabsList className="flex-row">

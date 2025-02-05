@@ -128,6 +128,8 @@ const TopList = ({
   );
 };
 
+const topListTabs = ["albums", "songs", "artists"];
+
 const TopListsTab = ({
   album,
   song,
@@ -139,11 +141,20 @@ const TopListsTab = ({
   artist: ListWithResources | undefined;
   isProfile: boolean;
 }) => {
-  const [value, setValue] = useState("albums");
+  const router = useRouter();
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const tab =
+    params.tab && topListTabs.includes(params.tab) ? params.tab : "albums";
 
   return (
     <>
-      <Tabs value={value} onValueChange={setValue} className="mt-2">
+      <Tabs
+        value={tab}
+        onValueChange={(value) =>
+          router.setParams({ tab: value === "albums" ? undefined : value })
+        }
+        className="mt-2"
+      >
         <View className="px-4">
           <TabsList className="flex-row w-full">
             <TabsTrigger value="albums" className="flex-1">

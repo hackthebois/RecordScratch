@@ -1,10 +1,10 @@
 import { ArtistItem } from "@/components/Item/ArtistItem";
 import { ProfileItem } from "@/components/Item/ProfileItem";
 import { ResourceItem } from "@/components/Item/ResourceItem";
-import { useDebounce } from "@recordscratch/lib";
+import { SearchOptions, useDebounce } from "@recordscratch/lib";
 import { useQuery } from "@tanstack/react-query";
-import { Stack } from "expo-router";
-import React, { useState } from "react";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useMemo, useState } from "react";
 import { ActivityIndicator, Platform, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
@@ -15,7 +15,11 @@ import { deezerHelpers } from "@/lib/deezer";
 import { Search } from "@/lib/icons/IconsLoader";
 import { WebWrapper } from "@/components/WebWrapper";
 
-const tabs = {
+type TabsType = Omit<SearchOptions, "query"> & {
+  label: string;
+  value: string;
+};
+const tabs: { [key: string]: TabsType } = {
   all: {
     label: "All",
     value: "all",
@@ -47,34 +51,38 @@ const tabs = {
     limit: 12,
   },
 };
-export default function SearchPage() {
-  // const { addRecent } = useRecents("SEARCH");
-  const [tab, setTab] = useState<keyof typeof tabs>("all");
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query, 1000);
 
-  console.log("SearchPage");
+export default function SearchPage() {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ query?: string; tab?: string }>();
+  const tab = useMemo(
+    () =>
+      params.tab && params.tab !== "undefined" ? tabs[params.tab] : tabs.all,
+    [params.tab],
+  );
+  const debouncedQuery = useDebounce(params.query ?? "", 1000);
 
   const { data: music, isLoading } = useQuery({
-    queryKey: ["search", debouncedQuery, tabs[tab]],
+    queryKey: ["search", debouncedQuery, tab],
     queryFn: async () => {
       return await deezerHelpers.search({
         query: debouncedQuery,
-        ...tabs[tab],
+        ...tab,
       });
     },
     enabled:
       debouncedQuery.length > 0 &&
-      ["all", "songs", "albums", "artists"].includes(tab),
+      ["all", "songs", "albums", "artists"].includes(tab.value),
   });
 
   const { data: profiles, isLoading: isLoadingProfiles } =
     api.profiles.search.useQuery(
-      { query: debouncedQuery, ...tabs[tab] },
+      { query: debouncedQuery, ...tab },
       {
         gcTime: 0,
         refetchOnMount: false,
-        enabled: debouncedQuery.length > 0 && ["profiles", "all"].includes(tab),
+        enabled:
+          debouncedQuery.length > 0 && ["profiles", "all"].includes(tab.value),
       },
     );
 
@@ -93,7 +101,7 @@ export default function SearchPage() {
               id="name"
               autoComplete="off"
               placeholder="Search"
-              value={query}
+              value={params.query}
               cursorColor={"#ffb703"}
               style={{
                 paddingTop: 0,
@@ -103,13 +111,17 @@ export default function SearchPage() {
               autoCorrect={false}
               autoFocus
               className="flex-1 h-full text-xl text-foreground outline-none p-0"
-              onChangeText={(text) => setQuery(text)}
+              onChangeText={(text) => {
+                router.setParams({ query: text });
+              }}
             />
           </View>
           <Tabs
-            value={tab}
+            value={tab.value}
             onValueChange={(value) =>
-              value !== tab ? setTab(value as keyof typeof tabs) : setTab("all")
+              value !== tab.value
+                ? router.setParams({ tab: value })
+                : router.setParams({ tab: undefined })
             }
           >
             <TabsList className="flex-row">
@@ -133,7 +145,7 @@ export default function SearchPage() {
               </View>
             ) : (
               <>
-                {tab !== "profiles"
+                {tab.value !== "profiles"
                   ? music?.songs.map((song) => (
                       <ResourceItem
                         key={song.id}
@@ -154,7 +166,7 @@ export default function SearchPage() {
                       />
                     ))
                   : null}
-                {tab !== "profiles"
+                {tab.value !== "profiles"
                   ? music?.albums.map((album) => (
                       <ResourceItem
                         key={album.id}
@@ -175,7 +187,7 @@ export default function SearchPage() {
                       />
                     ))
                   : null}
-                {tab !== "profiles"
+                {tab.value !== "profiles"
                   ? music?.artists.map((artist) => (
                       <ArtistItem
                         key={artist.id}
@@ -193,7 +205,7 @@ export default function SearchPage() {
                       />
                     ))
                   : null}
-                {tab === "profiles" || tab === "all"
+                {tab.value === "profiles" || tab.value === "all"
                   ? profiles?.items.map((profile, index) => (
                       <ProfileItem
                         profile={profile}
@@ -206,7 +218,7 @@ export default function SearchPage() {
                           // 	data: profile,
                           // });
                         }}
-                        showType={tab === "all"}
+                        showType={tab.value === "all"}
                         isUser
                       />
                     ))

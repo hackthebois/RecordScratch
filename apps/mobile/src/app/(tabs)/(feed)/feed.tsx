@@ -2,13 +2,14 @@ import { ReviewsList } from "@/components/ReviewsList";
 import { WebWrapper } from "@/components/WebWrapper";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { useState } from "react";
 import { View } from "react-native";
 
 const FeedPage = () => {
-  const [tab, setTab] = useState("for-you");
+  const router = useRouter();
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const tab = params.tab && params.tab !== "undefined" ? params.tab : "for-you";
 
   return (
     <>
@@ -18,7 +19,15 @@ const FeedPage = () => {
         }}
       />
       <WebWrapper>
-        <Tabs value={tab} onValueChange={setTab} className="sm:mt-4">
+        <Tabs
+          value={tab}
+          onValueChange={() => {
+            router.setParams({
+              tab: tab === "friends" ? undefined : "friends",
+            });
+          }}
+          className="sm:mt-4"
+        >
           <View className="px-4">
             <TabsList className="flex-row w-full">
               <TabsTrigger value="for-you" className="flex-1">
