@@ -78,7 +78,7 @@ const SongPage = () => {
                 formatDuration(song.duration),
               ]}
             >
-              <View className="flex-row gap-4 my-4 items-center">
+              <View className="flex-row gap-4 my-4 items-center justify-center sm:justify-start">
                 <RatingInfo resource={resource} />
                 <RateButton
                   imageUrl={album.cover_big}
@@ -91,7 +91,7 @@ const SongPage = () => {
                   category="SONG"
                 />
               </View>
-              <View className="flex-row w-full pb-4">
+              <View className="flex-row w-full">
                 <Link href={`/albums/${album.id}`} asChild>
                   <Button
                     variant="secondary"

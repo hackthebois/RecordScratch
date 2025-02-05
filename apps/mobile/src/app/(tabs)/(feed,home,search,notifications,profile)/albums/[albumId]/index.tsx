@@ -77,11 +77,11 @@ export default function AlbumLayout() {
                 }}
                 style={{ maxWidth: "100%" }}
               >
-                <Text className="text-muted-foreground">
+                <Text className="text-muted-foreground text-center sm:text-left">
                   {album.artist?.name}
                 </Text>
               </Pressable>
-              <View className="flex-row gap-4 my-4 items-center">
+              <View className="flex-row gap-4 my-4 items-center justify-center sm:justify-start">
                 <RatingInfo resource={resource} size="lg" />
                 <RateButton
                   imageUrl={album.cover_big}
@@ -94,7 +94,7 @@ export default function AlbumLayout() {
                   category={"ALBUM"}
                 />
               </View>
-              <View className="flex-row w-full px-4 pb-4 sm:hidden">
+              <View className="flex-row w-full sm:hidden">
                 <Link href={`/albums/${album.id}/reviews`} asChild>
                   <Pressable className="flex-1">
                     <StatBlock title="Ratings" description={String(total)} />

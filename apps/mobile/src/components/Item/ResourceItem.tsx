@@ -139,9 +139,11 @@ export const ResourceItem = ({
     >
       <View
         className={cn(
-          "flex items-start gap-4",
+          "flex gap-4",
           className,
-          direction === "vertical" ? "flex-col" : "flex-row",
+          direction === "vertical"
+            ? "flex-col items-start"
+            : "flex-row items-center",
         )}
         style={style}
       >

@@ -117,7 +117,7 @@ const RatingModal = () => {
       />
       <KeyboardAvoidingScrollView modal>
         <WebWrapper>
-          <View className="gap-4 sm:mt-4">
+          <View className="gap-4 sm:mt-4 px-4 sm:px-0">
             {imageUrl ? (
               <Image
                 alt={`cover`}

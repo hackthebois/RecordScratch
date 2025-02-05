@@ -20,23 +20,24 @@ const Metadata = ({
   size?: "base" | "sm";
 }) => {
   return (
-    <View className="flex flex-col sm:flex-row sm:px-4 gap-4 mt-4">
+    <View className="flex flex-col sm:flex-row sm:px-4 gap-4 mt-4 pb-4">
       {typeof cover === "string" ? (
-        <Image
-          alt={`${title} cover`}
-          source={cover}
-          className="rounded-xl self-center sm:self-start"
-          style={[
-            size === "sm"
-              ? { width: 150, height: 150 }
-              : {
-                  width: 200,
-                  height: 200,
-                },
-          ]}
-        />
+        <View className="self-center sm:self-start rounded-xl overflow-hidden">
+          <Image
+            alt={`${title} cover`}
+            source={cover}
+            style={[
+              size === "sm"
+                ? { width: 150, height: 150 }
+                : {
+                    width: 200,
+                    height: 200,
+                  },
+            ]}
+          />
+        </View>
       ) : (
-        <View className={"self-center"}>{cover}</View>
+        <View className={"self-center sm:self-start"}>{cover}</View>
       )}
       <View className="flex flex-col justify-center items-center sm:items-start gap-4 sm:justify-center">
         <View className="flex flex-col justify-center items-center gap-4 px-4 sm:items-start">
@@ -58,7 +59,7 @@ const Metadata = ({
             </View>
           )}
         </View>
-        <View className="px-4 items-center sm:items-start">{children}</View>
+        <View className="px-4 w-full">{children}</View>
       </View>
     </View>
   );

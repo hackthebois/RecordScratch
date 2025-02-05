@@ -44,6 +44,7 @@ const AlbumOfTheDay = () => {
         onPress={() => {
           router.navigate(`/albums/${albumOfTheDay.albumId}`);
         }}
+        className="self-center sm:self-start"
       >
         <Text>Go to Album</Text>
       </Button>

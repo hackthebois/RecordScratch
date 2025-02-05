@@ -223,7 +223,7 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
           headerRight: () =>
             isProfile ? (
               <Link href={`/settings`} className="p-2">
-                <Settings size={22} className="mr-2 text-foreground" />
+                <Settings size={22} className="text-foreground" />
               </Link>
             ) : (
               <Suspense fallback={null}>
@@ -327,23 +327,21 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
                 </View>
               </View>
             </View>
-            <Link href={`/${profile.handle}/ratings`} asChild>
-              <Pressable className="border border-border px-2 pt-1 rounded-xl">
-                <DistributionChart
-                  distribution={values}
-                  height={80}
-                  onChange={(value) => {
-                    router.push({
-                      pathname: "/[handle]/ratings",
-                      params: {
-                        handle: profile!.handle,
-                        rating: value ? String(value) : undefined,
-                      },
-                    });
-                  }}
-                />
-              </Pressable>
-            </Link>
+            <View className="border border-border px-2 pt-3 rounded-xl">
+              <DistributionChart
+                distribution={values}
+                height={80}
+                onChange={(value) => {
+                  router.push({
+                    pathname: "/[handle]/ratings",
+                    params: {
+                      handle: profile!.handle,
+                      rating: value ? String(value) : undefined,
+                    },
+                  });
+                }}
+              />
+            </View>
           </View>
           <TopListsTab {...topLists} isProfile={isProfile} />
           <ListsTab

@@ -63,7 +63,7 @@ const ArtistPage = () => {
                 cover={artist.picture_big ?? ""}
                 type="ARTIST"
               >
-                <View className="flex flex-row items-center justify-center gap-3 pb-4">
+                <View className="flex flex-row items-center justify-center sm:justify-start gap-3">
                   <RatingInfo
                     resource={{
                       resourceId: String(artist.id),
@@ -71,7 +71,6 @@ const ArtistPage = () => {
                       parentId: "",
                     }}
                   />
-
                   <AddToListButton
                     resourceId={String(artist.id)}
                     category="ARTIST"

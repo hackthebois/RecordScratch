@@ -72,7 +72,14 @@ const CommentModal = () => {
                   onPress={form.handleSubmit(onSubmit)}
                   disabled={isPending}
                   variant="secondary"
-                  style={{ marginRight: width > 1024 ? (width - 1024) / 2 : 0 }}
+                  style={{
+                    marginRight:
+                      width > 1024
+                        ? (width - 1024) / 2
+                        : Platform.OS === "web"
+                          ? 16
+                          : 0,
+                  }}
                   className="flex-row items-center gap-2"
                 >
                   <Send size={16} />
