@@ -13,7 +13,6 @@ import {
 } from "@recordscratch/types";
 import dayjs from "dayjs";
 import {
-	or,
 	and,
 	avg,
 	count,
@@ -263,7 +262,7 @@ export const ratingsRouter = router({
 					)
 					.having((t) =>
 						filters?.popular
-							? sql`${t.likesCount} + ${t.commentsCount} > 4`
+							? sql`${t.likesCount} + ${t.commentsCount} >= 3`
 							: undefined,
 					)
 					.groupBy((t) => [
