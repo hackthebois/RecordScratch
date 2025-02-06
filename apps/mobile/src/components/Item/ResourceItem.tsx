@@ -139,7 +139,13 @@ export const ResourceItem = ({
         )}
         style={style}
       >
-        <View className={cn("items-center justify-center overflow-hidden")}>
+        <View
+          className="overflow-hidden rounded-xl w-full"
+          style={{
+            width: imageWidthAndHeight,
+            height: imageWidthAndHeight,
+          }}
+        >
           {album!.cover_big ? (
             <Image
               source={album!.cover_big}
@@ -148,7 +154,10 @@ export const ResourceItem = ({
                 height: imageWidthAndHeight,
                 borderRadius: 12,
               }}
-              className={cn("h-full w-full", imageCss)}
+              className={cn(
+                "aspect-square h-auto w-auto rounded-xl overflow-hidden transition-all hover:scale-105",
+                imageCss,
+              )}
             />
           ) : (
             <View className="h-full w-full bg-muted"></View>
