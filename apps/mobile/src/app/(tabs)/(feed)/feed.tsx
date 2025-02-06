@@ -6,10 +6,12 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 
+const tabs = ["recent", "following"];
+
 const FeedPage = () => {
   const router = useRouter();
   const params = useLocalSearchParams<{ tab?: string }>();
-  const tab = params.tab && params.tab !== "undefined" ? params.tab : "for-you";
+  const tab = params.tab && tabs.includes(params.tab) ? params.tab : "recent";
 
   return (
     <>
@@ -21,19 +23,19 @@ const FeedPage = () => {
       <WebWrapper>
         <Tabs
           value={tab}
-          onValueChange={() => {
+          onValueChange={(value) => {
             router.setParams({
-              tab: tab === "friends" ? undefined : "friends",
+              tab: value === "recent" ? undefined : value,
             });
           }}
           className="sm:mt-4"
         >
           <View className="px-4">
             <TabsList className="flex-row w-full">
-              <TabsTrigger value="for-you" className="flex-1">
-                <Text>For You</Text>
+              <TabsTrigger value="recent" className="flex-1">
+                <Text>Recent</Text>
               </TabsTrigger>
-              <TabsTrigger value="friends" className="flex-1">
+              <TabsTrigger value="following" className="flex-1">
                 <Text>Following</Text>
               </TabsTrigger>
             </TabsList>
