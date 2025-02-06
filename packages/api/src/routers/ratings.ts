@@ -223,25 +223,23 @@ export const ratingsRouter = router({
 					.select({
 						ratings: ratings,
 						profile: profile,
-						likesCount: count(likes.id),
-						commentsCount: count(comments.id),
+						likesCount: db.$count(
+							likes,
+							and(
+								eq(likes.authorId, ratings.userId),
+								eq(likes.resourceId, ratings.resourceId),
+							),
+						),
+						commentsCount: db.$count(
+							comments,
+							and(
+								eq(comments.authorId, ratings.userId),
+								eq(comments.resourceId, ratings.resourceId),
+							),
+						),
 					})
 					.from(ratings)
 					.innerJoin(profile, eq(ratings.userId, profile.userId))
-					.leftJoin(
-						likes,
-						and(
-							eq(ratings.resourceId, likes.resourceId),
-							eq(ratings.userId, likes.authorId),
-						),
-					)
-					.leftJoin(
-						comments,
-						and(
-							eq(ratings.resourceId, comments.resourceId),
-							eq(ratings.userId, comments.userId),
-						),
-					)
 					.where(
 						and(
 							followingWhere,
@@ -273,6 +271,7 @@ export const ratingsRouter = router({
 					.limit(limit + 1)
 					.offset(cursor)
 					.orderBy((t) => [desc(t.ratings.updatedAt)]);
+				console.log(result);
 				const items = result.map((item) => ({
 					...item.ratings,
 					profile: item.profile,
