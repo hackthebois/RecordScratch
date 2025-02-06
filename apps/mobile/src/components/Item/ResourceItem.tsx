@@ -139,7 +139,7 @@ export const ResourceItem = ({
         )}
         style={style}
       >
-        <View className="items-center justify-center overflow-hidden">
+        <View className={cn("items-center justify-center overflow-hidden")}>
           {album!.cover_big ? (
             <Image
               source={album!.cover_big}
@@ -159,6 +159,9 @@ export const ResourceItem = ({
             "flex flex-col gap-2 overflow-hidden",
             direction === "horizontal" ? "flex-1" : "",
           )}
+          style={{
+            maxWidth: direction === "horizontal" ? "100%" : imageWidthAndHeight,
+          }}
         >
           <Text
             className={cn("font-semibold mr-3 text-ellipsis", titleCss)}
