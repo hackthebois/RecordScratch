@@ -203,28 +203,33 @@ export const ratingsRouter = router({
         } else if (filters?.ratingType === "RATING")
           ratingTypeFilter = isNull(ratings.content);
 
-        const items = await db.query.ratings.findMany({
-          where: and(
-            followingWhere,
-            filters?.profileId
-              ? eq(ratings.userId, filters.profileId)
-              : undefined,
-            filters?.resourceId
-              ? eq(ratings.resourceId, filters.resourceId)
-              : undefined,
-            filters?.category
-              ? eq(ratings.category, filters.category)
-              : undefined,
-            filters?.rating ? eq(ratings.rating, filters.rating) : undefined,
-            ratingTypeFilter,
-          ),
-          limit: limit + 1,
-          offset: cursor,
-          with: {
-            profile: true,
-          },
-          orderBy: (ratings, { desc }) => [desc(ratings.updatedAt)],
-        });
+        const result = await db
+          .select()
+          .from(ratings)
+          .innerJoin(profile, eq(ratings.userId, profile.userId))
+          .where(
+            and(
+              followingWhere,
+              filters?.profileId
+                ? eq(ratings.userId, filters.profileId)
+                : undefined,
+              filters?.resourceId
+                ? eq(ratings.resourceId, filters.resourceId)
+                : undefined,
+              filters?.category
+                ? eq(ratings.category, filters.category)
+                : undefined,
+              filters?.rating ? eq(ratings.rating, filters.rating) : undefined,
+              ratingTypeFilter,
+            ),
+          )
+          .limit(limit + 1)
+          .offset(cursor)
+          .orderBy(desc(ratings.updatedAt));
+        const items = result.map((item) => ({
+          ...item.ratings,
+          profile: item.profile,
+        }));
         let nextCursor: typeof cursor | undefined = undefined;
         if (items.length > limit) {
           items.pop();

@@ -45,7 +45,7 @@ const FeedPage = () => {
       <ReviewsList
         limit={20}
         filters={{
-          following: tab === "friends",
+          following: tab === "following",
           ratingType: "REVIEW",
         }}
         emptyText={
