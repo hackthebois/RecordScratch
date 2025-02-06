@@ -7,7 +7,6 @@ import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { Review } from "./Review";
 import { Text } from "./ui/text";
-import { Platform } from "react-native";
 import { WebWrapper } from "./WebWrapper";
 
 export const ReviewsList = (

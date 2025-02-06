@@ -10,7 +10,7 @@ const AlbumItem = ({
   className?: string;
 }) => {
   return (
-    <View className={cn(className, "sm:w-40")}>
+    <View className={cn(className, "w-[150px]")}>
       <ResourceItem
         direction="vertical"
         resource={{
@@ -18,8 +18,8 @@ const AlbumItem = ({
           category: "ALBUM",
           parentId: "",
         }}
-        titleCss="w-40"
-        artistNameCss="w-40 line-clamp-1"
+        titleCss="w-[150px]"
+        artistNameCss="w-[150px] line-clamp-1"
       />
     </View>
   );

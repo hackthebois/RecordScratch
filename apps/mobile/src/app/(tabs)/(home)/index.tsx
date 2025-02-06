@@ -92,6 +92,9 @@ const HomePage = () => {
                   <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
                 </ScrollView>
               }
               showsHorizontalScrollIndicator={Platform.OS === "web"}
@@ -111,6 +114,9 @@ const HomePage = () => {
                   <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
                 </ScrollView>
               }
               showsHorizontalScrollIndicator={Platform.OS === "web"}
@@ -127,6 +133,9 @@ const HomePage = () => {
               estimatedItemSize={150}
               ListEmptyComponent={
                 <ScrollView horizontal contentContainerClassName="gap-4">
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
+                  <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
                   <ResourceItemSkeleton direction="vertical" />
