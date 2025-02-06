@@ -1,10 +1,10 @@
 import { Text } from "@/components/ui/text";
 import { getQueryOptions } from "@/lib/deezer";
 import { Artist, cn } from "@recordscratch/lib";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Link, LinkProps } from "expo-router";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { Link, LinkProps, useRouter } from "expo-router";
+import { Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { Skeleton } from "../ui/skeleton";
 import ReLink from "../ReLink";
 
@@ -33,6 +33,7 @@ export const ArtistItem = ({
 	showType?: boolean;
 	style?: StyleProp<ViewStyle>;
 }) => {
+	const router = useRouter();
 	const { data: artist } = useQuery({
 		...getQueryOptions({
 			route: "/artist/{id}",
@@ -71,17 +72,10 @@ export const ArtistItem = ({
 	const artistImage = artist.picture_big;
 
 	return (
-		<ReLink
-			disabled={!showLink}
-			href={`/artists/${String(artist.id)}`}
-			onPress={(e) => {
-				if (onPress) {
-					onPress();
-					if (!showLink) {
-						e.preventDefault();
-						e.stopPropagation();
-					}
-				}
+		<Pressable
+			onPress={() => {
+				if (onPress) onPress();
+				if (showLink) router.push(`/artists/${String(artist.id)}`);
 			}}
 		>
 			<View
@@ -118,6 +112,6 @@ export const ArtistItem = ({
 					{showType && <Text className="text-muted-foreground">{"Artist"}</Text>}
 				</View>
 			</View>
-		</ReLink>
+		</Pressable>
 	);
 };

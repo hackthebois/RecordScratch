@@ -9,138 +9,142 @@ import { createStore, useStore } from "zustand";
 import { registerForPushNotificationsAsync } from "./notifications";
 import { Platform } from "react-native";
 
+type Status = "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
+
 // Define the context type
 type Auth = {
-  status: "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
-  sessionId: string | null;
-  pushToken: string | null;
-  profile: Profile | null;
-  logout: () => Promise<void>;
-  login: (session?: string) => Promise<{ status: Auth["status"] }>;
-  setSessionId: (sessionId: string) => Promise<void>;
-  setPushToken: (pushToken: string) => void;
-  setProfile: (profile: Profile) => void;
-  setStatus: (status: Auth["status"]) => void;
-  delete: () => Promise<void>;
+	status: Status;
+	sessionId: string | null;
+	pushToken: string | null;
+	profile: Profile | null;
+	logout: () => Promise<void>;
+	login: (session?: string) => Promise<{ status: Auth["status"] }>;
+	setSessionId: (sessionId: string) => Promise<void>;
+	setPushToken: (pushToken: string) => void;
+	setProfile: (profile: Profile) => void;
+	setStatus: (status: Auth["status"]) => void;
+	delete: () => Promise<void>;
 };
 
 type AuthStore = ReturnType<typeof createAuthStore>;
 
 export const createAuthStore = () =>
-  createStore<Auth>()((set, get) => ({
-    status: "loading",
-    sessionId: null,
-    pushToken: null,
-    setPushToken: (pushToken) => set({ pushToken }),
-    setSessionId: async (sessionId) => {
-      if (Platform.OS !== "web") {
-        await SecureStore.setItemAsync("sessionId", sessionId);
-      }
-      set({ sessionId });
-    },
-    setStatus: (status) => set({ status }),
-    profile: null,
-    setProfile: (profile) => set({ profile }),
-    logout: async () => {
-      const sessionId = get().sessionId;
-      await fetch(env.SITE_URL + "/api/auth/signout", {
-        credentials: "include",
-        headers: {
-          "Expo-Push-Token": get().pushToken ?? "",
-          ...(sessionId ? { Authorization: sessionId } : {}),
-        },
-      });
-      if (Platform.OS !== "web") {
-        await SecureStore.deleteItemAsync("sessionId");
-      }
-    },
-    login: async (session?: string) => {
-      let sessionId: string | undefined = session;
-      let expoPushToken: string | undefined;
+	createStore<Auth>()((set, get) => ({
+		status: "loading",
+		sessionId: null,
+		pushToken: null,
+		setPushToken: (pushToken) => set({ pushToken }),
+		setSessionId: async (sessionId) => {
+			if (Platform.OS !== "web") {
+				await SecureStore.setItemAsync("sessionId", sessionId);
+			}
+			set({ sessionId });
+		},
+		setStatus: (status) => set({ status }),
+		profile: null,
+		setProfile: (profile) => set({ profile }),
+		logout: async () => {
+			const sessionId = get().sessionId;
+			await fetch(env.SITE_URL + "/api/auth/signout", {
+				credentials: "include",
+				headers: {
+					"Expo-Push-Token": get().pushToken ?? "",
+					...(sessionId ? { Authorization: sessionId } : {}),
+				},
+			});
+			if (Platform.OS !== "web") {
+				await SecureStore.deleteItemAsync("sessionId");
+			}
+		},
+		login: async (session?: string) => {
+			let sessionId: string | undefined = session;
+			let expoPushToken: string | undefined;
 
-      if (Platform.OS !== "web" && !sessionId) {
-        sessionId = (await SecureStore.getItemAsync("sessionId")) ?? undefined;
-        expoPushToken = await registerForPushNotificationsAsync();
-        set({ pushToken: expoPushToken });
-      }
+			if (Platform.OS !== "web" && !sessionId) {
+				sessionId = (await SecureStore.getItemAsync("sessionId")) ?? undefined;
+				expoPushToken = await registerForPushNotificationsAsync();
+				set({ pushToken: expoPushToken });
+			}
 
-      const res = await fetch(`${env.SITE_URL}/api/auth/me`, {
-        credentials: "include",
-        headers: {
-          "Expo-Push-Token": expoPushToken ?? "",
-          ...(sessionId ? { Authorization: sessionId } : {}),
-        },
-      });
+			const res = await fetch(`${env.SITE_URL}/api/auth/me`, {
+				credentials: "include",
+				headers: {
+					"Expo-Push-Token": expoPushToken ?? "",
+					...(sessionId ? { Authorization: sessionId } : {}),
+				},
+			});
 
-      const data = await res.json();
-      const parsedData = z
-        .object({
-          user: UserSchema.extend({
-            profile: ProfileSchema.nullish(),
-          }).nullable(),
-        })
-        .safeParse(
-          SuperJSON.deserialize({
-            json: data,
-            meta: {
-              values: {
-                "user.profile.createdAt": ["Date"],
-                "user.profile.updatedAt": ["Date"],
-              },
-            },
-          }),
-        );
+			const data = await res.json();
+			const parsedData = z
+				.object({
+					user: UserSchema.extend({
+						profile: ProfileSchema.nullish(),
+					}).nullable(),
+				})
+				.safeParse(
+					SuperJSON.deserialize({
+						json: data,
+						meta: {
+							values: {
+								"user.profile.createdAt": ["Date"],
+								"user.profile.updatedAt": ["Date"],
+							},
+						},
+					})
+				);
 
-      if (parsedData.error || !parsedData.data.user) {
-        set({ sessionId: null, profile: null, status: "unauthenticated" });
-        return { status: "unauthenticated" };
-      } else {
-        get().setSessionId(sessionId ?? "");
-        if (parsedData.data.user.profile) {
-          get().setProfile(parsedData.data.user.profile);
-          set({ status: "authenticated" });
-          return { status: "authenticated" };
-        } else {
-          set({ status: "needsonboarding" });
-          return { status: "needsonboarding" };
-        }
-      }
-    },
-    delete: async () => {
-      const sessionId = get().sessionId;
-      if (!sessionId) return;
-      if (Platform.OS === "web") {
-        await SecureStore.deleteItemAsync("sessionId");
-      }
-      // Delete user
-      const res = await fetch(`${env.SITE_URL}/api/auth/delete`, {
-        credentials: "include",
-        headers: { Authorization: sessionId },
-      });
-      return await res.json();
-    },
-  }));
+			if (parsedData.error || !parsedData.data.user) {
+				set({ sessionId: null, profile: null, status: "unauthenticated" });
+				return { status: "unauthenticated" };
+			} else {
+				get().setSessionId(sessionId ?? "");
+				if (parsedData.data.user.profile) {
+					get().setProfile(parsedData.data.user.profile);
+					set({ status: "authenticated" });
+					return { status: "authenticated" };
+				} else {
+					set({ status: "needsonboarding" });
+					return { status: "needsonboarding" };
+				}
+			}
+		},
+		delete: async () => {
+			const sessionId = get().sessionId;
+			if (!sessionId) return;
+			if (Platform.OS === "web") {
+				await SecureStore.deleteItemAsync("sessionId");
+			}
+			// Delete user
+			const res = await fetch(`${env.SITE_URL}/api/auth/delete`, {
+				credentials: "include",
+				headers: { Authorization: sessionId },
+			});
+			const response = await res.json();
+			console.log("RES: ", response);
+			return response;
+		},
+	}));
 
 export const AuthContext = createContext<AuthStore | null>(null);
 
 export const handleLoginRedirect = async ({
-  status,
-  router,
+	status,
+	router,
 }: {
-  status: Auth["status"];
-  router: Router;
+	status: Auth["status"];
+	router: Router;
 }) => {
-  if (status === "authenticated") {
-    router.replace("/(tabs)");
-  } else if (status === "needsonboarding") {
-    router.replace("/(auth)/onboard");
-  } else {
-    router.replace("/(auth)/signin");
-  }
+	if (status === "authenticated") {
+		router.replace("/(tabs)");
+	} else if (status === "needsonboarding") {
+		router.replace("/(auth)/onboard");
+	} else {
+		router.replace("/(auth)/signin");
+	}
 };
 
 export function useAuth<T>(selector: (state: Auth) => T): T {
-  const store = useContext(AuthContext);
-  if (!store) throw new Error("Missing AuthContext.Provider in the tree");
-  return useStore(store, selector);
+	const store = useContext(AuthContext);
+	if (!store) throw new Error("Missing AuthContext.Provider in the tree");
+	return useStore(store, selector);
 }

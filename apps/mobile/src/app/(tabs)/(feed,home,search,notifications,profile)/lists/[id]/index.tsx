@@ -14,211 +14,206 @@ import { ListPlus, Pencil, Settings, Star } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
 import { Category, ListItem } from "@recordscratch/types";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import {
-  ScrollView,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-  Platform,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	TouchableOpacity,
+	useWindowDimensions,
+	View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
+import { useEffect } from "react";
+
+const Review = ({ rating, size = "lg" }: { rating: number | null; size?: string }) => {
+	return (
+		<View className="flex flex-row items-center justify-center">
+			<Star color="#ffb703" fill="#ffb703" size={size === "lg" ? 22 : 18} className="mr-2" />
+			<View>
+				<Text
+					className={cn({
+						"text-lg font-semibold": size === "lg",
+						"font-medium": size === "sm",
+						"w-8": true,
+						" text-end": true,
+					})}
+				>
+					{rating}
+				</Text>
+			</View>
+		</View>
+	);
+};
 
 const ListResources = ({
-  items,
-  category,
+	items,
+	category,
 }: {
-  items: ListItem[];
-  category: Category;
+	items: ListItem[] | undefined;
+	category: Category;
 }) => {
-  return (
-    <View className="flex flex-col w-full">
-      {items.map((item, index) => (
-        <View
-          key={index}
-          className={cn(index !== items.length - 1 && "border-b border-muted")}
-        >
-          <View className={"flex flex-row items-center gap-3 my-2 px-4"}>
-            <Text className="text-muted-foreground font-bold w-6">
-              {index + 1}
-            </Text>
-            <View className="flex-1">
-              {category === "ARTIST" ? (
-                <ArtistItem
-                  artistId={item.resourceId}
-                  imageWidthAndHeight={60}
-                />
-              ) : (
-                <ResourceItem
-                  resource={{
-                    parentId: item.parentId!,
-                    resourceId: item.resourceId,
-                    category: category,
-                  }}
-                  imageWidthAndHeight={60}
-                  titleCss="font-medium"
-                />
-              )}
-            </View>
-            <RatingInfo
-              initialRating={{
-                resourceId: item.resourceId,
-                average: item.rating ? String(item.rating) : null,
-                total: 1,
-              }}
-              resource={{
-                parentId: item.parentId!,
-                resourceId: item.resourceId,
-                category: category,
-              }}
-              size="sm"
-            />
-          </View>
-        </View>
-      ))}
-    </View>
-  );
+	return (
+		<>
+			{items?.map((item, index) => (
+				<View key={item.resourceId} className="border-b border-muted rounded-xl">
+					<View className={cn("flex flex-row items-center gap-3 my-2")}>
+						<Text className="text-muted-foreground font-bold w-6 text-base ml-5">
+							{index + 1}
+						</Text>
+						{category === "ARTIST" ? (
+							<ArtistItem
+								artistId={item.resourceId}
+								imageWidthAndHeight={60}
+								className={cn(!!item.rating ? "w-72" : "w-96")}
+							/>
+						) : (
+							<ResourceItem
+								resource={{
+									parentId: item.parentId!,
+									resourceId: item.resourceId,
+									category: category,
+								}}
+								imageWidthAndHeight={60}
+								titleCss="font-medium"
+								showArtist={false}
+								className={cn(!!item.rating ? "w-72" : "w-96")}
+							/>
+						)}
+						<Review rating={item.rating} />
+					</View>
+				</View>
+			))}
+		</>
+	);
 };
 
 const ListPage = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const listId = id!;
+	const { id } = useLocalSearchParams<{ id: string }>();
+	const listId = id!;
 
-  const [list] = api.lists.get.useSuspenseQuery({ id: listId });
+	const [list] = api.lists.get.useSuspenseQuery({ id: listId });
 
-  if (!list) return <NotFoundScreen />;
+	if (!list) return <NotFoundScreen />;
 
-  const profile = useAuth((s) => s.profile!);
-  const isProfile = profile.userId === list?.userId;
+	const profile = useAuth((s) => s.profile!);
+	const isProfile = profile.userId === list?.userId;
 
-  const [listItems] = api.lists.resources.get.useSuspenseQuery({
-    listId,
-    userId: list!.userId,
-  });
+	const [listItems] = api.lists.resources.get.useSuspenseQuery({
+		listId,
+		userId: list!.userId,
+	});
+	const dimensions = useWindowDimensions();
 
-  const options =
-    Platform.OS !== "web"
-      ? {
-          title: `${list.name}`,
-          headerRight: () =>
-            isProfile ? (
-              <Link
-                href={{
-                  pathname: "/lists/[id]/settings",
-                  params: { id: listId },
-                }}
-                className="p-2"
-              >
-                <Settings size={22} className="text-foreground" />
-              </Link>
-            ) : null,
-        }
-      : {};
-
-  return (
-    <ScrollView className="flex flex-col gap-6">
-      <WebWrapper>
-        <Stack.Screen options={options} />
-        <Metadata
-          cover={
-            <ListImage
-              listItems={listItems}
-              category={list.category}
-              size={200}
-            />
-          }
-          size="sm"
-          title={Platform.OS === "web" ? list.name : undefined}
-        >
-          <View className="flex flex-col gap-4">
-            <View className="flex flex-row items-center justify-center sm:justify-start gap-2">
-              <Link
-                href={{
-                  pathname: "/[handle]",
-                  params: {
-                    handle: String(list.profile.handle),
-                  },
-                }}
-              >
-                <View className="flex flex-row items-center gap-2">
-                  <UserAvatar imageUrl={getImageUrl(list.profile)} />
-                  <Text className="flex text-lg">{list.profile.name}</Text>
-                </View>
-              </Link>
-              <Text className="text-muted-foreground">
-                • {timeAgo(list.updatedAt)}
-              </Text>
-            </View>
-            {Platform.OS === "web" && isProfile && (
-              <Link
-                href={{
-                  pathname: "/lists/[id]/settings",
-                  params: { id: listId },
-                }}
-                asChild
-              >
-                <Button
-                  variant="secondary"
-                  className="flex-row items-center gap-2 self-center sm:self-start"
-                >
-                  <Settings size={16} className="text-foreground" />
-                  <Text>Settings</Text>
-                </Button>
-              </Link>
-            )}
-          </View>
-        </Metadata>
-        {isProfile && (
-          <View className="flex flex-row my-4 gap-2 px-4">
-            <Link
-              href={{
-                pathname: "/(modals)/list/searchResource",
-                params: {
-                  listId,
-                  category: list.category,
-                  isTopList: list.onProfile.toString(),
-                },
-              }}
-              asChild
-            >
-              <Button
-                variant="outline"
-                className="flex-row items-center gap-2 flex-1"
-              >
-                <Text variant="h4">Add</Text>
-                <ListPlus size={22} className="text-foreground" />
-              </Button>
-            </Link>
-            <Link
-              href={{
-                pathname: "/(modals)/list/rearrangeList",
-                params: {
-                  listId,
-                },
-              }}
-              asChild
-            >
-              <Button
-                variant="outline"
-                className="flex-row items-center gap-2 flex-1"
-              >
-                <Text variant="h4">Edit</Text>
-                <Pencil size={18} className="text-foreground" />
-              </Button>
-            </Link>
-          </View>
-        )}
-        <ListResources items={listItems} category={list.category} />
-        {listItems.length == 0 && isProfile && (
-          <View className="flex flex-col gap-2 items-center justify-center h-56">
-            <ListPlus size={30} />
-            <Text variant="h4" className=" text-muted-foreground">
-              Make Sure to Add to Your List
-            </Text>
-          </View>
-        )}
-      </WebWrapper>
-    </ScrollView>
-  );
+	return (
+		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+			<KeyboardAvoidingScrollView className="flex flex-col gap-6 h-full">
+				<Stack.Screen
+					options={{
+						title: `${list!.name}`,
+						headerRight: () =>
+							isProfile ? (
+								<Link
+									href={{
+										pathname: "/lists/[id]/settings",
+										params: { id: listId },
+									}}
+									asChild
+								>
+									<TouchableOpacity>
+										<Settings size={22} className="mr-6 text-foreground" />
+									</TouchableOpacity>
+								</Link>
+							) : null,
+					}}
+				/>
+				<Metadata
+					cover={<ListImage listItems={listItems} category={list!.category} size={200} />}
+					size="sm"
+				>
+					<View className="flex flex-col items-center -mt-6">
+						<Text>{list?.category} LIST</Text>
+						<View className="flex flex-row items-center gap-2">
+							<Link
+								href={{
+									pathname: "/[handle]",
+									params: {
+										handle: String(list?.profile.handle),
+									},
+								}}
+							>
+								<View className="flex flex-row items-center gap-2">
+									<UserAvatar imageUrl={getImageUrl(list!.profile)} />
+									<Text className="flex text-lg">{list!.profile.name}</Text>
+								</View>
+							</Link>
+							<Text className="text-muted-foreground">
+								• {timeAgo(list!.updatedAt)}
+							</Text>
+						</View>
+					</View>
+				</Metadata>
+				{isProfile && (
+					<View className="flex flex-row my-4 justify-around">
+						<Link
+							href={{
+								pathname: "/(modals)/list/searchResource",
+								params: {
+									listId,
+									category: list.category,
+									isTopList: list.onProfile.toString(),
+								},
+							}}
+							asChild
+						>
+							<Button
+								variant="outline"
+								style={{
+									width: dimensions.width / 2 - 5,
+									flexDirection: "row",
+									gap: 15,
+								}}
+							>
+								<Text variant="h4">Add</Text>
+								<ListPlus size={22} />
+							</Button>
+						</Link>
+						<Link
+							href={{
+								pathname: "/(modals)/list/rearrangeList",
+								params: {
+									listId,
+								},
+							}}
+							asChild
+						>
+							<Button
+								variant="outline"
+								style={{
+									width: dimensions.width / 2 - 5,
+									flexDirection: "row",
+									gap: 15,
+								}}
+							>
+								<Text variant="h4">Edit</Text>
+								<Pencil size={18} />
+							</Button>
+						</Link>
+					</View>
+				)}
+				<ListResources items={listItems} category={list!.category} />
+				{listItems?.length == 0 && isProfile && (
+					<View className="flex flex-col gap-2 items-center justify-center h-56">
+						<ListPlus size={30} />
+						<Text variant="h4" className=" text-muted-foreground">
+							Make Sure to Add to Your List
+						</Text>
+					</View>
+				)}
+			</KeyboardAvoidingScrollView>
+		</SafeAreaView>
+	);
 };
 
 export default ListPage;

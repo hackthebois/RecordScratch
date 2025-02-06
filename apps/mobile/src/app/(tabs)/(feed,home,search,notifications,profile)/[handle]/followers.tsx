@@ -14,75 +14,71 @@ import { View } from "react-native";
 const types = ["followers", "following"];
 
 const Followers = () => {
-  const router = useRouter();
-  const { handle, ...params } = useLocalSearchParams<{
-    handle: string;
-    type?: string;
-  }>();
-  const type = (
-    params.type && types.includes(params.type) ? params.type : "followers"
-  ) as "followers" | "following";
+	const router = useRouter();
+	const { handle, ...params } = useLocalSearchParams<{
+		handle: string;
+		type?: string;
+	}>();
+	const type = (params.type && types.includes(params.type) ? params.type : "followers") as
+		| "followers"
+		| "following";
 
-  const profile = useAuth((s) => s.profile);
+	const profile = useAuth((s) => s.profile);
 
-  const [userProfile] = api.profiles.get.useSuspenseQuery(handle);
+	const [userProfile] = api.profiles.get.useSuspenseQuery(handle);
 
-  if (!userProfile) return <NotFoundScreen />;
+	if (!userProfile) return <NotFoundScreen />;
 
-  const { data: followProfiles, refetch } =
-    api.profiles.followProfiles.useQuery({
-      profileId: userProfile.userId,
-      type,
-    });
+	const { data: followProfiles, refetch } = api.profiles.followProfiles.useQuery({
+		profileId: userProfile.userId,
+		type,
+	});
 
-  const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
+	const { refetchByUser, isRefetchingByUser } = useRefreshByUser(refetch);
 
-  return (
-    <>
-      <Stack.Screen
-        options={{
-          title: type === "followers" ? "Followers" : "Following",
-        }}
-      />
-      <Tabs
-        value={type}
-        onValueChange={(value) =>
-          router.setParams({ type: value === "followers" ? undefined : value })
-        }
-        className="flex-1 sm:mt-4"
-      >
-        <WebWrapper>
-          <View className="w-full px-4">
-            <TabsList className="flex-row">
-              <TabsTrigger value="followers" className="flex-1">
-                <Text>Followers</Text>
-              </TabsTrigger>
-              <TabsTrigger value="following" className="flex-1">
-                <Text>Following</Text>
-              </TabsTrigger>
-            </TabsList>
-          </View>
-        </WebWrapper>
-        <FlashList
-          data={followProfiles?.flatMap((item) => item.profile)}
-          renderItem={({ item }) => (
-            <WebWrapper>
-              <ProfileItem
-                profile={item}
-                isUser={profile!.userId === item.userId}
-              />
-            </WebWrapper>
-          )}
-          estimatedItemSize={60}
-          ItemSeparatorComponent={() => <View className="h-3" />}
-          className="px-4"
-          contentContainerClassName="py-4"
-          refreshing={isRefetchingByUser}
-          onRefresh={refetchByUser}
-        />
-      </Tabs>
-    </>
-  );
+	return (
+		<>
+			<Stack.Screen
+				options={{
+					title: type === "followers" ? "Followers" : "Following",
+				}}
+			/>
+			<Tabs
+				value={type}
+				onValueChange={(value) =>
+					router.setParams({ type: value === "followers" ? undefined : value })
+				}
+				className="flex-1 sm:mt-4"
+			>
+				<WebWrapper>
+					<View className="w-full px-4">
+						<TabsList className="flex-row">
+							<TabsTrigger value="followers" className="flex-1">
+								<Text>Followers</Text>
+							</TabsTrigger>
+							<TabsTrigger value="following" className="flex-1">
+								<Text>Following</Text>
+							</TabsTrigger>
+						</TabsList>
+					</View>
+				</WebWrapper>
+				<FlashList
+					data={followProfiles?.flatMap((item) => item.profile)}
+					renderItem={({ item }) => (
+						<WebWrapper>
+							<ProfileItem profile={item} isUser={profile!.userId === item.userId} />
+						</WebWrapper>
+					)}
+					estimatedItemSize={60}
+					ItemSeparatorComponent={() => <View className="h-3" />}
+					className="px-4"
+					contentContainerClassName="py-4"
+					refreshing={isRefetchingByUser}
+					onRefresh={refetchByUser}
+				/>
+			</Tabs>
+		</>
+	);
 };
 
 export default Followers;

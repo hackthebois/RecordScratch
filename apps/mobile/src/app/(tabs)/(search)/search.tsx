@@ -16,218 +16,214 @@ import { Search } from "@/lib/icons/IconsLoader";
 import { WebWrapper } from "@/components/WebWrapper";
 
 type TabsType = Omit<SearchOptions, "query"> & {
-  label: string;
-  value: string;
+	label: string;
+	value: string;
 };
 const tabs: { [key: string]: TabsType } = {
-  all: {
-    label: "All",
-    value: "all",
-    filters: { albums: true, artists: true, songs: true },
-    limit: 4,
-  },
-  songs: {
-    label: "Songs",
-    value: "songs",
-    filters: { albums: false, artists: false, songs: true },
-    limit: 12,
-  },
-  albums: {
-    label: "Albums",
-    value: "albums",
-    filters: { albums: true, artists: false, songs: false },
-    limit: 12,
-  },
-  artists: {
-    label: "Artists",
-    value: "artists",
-    filters: { albums: false, artists: true, songs: false },
-    limit: 12,
-  },
-  profiles: {
-    label: "Users",
-    value: "profiles",
-    filters: { albums: false, artists: false, songs: false },
-    limit: 12,
-  },
+	all: {
+		label: "All",
+		value: "all",
+		filters: { albums: true, artists: true, songs: true },
+		limit: 4,
+	},
+	songs: {
+		label: "Songs",
+		value: "songs",
+		filters: { albums: false, artists: false, songs: true },
+		limit: 12,
+	},
+	albums: {
+		label: "Albums",
+		value: "albums",
+		filters: { albums: true, artists: false, songs: false },
+		limit: 12,
+	},
+	artists: {
+		label: "Artists",
+		value: "artists",
+		filters: { albums: false, artists: true, songs: false },
+		limit: 12,
+	},
+	profiles: {
+		label: "Users",
+		value: "profiles",
+		filters: { albums: false, artists: false, songs: false },
+		limit: 12,
+	},
 };
 
 export default function SearchPage() {
-  const router = useRouter();
-  const params = useLocalSearchParams<{ query?: string; tab?: string }>();
-  const tab = useMemo(
-    () =>
-      params.tab && params.tab !== "undefined" ? tabs[params.tab] : tabs.all,
-    [params.tab],
-  );
-  const debouncedQuery = useDebounce(params.query ?? "", 1000);
+	const router = useRouter();
+	const params = useLocalSearchParams<{ query?: string; tab?: string }>();
+	const tab = useMemo(
+		() => (params.tab && params.tab !== "undefined" ? tabs[params.tab] : tabs.all),
+		[params.tab]
+	);
+	const debouncedQuery = useDebounce(params.query ?? "", 1000);
 
-  const { data: music, isLoading } = useQuery({
-    queryKey: ["search", debouncedQuery, tab],
-    queryFn: async () => {
-      return await deezerHelpers.search({
-        query: debouncedQuery,
-        ...tab,
-      });
-    },
-    enabled:
-      debouncedQuery.length > 0 &&
-      ["all", "songs", "albums", "artists"].includes(tab.value),
-  });
+	const { data: music, isLoading } = useQuery({
+		queryKey: ["search", debouncedQuery, tab],
+		queryFn: async () => {
+			return await deezerHelpers.search({
+				query: debouncedQuery,
+				...tab,
+			});
+		},
+		enabled:
+			debouncedQuery.length > 0 && ["all", "songs", "albums", "artists"].includes(tab.value),
+	});
 
-  const { data: profiles, isLoading: isLoadingProfiles } =
-    api.profiles.search.useQuery(
-      { query: debouncedQuery, ...tab },
-      {
-        gcTime: 0,
-        refetchOnMount: false,
-        enabled:
-          debouncedQuery.length > 0 && ["profiles", "all"].includes(tab.value),
-      },
-    );
+	const { data: profiles, isLoading: isLoadingProfiles } = api.profiles.search.useQuery(
+		{ query: debouncedQuery, ...tab },
+		{
+			gcTime: 0,
+			refetchOnMount: false,
+			enabled: debouncedQuery.length > 0 && ["profiles", "all"].includes(tab.value),
+		}
+	);
 
-  return (
-    <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
-      <Stack.Screen
-        options={{
-          headerShown: Platform.OS === "web",
-        }}
-      />
-      <WebWrapper>
-        <View className="px-4 gap-2 sm:mt-4">
-          <View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-            <Search size={20} className="mx-4 text-foreground" />
-            <TextInput
-              id="name"
-              autoComplete="off"
-              placeholder="Search"
-              value={params.query}
-              cursorColor={"#ffb703"}
-              style={{
-                paddingTop: 0,
-                paddingBottom: Platform.OS === "ios" ? 4 : 0,
-                textAlignVertical: "center",
-              }}
-              autoCorrect={false}
-              autoFocus
-              className="flex-1 h-full text-xl text-foreground outline-none p-0"
-              onChangeText={(text) => {
-                router.setParams({ query: text });
-              }}
-            />
-          </View>
-          <Tabs
-            value={tab.value}
-            onValueChange={(value) =>
-              value !== tab.value
-                ? router.setParams({ tab: value })
-                : router.setParams({ tab: undefined })
-            }
-          >
-            <TabsList className="flex-row">
-              {Object.entries(tabs)
-                .filter(([key]) => key !== "all")
-                .map(([key, tab]) => (
-                  <TabsTrigger key={key} value={key} className="flex-1">
-                    <Text>{tab.label}</Text>
-                  </TabsTrigger>
-                ))}
-            </TabsList>
-          </Tabs>
-        </View>
-      </WebWrapper>
-      <KeyboardAvoidingScrollView>
-        <WebWrapper>
-          <View className="p-4 gap-2">
-            {isLoading || isLoadingProfiles ? (
-              <View className="flex items-center justify-center pt-40">
-                <ActivityIndicator size="large" color="#ff8500" />
-              </View>
-            ) : (
-              <>
-                {tab.value !== "profiles"
-                  ? music?.songs.map((song) => (
-                      <ResourceItem
-                        key={song.id}
-                        resource={{
-                          parentId: String(song.album.id),
-                          resourceId: String(song.id),
-                          category: "SONG" as const,
-                        }}
-                        onPress={() => {
-                          // addRecent({
-                          // 	id: String(song.id),
-                          // 	type: "SONG",
-                          // 	data: song,
-                          // });
-                        }}
-                        imageWidthAndHeight={80}
-                        showType
-                      />
-                    ))
-                  : null}
-                {tab.value !== "profiles"
-                  ? music?.albums.map((album) => (
-                      <ResourceItem
-                        key={album.id}
-                        resource={{
-                          parentId: String(album.artist?.id),
-                          resourceId: String(album.id),
-                          category: "ALBUM" as const,
-                        }}
-                        onPress={() => {
-                          // addRecent({
-                          // 	id: String(album.id),
-                          // 	type: "ALBUM",
-                          // 	data: album,
-                          // });
-                        }}
-                        imageWidthAndHeight={80}
-                        showType
-                      />
-                    ))
-                  : null}
-                {tab.value !== "profiles"
-                  ? music?.artists.map((artist) => (
-                      <ArtistItem
-                        key={artist.id}
-                        artistId={String(artist.id)}
-                        initialArtist={artist}
-                        onPress={() => {
-                          // addRecent({
-                          // 	id: String(artist.id),
-                          // 	type: "ARTIST",
-                          // 	data: artist,
-                          // });
-                        }}
-                        imageWidthAndHeight={80}
-                        showType
-                      />
-                    ))
-                  : null}
-                {tab.value === "profiles" || tab.value === "all"
-                  ? profiles?.items.map((profile, index) => (
-                      <ProfileItem
-                        profile={profile}
-                        key={index}
-                        size={80}
-                        onPress={() => {
-                          // addRecent({
-                          // 	id: profile.userId,
-                          // 	type: "PROFILE",
-                          // 	data: profile,
-                          // });
-                        }}
-                        showType={tab.value === "all"}
-                        isUser
-                      />
-                    ))
-                  : null}
-              </>
-            )}
-          </View>
-        </WebWrapper>
-      </KeyboardAvoidingScrollView>
-    </SafeAreaView>
-  );
+	return (
+		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
+			<Stack.Screen
+				options={{
+					headerShown: Platform.OS === "web",
+				}}
+			/>
+			<WebWrapper>
+				<View className="px-4 gap-2 sm:mt-4">
+					<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
+						<Search size={20} className="mx-4 text-foreground" />
+						<TextInput
+							id="name"
+							autoComplete="off"
+							placeholder="Search"
+							value={params.query}
+							cursorColor={"#ffb703"}
+							style={{
+								paddingTop: 0,
+								paddingBottom: Platform.OS === "ios" ? 4 : 0,
+								textAlignVertical: "center",
+							}}
+							autoCorrect={false}
+							autoFocus
+							className="flex-1 h-full text-xl text-foreground outline-none p-0"
+							onChangeText={(text) => {
+								router.setParams({ query: text });
+							}}
+						/>
+					</View>
+					<Tabs
+						value={tab.value}
+						onValueChange={(value) =>
+							value !== tab.value
+								? router.setParams({ tab: value })
+								: router.setParams({ tab: undefined })
+						}
+					>
+						<TabsList className="flex-row">
+							{Object.entries(tabs)
+								.filter(([key]) => key !== "all")
+								.map(([key, tab]) => (
+									<TabsTrigger key={key} value={key} className="flex-1">
+										<Text>{tab.label}</Text>
+									</TabsTrigger>
+								))}
+						</TabsList>
+					</Tabs>
+				</View>
+			</WebWrapper>
+			<KeyboardAvoidingScrollView>
+				<WebWrapper>
+					<View className="p-4 gap-2">
+						{isLoading || isLoadingProfiles ? (
+							<View className="flex items-center justify-center pt-40">
+								<ActivityIndicator size="large" color="#ff8500" />
+							</View>
+						) : (
+							<>
+								{tab.value !== "profiles"
+									? music?.songs.map((song) => (
+											<ResourceItem
+												key={song.id}
+												resource={{
+													parentId: String(song.album.id),
+													resourceId: String(song.id),
+													category: "SONG" as const,
+												}}
+												onPress={() => {
+													// addRecent({
+													// 	id: String(song.id),
+													// 	type: "SONG",
+													// 	data: song,
+													// });
+												}}
+												imageWidthAndHeight={80}
+												showType
+											/>
+									  ))
+									: null}
+								{tab.value !== "profiles"
+									? music?.albums.map((album) => (
+											<ResourceItem
+												key={album.id}
+												resource={{
+													parentId: String(album.artist?.id),
+													resourceId: String(album.id),
+													category: "ALBUM" as const,
+												}}
+												onPress={() => {
+													// addRecent({
+													// 	id: String(album.id),
+													// 	type: "ALBUM",
+													// 	data: album,
+													// });
+												}}
+												imageWidthAndHeight={80}
+												showType
+											/>
+									  ))
+									: null}
+								{tab.value !== "profiles"
+									? music?.artists.map((artist) => (
+											<ArtistItem
+												key={artist.id}
+												artistId={String(artist.id)}
+												initialArtist={artist}
+												onPress={() => {
+													// addRecent({
+													// 	id: String(artist.id),
+													// 	type: "ARTIST",
+													// 	data: artist,
+													// });
+												}}
+												imageWidthAndHeight={80}
+												showType
+											/>
+									  ))
+									: null}
+								{tab.value === "profiles" || tab.value === "all"
+									? profiles?.items.map((profile, index) => (
+											<ProfileItem
+												profile={profile}
+												key={index}
+												size={80}
+												onPress={() => {
+													// addRecent({
+													// 	id: profile.userId,
+													// 	type: "PROFILE",
+													// 	data: profile,
+													// });
+												}}
+												showType={tab.value === "all"}
+												isUser
+											/>
+									  ))
+									: null}
+							</>
+						)}
+					</View>
+				</WebWrapper>
+			</KeyboardAvoidingScrollView>
+		</SafeAreaView>
+	);
 }
