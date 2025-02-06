@@ -43,9 +43,10 @@ export { type RouterInputs, type RouterOutputs } from "@recordscratch/api";
         url: `${env.SITE_URL}/trpc`,
         async headers() {
           const headers = new Map<string, string>();
-          console.log("sessionId", sessionId);
           headers.set("x-trpc-source", "expo-react");
-          headers.set("Authorization", `${sessionId}`);
+          if (sessionId) {
+            headers.set("Authorization", `${sessionId}`);
+          }
           return Object.fromEntries(headers);
         },
         fetch(url, options) {

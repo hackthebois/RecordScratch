@@ -1,4 +1,4 @@
-import { comments } from "@recordscratch/db";
+import { commentsLikes, comments } from "@recordscratch/db";
 import {
   CreateCommentSchema,
   DeleteCommentSchema,
@@ -95,7 +95,6 @@ export const commentsRouter = router({
       await db.insert(comments).values({ ...notification, userId, id });
       await createCommentNotification(db, id);
     }),
-
   delete: protectedProcedure
     .input(DeleteCommentSchema)
     .mutation(async ({ ctx: { db, userId }, input: { id } }) => {
@@ -103,4 +102,48 @@ export const commentsRouter = router({
         .delete(comments)
         .where(and(eq(comments.id, id), eq(comments.userId, userId)));
     }),
+  likes: {
+    getLikes: publicProcedure
+      .input(z.object({ commentId: z.string() }))
+      .query(async ({ ctx: { db }, input: { commentId } }) => {
+        const countList = await db
+          .select({
+            count: count(),
+          })
+          .from(commentsLikes)
+          .where(eq(commentsLikes.commentId, commentId));
+        return countList[0].count;
+      }),
+    get: protectedProcedure
+      .input(z.object({ commentId: z.string() }))
+      .query(async ({ ctx: { db, userId }, input: { commentId } }) => {
+        const like = await db.query.commentsLikes.findFirst({
+          where: and(
+            eq(commentsLikes.commentId, commentId),
+            eq(commentsLikes.authorId, userId),
+          ),
+        });
+        return like ? like : null;
+      }),
+    like: protectedProcedure
+      .input(z.object({ commentId: z.string() }))
+      .mutation(async ({ ctx: { db, userId }, input: { commentId } }) => {
+        await db.insert(commentsLikes).values({
+          commentId,
+          authorId: userId,
+        });
+      }),
+    unlike: protectedProcedure
+      .input(z.object({ commentId: z.string() }))
+      .mutation(async ({ ctx: { db, userId }, input: { commentId } }) => {
+        await db
+          .delete(commentsLikes)
+          .where(
+            and(
+              eq(commentsLikes.commentId, commentId),
+              eq(commentsLikes.authorId, userId),
+            ),
+          );
+      }),
+  },
 });
