@@ -116,12 +116,11 @@ export const createAuthStore = () =>
 			}
 			// Delete user
 			const res = await fetch(`${env.SITE_URL}/api/auth/delete`, {
+				method: "DELETE",
 				credentials: "include",
 				headers: { Authorization: sessionId },
 			});
-			const response = await res.json();
-			console.log("RES: ", response);
-			return response;
+			return await res.json();
 		},
 	}));
 

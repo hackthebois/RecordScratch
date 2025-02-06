@@ -3,7 +3,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { Text } from "@/components/ui/text";
 import { getImageUrl } from "@/lib/image";
 import { ListsType } from "@recordscratch/types";
-import { Link } from "expo-router";
+import { Link, RelativePathString } from "expo-router";
 import { View } from "react-native";
 
 const ListsItem = ({
@@ -32,7 +32,7 @@ const ListsItem = ({
 		</View>
 	);
 
-	const link = `/lists/${String(listsItem.id)}`;
+	const link = `/lists/${String(listsItem.id)}` as RelativePathString;
 
 	return (
 		<View
@@ -41,7 +41,7 @@ const ListsItem = ({
 				width: size,
 			}}
 		>
-			<Link href={link} className="flex w-full cursor-pointer flex-col">
+			<Link href={link} className="flex w-full flex-col">
 				{ListItemContent}
 			</Link>
 

@@ -17,105 +17,102 @@ import { Platform, Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SongPage = () => {
-  const { albumId, songId } = useLocalSearchParams<{
-    albumId: string;
-    songId: string;
-  }>();
+	const { albumId, songId } = useLocalSearchParams<{
+		albumId: string;
+		songId: string;
+	}>();
 
-  const [total] = api.ratings.count.useSuspenseQuery({
-    resourceId: songId,
-    category: "SONG",
-  });
+	const [total] = api.ratings.count.useSuspenseQuery({
+		resourceId: songId,
+		category: "SONG",
+	});
 
-  const { data: album } = useSuspenseQuery(
-    getQueryOptions({
-      route: "/album/{id}",
-      input: { id: albumId! },
-    }),
-  );
+	const { data: album } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/album/{id}",
+			input: { id: albumId! },
+		})
+	);
 
-  const { data: song } = useSuspenseQuery(
-    getQueryOptions({
-      route: "/track/{id}",
-      input: { id: songId! },
-    }),
-  );
+	const { data: song } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/track/{id}",
+			input: { id: songId! },
+		})
+	);
 
-  if (!album || !song) return <NotFoundScreen />;
+	if (!album || !song) return <NotFoundScreen />;
 
-  const resource: Resource = {
-    parentId: String(albumId),
-    resourceId: String(songId),
-    category: "SONG",
-  };
+	const resource: Resource = {
+		parentId: String(albumId),
+		resourceId: String(songId),
+		category: "SONG",
+	};
 
-  const options =
-    Platform.OS !== "web"
-      ? {
-          headerRight: () => (
-            <Link href={`/albums/${album.id}`} asChild>
-              <Button variant="secondary" size={"sm"}>
-                <Text>Go to album</Text>
-              </Button>
-            </Link>
-          ),
-        }
-      : {};
+	const options =
+		Platform.OS !== "web"
+			? {
+					headerRight: () => (
+						<Link href={`/albums/${album.id}`} asChild>
+							<Button variant="secondary" size={"sm"}>
+								<Text>Go to album</Text>
+							</Button>
+						</Link>
+					),
+			  }
+			: {};
 
-  return (
-    <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
-      <View className="flex flex-1">
-        <Stack.Screen options={options} />
-        <ScrollView>
-          <WebWrapper>
-            <Metadata
-              title={song.title}
-              cover={album.cover_big}
-              type="SONG"
-              tags={[
-                album.release_date,
-                song.explicit_lyrics ? "Explicit" : undefined,
-                formatDuration(song.duration),
-              ]}
-            >
-              <View className="flex-row gap-4 my-4 items-center justify-center sm:justify-start">
-                <RatingInfo resource={resource} />
-                <RateButton
-                  imageUrl={album.cover_big}
-                  resource={resource}
-                  name={song.title}
-                />
-                <AddToListButton
-                  resourceId={String(song.id)}
-                  parentId={String(song.album.id)}
-                  category="SONG"
-                />
-              </View>
-              <View className="flex-row w-full">
-                <Link href={`/albums/${album.id}`} asChild>
-                  <Button
-                    variant="secondary"
-                    size={"sm"}
-                    className="hidden sm:flex"
-                  >
-                    <Text>Go to album</Text>
-                  </Button>
-                </Link>
-                <Link
-                  href={`/albums/${album.id}/songs/${song.id}/reviews`}
-                  asChild
-                >
-                  <Pressable className="flex-1 sm:hidden">
-                    <StatBlock title="Ratings" description={String(total)} />
-                  </Pressable>
-                </Link>
-              </View>
-            </Metadata>
-          </WebWrapper>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
-  );
+	return (
+		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
+			<View className="flex flex-1">
+				<Stack.Screen options={options} />
+				<ScrollView>
+					<WebWrapper>
+						<Metadata
+							title={song.title}
+							cover={album.cover_big}
+							type="SONG"
+							tags={[
+								album.release_date,
+								song.explicit_lyrics ? "Explicit" : undefined,
+								formatDuration(song.duration),
+							]}
+						>
+							<View className="flex-row gap-4 my-4 items-center justify-center sm:justify-start">
+								<RatingInfo resource={resource} />
+								<RateButton
+									imageUrl={album.cover_big}
+									resource={resource}
+									name={song.title}
+								/>
+								<AddToListButton
+									resourceId={String(song.id)}
+									parentId={String(song.album.id)}
+									category="SONG"
+								/>
+								<Link href={`/albums/${album.id}/songs/${song.id}/reviews`} asChild>
+									<Pressable className="sm:w-1/3">
+										<StatBlock title="Ratings" description={String(total)} />
+									</Pressable>
+								</Link>
+							</View>
+							<View className="flex-row w-full">
+								<Link href={`/albums/${album.id}`} asChild>
+									<Button
+										variant="secondary"
+										size={"sm"}
+										className="hidden sm:flex"
+									>
+										<Text>Go to album</Text>
+									</Button>
+								</Link>
+							</View>
+						</Metadata>
+					</WebWrapper>
+				</ScrollView>
+			</View>
+		</SafeAreaView>
+	);
 };
 
 export default SongPage;

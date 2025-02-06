@@ -47,7 +47,7 @@ const SlideWrapper = ({
 
 const onInvalid = (errors: unknown) => console.error(errors);
 
-function Onboard() {
+const OnboardPage = () => {
 	const utils = api.useUtils();
 	const [page, setPage] = useState(0);
 	const [loading, setLoading] = useState(false);
@@ -367,6 +367,6 @@ function Onboard() {
 			</KeyboardAvoidingScrollView>
 		</SafeAreaView>
 	);
-}
+};
 
-export default Onboard;
+export default OnboardPage;
