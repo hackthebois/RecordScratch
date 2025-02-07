@@ -6,7 +6,7 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { View } from "react-native";
 
-const tabs = ["recent", "popular", "following"];
+const tabs = ["recent", "trending", "following"];
 
 const FeedPage = () => {
 	const router = useRouter();
@@ -35,8 +35,8 @@ const FeedPage = () => {
 							<TabsTrigger value="recent" className="flex-1">
 								<Text>Recent</Text>
 							</TabsTrigger>
-							<TabsTrigger value="popular" className="flex-1">
-								<Text>Popular</Text>
+							<TabsTrigger value="trending" className="flex-1">
+								<Text>Trending</Text>
 							</TabsTrigger>
 							<TabsTrigger value="following" className="flex-1">
 								<Text>Following</Text>
@@ -49,7 +49,7 @@ const FeedPage = () => {
 				limit={20}
 				filters={{
 					following: tab === "following",
-					popular: tab === "popular",
+					trending: tab === "trending",
 					ratingType: "REVIEW",
 				}}
 				emptyText={

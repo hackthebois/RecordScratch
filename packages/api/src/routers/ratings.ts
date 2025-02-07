@@ -190,7 +190,7 @@ export const ratingsRouter = router({
 						resourceId: ResourceSchema.shape.resourceId.optional(),
 						category: ResourceSchema.shape.category.optional(),
 						rating: z.number().optional(),
-						popular: z.boolean().optional(),
+						trending: z.boolean().optional(),
 						following: z.boolean().optional(),
 						ratingType: z.enum(["REVIEW", "RATING"]).optional(),
 					})
@@ -264,7 +264,11 @@ export const ratingsRouter = router({
 					])
 					.limit(limit + 1)
 					.offset(cursor)
-					.orderBy((t) => [desc(t.sortValue)]);
+					.orderBy((t) => [
+						filters?.trending
+							? desc(t.sortValue)
+							: desc(t.ratings.createdAt),
+					]);
 				const items = result.map((item) => ({
 					...item.ratings,
 					profile: item.profile,
