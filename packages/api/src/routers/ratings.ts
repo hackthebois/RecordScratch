@@ -223,20 +223,19 @@ export const ratingsRouter = router({
 					.select({
 						ratings: ratings,
 						profile: profile,
-						likesCount: db.$count(
+						sortValue: sql`${db.$count(
 							likes,
 							and(
 								eq(likes.authorId, ratings.userId),
 								eq(likes.resourceId, ratings.resourceId),
 							),
-						),
-						commentsCount: db.$count(
+						)} + ${db.$count(
 							comments,
 							and(
 								eq(comments.authorId, ratings.userId),
 								eq(comments.resourceId, ratings.resourceId),
 							),
-						),
+						)} + EXTRACT(EPOCH FROM ${ratings.createdAt}) / 500000`,
 					})
 					.from(ratings)
 					.innerJoin(profile, eq(ratings.userId, profile.userId))
@@ -258,11 +257,6 @@ export const ratingsRouter = router({
 							ratingTypeFilter,
 						),
 					)
-					.having((t) =>
-						filters?.popular
-							? sql`${t.likesCount} + ${t.commentsCount} >= 3`
-							: undefined,
-					)
 					.groupBy((t) => [
 						t.ratings.userId,
 						t.ratings.resourceId,
@@ -270,8 +264,7 @@ export const ratingsRouter = router({
 					])
 					.limit(limit + 1)
 					.offset(cursor)
-					.orderBy((t) => [desc(t.ratings.updatedAt)]);
-				console.log(result);
+					.orderBy((t) => [desc(t.sortValue)]);
 				const items = result.map((item) => ({
 					...item.ratings,
 					profile: item.profile,
