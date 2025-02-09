@@ -91,7 +91,7 @@ const SongPage = () => {
 									category="SONG"
 								/>
 								<Link href={`/albums/${album.id}/songs/${song.id}/reviews`} asChild>
-									<Pressable className="sm:w-1/3">
+									<Pressable>
 										<StatBlock title="Ratings" description={String(total)} />
 									</Pressable>
 								</Link>

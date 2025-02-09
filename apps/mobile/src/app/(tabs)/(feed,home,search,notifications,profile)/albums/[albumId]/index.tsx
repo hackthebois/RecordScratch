@@ -90,12 +90,12 @@ export default function AlbumLayout() {
 									parentId={String(album.artist?.id)}
 									category={"ALBUM"}
 								/>
-								<Link href={`/albums/${album.id}/reviews`} asChild>
-									<Pressable className="sm: w-1/3">
+							</View>
+							<Link href={`/albums/${album.id}/reviews`} asChild>
+									<Pressable>
 										<StatBlock title="Ratings" description={String(total)} />
 									</Pressable>
-								</Link>
-							</View>
+							</Link>
 						</Metadata>
 						<SongTable songs={songs.data!.map((song) => ({ ...song, album }))} />
 					</WebWrapper>
