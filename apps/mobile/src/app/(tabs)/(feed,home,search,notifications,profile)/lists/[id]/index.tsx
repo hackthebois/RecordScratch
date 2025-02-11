@@ -36,9 +36,14 @@ const ListResources = ({
 	return (
 		<>
 			{items?.map((item, index) => (
-				<View key={item.resourceId} className="border-b border-muted rounded-xl w-full">
-					<View className={cn("flex flex-row items-center gap-3 my-2")}>
-						<Text className="text-muted-foreground font-bold w-6 text-base ml-5">
+				<View
+					key={item.resourceId}
+					className="border-muted w-full rounded-xl border-b"
+				>
+					<View
+						className={cn("my-2 flex flex-row items-center gap-3")}
+					>
+						<Text className="text-muted-foreground ml-5 w-6 text-base font-bold">
 							{index + 1}
 						</Text>
 						{category === "ARTIST" ? (
@@ -63,7 +68,9 @@ const ListResources = ({
 						<RatingInfo
 							initialRating={{
 								resourceId: item.resourceId,
-								average: item.rating ? String(item.rating) : null,
+								average: item.rating
+									? String(item.rating)
+									: null,
 								total: 1,
 							}}
 							resource={{
@@ -110,37 +117,52 @@ const ListPage = () => {
 								}}
 								className="p-2"
 							>
-								<Settings size={22} className="text-foreground" />
+								<Settings
+									size={22}
+									className="text-foreground"
+								/>
 							</Link>
 						) : null,
-			  }
+				}
 			: {};
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
 			<WebWrapper>
-				<KeyboardAvoidingScrollView className="flex flex-col gap-6 h-full">
+				<KeyboardAvoidingScrollView className="flex h-full flex-col gap-6">
 					<Stack.Screen options={options} />
 					<Metadata
 						cover={
-							<ListImage listItems={listItems} category={list!.category} size={200} />
+							<ListImage
+								listItems={listItems}
+								category={list!.category}
+								size={200}
+							/>
 						}
 						size="sm"
 					>
-						<View className="flex flex-col items-center -mt-6">
+						<View className="-mt-6 flex flex-col items-center">
 							<Text>{list?.category} LIST</Text>
 							<View className="flex flex-row items-center gap-2">
 								<Link
 									href={{
 										pathname: "/[handle]",
 										params: {
-											handle: String(list?.profile.handle),
+											handle: String(
+												list?.profile.handle,
+											),
 										},
 									}}
 								>
 									<View className="flex flex-row items-center gap-2">
-										<UserAvatar imageUrl={getImageUrl(list!.profile)} />
-										<Text className="flex text-lg">{list!.profile.name}</Text>
+										<UserAvatar
+											imageUrl={getImageUrl(
+												list!.profile,
+											)}
+										/>
+										<Text className="flex text-lg">
+											{list!.profile.name}
+										</Text>
 									</View>
 								</Link>
 								<Text className="text-muted-foreground">
@@ -150,7 +172,7 @@ const ListPage = () => {
 						</View>
 					</Metadata>
 					{isProfile && (
-						<View className="flex flex-row my-4 justify-around">
+						<View className="my-4 flex flex-row justify-around sm:hidden">
 							<Link
 								href={{
 									pathname: "/(modals)/list/searchResource",
@@ -197,15 +219,23 @@ const ListPage = () => {
 							</Link>
 						</View>
 					)}
-					<ListResources items={listItems} category={list!.category} />
-					{listItems?.length == 0 && isProfile && (
-						<View className="flex flex-col gap-2 items-center justify-center h-56">
-							<ListPlus size={30} />
-							<Text variant="h4" className=" text-muted-foreground">
-								Make Sure to Add to Your List
-							</Text>
-						</View>
-					)}
+					<ListResources
+						items={listItems}
+						category={list!.category}
+					/>
+					{Platform.OS != "web" &&
+						listItems?.length == 0 &&
+						isProfile && (
+							<View className="flex h-56 flex-col items-center justify-center gap-2">
+								<ListPlus size={30} />
+								<Text
+									variant="h4"
+									className="text-muted-foreground"
+								>
+									Make Sure to Add to Your List
+								</Text>
+							</View>
+						)}
 				</KeyboardAvoidingScrollView>
 			</WebWrapper>
 		</SafeAreaView>

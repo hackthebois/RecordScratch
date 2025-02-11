@@ -31,14 +31,14 @@ const SongPage = () => {
 		getQueryOptions({
 			route: "/album/{id}",
 			input: { id: albumId! },
-		})
+		}),
 	);
 
 	const { data: song } = useSuspenseQuery(
 		getQueryOptions({
 			route: "/track/{id}",
 			input: { id: songId! },
-		})
+		}),
 	);
 
 	if (!album || !song) return <NotFoundScreen />;
@@ -59,7 +59,7 @@ const SongPage = () => {
 							</Button>
 						</Link>
 					),
-			  }
+				}
 			: {};
 
 	return (
@@ -78,7 +78,7 @@ const SongPage = () => {
 								formatDuration(song.duration),
 							]}
 						>
-							<View className="flex-row gap-4 my-4 items-center justify-center sm:justify-start">
+							<View className="my-4 flex-row items-center justify-center gap-4 sm:justify-start">
 								<RatingInfo resource={resource} />
 								<RateButton
 									imageUrl={album.cover_big}
@@ -90,13 +90,6 @@ const SongPage = () => {
 									parentId={String(song.album.id)}
 									category="SONG"
 								/>
-								<Link href={`/albums/${album.id}/songs/${song.id}/reviews`} asChild>
-									<Pressable>
-										<StatBlock title="Ratings" description={String(total)} />
-									</Pressable>
-								</Link>
-							</View>
-							<View className="flex-row w-full">
 								<Link href={`/albums/${album.id}`} asChild>
 									<Button
 										variant="secondary"
@@ -107,6 +100,17 @@ const SongPage = () => {
 									</Button>
 								</Link>
 							</View>
+							<Link
+								href={`/albums/${album.id}/songs/${song.id}/reviews`}
+								asChild
+							>
+								<Pressable>
+									<StatBlock
+										title="Ratings"
+										description={String(total)}
+									/>
+								</Pressable>
+							</Link>
 						</Metadata>
 					</WebWrapper>
 				</ScrollView>

@@ -2,7 +2,12 @@ import { Text } from "@/components/ui/text";
 import { cn } from "@recordscratch/lib";
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
-import Animated, { Easing, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
+import Animated, {
+	Easing,
+	useSharedValue,
+	withDelay,
+	withTiming,
+} from "react-native-reanimated";
 
 const AnimatedBar = ({
 	status,
@@ -20,7 +25,7 @@ const AnimatedBar = ({
 			withTiming(height, {
 				duration: 400,
 				easing: Easing.out(Easing.cubic),
-			})
+			}),
 		);
 		if (isInitialLoad) setIsInitialLoad(false);
 	}, [height]);
@@ -34,7 +39,7 @@ const AnimatedBar = ({
 				"h-full min-h-0 w-full rounded-t",
 				status === "active" && "bg-[#ff8c00]",
 				status === "normal" && "bg-[#ffb703]",
-				status === "inactive" && "bg-[#ffb703] opacity-70"
+				status === "inactive" && "bg-[#ffb703] opacity-70",
 			)}
 		/>
 	);
@@ -51,12 +56,13 @@ const DistributionChart = ({
 	onChange: (rating?: number) => void;
 	height?: number;
 }) => {
-	const maxRating = Math.max(...distribution) === 0 ? 1 : Math.max(...distribution);
+	const maxRating =
+		Math.max(...distribution) === 0 ? 1 : Math.max(...distribution);
 
 	return (
-		<View className="flex w-full flex-col">
+		<View className="flex w-full flex-col items-center">
 			<View
-				className="flex flex-row w-full gap-1"
+				className="flex w-full flex-row gap-1 sm:w-1/2"
 				style={{
 					height,
 				}}
@@ -83,12 +89,19 @@ const DistributionChart = ({
 					</TouchableOpacity>
 				))}
 			</View>
-			<View className="flex flex-row w-full gap-1 pt-2">
+			<View className="flex w-full flex-row gap-1 pt-2 sm:w-1/2">
 				{Array.from({
 					length: 10,
 				}).map((_, index) => (
-					<View className="flex flex-1 flex-row items-center justify-center" key={index}>
-						<Text className={cn(value === index + 1 && "text-[#ff8c00]")}>
+					<View
+						className="flex flex-1 flex-row items-center justify-center"
+						key={index}
+					>
+						<Text
+							className={cn(
+								value === index + 1 && "text-[#ff8c00]",
+							)}
+						>
 							{index + 1}
 						</Text>
 					</View>

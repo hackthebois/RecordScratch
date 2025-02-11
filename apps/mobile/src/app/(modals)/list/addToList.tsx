@@ -39,7 +39,7 @@ const AddToListModal = () => {
 	const dimensions = useWindowDimensions();
 
 	return (
-		<View>
+		<View className="flex flex-1 pb-20">
 			<ListOfList
 				lists={lists}
 				orientation="vertical"
@@ -51,7 +51,7 @@ const AddToListModal = () => {
 					});
 				}}
 				showLink={false}
-				size={160}
+				size={dimensions.width / 3.25}
 				LastItemComponent={
 					<>
 						<Link
@@ -63,7 +63,7 @@ const AddToListModal = () => {
 						>
 							<Button
 								variant="outline"
-								className=" flex items-center justify-center flex-col gap-1 rounded-2xl"
+								className="flex flex-col items-center justify-center gap-1 rounded-2xl"
 								style={{
 									width: dimensions.width / 3.25,
 									height: dimensions.width / 3.25,
@@ -72,12 +72,17 @@ const AddToListModal = () => {
 								}}
 							>
 								<SquarePlus className="mt-6" />
-								<Text className=" text-center">Create a List</Text>
+								<Text className="text-center">
+									Create a List
+								</Text>
 							</Button>
 						</Link>
 						{!lists?.length && (
-							<View className="items-center justify-center mt-40 w-full">
-								<Text variant="h3" className="text-muted-foreground capitalize">
+							<View className="mt-40 w-full items-center justify-center">
+								<Text
+									variant="h3"
+									className="text-muted-foreground capitalize"
+								>
 									Make sure to create a list first
 								</Text>
 							</View>
