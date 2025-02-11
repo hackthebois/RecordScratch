@@ -11,7 +11,7 @@ import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { getQueryOptions } from "@/lib/deezer";
 import { ChevronRight } from "@/lib/icons/IconsLoader";
-import { Editorial, formatDuration } from "@recordscratch/lib";
+import { formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -55,13 +55,6 @@ export default function AlbumLayout() {
 				id: String(album.artist!.id),
 				limit: 20,
 			},
-		}),
-	);
-
-	const { data: genre } = useSuspenseQuery(
-		getQueryOptions({
-			route: "/editorial/{id}",
-			input: { id: String(album.genre_id) },
 		}),
 	);
 

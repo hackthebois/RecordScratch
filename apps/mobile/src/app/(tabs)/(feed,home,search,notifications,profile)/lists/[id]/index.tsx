@@ -33,6 +33,7 @@ const ListResources = ({
 	items: ListItem[] | undefined;
 	category: Category;
 }) => {
+	const size = Platform.OS === "web" ? 100 : 60;
 	return (
 		<>
 			{items?.map((item, index) => (
@@ -41,45 +42,58 @@ const ListResources = ({
 					className="border-muted w-full rounded-xl border-b"
 				>
 					<View
-						className={cn("my-2 flex flex-row items-center gap-3")}
+						className={cn(
+							"my-2 flex flex-row items-center justify-between gap-3",
+						)}
 					>
-						<Text className="text-muted-foreground ml-5 w-6 text-base font-bold">
-							{index + 1}
-						</Text>
-						{category === "ARTIST" ? (
-							<ArtistItem
-								artistId={item.resourceId}
-								imageWidthAndHeight={60}
-								className={cn(!!item.rating ? "w-72" : "w-96")}
-							/>
-						) : (
-							<ResourceItem
+						<View className="flex flex-row items-center">
+							<Text className="text-muted-foreground ml-5 w-6 text-base font-bold">
+								{index + 1}
+							</Text>
+							{category === "ARTIST" ? (
+								<ArtistItem
+									artistId={item.resourceId}
+									imageWidthAndHeight={size}
+									textCss="font-medium"
+									className={cn(
+										!!item.rating ? "w-72" : "w-96",
+										"sm:w-full",
+									)}
+								/>
+							) : (
+								<ResourceItem
+									resource={{
+										parentId: item.parentId!,
+										resourceId: item.resourceId,
+										category: category,
+									}}
+									imageWidthAndHeight={size}
+									titleCss="font-medium"
+									className={cn(
+										!!item.rating ? "w-72" : "w-96",
+										"sm:w-full",
+									)}
+									showArtist={false}
+								/>
+							)}
+						</View>
+						<View className="pr-4">
+							<RatingInfo
+								initialRating={{
+									resourceId: item.resourceId,
+									average: item.rating
+										? String(item.rating)
+										: null,
+									total: 1,
+								}}
 								resource={{
 									parentId: item.parentId!,
 									resourceId: item.resourceId,
 									category: category,
 								}}
-								imageWidthAndHeight={60}
-								titleCss="font-medium"
-								showArtist={false}
-								className={cn(!!item.rating ? "w-72" : "w-96")}
+								size="sm"
 							/>
-						)}
-						<RatingInfo
-							initialRating={{
-								resourceId: item.resourceId,
-								average: item.rating
-									? String(item.rating)
-									: null,
-								total: 1,
-							}}
-							resource={{
-								parentId: item.parentId!,
-								resourceId: item.resourceId,
-								category: category,
-							}}
-							size="sm"
-						/>
+						</View>
 					</View>
 				</View>
 			))}
@@ -128,8 +142,8 @@ const ListPage = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-			<WebWrapper>
-				<KeyboardAvoidingScrollView className="flex h-full flex-col gap-6">
+			<ScrollView className="flex h-full flex-col gap-6">
+				<WebWrapper>
 					<Stack.Screen options={options} />
 					<Metadata
 						cover={
@@ -171,8 +185,8 @@ const ListPage = () => {
 							</View>
 						</View>
 					</Metadata>
-					{isProfile && (
-						<View className="my-4 flex flex-row justify-around sm:hidden">
+					{isProfile && Platform.OS != "web" && (
+						<View className="my-4 flex flex-row justify-around">
 							<Link
 								href={{
 									pathname: "/(modals)/list/searchResource",
@@ -236,8 +250,8 @@ const ListPage = () => {
 								</Text>
 							</View>
 						)}
-				</KeyboardAvoidingScrollView>
-			</WebWrapper>
+				</WebWrapper>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };

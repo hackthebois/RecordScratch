@@ -144,13 +144,7 @@ export const ResourceItem = ({
 				)}
 				style={style}
 			>
-				<View
-					className="w-full overflow-hidden rounded-xl"
-					style={{
-						width: imageWidthAndHeight,
-						height: imageWidthAndHeight,
-					}}
-				>
+				<View className="overflow-hidden rounded-xl">
 					{album!.cover_big ? (
 						<Image
 							source={album!.cover_big}
@@ -160,7 +154,7 @@ export const ResourceItem = ({
 								borderRadius: 12,
 							}}
 							className={cn(
-								"aspect-square h-auto w-auto overflow-hidden rounded-xl transition-all hover:scale-105",
+								"aspect-square overflow-hidden rounded-xl transition-all hover:scale-105",
 								imageCss,
 							)}
 						/>
@@ -170,19 +164,13 @@ export const ResourceItem = ({
 				</View>
 				<View
 					className={cn(
-						"flex flex-col gap-2 overflow-hidden",
+						"flex flex-col gap-2",
 						direction === "horizontal" ? "flex-1" : "",
 					)}
-					style={{
-						maxWidth:
-							direction === "horizontal"
-								? "100%"
-								: imageWidthAndHeight,
-					}}
 				>
 					<Text
 						className={cn(
-							"mr-3 text-ellipsis font-semibold",
+							"mr-3 w-full text-ellipsis font-semibold",
 							titleCss,
 						)}
 						numberOfLines={direction === "horizontal" ? 2 : 1}

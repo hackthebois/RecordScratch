@@ -67,10 +67,11 @@ const Metadata = ({
 								genres
 									.filter((genre) => Boolean(genre))
 									.map((genre) => (
-										<Link href={`/genre/${genre.id}`}>
-											<Pill key={genre.id}>
-												{genre.name}
-											</Pill>
+										<Link
+											href={`/genre/${genre.id}`}
+											key={genre.id}
+										>
+											<Pill>{genre.name}</Pill>
 										</Link>
 									))}
 						</View>

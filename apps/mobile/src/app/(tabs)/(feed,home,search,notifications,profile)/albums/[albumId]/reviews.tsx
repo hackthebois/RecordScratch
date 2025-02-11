@@ -72,7 +72,11 @@ const Reviews = () => {
 
 	return (
 		<View className="flex-1">
-			<Stack.Screen options={{ title: album.title + " Ratings" }} />
+			<Stack.Screen
+				options={{
+					title: album.title.substring(0, 20) + "... Ratings",
+				}}
+			/>
 			{Platform.OS === "web" && (
 				<Text variant="h3" className="mb-4 text-center">
 					{album.title + " Ratings"}

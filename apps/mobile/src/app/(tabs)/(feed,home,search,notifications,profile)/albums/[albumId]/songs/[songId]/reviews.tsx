@@ -73,7 +73,7 @@ const Reviews = () => {
 		<>
 			<Stack.Screen
 				options={{
-					title: song.title + " Ratings",
+					title: song.title.substring(0, 20) + "... Ratings",
 				}}
 			/>
 			{Platform.OS === "web" && (
