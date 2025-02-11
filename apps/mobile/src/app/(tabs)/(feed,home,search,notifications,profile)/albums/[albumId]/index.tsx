@@ -1,5 +1,6 @@
 import NotFoundScreen from "@/app/+not-found";
 import StatBlock from "@/components/CoreComponents/StatBlock";
+import AlbumItem from "@/components/Item/AlbumItem";
 import AddToListButton from "@/components/List/AddToListButton";
 import Metadata from "@/components/Metadata";
 import RateButton from "@/components/Rating/RateButton";
@@ -9,12 +10,14 @@ import { WebWrapper } from "@/components/WebWrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { getQueryOptions } from "@/lib/deezer";
-import { formatDuration } from "@recordscratch/lib";
+import { ChevronRight } from "@/lib/icons/IconsLoader";
+import { Editorial, formatDuration } from "@recordscratch/lib";
 import { Resource } from "@recordscratch/types";
+import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AlbumLayout() {
@@ -30,7 +33,7 @@ export default function AlbumLayout() {
 		getQueryOptions({
 			route: "/album/{id}",
 			input: { id },
-		})
+		}),
 	);
 
 	if (!album) return <NotFoundScreen />;
@@ -44,6 +47,23 @@ export default function AlbumLayout() {
 			data: album?.tracks?.data ?? [],
 		},
 	});
+
+	const { data: albums } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/artist/{id}/albums",
+			input: {
+				id: String(album.artist!.id),
+				limit: 20,
+			},
+		}),
+	);
+
+	const { data: genre } = useSuspenseQuery(
+		getQueryOptions({
+			route: "/editorial/{id}",
+			input: { id: String(album.genre_id) },
+		}),
+	);
 
 	const resource: Resource = {
 		parentId: String(album.artist?.id),
@@ -63,14 +83,17 @@ export default function AlbumLayout() {
 							cover={album.cover_big}
 							tags={[
 								album.release_date,
-								album.duration ? `${formatDuration(album.duration)}` : undefined,
-								...(album.genres?.data.map((genre: { name: any }) => genre.name) ??
-									[]),
+								album.duration
+									? `${formatDuration(album.duration)}`
+									: undefined,
 							]}
+							genres={album.genres?.data ?? []}
 						>
 							<Pressable
 								onPress={() => {
-									router.navigate(`/artists/${album.artist?.id}`);
+									router.navigate(
+										`/artists/${album.artist?.id}`,
+									);
 								}}
 								style={{ maxWidth: "100%" }}
 							>
@@ -78,7 +101,7 @@ export default function AlbumLayout() {
 									{album.artist?.name}
 								</Text>
 							</Pressable>
-							<View className="flex-row gap-4 my-4 items-center justify-center sm:justify-start">
+							<View className="my-4 flex-row items-center justify-center gap-4 sm:justify-start">
 								<RatingInfo resource={resource} size="lg" />
 								<RateButton
 									imageUrl={album.cover_big}
@@ -92,12 +115,57 @@ export default function AlbumLayout() {
 								/>
 							</View>
 							<Link href={`/albums/${album.id}/reviews`} asChild>
-									<Pressable>
-										<StatBlock title="Ratings" description={String(total)} />
-									</Pressable>
+								<Pressable>
+									<StatBlock
+										title="Ratings"
+										description={String(total)}
+									/>
+								</Pressable>
 							</Link>
 						</Metadata>
-						<SongTable songs={songs.data!.map((song) => ({ ...song, album }))} />
+						<SongTable
+							songs={songs.data!.map((song) => ({
+								...song,
+								album,
+							}))}
+						/>
+						<View className="px-2">
+							<Link
+								href={{
+									pathname: "/artists/[id]/discography",
+									params: { id: String(album.artist?.id) },
+								}}
+							>
+								<View className="flex w-full flex-row items-center pb-4 pt-6">
+									<Text variant="h4">
+										More From {album.artist?.name}
+									</Text>
+									<ChevronRight
+										size={30}
+										className="color-muted-foreground"
+									/>
+								</View>
+							</Link>
+							<FlashList
+								data={albums.data}
+								renderItem={({ item }) =>
+									item.id != album.id ? (
+										<AlbumItem
+											resourceId={String(item.id)}
+										/>
+									) : null
+								}
+								horizontal
+								showsHorizontalScrollIndicator={
+									Platform.OS === "web"
+								}
+								estimatedItemSize={160}
+								contentContainerClassName="h-60"
+								ItemSeparatorComponent={() => (
+									<View className="w-4" />
+								)}
+							/>
+						</View>
 					</WebWrapper>
 				</ScrollView>
 			</View>

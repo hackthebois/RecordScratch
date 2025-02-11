@@ -7,9 +7,10 @@ import SongTable from "@/components/SongTable";
 import { WebWrapper } from "@/components/WebWrapper";
 import { Text } from "@/components/ui/text";
 import { getQueryOptions } from "@/lib/deezer";
+import { ChevronRight } from "@/lib/icons/IconsLoader";
 import { FlashList } from "@shopify/flash-list";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -30,6 +31,7 @@ const ArtistPage = () => {
 			route: "/artist/{id}/top",
 			input: {
 				id: artistId,
+				limit: 5,
 			},
 		}),
 	);
@@ -38,7 +40,7 @@ const ArtistPage = () => {
 			route: "/artist/{id}/albums",
 			input: {
 				id: artistId,
-				limit: 100,
+				limit: 20,
 			},
 		}),
 	);
@@ -47,6 +49,7 @@ const ArtistPage = () => {
 			route: "/artist/{id}/related",
 			input: {
 				id: artistId,
+				limit: 20,
 			},
 		}),
 	);
@@ -79,14 +82,38 @@ const ArtistPage = () => {
 							</Metadata>
 						</View>
 						<View className="px-4">
-							<Text variant="h2" className="pb-4 pt-6">
-								Top Songs
-							</Text>
-							<SongTable songs={top.data} />
 							<View className="pb-4">
-								<Text variant="h2" className="pb-4 pt-6">
-									Discography
-								</Text>
+								<Link
+									href={{
+										pathname: "/artists/[id]/top",
+										params: { id: artistId },
+									}}
+								>
+									<View className="flex w-full flex-row items-center pb-4 pt-6">
+										<Text variant="h2">Top Songs</Text>
+										<ChevronRight
+											size={30}
+											className="color-muted-foreground"
+										/>
+									</View>
+								</Link>
+								<SongTable songs={top.data} />
+							</View>
+							<View className="pb-4">
+								<Link
+									href={{
+										pathname: "/artists/[id]/discography",
+										params: { id: artistId },
+									}}
+								>
+									<View className="flex w-full flex-row items-center pb-4 pt-6">
+										<Text variant="h2">Discography</Text>
+										<ChevronRight
+											size={30}
+											className="color-muted-foreground"
+										/>
+									</View>
+								</Link>
 								<FlashList
 									data={albums.data}
 									renderItem={({ item }) => (
@@ -104,9 +131,22 @@ const ArtistPage = () => {
 										<View className="w-4" />
 									)}
 								/>
-								<Text variant="h2" className="pb-4 pt-6">
-									Related Artists
-								</Text>
+								<Link
+									href={{
+										pathname: "/artists/[id]/related",
+										params: { id: artistId },
+									}}
+								>
+									<View className="flex w-full flex-row items-center pb-4 pt-6">
+										<Text variant="h2">
+											Related Artists
+										</Text>
+										<ChevronRight
+											size={30}
+											className="color-muted-foreground"
+										/>
+									</View>
+								</Link>
 								<FlashList
 									data={artists.data}
 									renderItem={({ item: artist }) => (
@@ -115,13 +155,15 @@ const ArtistPage = () => {
 											initialArtist={artist}
 											direction="vertical"
 											imageWidthAndHeight={105}
+											className="max-w-32"
+											textCss="line-clamp-2"
 										/>
 									)}
 									horizontal
 									showsHorizontalScrollIndicator={
 										Platform.OS === "web"
 									}
-									contentContainerClassName="h-40"
+									contentContainerClassName="h-48"
 									ItemSeparatorComponent={() => (
 										<View className="w-4" />
 									)}

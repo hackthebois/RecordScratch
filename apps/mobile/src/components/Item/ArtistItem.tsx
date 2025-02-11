@@ -50,7 +50,7 @@ export const ArtistItem = ({
 				className={cn(
 					"flex items-center gap-4",
 					className,
-					direction === "vertical" ? "flex-col" : "flex-row"
+					direction === "vertical" ? "flex-col" : "flex-row",
 				)}
 			>
 				<View
@@ -59,7 +59,7 @@ export const ArtistItem = ({
 						height: imageWidthAndHeight,
 					}}
 				>
-					<Skeleton className="relative w-full h-full rounded-full" />
+					<Skeleton className="relative h-full w-full rounded-full" />
 				</View>
 				<View className="justify-center gap-1">
 					<Skeleton className="mb-1 h-4 w-32" />
@@ -69,7 +69,7 @@ export const ArtistItem = ({
 		);
 	}
 
-	const artistImage = artist.picture_big;
+	const artistImage = artist.picture_xl;
 
 	return (
 		<Pressable
@@ -82,20 +82,23 @@ export const ArtistItem = ({
 				className={cn(
 					"flex items-center gap-4",
 					className,
-					direction === "vertical" ? "flex-col" : "flex-row"
+					direction === "vertical" ? "flex-col" : "flex-row",
 				)}
 				style={style}
 			>
-				<View className="items-center justify-center rounded-full overflow-hidden">
+				<View className="items-center justify-center overflow-hidden rounded-full">
 					{artistImage ? (
 						<Image
 							source={artistImage}
-							className={cn("border-2", imageCss)}
+							className={cn("border-2 sm:border-0", imageCss)}
 							contentFit="cover"
-							style={{ width: imageWidthAndHeight, height: imageWidthAndHeight }}
+							style={{
+								width: imageWidthAndHeight,
+								height: imageWidthAndHeight,
+							}}
 						/>
 					) : (
-						<View className="h-full bg-muted"></View>
+						<View className="bg-muted h-full"></View>
 					)}
 				</View>
 				<View className="justify-center gap-1">
@@ -103,13 +106,17 @@ export const ArtistItem = ({
 						className={cn(
 							"flex font-semibold",
 							direction === "vertical" ? "text-center" : "",
-							textCss
+							textCss,
 						)}
 						numberOfLines={2}
 					>
 						{artist.name}
 					</Text>
-					{showType && <Text className="text-muted-foreground">{"Artist"}</Text>}
+					{showType && (
+						<Text className="text-muted-foreground">
+							{"Artist"}
+						</Text>
+					)}
 				</View>
 			</View>
 		</Pressable>
