@@ -207,7 +207,10 @@ const ListPage = () => {
 									}}
 								>
 									<Text variant="h4">Add</Text>
-									<ListPlus size={22} />
+									<ListPlus
+										className="text-foreground"
+										size={22}
+									/>
 								</Button>
 							</Link>
 							<Link
@@ -228,7 +231,10 @@ const ListPage = () => {
 									}}
 								>
 									<Text variant="h4">Edit</Text>
-									<Pencil size={18} />
+									<Pencil
+										className="text-foreground"
+										size={18}
+									/>
 								</Button>
 							</Link>
 						</View>

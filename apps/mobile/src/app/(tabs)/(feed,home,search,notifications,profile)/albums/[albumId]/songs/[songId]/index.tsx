@@ -78,39 +78,42 @@ const SongPage = () => {
 								formatDuration(song.duration),
 							]}
 						>
-							<View className="my-4 flex-row items-center justify-center gap-4 sm:justify-start">
-								<RatingInfo resource={resource} />
-								<RateButton
-									imageUrl={album.cover_big}
-									resource={resource}
-									name={song.title}
-								/>
-								<AddToListButton
-									resourceId={String(song.id)}
-									parentId={String(song.album.id)}
-									category="SONG"
-								/>
-								<Link href={`/albums/${album.id}`} asChild>
-									<Button
-										variant="secondary"
-										size={"sm"}
-										className="hidden sm:flex"
-									>
-										<Text>Go to album</Text>
-									</Button>
+							<View className="flex w-auto flex-col sm:max-w-72">
+								<View className="my-4 flex-row items-center justify-center gap-4 sm:justify-start">
+									<RatingInfo resource={resource} />
+									<RateButton
+										imageUrl={album.cover_big}
+										resource={resource}
+										name={song.title}
+									/>
+									<AddToListButton
+										resourceId={String(song.id)}
+										parentId={String(song.album.id)}
+										category="SONG"
+									/>
+									<Link href={`/albums/${album.id}`} asChild>
+										<Button
+											variant="secondary"
+											size={"sm"}
+											className="hidden sm:flex"
+										>
+											<Text>Go to album</Text>
+										</Button>
+									</Link>
+								</View>
+								<Link
+									href={`/albums/${album.id}/songs/${song.id}/reviews`}
+									asChild
+									style={{ width: "100%" }}
+								>
+									<Pressable>
+										<StatBlock
+											title="Ratings"
+											description={String(total)}
+										/>
+									</Pressable>
 								</Link>
 							</View>
-							<Link
-								href={`/albums/${album.id}/songs/${song.id}/reviews`}
-								asChild
-							>
-								<Pressable>
-									<StatBlock
-										title="Ratings"
-										description={String(total)}
-									/>
-								</Pressable>
-							</Link>
 						</Metadata>
 					</WebWrapper>
 				</ScrollView>

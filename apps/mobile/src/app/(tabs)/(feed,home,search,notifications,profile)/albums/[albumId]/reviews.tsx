@@ -74,7 +74,9 @@ const Reviews = () => {
 		<View className="flex-1">
 			<Stack.Screen
 				options={{
-					title: album.title.substring(0, 20) + "... Ratings",
+					title:
+						album.title.substring(0, 20) +
+						(album.title.length > 20 ? "... Ratings" : " Ratings"),
 				}}
 			/>
 			{Platform.OS === "web" && (
