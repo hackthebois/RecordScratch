@@ -25,7 +25,13 @@ import {
 } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Suspense, useState } from "react";
-import { Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import {
+	Platform,
+	Pressable,
+	ScrollView,
+	View,
+	useWindowDimensions,
+} from "react-native";
 
 const ListsTab = ({
 	handle,
@@ -39,18 +45,28 @@ const ListsTab = ({
 	const dimensions = useWindowDimensions();
 	const screenSize = Math.min(dimensions.width, 1024);
 	const numColumns = screenSize === 1024 ? 6 : 3;
-	const top6Width = (Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns;
+	const top6Width =
+		(Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns;
 
 	return (
 		<View className="px-2">
 			<Link href={{ pathname: `/[handle]/lists`, params: { handle } }}>
-				<View className=" w-full flex flex-row items-center p-2">
-					<Text variant="h3">{isProfile ? "My" : `${handle}'s`} Lists</Text>
-					<ChevronRight size={30} className=" color-muted-foreground" />
+				<View className="flex w-full flex-row items-center p-2">
+					<Text variant="h3">
+						{isProfile ? "My" : `${handle}'s`} Lists
+					</Text>
+					<ChevronRight
+						size={30}
+						className="color-muted-foreground"
+					/>
 				</View>
 			</Link>
 
-			<ListOfLists lists={lists} orientation="horizontal" size={top6Width} />
+			<ListOfLists
+				lists={lists}
+				orientation="horizontal"
+				size={top6Width}
+			/>
 		</View>
 	);
 };
@@ -69,11 +85,12 @@ const TopList = ({
 	const resources = list?.resources ?? [];
 	const screenSize = Math.min(dimensions.width, 1024);
 	const numColumns = screenSize === 1024 ? 6 : 3;
-	const top6Width = (Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns;
+	const top6Width =
+		(Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns;
 	const router = useRouter();
 
 	const renderAddButton = () => (
-		<View className="flex flex-col items-center justify-center w-full gap-6 pt-5">
+		<View className="flex w-full flex-col items-center justify-center gap-6 pt-5">
 			<Text variant="h4" className="text-muted-foreground capitalize">
 				Add Your Top 6 {category.toLocaleLowerCase() + "s"}
 			</Text>
@@ -82,13 +99,15 @@ const TopList = ({
 				variant="outline"
 				onPress={() => router.push(`/settings/editprofile`)}
 			>
-				<Text className="capitalize w-full text-center">Add {category.toLowerCase()}</Text>
+				<Text className="w-full text-center capitalize">
+					Add {category.toLowerCase()}
+				</Text>
 			</Button>
 		</View>
 	);
 
 	const renderResourceItem = (resource: listResourceType) => (
-		<View className="relative h-auto overflow-hidden mt-4" key={resource.resourceId}>
+		<View className="relative mt-4" key={resource.resourceId}>
 			{category !== "ARTIST" ? (
 				<ResourceItem
 					resource={{
@@ -97,7 +116,7 @@ const TopList = ({
 						category,
 					}}
 					direction="vertical"
-					titleCss={`font-medium line-clamp-2 text-center text-base sm:w-38 sm:text-wrap  sm:line-clamp-3`}
+					textClassName={`line-clamp-2 truncate w-38 text-wrap text-center sm:line-clamp-3`}
 					showArtist={false}
 					imageWidthAndHeight={top6Width}
 					style={{ width: top6Width }}
@@ -106,7 +125,7 @@ const TopList = ({
 				<ArtistItem
 					artistId={resource.resourceId}
 					direction="vertical"
-					textCss="font-medium text-center text-base sm:w-38 sm:text-wrap  sm:line-clamp-3"
+					textClassName="font-medium text-center text-base sm:w-38 sm:text-wrap  sm:line-clamp-3"
 					imageWidthAndHeight={top6Width}
 					style={{ width: top6Width }}
 				/>
@@ -138,19 +157,22 @@ const TopListsTab = ({
 }) => {
 	const router = useRouter();
 	const params = useLocalSearchParams<{ tab?: string }>();
-	const tab = params.tab && topListTabs.includes(params.tab) ? params.tab : "albums";
+	const tab =
+		params.tab && topListTabs.includes(params.tab) ? params.tab : "albums";
 
 	return (
 		<>
 			<Tabs
 				value={tab}
 				onValueChange={(value) =>
-					router.setParams({ tab: value === "albums" ? undefined : value })
+					router.setParams({
+						tab: value === "albums" ? undefined : value,
+					})
 				}
 				className="mt-2"
 			>
 				<View className="px-4">
-					<TabsList className="flex-row w-full">
+					<TabsList className="w-full flex-row">
 						<TabsTrigger value="albums" className="flex-1">
 							<Text>Albums</Text>
 						</TabsTrigger>
@@ -163,13 +185,25 @@ const TopListsTab = ({
 					</TabsList>
 				</View>
 				<TabsContent value="albums" className="mt-2">
-					<TopList category="ALBUM" list={album} isProfile={isProfile} />
+					<TopList
+						category="ALBUM"
+						list={album}
+						isProfile={isProfile}
+					/>
 				</TabsContent>
 				<TabsContent value="songs" className="mt-2">
-					<TopList category="SONG" list={song} isProfile={isProfile} />
+					<TopList
+						category="SONG"
+						list={song}
+						isProfile={isProfile}
+					/>
 				</TabsContent>
 				<TabsContent value="artists" className="mt-2">
-					<TopList category="ARTIST" list={artist} isProfile={isProfile} />
+					<TopList
+						category="ARTIST"
+						list={artist}
+						isProfile={isProfile}
+					/>
 				</TabsContent>
 			</Tabs>
 		</>
@@ -204,17 +238,20 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 	const { data: values } = api.profiles.distribution.useQuery({
 		userId: profile.userId,
 	});
-	const { data: totalRatings, isLoading: isLR } = api.profiles.getTotalRatings.useQuery({
-		userId: profile.userId,
-	});
-	const { data: followerCount, isLoading: isLFRC } = api.profiles.followCount.useQuery({
-		profileId: profile.userId,
-		type: "followers",
-	});
-	const { data: followingCount, isLoading: isLFGC } = api.profiles.followCount.useQuery({
-		profileId: profile.userId,
-		type: "following",
-	});
+	const { data: totalRatings, isLoading: isLR } =
+		api.profiles.getTotalRatings.useQuery({
+			userId: profile.userId,
+		});
+	const { data: followerCount, isLoading: isLFRC } =
+		api.profiles.followCount.useQuery({
+			profileId: profile.userId,
+			type: "followers",
+		});
+	const { data: followingCount, isLoading: isLFGC } =
+		api.profiles.followCount.useQuery({
+			profileId: profile.userId,
+			type: "following",
+		});
 
 	const [topLists] = api.lists.topLists.useSuspenseQuery({
 		userId: profile.userId,
@@ -227,14 +264,20 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 					headerRight: () =>
 						isProfile ? (
 							<Link href={`/settings`} className="p-2">
-								<Settings size={22} className="text-foreground" />
+								<Settings
+									size={22}
+									className="text-foreground"
+								/>
 							</Link>
 						) : (
 							<Suspense fallback={null}>
-								<FollowButton profileId={profile!.userId} size={"sm"} />
+								<FollowButton
+									profileId={profile!.userId}
+									size={"sm"}
+								/>
 							</Suspense>
 						),
-			  }
+				}
 			: {};
 
 	return (
@@ -242,19 +285,30 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 			<Stack.Screen options={options} />
 			<ScrollView>
 				<WebWrapper>
-					<View className="mt-4 px-4 gap-2">
+					<View className="mt-4 gap-2 px-4">
 						<View className="flex flex-col justify-start">
-							<View className="flex flex-col items-center sm:items-start gap-4">
+							<View className="flex flex-col items-center gap-4 sm:items-start">
 								<View className="flex-row gap-4">
 									<View className="hidden sm:flex">
-										<UserAvatar imageUrl={getImageUrl(profile)} size={144} />
+										<UserAvatar
+											imageUrl={getImageUrl(profile)}
+											size={144}
+										/>
 									</View>
 									<View className="flex sm:hidden">
-										<UserAvatar imageUrl={getImageUrl(profile)} size={100} />
+										<UserAvatar
+											imageUrl={getImageUrl(profile)}
+											size={100}
+										/>
 									</View>
-									<View className="items-start justify-center gap-3 flex-1">
-										<Text className="text-muted-foreground">PROFILE</Text>
-										<Text className="hidden sm:block" variant="h1">
+									<View className="flex-1 items-start justify-center gap-3">
+										<Text className="text-muted-foreground">
+											PROFILE
+										</Text>
+										<Text
+											className="hidden sm:block"
+											variant="h1"
+										>
 											{profile.name}
 										</Text>
 										<View className="flex flex-row flex-wrap items-center gap-3">
@@ -262,28 +316,35 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 											<Pill>{`Streak: ${streak ?? ""}`}</Pill>
 											<Pill>{`Likes: ${likes ?? ""}`}</Pill>
 										</View>
-										<Text className="text-wrap truncate">
+										<Text className="truncate text-wrap">
 											{profile.bio || "No bio yet"}
 										</Text>
 										{Platform.OS === "web" ? (
 											<>
 												{isProfile ? (
-													<Link href={`/settings`} asChild>
+													<Link
+														href={`/settings`}
+														asChild
+													>
 														<Button
 															variant="secondary"
 															className="flex-row items-center"
 														>
 															<Settings
 																size={16}
-																className="mr-2 text-foreground"
+																className="text-foreground mr-2"
 															/>
-															<Text>Settings</Text>
+															<Text>
+																Settings
+															</Text>
 														</Button>
 													</Link>
 												) : (
 													<Suspense fallback={null}>
 														<FollowButton
-															profileId={profile!.userId}
+															profileId={
+																profile!.userId
+															}
 															size={"sm"}
 														/>
 													</Suspense>
@@ -292,23 +353,33 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 										) : null}
 									</View>
 								</View>
-								<View className="flex flex-col items-center sm:items-start w-full">
-									<View className="flex flex-row w-full gap-2">
-										<Link href={`/${profile.handle}/ratings`} asChild>
+								<View className="flex w-full flex-col items-center sm:items-start">
+									<View className="flex w-full flex-row gap-2">
+										<Link
+											href={`/${profile.handle}/ratings`}
+											asChild
+										>
 											<Pressable className="flex-1">
 												<StatBlock
 													title={"Ratings"}
-													description={String(totalRatings)}
+													description={String(
+														totalRatings,
+													)}
 													size="sm"
 													loading={isLR}
 												/>
 											</Pressable>
 										</Link>
-										<Link href={`/${profile.handle}/followers`} asChild>
+										<Link
+											href={`/${profile.handle}/followers`}
+											asChild
+										>
 											<Pressable className="flex-1">
 												<StatBlock
 													title={"Followers"}
-													description={String(followerCount)}
+													description={String(
+														followerCount,
+													)}
 													size="sm"
 													loading={isLFRC}
 												/>
@@ -321,7 +392,9 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 											<Pressable className="flex-1">
 												<StatBlock
 													title={"Following"}
-													description={String(followingCount)}
+													description={String(
+														followingCount,
+													)}
 													size="sm"
 													loading={isLFGC}
 												/>
@@ -331,16 +404,22 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 								</View>
 							</View>
 						</View>
-						<View className="border border-border px-2 pt-3 rounded-xl">
+						<View className="border-border rounded-xl border px-2 pt-3">
 							<DistributionChart
 								distribution={values}
-								height={Platform.OS === "web" ? dimensions.height / 4 : 80}
+								height={
+									Platform.OS === "web"
+										? dimensions.height / 4
+										: 80
+								}
 								onChange={(value) => {
 									router.push({
 										pathname: "/[handle]/ratings",
 										params: {
 											handle: profile!.handle,
-											rating: value ? String(value) : undefined,
+											rating: value
+												? String(value)
+												: undefined,
 										},
 									});
 								}}
@@ -348,7 +427,11 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 						</View>
 					</View>
 					<TopListsTab {...topLists} isProfile={isProfile} />
-					<ListsTab handle={profile.handle} lists={lists} isProfile={isProfile} />
+					<ListsTab
+						handle={profile.handle}
+						lists={lists}
+						isProfile={isProfile}
+					/>
 				</WebWrapper>
 			</ScrollView>
 		</View>

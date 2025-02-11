@@ -1,12 +1,11 @@
 import { Text } from "@/components/ui/text";
 import { getQueryOptions } from "@/lib/deezer";
 import { Artist, cn } from "@recordscratch/lib";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Link, LinkProps, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { Skeleton } from "../ui/skeleton";
-import ReLink from "../ReLink";
 
 export const ArtistItem = ({
 	initialArtist,
@@ -14,8 +13,8 @@ export const ArtistItem = ({
 	onPress,
 	direction = "horizontal",
 	showLink = true,
-	textCss = "truncate",
-	imageCss,
+	textClassName,
+	imageClassName,
 	className,
 	imageWidthAndHeight = 100,
 	showType = false,
@@ -26,8 +25,8 @@ export const ArtistItem = ({
 	onPress?: () => void;
 	direction?: "horizontal" | "vertical";
 	showLink?: boolean;
-	textCss?: string;
-	imageCss?: string;
+	textClassName?: string;
+	imageClassName?: string;
 	imageWidthAndHeight?: number;
 	className?: string;
 	showType?: boolean;
@@ -90,7 +89,10 @@ export const ArtistItem = ({
 					{artistImage ? (
 						<Image
 							source={artistImage}
-							className={cn("border-2 sm:border-0", imageCss)}
+							className={cn(
+								"border-2 sm:border-0",
+								imageClassName,
+							)}
 							contentFit="cover"
 							style={{
 								width: imageWidthAndHeight,
@@ -106,7 +108,7 @@ export const ArtistItem = ({
 						className={cn(
 							"flex font-semibold",
 							direction === "vertical" ? "text-center" : "",
-							textCss,
+							textClassName,
 						)}
 						numberOfLines={2}
 					>

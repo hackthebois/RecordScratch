@@ -58,12 +58,12 @@ export const ResourceItem = ({
 	onPress,
 	showLink = true,
 	direction = "horizontal",
-	imageCss,
-	titleCss,
+	imageClassName,
+	textClassName,
 	showArtist = true,
 	className,
 	imageWidthAndHeight = 150,
-	artistNameCss,
+	artistClassName,
 	style,
 }: {
 	initialAlbum?: Album;
@@ -72,10 +72,10 @@ export const ResourceItem = ({
 	onPress?: () => void;
 	showLink?: boolean;
 	direction?: "horizontal" | "vertical";
-	imageCss?: string;
+	imageClassName?: string;
 	imageWidthAndHeight?: number;
-	titleCss?: string;
-	artistNameCss?: string;
+	textClassName?: string;
+	artistClassName?: string;
 	showArtist?: boolean;
 	className?: string;
 	width?: number;
@@ -112,7 +112,12 @@ export const ResourceItem = ({
 	) {
 		return (
 			<ResourceItemSkeleton
-				{...{ direction, imageCss, imageWidthAndHeight, showArtist }}
+				{...{
+					direction,
+					imageClassName,
+					imageWidthAndHeight,
+					showArtist,
+				}}
 			/>
 		);
 	}
@@ -155,7 +160,7 @@ export const ResourceItem = ({
 							}}
 							className={cn(
 								"aspect-square overflow-hidden rounded-xl transition-all hover:scale-105",
-								imageCss,
+								imageClassName,
 							)}
 						/>
 					) : (
@@ -171,7 +176,7 @@ export const ResourceItem = ({
 					<Text
 						className={cn(
 							"mr-3 w-full text-ellipsis font-semibold",
-							titleCss,
+							textClassName,
 						)}
 						numberOfLines={direction === "horizontal" ? 2 : 1}
 						style={{ flexWrap: "wrap" }}
@@ -190,7 +195,7 @@ export const ResourceItem = ({
 							<Text
 								className={cn(
 									"text-muted-foreground",
-									artistNameCss,
+									artistClassName,
 								)}
 							>
 								{showType ? "• " : ""}

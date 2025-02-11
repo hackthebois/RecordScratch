@@ -5,19 +5,25 @@ import { View } from "react-native";
 import { Text } from "../ui/text";
 import { cn } from "@recordscratch/lib";
 
-const ListResources = ({ items, category }: { items: ListItem[]; category: Category }) => {
+const ListResources = ({
+	items,
+	category,
+}: {
+	items: ListItem[];
+	category: Category;
+}) => {
 	return (
-		<View className="flex flex-col w-full h-full">
+		<View className="flex h-full w-full flex-col">
 			{items.map((item, index) => (
 				<View
 					key={index}
 					className={cn(
-						"border-b border-muted rounded-xl flex flex-row items-center gap-3"
+						"border-muted flex flex-row items-center gap-3 rounded-xl border-b",
 					)}
 				>
 					<Text
 						style={{ fontSize: 12, marginLeft: 15 }}
-						className="text-muted-foreground font-bold w-6"
+						className="text-muted-foreground w-6 font-bold"
 					>
 						{index + 1}
 					</Text>
@@ -36,7 +42,7 @@ const ListResources = ({ items, category }: { items: ListItem[]; category: Categ
 								category: category,
 							}}
 							imageWidthAndHeight={60}
-							titleCss="font-medium"
+							textClassName="font-medium"
 							showArtist={false}
 							showLink={false}
 							className="w-72"

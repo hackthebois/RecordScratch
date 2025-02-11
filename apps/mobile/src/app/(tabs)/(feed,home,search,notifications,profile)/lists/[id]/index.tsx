@@ -54,7 +54,7 @@ const ListResources = ({
 								<ArtistItem
 									artistId={item.resourceId}
 									imageWidthAndHeight={size}
-									textCss="font-medium"
+									textClassName="font-medium"
 									className={cn(
 										!!item.rating ? "w-72" : "w-96",
 										"sm:w-full",
@@ -68,7 +68,7 @@ const ListResources = ({
 										category: category,
 									}}
 									imageWidthAndHeight={size}
-									titleCss="font-medium"
+									textClassName="font-medium"
 									className={cn(
 										!!item.rating ? "w-72" : "w-96",
 										"sm:w-full",

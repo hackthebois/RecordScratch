@@ -156,7 +156,7 @@ const ArtistPage = () => {
 											direction="vertical"
 											imageWidthAndHeight={105}
 											className="max-w-32"
-											textCss="line-clamp-2"
+											textClassName="line-clamp-2"
 										/>
 									)}
 									horizontal

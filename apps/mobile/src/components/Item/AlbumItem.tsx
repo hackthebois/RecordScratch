@@ -2,7 +2,13 @@ import { cn } from "@recordscratch/lib";
 import { View } from "react-native";
 import { ResourceItem } from "./ResourceItem";
 
-const AlbumItem = ({ resourceId, className }: { resourceId: string; className?: string }) => {
+const AlbumItem = ({
+	resourceId,
+	className,
+}: {
+	resourceId: string;
+	className?: string;
+}) => {
 	return (
 		<View className={className}>
 			<ResourceItem
@@ -12,8 +18,8 @@ const AlbumItem = ({ resourceId, className }: { resourceId: string; className?: 
 					category: "ALBUM",
 					parentId: "",
 				}}
-				titleCss="w-40"
-				artistNameCss="w-40 line-clamp-1"
+				textClassName="w-40"
+				artistClassName="w-40 line-clamp-1"
 			/>
 		</View>
 	);

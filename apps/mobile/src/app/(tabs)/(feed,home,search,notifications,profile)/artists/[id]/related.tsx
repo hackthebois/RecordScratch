@@ -52,7 +52,7 @@ const RelatedPage = () => {
 						direction="vertical"
 						imageWidthAndHeight={115}
 						className="max-w-32"
-						textCss="line-clamp-2"
+						textClassName="line-clamp-2"
 					/>
 				)}
 				columnWrapperStyle={{
