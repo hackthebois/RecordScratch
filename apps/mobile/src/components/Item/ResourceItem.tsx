@@ -147,7 +147,15 @@ export const ResourceItem = ({
 					className,
 					direction === "vertical" ? "flex-col" : "flex-row",
 				)}
-				style={style}
+				style={[
+					{
+						width:
+							direction === "vertical"
+								? imageWidthAndHeight
+								: "auto",
+					},
+					style,
+				]}
 			>
 				<View className="overflow-hidden rounded-xl">
 					{album!.cover_big ? (
@@ -172,6 +180,12 @@ export const ResourceItem = ({
 						"flex flex-col gap-2",
 						direction === "horizontal" ? "flex-1" : "",
 					)}
+					style={{
+						width:
+							direction === "vertical"
+								? imageWidthAndHeight
+								: "auto",
+					}}
 				>
 					<Text
 						className={cn(
