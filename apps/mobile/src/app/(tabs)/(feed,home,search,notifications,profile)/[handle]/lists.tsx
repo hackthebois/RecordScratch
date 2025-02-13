@@ -3,12 +3,7 @@ import ListOfLists from "@/components/List/ListOfLists";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import {
-	KeyboardAvoidingView,
-	Platform,
-	View,
-	useWindowDimensions,
-} from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { Text } from "@/components/ui/text";
 import { SquarePlus } from "@/lib/icons/IconsLoader";
 import { useAuth } from "@/lib/auth";
@@ -21,7 +16,7 @@ const CreateListButton = ({ isProfile }: { isProfile: boolean }) => {
 					variant="outline"
 					className="my-2 flex flex-row items-center gap-3"
 				>
-					<SquarePlus />
+					<SquarePlus className="text-foreground" />
 					<Text>Create A List</Text>
 				</Button>
 			</Link>

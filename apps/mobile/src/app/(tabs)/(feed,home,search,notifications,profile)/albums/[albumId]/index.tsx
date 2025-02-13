@@ -122,7 +122,7 @@ export default function AlbumLayout() {
 								album,
 							}))}
 						/>
-						<View className="px-2">
+						<View className="px-4">
 							<Link
 								href={{
 									pathname: "/artists/[id]/discography",
@@ -148,12 +148,12 @@ export default function AlbumLayout() {
 										/>
 									) : null
 								}
+								contentContainerClassName="h-64"
 								horizontal
 								showsHorizontalScrollIndicator={
 									Platform.OS === "web"
 								}
 								estimatedItemSize={160}
-								contentContainerClassName="h-60"
 								ItemSeparatorComponent={() => (
 									<View className="w-4" />
 								)}

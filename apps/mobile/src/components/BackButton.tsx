@@ -1,19 +1,19 @@
 import { ArrowLeft } from "@/lib/icons/IconsLoader";
 import { Link } from "expo-router";
-import { Platform, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 export const BackButton = () => {
-  const { width } = useWindowDimensions();
+	const { width } = useWindowDimensions();
 
-  return (
-    <Link
-      href={".."}
-      style={{
-        marginLeft: width > 1024 ? (width - 1024) / 2 : 0,
-      }}
-      className="px-4 h-full flex flex-row items-center justify-center"
-    >
-      <ArrowLeft size={28} className="text-primary" />
-    </Link>
-  );
+	return (
+		<Link
+			href={".."}
+			style={{
+				marginLeft: width > 1024 ? (width - 1024) / 2 : -16,
+			}}
+			className="flex h-full flex-row items-center justify-center px-4"
+		>
+			<ArrowLeft size={28} className="text-primary" />
+		</Link>
+	);
 };
