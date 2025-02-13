@@ -39,7 +39,7 @@ const ListResources = ({
 			{items?.map((item, index) => (
 				<View
 					key={item.resourceId}
-					className="border-muted w-full rounded-xl border-b"
+					className="border-muted w-full border-b"
 				>
 					<View
 						className={cn(
@@ -146,6 +146,8 @@ const ListPage = () => {
 				<WebWrapper>
 					<Stack.Screen options={options} />
 					<Metadata
+						type={`${list.category} LIST`}
+						title={list.name}
 						cover={
 							<ListImage
 								listItems={listItems}
@@ -155,8 +157,7 @@ const ListPage = () => {
 						}
 						size="sm"
 					>
-						<View className="-mt-6 flex flex-col items-center">
-							<Text>{list?.category} LIST</Text>
+						<View className="flex flex-col items-center sm:items-start">
 							<View className="flex flex-row items-center gap-2">
 								<Link
 									href={{

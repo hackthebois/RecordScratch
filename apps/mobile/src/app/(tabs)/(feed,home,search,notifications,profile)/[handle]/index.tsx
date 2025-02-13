@@ -404,14 +404,10 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 								</View>
 							</View>
 						</View>
-						<View className="border-border rounded-xl border px-2 pt-3">
+						<View className="border-border max-w-[450px] rounded-xl border px-2 pt-3">
 							<DistributionChart
 								distribution={values}
-								height={
-									Platform.OS === "web"
-										? dimensions.height / 4
-										: 80
-								}
+								height={Platform.OS === "web" ? 100 : 80}
 								onChange={(value) => {
 									router.push({
 										pathname: "/[handle]/ratings",

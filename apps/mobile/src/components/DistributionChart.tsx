@@ -62,7 +62,7 @@ const DistributionChart = ({
 	return (
 		<View className="flex w-full flex-col items-center">
 			<View
-				className="flex w-full flex-row gap-1 sm:w-1/2"
+				className="flex w-full flex-row gap-1"
 				style={{
 					height,
 				}}
@@ -89,7 +89,7 @@ const DistributionChart = ({
 					</TouchableOpacity>
 				))}
 			</View>
-			<View className="flex w-full flex-row gap-1 pt-2 sm:w-1/2">
+			<View className="flex w-full flex-row gap-1 pt-2">
 				{Array.from({
 					length: 10,
 				}).map((_, index) => (
