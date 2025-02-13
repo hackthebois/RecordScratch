@@ -45,7 +45,7 @@ const DiscographyPage = () => {
 					title: `${artist.name}'s Discography`,
 				}}
 			/>
-			<ScrollView>
+			<ScrollView contentContainerClassName="py-4">
 				<WebWrapper>
 					{Platform.OS === "web" && (
 						<Text variant="h3" className="pb-4 text-center">
