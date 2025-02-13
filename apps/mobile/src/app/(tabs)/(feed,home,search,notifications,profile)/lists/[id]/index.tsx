@@ -39,15 +39,18 @@ const ListResources = ({
 			{items?.map((item, index) => (
 				<View
 					key={item.resourceId}
-					className="border-muted w-full border-b"
+					className={cn(
+						"border-muted w-full",
+						index !== items.length - 1 && "border-b",
+					)}
 				>
 					<View
 						className={cn(
 							"my-2 flex flex-row items-center justify-between gap-3",
 						)}
 					>
-						<View className="flex flex-row items-center">
-							<Text className="text-muted-foreground ml-5 w-6 text-base font-bold">
+						<View className="flex flex-row items-center px-4">
+							<Text className="text-muted-foreground w-6 text-base font-bold">
 								{index + 1}
 							</Text>
 							{category === "ARTIST" ? (
@@ -55,10 +58,6 @@ const ListResources = ({
 									artistId={item.resourceId}
 									imageWidthAndHeight={size}
 									textClassName="font-medium"
-									className={cn(
-										!!item.rating ? "w-72" : "w-96",
-										"sm:w-full",
-									)}
 								/>
 							) : (
 								<ResourceItem
@@ -69,10 +68,6 @@ const ListResources = ({
 									}}
 									imageWidthAndHeight={size}
 									textClassName="font-medium"
-									className={cn(
-										!!item.rating ? "w-72" : "w-96",
-										"sm:w-full",
-									)}
 									showArtist={false}
 								/>
 							)}

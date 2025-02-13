@@ -178,7 +178,7 @@ export const ResourceItem = ({
 				<View
 					className={cn(
 						"flex flex-col gap-2",
-						direction === "horizontal" ? "flex-1" : "",
+						direction === "horizontal" ? "w-full" : "",
 					)}
 					style={{
 						width:
