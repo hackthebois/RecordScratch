@@ -63,6 +63,7 @@ const DiscographyPage = () => {
 									parentId: String(artist.id),
 								}}
 								imageWidthAndHeight={top6Width}
+								showArtist={false}
 								direction="vertical"
 							/>
 						))}
