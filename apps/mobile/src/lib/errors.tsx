@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import env from "../env";
 
 export const catchError = (error: any) => {
-	console.log("Error: ", error);
+	console.error("Error: ", error);
 	if (env.ENV !== "development") Sentry.captureException(error);
 };
 

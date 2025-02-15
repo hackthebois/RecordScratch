@@ -9,7 +9,7 @@ import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import * as Browser from "expo-web-browser";
-import React from "react";
+import React, { useState } from "react";
 import { Platform, Pressable, View } from "react-native";
 import { z } from "zod";
 
@@ -18,28 +18,42 @@ const SignInPage = () => {
 	const login = useAuth((s) => s.login);
 	const router = useRouter();
 	const { colorScheme } = useColorScheme();
+	const [isAuthoring, setIsAuthoring] = useState(false);
 
 	const handlePressButtonAsync = async (adapter: "google") => {
-		if (Platform.OS === "web") {
-			const url = `${env.SITE_URL}/api/auth/${adapter}?expoAddress=${env.SCHEME}`;
-			await Linking.openURL(url);
-			return;
-		} else {
-			const result = await Browser.openAuthSessionAsync(
-				`${env.SITE_URL}/api/auth/${adapter}?expoAddress=${env.SCHEME}`,
-				`${env.SCHEME}`
-			);
-			if (result.type !== "success") return;
-			const url = Linking.parse(result.url);
-			const sessionId = url.queryParams?.session_id?.toString() ?? null;
-			if (!sessionId) return;
+		if (isAuthoring) return;
+		try {
+			setIsAuthoring(true);
 
-			await login(sessionId)
-				.then(({ status }) => handleLoginRedirect({ status, router }))
-				.catch((e) => {
-					catchError(e);
-					reloadAppAsync();
-				});
+			if (Platform.OS === "web") {
+				const url = `${env.SITE_URL}/api/auth/${adapter}?expoAddress=${env.SCHEME}`;
+				await Linking.openURL(url);
+				return;
+			} else {
+				Browser.dismissAuthSession();
+				const result = await Browser.openAuthSessionAsync(
+					`${env.SITE_URL}/api/auth/${adapter}?expoAddress=${env.SCHEME}`,
+					`${env.SCHEME}`,
+				);
+				if (result.type !== "success") return;
+				const url = Linking.parse(result.url);
+				const sessionId =
+					url.queryParams?.session_id?.toString() ?? null;
+				if (!sessionId) return;
+
+				await login(sessionId)
+					.then(({ status }) =>
+						handleLoginRedirect({ status, router }),
+					)
+					.catch((e) => {
+						catchError(e);
+						reloadAppAsync();
+					});
+			}
+		} catch (e) {
+			catchError(e);
+		} finally {
+			setIsAuthoring(false);
 		}
 	};
 
@@ -49,7 +63,7 @@ const SignInPage = () => {
 	};
 
 	return (
-		<View className="flex-1 justify-center items-center gap-6">
+		<View className="flex-1 items-center justify-center gap-6">
 			<Image
 				source={require("../../../assets/icon.png")}
 				style={{
@@ -63,8 +77,9 @@ const SignInPage = () => {
 			</Text>
 
 			<Pressable
+				disabled={isAuthoring}
 				onPress={async () => await handlePressButtonAsync("google")}
-				className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
+				className="border-border flex-row items-center gap-4 rounded-full border px-8 py-4"
 			>
 				<Image
 					source={require("../../../assets/google-logo.svg")}
@@ -77,13 +92,18 @@ const SignInPage = () => {
 			</Pressable>
 			{Platform.OS === "ios" || Platform.OS === "macos" ? (
 				<Pressable
+					disabled={isAuthoring}
 					onPress={async () => {
+						if (isAuthoring) return;
 						try {
-							const credential = await AppleAuthentication.signInAsync({
-								requestedScopes: [
-									AppleAuthentication.AppleAuthenticationScope.EMAIL,
-								],
-							});
+							setIsAuthoring(true);
+							const credential =
+								await AppleAuthentication.signInAsync({
+									requestedScopes: [
+										AppleAuthentication
+											.AppleAuthenticationScope.EMAIL,
+									],
+								});
 							const { identityToken, email } = credential;
 
 							const res = await fetch(
@@ -97,7 +117,7 @@ const SignInPage = () => {
 										idToken: identityToken,
 										email: email ?? undefined,
 									}),
-								}
+								},
 							);
 							const { sessionId } = z
 								.object({
@@ -106,26 +126,43 @@ const SignInPage = () => {
 								.parse(await res.json());
 
 							await login(sessionId)
-								.then(({ status }) => handleLoginRedirect({ status, router }))
+								.then(({ status }) =>
+									handleLoginRedirect({ status, router }),
+								)
 								.catch((e) => {
 									catchError(e);
 									reloadAppAsync();
 								});
 						} catch (e) {
-							console.error(e);
+							if (
+								e instanceof Error &&
+								e.message ===
+									"The user canceled the authorization attempt"
+							) {
+								return;
+							}
+							catchError(e);
+						} finally {
+							setIsAuthoring(false);
 						}
 					}}
-					className="px-8 py-4 rounded-full border border-border flex-row gap-4 items-center"
+					className="border-border flex-row items-center gap-4 rounded-full border px-8 py-4"
 				>
 					<Image
 						key={colorScheme}
-						source={colorScheme === "dark" ? appleLogo.dark : appleLogo.light}
+						source={
+							colorScheme === "dark"
+								? appleLogo.dark
+								: appleLogo.light
+						}
 						style={{
 							width: 26,
 							height: 30,
 						}}
 					/>
-					<Text className="text-lg font-medium">Sign in with Apple</Text>
+					<Text className="text-lg font-medium">
+						Sign in with Apple
+					</Text>
 				</Pressable>
 			) : null}
 		</View>

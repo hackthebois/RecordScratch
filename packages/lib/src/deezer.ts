@@ -255,6 +255,8 @@ export const deezer = async <TRoute extends keyof Deezer>({
 		delete (input as any).id;
 	}
 
+	console.log(input);
+
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 
