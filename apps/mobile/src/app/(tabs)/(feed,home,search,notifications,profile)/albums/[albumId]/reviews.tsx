@@ -1,5 +1,6 @@
 import DistributionChart from "@/components/DistributionChart";
 import { ReviewsList } from "@/components/ReviewsList";
+import { WebWrapper } from "@/components/WebWrapper";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -11,7 +12,7 @@ import { useEffect } from "react";
 import { Platform, View } from "react-native";
 
 const tabs = ["everyone", "friends"];
-const ratingTabs = ["REVIEW", "RATING"];
+const ratingTabs = ["all", "REVIEW", "RATING"];
 
 const Reviews = () => {
 	const router = useRouter();
@@ -79,30 +80,7 @@ const Reviews = () => {
 						(album.title.length > 20 ? "... Ratings" : " Ratings"),
 				}}
 			/>
-			{Platform.OS === "web" && (
-				<Text variant="h3" className="mb-4 text-center">
-					{album.title + " Ratings"}
-				</Text>
-			)}
-			<Tabs
-				value={tab}
-				onValueChange={(tab) =>
-					router.setParams({
-						tab: tab === "everyone" ? undefined : tab,
-					})
-				}
-			>
-				<View className="flex items-center px-4">
-					<TabsList className="w-full flex-row sm:w-2/3">
-						<TabsTrigger value="everyone" className="flex-1">
-							<Text>Everyone</Text>
-						</TabsTrigger>
-						<TabsTrigger value="friends" className="flex-1">
-							<Text>Friends</Text>
-						</TabsTrigger>
-					</TabsList>
-				</View>
-			</Tabs>
+
 			<ReviewsList
 				filters={{
 					following: tab === "friends",
@@ -112,45 +90,90 @@ const Reviews = () => {
 					rating: ratingFilter,
 				}}
 				ListHeaderComponent={
-					<>
-						<View className="p-4">
-							<DistributionChart
-								distribution={values}
-								value={ratingFilter}
-								onChange={(value) => {
-									router.setParams({
-										ratingFilter: value,
-									});
-								}}
-								height={Platform.OS === "web" ? 225 : 80}
-							/>
-						</View>
-						<Tabs
-							value={ratingTab}
-							onValueChange={(value) =>
-								value !== tab
-									? router.setParams({ ratingTab: value })
-									: router.setParams({ ratingTab: undefined })
-							}
-						>
-							<View className="flex items-center px-4">
-								<TabsList className="w-full flex-row sm:w-2/3">
-									<TabsTrigger
-										value="REVIEW"
-										className="flex-1"
-									>
-										<Text>Reviews</Text>
-									</TabsTrigger>
-									<TabsTrigger
-										value="RATING"
-										className="flex-1"
-									>
-										<Text>Ratings</Text>
-									</TabsTrigger>
-								</TabsList>
+					<WebWrapper>
+						<View className="max-w-[600px] gap-4 p-4">
+							{Platform.OS === "web" && (
+								<Text variant="h2" className="mb-4">
+									{album.title + " Ratings"}
+								</Text>
+							)}
+							<View className="border-border rounded-xl border px-2 pt-3">
+								<DistributionChart
+									distribution={values}
+									value={ratingFilter}
+									onChange={(value) => {
+										router.setParams({
+											ratingFilter: value,
+										});
+									}}
+									height={Platform.OS === "web" ? 100 : 80}
+								/>
 							</View>
-						</Tabs>
-					</>
+							<Tabs
+								value={tab}
+								onValueChange={(tab) =>
+									router.setParams({
+										tab:
+											tab === "everyone"
+												? undefined
+												: tab,
+									})
+								}
+							>
+								<View className="flex items-center">
+									<TabsList className="w-full flex-row">
+										<TabsTrigger
+											value="everyone"
+											className="flex-1"
+										>
+											<Text>Everyone</Text>
+										</TabsTrigger>
+										<TabsTrigger
+											value="friends"
+											className="flex-1"
+										>
+											<Text>Friends</Text>
+										</TabsTrigger>
+									</TabsList>
+								</View>
+							</Tabs>
+							<Tabs
+								value={ratingTab}
+								onValueChange={(value) => {
+									if (value === "all") {
+										router.setParams({
+											ratingTab: undefined,
+										});
+									} else {
+										router.setParams({ ratingTab: value });
+									}
+								}}
+							>
+								<View className="flex items-center sm:items-start">
+									<TabsList className="w-full flex-row">
+										<TabsTrigger
+											value="all"
+											className="flex-1"
+										>
+											<Text>All</Text>
+										</TabsTrigger>
+										<TabsTrigger
+											value="REVIEW"
+											className="flex-1"
+										>
+											<Text>Reviews</Text>
+										</TabsTrigger>
+										<TabsTrigger
+											value="RATING"
+											className="flex-1"
+										>
+											<Text>Ratings</Text>
+										</TabsTrigger>
+									</TabsList>
+								</View>
+							</Tabs>
+						</View>
+					</WebWrapper>
 				}
 			/>
 		</View>

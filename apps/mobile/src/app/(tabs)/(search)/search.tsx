@@ -121,24 +121,24 @@ export default function SearchPage() {
 					</View>
 					<Tabs
 						value={tab.value}
-						onValueChange={(value) =>
-							value !== tab.value
-								? router.setParams({ tab: value })
-								: router.setParams({ tab: undefined })
-						}
+						onValueChange={(value) => {
+							if (value === "all") {
+								router.setParams({ tab: undefined });
+							} else {
+								router.setParams({ tab: value });
+							}
+						}}
 					>
 						<TabsList className="flex-row">
-							{Object.entries(tabs)
-								.filter(([key]) => key !== "all")
-								.map(([key, tab]) => (
-									<TabsTrigger
-										key={key}
-										value={key}
-										className="flex-1"
-									>
-										<Text>{tab.label}</Text>
-									</TabsTrigger>
-								))}
+							{Object.entries(tabs).map(([key, tab]) => (
+								<TabsTrigger
+									key={key}
+									value={key}
+									className="flex-1"
+								>
+									<Text>{tab.label}</Text>
+								</TabsTrigger>
+							))}
 						</TabsList>
 					</Tabs>
 				</View>

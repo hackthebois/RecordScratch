@@ -1,5 +1,6 @@
 import DistributionChart from "@/components/DistributionChart";
 import { ReviewsList } from "@/components/ReviewsList";
+import { WebWrapper } from "@/components/WebWrapper";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -78,30 +79,6 @@ const Reviews = () => {
 						(song.title.length > 20 ? "... Ratings" : " Ratings"),
 				}}
 			/>
-			{Platform.OS === "web" && (
-				<Text variant="h3" className="mb-4 text-center">
-					{song.title + " Ratings"}
-				</Text>
-			)}
-			<Tabs
-				value={tab}
-				onValueChange={(value) => {
-					router.setParams({
-						tab: value === "everyone" ? undefined : value,
-					});
-				}}
-			>
-				<View className="flex items-center px-4">
-					<TabsList className="w-full flex-row sm:w-2/3">
-						<TabsTrigger value="everyone" className="flex-1">
-							<Text>Everyone</Text>
-						</TabsTrigger>
-						<TabsTrigger value="friends" className="flex-1">
-							<Text>Friends</Text>
-						</TabsTrigger>
-					</TabsList>
-				</View>
-			</Tabs>
 			<ReviewsList
 				filters={{
 					following: tab === "friends",
@@ -112,32 +89,67 @@ const Reviews = () => {
 				}}
 				limit={20}
 				ListHeaderComponent={
-					<>
-						<View className="p-4">
-							<DistributionChart
-								distribution={values}
-								value={ratingFilter}
-								onChange={(value) => {
+					<WebWrapper>
+						<View className="max-w-[600px] gap-4 p-4">
+							{Platform.OS === "web" && (
+								<Text variant="h2" className="mb-4">
+									{song.title + " Ratings"}
+								</Text>
+							)}
+							<View className="border-border rounded-xl border px-2 pt-3">
+								<DistributionChart
+									distribution={values}
+									height={Platform.OS === "web" ? 100 : 80}
+									value={ratingFilter}
+									onChange={(value) => {
+										router.setParams({
+											ratingFilter: value,
+										});
+									}}
+								/>
+							</View>
+							<Tabs
+								value={tab}
+								onValueChange={(value) => {
 									router.setParams({
-										ratingFilter: value,
+										tab:
+											value === "everyone"
+												? undefined
+												: value,
 									});
 								}}
-								height={Platform.OS === "web" ? 225 : 80}
-							/>
-						</View>
-						<Tabs
-							value={ratingTab}
-							onValueChange={(value) => {
-								console.log(value, value !== ratingTab);
-								value !== ratingTab
-									? router.setParams({ ratingTab: value })
-									: router.setParams({
+							>
+								<TabsList className="w-full flex-row">
+									<TabsTrigger
+										value="everyone"
+										className="flex-1"
+									>
+										<Text>All</Text>
+									</TabsTrigger>
+									<TabsTrigger
+										value="friends"
+										className="flex-1"
+									>
+										<Text>Friends</Text>
+									</TabsTrigger>
+								</TabsList>
+							</Tabs>
+							<Tabs
+								value={ratingTab}
+								onValueChange={(value) => {
+									if (value === "all") {
+										router.setParams({
 											ratingTab: undefined,
 										});
-							}}
-						>
-							<View className="flex items-center px-4">
-								<TabsList className="w-full flex-row sm:w-2/3">
+									} else {
+										router.setParams({ ratingTab: value });
+									}
+								}}
+							>
+								<TabsList className="w-full flex-row">
+									<TabsTrigger value="all" className="flex-1">
+										<Text>All</Text>
+									</TabsTrigger>
 									<TabsTrigger
 										value="REVIEW"
 										className="flex-1"
@@ -151,9 +163,9 @@ const Reviews = () => {
 										<Text>Ratings</Text>
 									</TabsTrigger>
 								</TabsList>
-							</View>
-						</Tabs>
-					</>
+							</Tabs>
+						</View>
+					</WebWrapper>
 				}
 			/>
 		</>
