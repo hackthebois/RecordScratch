@@ -7,6 +7,7 @@ import {
 	ratings,
 } from "@recordscratch/db";
 import {
+	FeedFiltersSchema,
 	RateFormSchema,
 	ResourceSchema,
 	ReviewFormSchema,
@@ -184,24 +185,22 @@ export const ratingsRouter = router({
 	feed: publicProcedure
 		.input(
 			PaginatedInput.extend({
-				filters: z
-					.object({
-						profileId: z.string().optional(),
-						resourceId: ResourceSchema.shape.resourceId.optional(),
-						category: ResourceSchema.shape.category.optional(),
-						rating: z.number().optional(),
-						trending: z.boolean().optional(),
-						following: z.boolean().optional(),
-						ratingType: z.enum(["REVIEW", "RATING"]).optional(),
-					})
-					.optional(),
+				filters: FeedFiltersSchema.optional(),
 			}),
 		)
 		.query(
 			async ({
-				ctx: { db, userId },
+				ctx: { db, userId, ph },
 				input: { limit = 20, cursor = 0, filters },
 			}) => {
+				if (userId) {
+					posthog(ph, [
+						[
+							"feed",
+							{ distinctId: userId, properties: filters ?? {} },
+						],
+					]);
+				}
 				let followingWhere: any = undefined;
 				if (filters?.following && userId) {
 					followingWhere = await getFollowingWhere(db, userId);

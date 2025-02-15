@@ -52,3 +52,14 @@ export type CategoryType = z.infer<typeof CategorySchema>;
 export type ReviewType = Rating & {
 	profile: Profile;
 };
+
+export const FeedFiltersSchema = z.object({
+	profileId: z.string().optional(),
+	resourceId: ResourceSchema.shape.resourceId.optional(),
+	category: ResourceSchema.shape.category.optional(),
+	rating: z.number().optional(),
+	trending: z.boolean().optional(),
+	following: z.boolean().optional(),
+	ratingType: z.enum(["REVIEW", "RATING"]).optional(),
+});
+export type FeedFilters = z.infer<typeof FeedFiltersSchema>;

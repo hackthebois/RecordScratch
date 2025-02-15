@@ -1,30 +1,36 @@
-import type { CreateProfile, RateForm, ReviewForm } from "@recordscratch/types";
+import type {
+	CreateProfile,
+	FeedFilters,
+	RateForm,
+	ReviewForm,
+} from "@recordscratch/types";
 import { PostHog } from "posthog-node";
 
 type PostHogEvent = {
-  profile_created: CreateProfile;
-  rate: RateForm;
-  review: ReviewForm;
+	profile_created: CreateProfile;
+	rate: RateForm;
+	review: ReviewForm;
+	feed: FeedFilters;
 };
 
 export const posthog = async <TEvent extends keyof PostHogEvent>(
-  ph: PostHog,
-  events: [
-    TEvent,
-    {
-      distinctId: string;
-      properties: PostHogEvent[TEvent];
-    },
-  ][],
+	ph: PostHog,
+	events: [
+		TEvent,
+		{
+			distinctId: string;
+			properties: PostHogEvent[TEvent];
+		},
+	][],
 ) => {
-  events.forEach(([event, payload]) => {
-    ph.capture({
-      distinctId: payload.distinctId,
-      event,
-      properties: {
-        ...payload.properties,
-      },
-    });
-  });
-  await ph.shutdown();
+	events.forEach(([event, payload]) => {
+		ph.capture({
+			distinctId: payload.distinctId,
+			event,
+			properties: {
+				...payload.properties,
+			},
+		});
+	});
+	await ph.shutdown();
 };
