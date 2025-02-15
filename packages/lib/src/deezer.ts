@@ -246,7 +246,7 @@ export const deezer = async <TRoute extends keyof Deezer>({
 	route: TRoute;
 	input: Deezer[TRoute]["input"];
 }): Promise<Deezer[TRoute]["output"]> => {
-	const input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
+	let input = DeezerSchema.shape[route].shape["input"].parse(rawInput);
 
 	let modifiedRoute = `${route}`;
 	if (input && "id" in input) {

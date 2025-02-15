@@ -56,8 +56,11 @@ export default function SearchPage() {
 	const router = useRouter();
 	const params = useLocalSearchParams<{ query?: string; tab?: string }>();
 	const tab = useMemo(
-		() => (params.tab && params.tab !== "undefined" ? tabs[params.tab] : tabs.all),
-		[params.tab]
+		() =>
+			params.tab && params.tab !== "undefined"
+				? tabs[params.tab]
+				: tabs.all,
+		[params.tab],
 	);
 	const debouncedQuery = useDebounce(params.query ?? "", 1000);
 
@@ -65,22 +68,26 @@ export default function SearchPage() {
 		queryKey: ["search", debouncedQuery, tab],
 		queryFn: async () => {
 			return await deezerHelpers.search({
-				query: debouncedQuery,
+				query: encodeURIComponent(debouncedQuery),
 				...tab,
 			});
 		},
 		enabled:
-			debouncedQuery.length > 0 && ["all", "songs", "albums", "artists"].includes(tab.value),
+			debouncedQuery.trim().length > 0 &&
+			["all", "songs", "albums", "artists"].includes(tab.value),
 	});
 
-	const { data: profiles, isLoading: isLoadingProfiles } = api.profiles.search.useQuery(
-		{ query: debouncedQuery, ...tab },
-		{
-			gcTime: 0,
-			refetchOnMount: false,
-			enabled: debouncedQuery.length > 0 && ["profiles", "all"].includes(tab.value),
-		}
-	);
+	const { data: profiles, isLoading: isLoadingProfiles } =
+		api.profiles.search.useQuery(
+			{ query: debouncedQuery, ...tab },
+			{
+				gcTime: 0,
+				refetchOnMount: false,
+				enabled:
+					debouncedQuery.trim().length > 0 &&
+					["profiles", "all"].includes(tab.value),
+			},
+		);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
@@ -90,9 +97,9 @@ export default function SearchPage() {
 				}}
 			/>
 			<WebWrapper>
-				<View className="px-4 gap-2 sm:mt-4">
-					<View className="flex-row w-full items-center pr-4 h-14 border border-border rounded-xl">
-						<Search size={20} className="mx-4 text-foreground" />
+				<View className="gap-2 px-4 sm:mt-4">
+					<View className="border-border h-14 w-full flex-row items-center rounded-xl border pr-4">
+						<Search size={20} className="text-foreground mx-4" />
 						<TextInput
 							id="name"
 							autoComplete="off"
@@ -106,7 +113,7 @@ export default function SearchPage() {
 							}}
 							autoCorrect={false}
 							autoFocus
-							className="flex-1 h-full text-xl text-foreground outline-none p-0"
+							className="text-foreground h-full flex-1 p-0 text-xl outline-none"
 							onChangeText={(text) => {
 								router.setParams({ query: text });
 							}}
@@ -124,7 +131,11 @@ export default function SearchPage() {
 							{Object.entries(tabs)
 								.filter(([key]) => key !== "all")
 								.map(([key, tab]) => (
-									<TabsTrigger key={key} value={key} className="flex-1">
+									<TabsTrigger
+										key={key}
+										value={key}
+										className="flex-1"
+									>
 										<Text>{tab.label}</Text>
 									</TabsTrigger>
 								))}
@@ -134,10 +145,13 @@ export default function SearchPage() {
 			</WebWrapper>
 			<KeyboardAvoidingScrollView>
 				<WebWrapper>
-					<View className="p-4 gap-2">
+					<View className="gap-2 p-4">
 						{isLoading || isLoadingProfiles ? (
 							<View className="flex items-center justify-center pt-40">
-								<ActivityIndicator size="large" color="#ff8500" />
+								<ActivityIndicator
+									size="large"
+									color="#ff8500"
+								/>
 							</View>
 						) : (
 							<>
@@ -146,7 +160,9 @@ export default function SearchPage() {
 											<ResourceItem
 												key={song.id}
 												resource={{
-													parentId: String(song.album.id),
+													parentId: String(
+														song.album.id,
+													),
 													resourceId: String(song.id),
 													category: "SONG" as const,
 												}}
@@ -160,15 +176,19 @@ export default function SearchPage() {
 												imageWidthAndHeight={80}
 												showType
 											/>
-									  ))
+										))
 									: null}
 								{tab.value !== "profiles"
 									? music?.albums.map((album) => (
 											<ResourceItem
 												key={album.id}
 												resource={{
-													parentId: String(album.artist?.id),
-													resourceId: String(album.id),
+													parentId: String(
+														album.artist?.id,
+													),
+													resourceId: String(
+														album.id,
+													),
 													category: "ALBUM" as const,
 												}}
 												onPress={() => {
@@ -181,7 +201,7 @@ export default function SearchPage() {
 												imageWidthAndHeight={80}
 												showType
 											/>
-									  ))
+										))
 									: null}
 								{tab.value !== "profiles"
 									? music?.artists.map((artist) => (
@@ -199,7 +219,7 @@ export default function SearchPage() {
 												imageWidthAndHeight={80}
 												showType
 											/>
-									  ))
+										))
 									: null}
 								{tab.value === "profiles" || tab.value === "all"
 									? profiles?.items.map((profile, index) => (
@@ -217,7 +237,7 @@ export default function SearchPage() {
 												showType={tab.value === "all"}
 												isUser
 											/>
-									  ))
+										))
 									: null}
 							</>
 						)}
