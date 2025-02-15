@@ -106,41 +106,43 @@ export const Review = ({
 }) => {
 	return (
 		<WebWrapper>
-			<View className="bg-background text-card-foreground flex flex-col gap-4 px-4 py-8">
+			<View className="bg-background text-card-foreground flex flex-col gap-4 p-4">
 				<ResourceItem
 					resource={{ parentId, resourceId, category }}
 					showType
-					imageWidthAndHeight={80}
+					imageWidthAndHeight={60}
 					textClassName=""
 				/>
 				<View className="flex flex-col items-start gap-4">
-					<View className="flex flex-row items-center gap-1">
-						{Array.from(Array(rating)).map((_, i) => (
-							<Star
-								key={i}
-								size={24}
-								color="#ffb703"
-								fill={"#ffb703"}
-							/>
-						))}
-						{Array.from(Array(10 - rating)).map((_, i) => (
-							<Star key={i} size={24} color="#ffb703" />
-						))}
+					<View className="flex w-full flex-col justify-between gap-4 text-lg sm:flex-row-reverse sm:items-center">
+						<View className="flex flex-row items-center gap-1">
+							{Array.from(Array(rating)).map((_, i) => (
+								<Star
+									key={i}
+									size={22}
+									color="#ffb703"
+									fill={"#ffb703"}
+								/>
+							))}
+							{Array.from(Array(10 - rating)).map((_, i) => (
+								<Star key={i} size={22} color="#ffb703" />
+							))}
+						</View>
+						<Link href={`/${String(profile.handle)}`} asChild>
+							<Pressable className="flex flex-row flex-wrap items-center gap-2">
+								<UserAvatar imageUrl={getImageUrl(profile)} />
+								<Text className="text-lg font-medium">
+									{profile.name}
+								</Text>
+								<Text className="text-muted-foreground text-left text-lg">
+									@{profile.handle} • {timeAgo(updatedAt)}
+								</Text>
+							</Pressable>
+						</Link>
 					</View>
-					<Link href={`/${String(profile.handle)}`} asChild>
-						<Pressable className="flex flex-row flex-wrap items-center gap-2">
-							<UserAvatar imageUrl={getImageUrl(profile)} />
-							<Text className="text-lg font-medium">
-								{profile.name}
-							</Text>
-							<Text className="text-muted-foreground text-left text-lg">
-								@{profile.handle} • {timeAgo(updatedAt)}
-							</Text>
-						</Pressable>
-					</Link>
 					{!!content && <Text className="text-lg">{content}</Text>}
 					{!hideActions ? (
-						<View className="flex flex-row items-center gap-3">
+						<View className="-my-2 -ml-3 flex flex-row items-center gap-1">
 							<Suspense
 								fallback={
 									<></>

@@ -8,49 +8,49 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 
 const CommentPage = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
+	const { id } = useLocalSearchParams<{ id: string }>();
 
-  const [comment, { refetch }] = api.comments.get.useSuspenseQuery({
-    id,
-  });
+	const [comment, { refetch }] = api.comments.get.useSuspenseQuery({
+		id,
+	});
 
-  const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch);
+	const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch);
 
-  if (!comment) return <NotFoundScreen />;
+	if (!comment) return <NotFoundScreen />;
 
-  return (
-    <>
-      <Stack.Screen
-        options={{
-          title: `${comment.profile.name}'s Comment`,
-        }}
-      />
-      <View className="flex-1">
-        <FlashList
-          ListHeaderComponent={
-            <WebWrapper>
-              <Comment comment={comment} />
-              <View className="h-1 bg-muted" />
-            </WebWrapper>
-          }
-          data={comment.replies}
-          renderItem={({ item }) => (
-            <WebWrapper>
-              <Comment comment={item} />
-            </WebWrapper>
-          )}
-          ItemSeparatorComponent={() => (
-            <WebWrapper>
-              <View className="h-1 bg-muted" />
-            </WebWrapper>
-          )}
-          estimatedItemSize={200}
-          refreshing={isRefetchingByUser}
-          onRefresh={refetchByUser}
-          contentContainerClassName="p-4"
-        />
-      </View>
-    </>
-  );
+	return (
+		<>
+			<Stack.Screen
+				options={{
+					title: `${comment.profile.name}'s Comment`,
+				}}
+			/>
+			<View className="flex-1">
+				<FlashList
+					ListHeaderComponent={
+						<WebWrapper>
+							<Comment comment={comment} />
+							<View className="bg-muted h-[1px]" />
+						</WebWrapper>
+					}
+					data={comment.replies}
+					renderItem={({ item }) => (
+						<WebWrapper>
+							<Comment comment={item} />
+						</WebWrapper>
+					)}
+					ItemSeparatorComponent={() => (
+						<WebWrapper>
+							<View className="bg-muted h-[1px]" />
+						</WebWrapper>
+					)}
+					estimatedItemSize={200}
+					refreshing={isRefetchingByUser}
+					onRefresh={refetchByUser}
+					contentContainerClassName="p-4"
+				/>
+			</View>
+		</>
+	);
 };
 export default CommentPage;
