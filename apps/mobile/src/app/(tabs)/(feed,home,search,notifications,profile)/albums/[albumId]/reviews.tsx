@@ -126,13 +126,13 @@ const Reviews = () => {
 											value="everyone"
 											className="flex-1"
 										>
-											<Text>Everyone</Text>
+											<Text>All</Text>
 										</TabsTrigger>
 										<TabsTrigger
 											value="friends"
 											className="flex-1"
 										>
-											<Text>Friends</Text>
+											<Text>Following</Text>
 										</TabsTrigger>
 									</TabsList>
 								</View>

@@ -130,7 +130,7 @@ const Reviews = () => {
 										value="friends"
 										className="flex-1"
 									>
-										<Text>Friends</Text>
+										<Text>Following</Text>
 									</TabsTrigger>
 								</TabsList>
 							</Tabs>
