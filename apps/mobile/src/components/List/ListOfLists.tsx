@@ -142,7 +142,7 @@ const ListOfLists = ({
 					maxWidth: 1024,
 					width: "100%",
 					marginHorizontal: "auto",
-					paddingHorizontal: 16,
+					padding: 16,
 				}}
 				keyboardShouldPersistTaps="always"
 				keyboardDismissMode="interactive"

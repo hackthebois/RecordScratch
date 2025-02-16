@@ -55,7 +55,9 @@ const AllListsPage = () => {
 			<ListOfLists
 				HeaderComponent={
 					Platform.OS != "web" ? (
-						<CreateListButton isProfile={isProfile} />
+						<View className="pb-4">
+							<CreateListButton isProfile={isProfile} />
+						</View>
 					) : (
 						<Text
 							variant="h2"
