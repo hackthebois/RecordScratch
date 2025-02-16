@@ -55,7 +55,7 @@ const LikeButton = (props: SelectLike) => {
 				className={cn(
 					liked
 						? "fill-red-500 stroke-red-500"
-						: "stroke-muted-foreground",
+						: "stroke-muted-foreground fill-background",
 				)}
 			/>
 			<Text className="font-bold">{likesCount}</Text>

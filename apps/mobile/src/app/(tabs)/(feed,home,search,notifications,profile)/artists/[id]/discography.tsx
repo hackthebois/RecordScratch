@@ -39,7 +39,7 @@ const DiscographyPage = () => {
 	);
 
 	return (
-		<SafeAreaView edges={["left", "right"]}>
+		<SafeAreaView edges={["left", "right"]} style={{ flex: 1 }}>
 			<Stack.Screen
 				options={{
 					title: `${artist.name}'s Discography`,

@@ -65,7 +65,7 @@ const GenrePage = () => {
 								Platform.OS === "web"
 							}
 							estimatedItemSize={160}
-							contentContainerClassName="h-60"
+							contentContainerClassName="h-64"
 							ItemSeparatorComponent={() => (
 								<View className="w-4" />
 							)}
