@@ -13,10 +13,10 @@ const DiscographyPage = () => {
 	const dimensions = useWindowDimensions();
 	const screenSize = Math.min(dimensions.width, 1024);
 	const numColumns = screenSize === 1024 ? 6 : 3;
-	console.log(numColumns, screenSize);
 	const top6Width =
 		(Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns -
 		1;
+
 	const artistId = id!;
 
 	const { data: artist } = useSuspenseQuery(
@@ -48,7 +48,7 @@ const DiscographyPage = () => {
 			<ScrollView contentContainerClassName="py-4">
 				<WebWrapper>
 					{Platform.OS === "web" && (
-						<Text variant="h3" className="pb-4 text-center">
+						<Text variant="h2" className="pb-4">
 							{artist.name}'s Discography
 						</Text>
 					)}

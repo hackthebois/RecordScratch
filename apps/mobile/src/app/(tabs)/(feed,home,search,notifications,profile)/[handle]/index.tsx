@@ -116,7 +116,6 @@ const TopList = ({
 						category,
 					}}
 					direction="vertical"
-					textClassName={`line-clamp-2 truncate w-38 text-wrap text-center sm:line-clamp-3`}
 					showArtist={false}
 					imageWidthAndHeight={top6Width}
 					style={{ width: top6Width }}
@@ -125,7 +124,6 @@ const TopList = ({
 				<ArtistItem
 					artistId={resource.resourceId}
 					direction="vertical"
-					textClassName="font-medium text-center text-base sm:w-38 sm:text-wrap  sm:line-clamp-3"
 					imageWidthAndHeight={top6Width}
 					style={{ width: top6Width }}
 				/>
@@ -211,7 +209,6 @@ const TopListsTab = ({
 };
 
 export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
-	const dimensions = useWindowDimensions();
 	const router = useRouter();
 
 	let profile: Profile | null = null;

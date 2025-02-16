@@ -7,6 +7,8 @@ import { Platform, View, useWindowDimensions } from "react-native";
 import { Text } from "@/components/ui/text";
 import { SquarePlus } from "@/lib/icons/IconsLoader";
 import { useAuth } from "@/lib/auth";
+import { WebWrapper } from "@/components/WebWrapper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CreateListButton = ({ isProfile }: { isProfile: boolean }) => {
 	return (
@@ -31,6 +33,11 @@ const AllListsPage = () => {
 	const userProfile = useAuth((s) => s.profile);
 	const isProfile = profile?.userId == userProfile?.userId;
 	const dimensions = useWindowDimensions();
+	const screenSize = Math.min(dimensions.width, 1024);
+	const numColumns = screenSize === 1024 ? 6 : 3;
+	const top6Width =
+		(Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns -
+		1;
 
 	if (!profile) return <NotFoundScreen />;
 
@@ -39,26 +46,34 @@ const AllListsPage = () => {
 	});
 
 	return (
-		<View className="flex flex-1 items-center">
-			<Stack.Screen
-				options={{
-					title: `${isProfile ? "My" : `${profile.handle}'s`} Lists`,
-				}}
-			/>
-			{Platform.OS === "web" && (
-				<Text variant="h3">{`${isProfile ? "My" : `${profile.handle}'s`} Lists`}</Text>
-			)}
-			<ListOfLists
-				HeaderComponent={
-					Platform.OS != "web" && (
-						<CreateListButton isProfile={isProfile} />
-					)
-				}
-				lists={lists}
-				orientation="vertical"
-				size={Platform.OS != "web" ? dimensions.width / 3.25 : 200}
-			/>
-		</View>
+		<SafeAreaView edges={["left", "right"]} style={{ flex: 1 }}>
+			<WebWrapper>
+				<View className="flex-1 p-4">
+					<Stack.Screen
+						options={{
+							title: `${isProfile ? "My" : `${profile.handle}'s`} Lists`,
+						}}
+					/>
+					{Platform.OS === "web" && (
+						<Text
+							variant="h2"
+							className="pb-4"
+						>{`${isProfile ? "My" : `${profile.handle}'s`} Lists`}</Text>
+					)}
+					<ListOfLists
+						HeaderComponent={
+							Platform.OS != "web" && (
+								<CreateListButton isProfile={isProfile} />
+							)
+						}
+						numColumns={numColumns}
+						lists={lists}
+						orientation="vertical"
+						size={top6Width}
+					/>
+				</View>
+			</WebWrapper>
+		</SafeAreaView>
 	);
 };
 

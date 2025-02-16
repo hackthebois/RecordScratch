@@ -29,7 +29,7 @@ const ListsItem = ({
 	const listResources = listsItem.resources;
 
 	const ListItemContent = (
-		<View className="flex flex-col justify-center">
+		<View className="flex flex-col justify-center gap-4">
 			<View
 				style={{
 					width: size,
@@ -45,7 +45,11 @@ const ListsItem = ({
 					size={size}
 				/>
 			</View>
-			<Text className="text-md truncate pl-1 pt-1 text-center font-medium">
+			<Text
+				className={"w-full text-ellipsis font-semibold"}
+				numberOfLines={1}
+				style={{ flexWrap: "wrap" }}
+			>
 				{listsItem.name}
 			</Text>
 		</View>
@@ -79,6 +83,7 @@ const ListOfLists = ({
 	orientation,
 	onPress,
 	lists,
+	numColumns,
 	HeaderComponent,
 	FooterComponent,
 	LastItemComponent,
@@ -88,6 +93,7 @@ const ListOfLists = ({
 	showLink?: boolean;
 	orientation?: "vertical" | "horizontal";
 	onPress?: (listId: string) => void;
+	numColumns?: number;
 	lists: ListsType[] | undefined;
 	HeaderComponent?: React.ReactNode;
 	FooterComponent?: React.ReactNode;
@@ -129,13 +135,12 @@ const ListOfLists = ({
 				columnWrapperStyle={{
 					flexDirection: "row",
 					flexWrap: "wrap",
-					marginVertical: 10,
-					gap: 10,
-					marginLeft: 5,
+					marginBottom: 16,
+					gap: 16,
 				}}
 				keyboardShouldPersistTaps="always"
 				keyboardDismissMode="interactive"
-				numColumns={3}
+				numColumns={numColumns || 3}
 				scrollEnabled={true}
 				horizontal={false}
 				showsVerticalScrollIndicator={false}

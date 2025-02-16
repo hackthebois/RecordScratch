@@ -189,7 +189,7 @@ export const ResourceItem = ({
 				>
 					<Text
 						className={cn(
-							"mr-3 w-full text-ellipsis font-semibold",
+							"w-full text-ellipsis font-semibold",
 							textClassName,
 						)}
 						numberOfLines={direction === "horizontal" ? 2 : 1}

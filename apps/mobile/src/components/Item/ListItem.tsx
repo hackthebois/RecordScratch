@@ -24,9 +24,17 @@ const ListsItem = ({
 	const ListItemContent = (
 		<View className="flex flex-col justify-center" style={{ width: size }}>
 			<View className="flex items-center justify-center">
-				<ListImage listItems={listResources} category={listsItem.category} size={size} />
+				<ListImage
+					listItems={listResources}
+					category={listsItem.category}
+					size={size}
+				/>
 			</View>
-			<Text className="truncate pl-1 pt-1 text-center line-clamp-2" variant="h3">
+			<Text
+				className={"mr-3 w-full text-ellipsis font-semibold"}
+				numberOfLines={1}
+				style={{ flexWrap: "wrap" }}
+			>
 				{listsItem.name}
 			</Text>
 		</View>
@@ -47,7 +55,7 @@ const ListsItem = ({
 
 			{showProfile && (
 				<Link href={`/${String(profile.handle)}`}>
-					<View className="flex flex-row space-x-1 py-1 text-sm text-muted-foreground hover:underline">
+					<View className="text-muted-foreground flex flex-row space-x-1 py-1 text-sm hover:underline">
 						<UserAvatar imageUrl={getImageUrl(profile)} />
 						<Text className="flex">{profile.name}</Text>
 					</View>
