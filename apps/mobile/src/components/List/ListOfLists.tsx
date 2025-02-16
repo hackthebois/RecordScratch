@@ -138,6 +138,12 @@ const ListOfLists = ({
 					marginBottom: 16,
 					gap: 16,
 				}}
+				contentContainerStyle={{
+					maxWidth: 1024,
+					width: "100%",
+					marginHorizontal: "auto",
+					paddingHorizontal: 16,
+				}}
 				keyboardShouldPersistTaps="always"
 				keyboardDismissMode="interactive"
 				numColumns={numColumns || 3}

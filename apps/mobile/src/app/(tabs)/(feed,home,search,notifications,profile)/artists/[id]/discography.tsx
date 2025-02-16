@@ -45,28 +45,30 @@ const DiscographyPage = () => {
 					title: `${artist.name}'s Discography`,
 				}}
 			/>
-			<ScrollView contentContainerClassName="py-4">
+			<ScrollView>
 				<WebWrapper>
-					{Platform.OS === "web" && (
-						<Text variant="h2" className="pb-4">
-							{artist.name}'s Discography
-						</Text>
-					)}
-					<View className="flex flex-row flex-wrap gap-4 px-4">
-						{albums?.data?.map((album) => (
-							<ResourceItem
-								key={album.id}
-								initialAlbum={album}
-								resource={{
-									resourceId: String(album.id),
-									category: "ALBUM",
-									parentId: String(artist.id),
-								}}
-								imageWidthAndHeight={top6Width}
-								showArtist={false}
-								direction="vertical"
-							/>
-						))}
+					<View className="p-4">
+						{Platform.OS === "web" && (
+							<Text variant="h2" className="pb-4">
+								{artist.name}'s Discography
+							</Text>
+						)}
+						<View className="flex flex-row flex-wrap gap-4">
+							{albums?.data?.map((album) => (
+								<ResourceItem
+									key={album.id}
+									initialAlbum={album}
+									resource={{
+										resourceId: String(album.id),
+										category: "ALBUM",
+										parentId: String(artist.id),
+									}}
+									imageWidthAndHeight={top6Width}
+									showArtist={false}
+									direction="vertical"
+								/>
+							))}
+						</View>
 					</View>
 				</WebWrapper>
 			</ScrollView>

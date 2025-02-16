@@ -2,13 +2,20 @@ import { ArtistItem } from "@/components/Item/ArtistItem";
 import { getQueryOptions } from "@/lib/deezer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { FlatList, Platform } from "react-native";
+import { FlatList, Platform, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
+import { WebWrapper } from "@/components/WebWrapper";
 
 const RelatedPage = () => {
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const artistId = id!;
+	const dimensions = useWindowDimensions();
+	const screenSize = Math.min(dimensions.width, 1024);
+	const numColumns = screenSize === 1024 ? 6 : 3;
+	const top6Width =
+		(Math.min(screenSize, 1024) - 32 - (numColumns - 1) * 16) / numColumns -
+		1;
 
 	const { data: artist } = useSuspenseQuery(
 		getQueryOptions({
@@ -28,48 +35,53 @@ const RelatedPage = () => {
 	);
 
 	return (
-		<SafeAreaView
-			style={{ flex: 1 }}
-			edges={["left", "right"]}
-			className="flex flex-1 items-center"
-		>
+		<>
 			<Stack.Screen
 				options={{
 					title: `Related Artists to ${artist.name}`,
 				}}
 			/>
-			{Platform.OS === "web" && (
-				<Text variant="h3" className="pb-4 text-center">
-					Related Artists to {artist.name}'s
-				</Text>
-			)}
 			<FlatList
+				ListHeaderComponent={
+					Platform.OS === "web" ? (
+						<WebWrapper>
+							<Text variant="h2" className="pb-4">
+								Related Artists to {artist.name}
+							</Text>
+						</WebWrapper>
+					) : (
+						<></>
+					)
+				}
 				data={artists.data}
 				renderItem={({ item }) => (
 					<ArtistItem
 						artistId={String(item.id)}
 						initialArtist={item}
 						direction="vertical"
-						imageWidthAndHeight={115}
-						className="max-w-32"
-						textClassName="line-clamp-2"
+						imageWidthAndHeight={top6Width}
+						style={{
+							maxWidth: top6Width,
+						}}
 					/>
 				)}
 				columnWrapperStyle={{
 					flexDirection: "row",
 					flexWrap: "wrap",
-					marginVertical: 10,
-					gap: 20,
-					marginLeft: 5,
+					marginBottom: 16,
+					gap: 16,
+				}}
+				contentContainerStyle={{
+					maxWidth: 1024,
+					width: "100%",
+					marginHorizontal: "auto",
+					paddingHorizontal: 16,
 				}}
 				keyboardShouldPersistTaps="always"
 				keyboardDismissMode="interactive"
-				numColumns={Platform.OS === "web" ? 3 : 2}
-				scrollEnabled={true}
-				horizontal={false}
-				showsVerticalScrollIndicator={false}
+				numColumns={numColumns}
 			/>
-		</SafeAreaView>
+		</>
 	);
 };
 

@@ -24,7 +24,7 @@ import {
 	listResourceType,
 } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import {
 	Platform,
 	Pressable,

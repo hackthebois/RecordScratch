@@ -46,34 +46,29 @@ const AllListsPage = () => {
 	});
 
 	return (
-		<SafeAreaView edges={["left", "right"]} style={{ flex: 1 }}>
-			<WebWrapper>
-				<View className="flex-1 p-4">
-					<Stack.Screen
-						options={{
-							title: `${isProfile ? "My" : `${profile.handle}'s`} Lists`,
-						}}
-					/>
-					{Platform.OS === "web" && (
+		<>
+			<Stack.Screen
+				options={{
+					title: `${isProfile ? "My" : `${profile.handle}'s`} Lists`,
+				}}
+			/>
+			<ListOfLists
+				HeaderComponent={
+					Platform.OS != "web" ? (
+						<CreateListButton isProfile={isProfile} />
+					) : (
 						<Text
 							variant="h2"
 							className="pb-4"
 						>{`${isProfile ? "My" : `${profile.handle}'s`} Lists`}</Text>
-					)}
-					<ListOfLists
-						HeaderComponent={
-							Platform.OS != "web" && (
-								<CreateListButton isProfile={isProfile} />
-							)
-						}
-						numColumns={numColumns}
-						lists={lists}
-						orientation="vertical"
-						size={top6Width}
-					/>
-				</View>
-			</WebWrapper>
-		</SafeAreaView>
+					)
+				}
+				numColumns={numColumns}
+				lists={lists}
+				orientation="vertical"
+				size={top6Width}
+			/>
+		</>
 	);
 };
 
