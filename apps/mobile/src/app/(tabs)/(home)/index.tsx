@@ -38,10 +38,8 @@ const AlbumOfTheDay = () => {
 				album.duration
 					? `${formatDuration(album.duration)}`
 					: undefined,
-				...(album.genres?.data.map(
-					(genre: { name: any }) => genre.name,
-				) ?? []),
 			]}
+			genres={album.genres?.data ?? []}
 		>
 			<Button
 				variant="secondary"

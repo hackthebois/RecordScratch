@@ -52,6 +52,22 @@ export const GenreSchema = z.object({
 });
 export type Genre = z.infer<typeof GenreSchema>;
 
+export const ContributorSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	link: z.string().url().optional(),
+	share: z.string().url().optional(),
+	picture: z.string().url().optional(),
+	picture_small: z.string().url().optional(),
+	picture_medium: z.string().url().optional(),
+	picture_big: z.string().url().optional(),
+	picture_xl: z.string().url().optional(),
+	radio: z.boolean().optional(),
+	role: z.string().optional(),
+	tracklist: z.string().url(),
+});
+export type Contributor = z.infer<typeof ContributorSchema>;
+
 export const AlbumSchema = z.object({
 	id: z.number(),
 	title: z.string(),
@@ -69,6 +85,7 @@ export const AlbumSchema = z.object({
 	available: z.boolean().optional(),
 	explicit_lyrics: z.boolean().optional(),
 	artist: ArtistSchema.optional(),
+	contributors: ContributorSchema.array().optional(),
 	tracks: z.object({ data: BaseTrackSchema.array() }).optional(),
 });
 export type Album = z.infer<typeof AlbumSchema>;
@@ -254,9 +271,6 @@ export const deezer = async <TRoute extends keyof Deezer>({
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		delete (input as any).id;
 	}
-
-	console.log(input);
-
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const params = new URLSearchParams(input as any);
 

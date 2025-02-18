@@ -72,7 +72,7 @@ export default function AlbumLayout() {
 					<WebWrapper>
 						<Metadata
 							title={album.title}
-							type="ALBUM"
+							type={album.record_type}
 							cover={album.cover_big}
 							tags={[
 								album.release_date,
@@ -82,18 +82,23 @@ export default function AlbumLayout() {
 							]}
 							genres={album.genres?.data ?? []}
 						>
-							<Pressable
-								onPress={() => {
-									router.navigate(
-										`/artists/${album.artist?.id}`,
-									);
-								}}
-								style={{ maxWidth: "100%" }}
-							>
-								<Text className="text-muted-foreground text-center sm:text-left">
-									{album.artist?.name}
-								</Text>
-							</Pressable>
+							<View className="flex flex-row items-center justify-center sm:justify-start">
+								{album.contributors?.map((artist, index) => (
+									<Pressable
+										onPress={() => {
+											router.navigate(
+												`/artists/${artist?.id}`,
+											);
+										}}
+										style={{ maxWidth: "100%" }}
+									>
+										<Text className="text-muted-foreground text-center sm:text-left">
+											{`${artist?.name + (album.contributors?.length === index + 1 ? "" : ",  ")}`}
+										</Text>
+									</Pressable>
+								))}
+							</View>
+
 							<View className="my-4 flex-row items-center justify-center gap-4 sm:justify-start">
 								<RatingInfo resource={resource} size="lg" />
 								<RateButton
