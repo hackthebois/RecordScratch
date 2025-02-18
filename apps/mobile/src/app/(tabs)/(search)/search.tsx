@@ -173,6 +173,7 @@ export default function SearchPage() {
 													// 	data: song,
 													// });
 												}}
+												textClassName="font-medium w-80"
 												imageWidthAndHeight={80}
 												showType
 											/>
@@ -198,6 +199,7 @@ export default function SearchPage() {
 													// 	data: album,
 													// });
 												}}
+												textClassName="font-medium w-80"
 												imageWidthAndHeight={80}
 												showType
 											/>
@@ -216,6 +218,7 @@ export default function SearchPage() {
 													// 	data: artist,
 													// });
 												}}
+												textClassName="font-medium w-80"
 												imageWidthAndHeight={80}
 												showType
 											/>

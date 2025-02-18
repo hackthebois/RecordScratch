@@ -61,6 +61,9 @@ export default {
 				extrabold: "Montserrat_800ExtraBold",
 				black: "Montserrat_900Black",
 			},
+			screens: {
+				xs: "375px",
+			},
 		},
 	},
 	plugins: [],

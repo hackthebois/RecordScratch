@@ -106,8 +106,7 @@ const Resource = ({
 			<ArtistItem
 				artistId={resourceId}
 				imageWidthAndHeight={SONG_HEIGHT - 5}
-				className="w-64"
-				textClassName="font-medium w-full truncate"
+				textClassName="font-medium w-52"
 				showLink={false}
 			/>
 		);
@@ -119,8 +118,7 @@ const Resource = ({
 				category,
 			}}
 			imageWidthAndHeight={SONG_HEIGHT - 5}
-			className="w-64"
-			textClassName="font-medium w-full truncate"
+			textClassName="font-medium w-52"
 			showArtist={false}
 			showLink={false}
 		/>

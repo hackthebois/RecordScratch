@@ -10,21 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { ListPlus, Pencil, Settings, Star } from "@/lib/icons/IconsLoader";
+import { ListPlus, Pencil, Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
 import { Category, ListItem } from "@recordscratch/types";
-import { Link, Stack, router, useLocalSearchParams } from "expo-router";
-import {
-	KeyboardAvoidingView,
-	Platform,
-	ScrollView,
-	TouchableOpacity,
-	useWindowDimensions,
-	View,
-} from "react-native";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 
 const ListResources = ({
 	items,
@@ -33,7 +25,7 @@ const ListResources = ({
 	items: ListItem[] | undefined;
 	category: Category;
 }) => {
-	const size = Platform.OS === "web" ? 100 : 60;
+	const size = Platform.OS === "web" ? 70 : 60;
 	return (
 		<>
 			{items?.map((item, index) => (
@@ -57,7 +49,10 @@ const ListResources = ({
 								<ArtistItem
 									artistId={item.resourceId}
 									imageWidthAndHeight={size}
-									textClassName="font-medium"
+									textClassName={cn(
+										"font-medium",
+										item.rating ? "w-52 lg:w-full" : "w-64",
+									)}
 								/>
 							) : (
 								<ResourceItem
@@ -67,7 +62,10 @@ const ListResources = ({
 										category: category,
 									}}
 									imageWidthAndHeight={size}
-									textClassName="font-medium"
+									textClassName={cn(
+										"font-medium",
+										item.rating ? "w-52 lg:w-full" : "w-64",
+									)}
 									showArtist={false}
 								/>
 							)}
