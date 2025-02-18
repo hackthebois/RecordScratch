@@ -37,8 +37,8 @@ const app = new Hono<{ Bindings: ServerEnv }>();
 app.use(
 	cors({
 		origin: [
-			"https://refactor.recordscratch.app",
 			"https://recordscratch.app",
+			"https://www.recordscratch.app",
 			"http://localhost:8081",
 		],
 		allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
