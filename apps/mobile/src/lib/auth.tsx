@@ -9,7 +9,12 @@ import { createStore, useStore } from "zustand";
 import { registerForPushNotificationsAsync } from "./notifications";
 import { Platform } from "react-native";
 
-type Status = "loading" | "authenticated" | "unauthenticated" | "needsonboarding";
+type Status =
+	| "loading"
+	| "authenticated"
+	| "unauthenticated"
+	| "needsonboarding"
+	| "deactivated";
 
 // Define the context type
 type Auth = {
@@ -61,7 +66,8 @@ export const createAuthStore = () =>
 			let expoPushToken: string | undefined;
 
 			if (Platform.OS !== "web" && !sessionId) {
-				sessionId = (await SecureStore.getItemAsync("sessionId")) ?? undefined;
+				sessionId =
+					(await SecureStore.getItemAsync("sessionId")) ?? undefined;
 				expoPushToken = await registerForPushNotificationsAsync();
 				set({ pushToken: expoPushToken });
 			}
@@ -90,18 +96,25 @@ export const createAuthStore = () =>
 								"user.profile.updatedAt": ["Date"],
 							},
 						},
-					})
+					}),
 				);
 
 			if (parsedData.error || !parsedData.data.user) {
-				set({ sessionId: null, profile: null, status: "unauthenticated" });
+				set({
+					sessionId: null,
+					profile: null,
+					status: "unauthenticated",
+				});
 				return { status: "unauthenticated" };
 			} else {
 				get().setSessionId(sessionId ?? "");
 				if (parsedData.data.user.profile) {
 					get().setProfile(parsedData.data.user.profile);
-					set({ status: "authenticated" });
-					return { status: "authenticated" };
+					const status = parsedData.data.user.profile.deactivated
+						? "deactivated"
+						: "authenticated";
+					set({ status: status });
+					return { status: status };
 				} else {
 					set({ status: "needsonboarding" });
 					return { status: "needsonboarding" };
@@ -137,6 +150,8 @@ export const handleLoginRedirect = async ({
 		router.replace("/(tabs)");
 	} else if (status === "needsonboarding") {
 		router.replace("/(auth)/onboard");
+	} else if (status === "deactivated") {
+		router.replace("/(auth)/deactivated");
 	} else {
 		router.replace("/(auth)/signin");
 	}

@@ -1,7 +1,7 @@
 import NotFoundScreen from "@/app/+not-found";
 import ListOfLists from "@/components/List/ListOfLists";
 import { Button } from "@/components/ui/button";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { Text } from "@/components/ui/text";

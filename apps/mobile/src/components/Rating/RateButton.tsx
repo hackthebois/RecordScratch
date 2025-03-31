@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
 import { Star } from "@/lib/icons/IconsLoader";
 import { Rating, Resource } from "@recordscratch/types";
@@ -33,11 +33,11 @@ const RateButton = ({
 		{
 			staleTime: Infinity,
 			initialData: initialUserRating,
-		}
+		},
 	);
 
 	if (isLoading) {
-		return <Skeleton className="w-[80px] h-[48px]" />;
+		return <Skeleton className="h-[48px] w-[80px]" />;
 	}
 
 	const fill = userRating ? { fill: "#fb8500" } : undefined;

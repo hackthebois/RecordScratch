@@ -5,7 +5,7 @@ import { WebWrapper } from "@/components/WebWrapper";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
 import { AtSign, Eraser } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
@@ -44,7 +44,7 @@ const TopListTab = ({
 
 			<Tabs value={value} onValueChange={setValue}>
 				<View className="mt-2">
-					<TabsList className="flex-row w-full">
+					<TabsList className="w-full flex-row">
 						<TabsTrigger value="ALBUM" className="flex-1">
 							<Text>Albums</Text>
 						</TabsTrigger>
@@ -86,7 +86,7 @@ const TopListTab = ({
 			</Tabs>
 
 			<Button
-				className="w-full flex items-center"
+				className="flex w-full items-center"
 				variant={editMode ? "destructive" : "outline"}
 				onPress={() => {
 					setEditMode(!editMode);
@@ -141,16 +141,22 @@ const EditProfile = () => {
 			});
 		},
 	});
-	const { mutateAsync: getSignedURL } = api.profiles.getSignedURL.useMutation();
+	const { mutateAsync: getSignedURL } =
+		api.profiles.getSignedURL.useMutation();
 
 	const image = form.watch("image");
 	const handle = form.watch("handle");
 	const name = form.watch("name");
 
 	const debouncedHandle = useDebounce(handle, 500);
-	const { data: handleExists } = api.profiles.handleExists.useQuery(debouncedHandle, {
-		enabled: debouncedHandle.length > 0 && debouncedHandle !== profile.handle,
-	});
+	const { data: handleExists } = api.profiles.handleExists.useQuery(
+		debouncedHandle,
+		{
+			enabled:
+				debouncedHandle.length > 0 &&
+				debouncedHandle !== profile.handle,
+		},
+	);
 
 	useEffect(() => {
 		if (handleExists) {
@@ -159,7 +165,10 @@ const EditProfile = () => {
 				message: "Handle already exists",
 			});
 		} else {
-			if (form.formState.errors.handle?.message === "Handle already exists") {
+			if (
+				form.formState.errors.handle?.message ===
+				"Handle already exists"
+			) {
 				form.clearErrors("handle");
 			}
 		}
@@ -209,13 +218,13 @@ const EditProfile = () => {
 	return (
 		<KeyboardAvoidingScrollView>
 			<WebWrapper>
-				<View className="p-4 gap-3">
+				<View className="gap-3 p-4">
 					<Stack.Screen
 						options={{
 							title: "Edit Profile",
 						}}
 					/>
-					<View className="flex flex-row items-center gap-4 ">
+					<View className="flex flex-row items-center gap-4">
 						<UserAvatar imageUrl={image?.uri} size={100} />
 						<Controller
 							control={form.control}
@@ -225,12 +234,15 @@ const EditProfile = () => {
 									<Button
 										variant="secondary"
 										onPress={async () => {
-											let result = await ImagePicker.launchImageLibraryAsync({
-												mediaTypes: ["images"],
-												allowsEditing: true,
-												aspect: [1, 1],
-												quality: 1,
-											});
+											let result =
+												await ImagePicker.launchImageLibraryAsync(
+													{
+														mediaTypes: ["images"],
+														allowsEditing: true,
+														aspect: [1, 1],
+														quality: 1,
+													},
+												);
 
 											if (
 												!result.canceled &&
@@ -240,7 +252,9 @@ const EditProfile = () => {
 												const asset = result.assets[0]!;
 												onChange({
 													uri: asset.uri,
-													type: asset.type ?? "image/jpeg",
+													type:
+														asset.type ??
+														"image/jpeg",
 													size: asset.fileSize,
 												});
 											}
@@ -249,8 +263,11 @@ const EditProfile = () => {
 										<Text>Pick an image</Text>
 									</Button>
 									{form.formState.errors.image && (
-										<Text className="mt-2 text-destructive">
-											{form.formState.errors.image.message}
+										<Text className="text-destructive mt-2">
+											{
+												form.formState.errors.image
+													.message
+											}
 										</Text>
 									)}
 								</View>
@@ -266,12 +283,12 @@ const EditProfile = () => {
 								<TextInput
 									{...field}
 									placeholder="Name"
-									className="self-stretch text-foreground border-border border rounded-md px-4 py-3"
+									className="text-foreground border-border self-stretch rounded-md border px-4 py-3"
 									autoComplete="off"
 									onChangeText={field.onChange}
 								/>
 								{form.formState.errors.name && (
-									<Text className="mt-2 text-destructive">
+									<Text className="text-destructive mt-2">
 										{form.formState.errors.name.message}
 									</Text>
 								)}
@@ -286,19 +303,22 @@ const EditProfile = () => {
 								<Text>Handle</Text>
 								<View>
 									<AtSign
-										className="absolute left-3 top-[11px] text-muted-foreground text-lg"
+										className="text-muted-foreground absolute left-3 top-[11px] text-lg"
 										size={16}
 									/>
 									<TextInput
 										{...field}
 										placeholder="Handle"
-										className="self-stretch text-foreground border-border border rounded-md pl-9 pr-4 py-3"
+										className="text-foreground border-border self-stretch rounded-md border py-3 pl-9 pr-4"
 										autoComplete="off"
 										onChangeText={field.onChange}
 									/>
 									{form.formState.errors.handle && (
-										<Text className="mt-2 text-destructive">
-											{form.formState.errors.handle.message}
+										<Text className="text-destructive mt-2">
+											{
+												form.formState.errors.handle
+													.message
+											}
 										</Text>
 									)}
 								</View>
@@ -314,13 +334,13 @@ const EditProfile = () => {
 								<TextInput
 									{...field}
 									placeholder="Bio"
-									className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
+									className="text-foreground border-border h-40 self-stretch rounded-md border p-4"
 									multiline
 									autoComplete="off"
 									onChangeText={field.onChange}
 								/>
 								{form.formState.errors.bio && (
-									<Text className="mt-2 text-destructive">
+									<Text className="text-destructive mt-2">
 										{form.formState.errors.bio.message}
 									</Text>
 								)}

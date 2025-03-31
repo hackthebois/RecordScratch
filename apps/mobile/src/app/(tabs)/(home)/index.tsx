@@ -4,7 +4,7 @@ import { ResourceItemSkeleton } from "@/components/Item/ResourceItem";
 import Metadata from "@/components/Metadata";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { getQueryOptions } from "@/lib/deezer";
 import { formatDuration } from "@recordscratch/lib";
 import { FlashList } from "@shopify/flash-list";

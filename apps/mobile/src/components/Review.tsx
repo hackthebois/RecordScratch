@@ -2,15 +2,100 @@ import { ResourceItem } from "@/components/Item/ResourceItem";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
-import { Heart, MessageCircle, Reply, Star } from "@/lib/icons/IconsLoader";
+import { RouterInputs, api } from "@/components/Providers";
+import {
+	Heart,
+	MessageCircle,
+	Reply,
+	Star,
+	Trash,
+} from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import { cn, timeAgo } from "@recordscratch/lib";
-import { ReviewType, SelectComment, SelectLike } from "@recordscratch/types";
+import {
+	Category,
+	ReviewType,
+	SelectComment,
+	SelectLike,
+} from "@recordscratch/types";
 import { Link } from "expo-router";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { Pressable, View } from "react-native";
 import { WebWrapper } from "./WebWrapper";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "./ui/dialog";
+import { useAuth } from "@/lib/auth";
+
+const DeactivateButton = ({
+	resourceId,
+	userId,
+	category,
+	feedInput,
+}: {
+	resourceId: string;
+	userId: string;
+	category: Category;
+	feedInput?: RouterInputs["ratings"]["feed"];
+}) => {
+	const utils = api.useUtils();
+	const { mutate: deactivateRating } = api.ratings.deactivate.useMutation({
+		onSettled: async () => {
+			await utils.ratings.get.invalidate({ resourceId, category });
+			await utils.ratings.user.get.invalidate({ resourceId, userId });
+			await utils.ratings.user.total.invalidate({ userId });
+			if (feedInput)
+				await utils.ratings.feed.invalidate({ ...feedInput });
+		},
+	});
+	const [open, setOpen] = useState(false);
+	return (
+		<Dialog open={open}>
+			<DialogTrigger>
+				<Button
+					variant="destructive"
+					size="sm"
+					onPress={() => setOpen(true)}
+				>
+					<Trash size={20} className="text-muted-foreground" />
+				</Button>
+			</DialogTrigger>
+			<DialogContent className="max-w-450px">
+				<DialogTitle>Delete Comment</DialogTitle>
+				<DialogDescription>
+					Do You Want to Delete this Comment for Violating Terms of
+					Service?
+				</DialogDescription>
+				<View className="mt-4 flex flex-row items-center justify-center gap-3">
+					<DialogClose>
+						<Button
+							variant="destructive"
+							onPress={() => {
+								deactivateRating({ resourceId, userId });
+								setOpen(false);
+							}}
+						>
+							<Text>Delete</Text>
+						</Button>
+					</DialogClose>
+					<DialogClose>
+						<Button
+							variant="outline"
+							onPress={() => setOpen(false)}
+						>
+							<Text>Cancel</Text>
+						</Button>
+					</DialogClose>
+				</View>
+			</DialogContent>
+		</Dialog>
+	);
+};
 
 const LikeButton = (props: SelectLike) => {
 	const utils = api.useUtils();
@@ -101,9 +186,13 @@ export const Review = ({
 	category,
 	updatedAt,
 	hideActions = false,
+	deactivated,
+	feedInput,
 }: ReviewType & {
 	hideActions?: boolean;
+	feedInput?: RouterInputs["ratings"]["feed"];
 }) => {
+	const myProfile = useAuth((s) => s.profile);
 	return (
 		<WebWrapper>
 			<View className="bg-background text-card-foreground flex flex-col gap-4 p-4">
@@ -111,7 +200,7 @@ export const Review = ({
 					resource={{ parentId, resourceId, category }}
 					showType
 					imageWidthAndHeight={60}
-					textClassName=""
+					className={cn(deactivated && "bg-blue-300")}
 				/>
 				<View className="flex flex-col items-start gap-4">
 					<View className="flex w-full flex-col justify-between gap-4 text-lg sm:flex-row-reverse sm:items-center">
@@ -183,6 +272,14 @@ export const Review = ({
 									/>
 								</Button>
 							</Link>
+							{myProfile?.role === "MOD" && (
+								<DeactivateButton
+									userId={profile.userId}
+									resourceId={resourceId}
+									category={category}
+									feedInput={feedInput}
+								/>
+							)}
 						</View>
 					) : null}
 				</View>

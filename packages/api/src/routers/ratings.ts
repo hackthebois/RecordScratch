@@ -7,6 +7,7 @@ import {
 	ratings,
 } from "@recordscratch/db";
 import {
+	DeactivateRatingSchema,
 	FeedFiltersSchema,
 	RateFormSchema,
 	ResourceSchema,
@@ -27,7 +28,12 @@ import {
 } from "drizzle-orm";
 import { z } from "zod";
 import { posthog } from "../posthog";
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import {
+	moderatorProcedure,
+	protectedProcedure,
+	publicProcedure,
+	router,
+} from "../trpc";
 import { PaginatedInput } from "../utils";
 
 const RatingAlgorithm = (countWeight: number) => {
@@ -59,10 +65,12 @@ export const ratingsRouter = router({
 					? and(
 							eq(ratings.parentId, resourceId),
 							eq(ratings.category, "ALBUM"),
+							eq(ratings.deactivated, false),
 						)
 					: and(
 							eq(ratings.resourceId, resourceId),
 							eq(ratings.category, category),
+							eq(ratings.deactivated, false),
 						);
 
 			const rating = await db
@@ -93,6 +101,7 @@ export const ratingsRouter = router({
 					and(
 						inArray(ratings.resourceId, resourceIds),
 						eq(ratings.category, category),
+						eq(ratings.deactivated, false),
 					),
 				)
 				.groupBy(ratings.resourceId);
@@ -108,14 +117,30 @@ export const ratingsRouter = router({
 				ctx: { db },
 				input: { resourceId, category, onlyReviews },
 			}) => {
-				const total = await db.query.ratings.findMany({
-					where: and(
-						eq(ratings.resourceId, resourceId),
-						eq(ratings.category, category),
-						onlyReviews ? isNotNull(ratings.content) : undefined,
-					),
-				});
-				return total.length;
+				const total = await db
+					.select({ total: count(ratings.rating) })
+					.from(ratings)
+					.where(
+						and(
+							eq(ratings.resourceId, resourceId),
+							eq(ratings.category, category),
+							eq(ratings.deactivated, false),
+							onlyReviews
+								? isNotNull(ratings.content)
+								: undefined,
+						),
+					)
+					.then(([result]) => result.total);
+				return total;
+				// const total = await db.query.ratings.findMany({
+				// 	where: and(
+				// 		eq(ratings.resourceId, resourceId),
+				// 		eq(ratings.category, category),
+				// 		eq(ratings.deactivated, false),
+				// 		onlyReviews ? isNotNull(ratings.content) : undefined,
+				// 	),
+				// });
+				// return total.length;
 			},
 		),
 	trending: publicProcedure.query(async ({ ctx: { db } }) => {
@@ -125,13 +150,21 @@ export const ratingsRouter = router({
 				resourceId: ratings.resourceId,
 			})
 			.from(ratings)
+			.innerJoin(
+				profile,
+				and(
+					eq(ratings.userId, profile.userId),
+					eq(profile.deactivated, false),
+				),
+			)
 			.where(
 				and(
 					eq(ratings.category, "ALBUM"),
-					gt(
-						ratings.createdAt,
-						new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-					),
+					// gt(
+					// 	ratings.createdAt,
+					// 	new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
+					// ),
+					eq(ratings.deactivated, false),
 				),
 			)
 			.groupBy(ratings.resourceId)
@@ -147,7 +180,19 @@ export const ratingsRouter = router({
 				sortValue: RatingAlgorithm(0.3),
 			})
 			.from(ratings)
-			.where(eq(ratings.category, "ALBUM"))
+			.innerJoin(
+				profile,
+				and(
+					eq(ratings.userId, profile.userId),
+					eq(profile.deactivated, false),
+				),
+			)
+			.where(
+				and(
+					eq(ratings.category, "ALBUM"),
+					eq(ratings.deactivated, false),
+				),
+			)
 			.groupBy(ratings.resourceId)
 			.orderBy(({ sortValue }) => desc(sortValue))
 			.having(({ total }) => gt(total, 5))
@@ -161,7 +206,19 @@ export const ratingsRouter = router({
 				resourceId: ratings.resourceId,
 			})
 			.from(ratings)
-			.where(eq(ratings.category, "ALBUM"))
+			.innerJoin(
+				profile,
+				and(
+					eq(ratings.userId, profile.userId),
+					eq(profile.deactivated, false),
+				),
+			)
+			.where(
+				and(
+					eq(ratings.category, "ALBUM"),
+					eq(ratings.deactivated, false),
+				),
+			)
 			.groupBy(ratings.resourceId)
 			.orderBy(({ total }) => desc(total))
 			.limit(20);
@@ -176,7 +233,19 @@ export const ratingsRouter = router({
 			})
 			.from(ratings)
 			.groupBy(ratings.parentId)
-			.where(eq(ratings.category, "ALBUM"))
+			.innerJoin(
+				profile,
+				and(
+					eq(ratings.userId, profile.userId),
+					eq(profile.deactivated, false),
+				),
+			)
+			.where(
+				and(
+					eq(ratings.category, "ALBUM"),
+					eq(ratings.deactivated, false),
+				),
+			)
 			.orderBy(({ sortValue }) => desc(sortValue))
 			.having(({ total }) => gt(total, 5))
 			.limit(20);
@@ -227,17 +296,25 @@ export const ratingsRouter = router({
 							and(
 								eq(likes.authorId, ratings.userId),
 								eq(likes.resourceId, ratings.resourceId),
+								eq(ratings.deactivated, false),
 							),
 						)} + ${db.$count(
 							comments,
 							and(
 								eq(comments.authorId, ratings.userId),
 								eq(comments.resourceId, ratings.resourceId),
+								eq(comments.deactivated, false),
 							),
 						)} + EXTRACT(EPOCH FROM ${ratings.createdAt}) / 500000`,
 					})
 					.from(ratings)
-					.innerJoin(profile, eq(ratings.userId, profile.userId))
+					.innerJoin(
+						profile,
+						and(
+							eq(ratings.userId, profile.userId),
+							eq(profile.deactivated, false),
+						),
+					)
 					.where(
 						and(
 							followingWhere,
@@ -254,6 +331,7 @@ export const ratingsRouter = router({
 								? eq(ratings.rating, filters.rating)
 								: undefined,
 							ratingTypeFilter,
+							eq(ratings.deactivated, false),
 						),
 					)
 					.groupBy((t) => [
@@ -307,6 +385,13 @@ export const ratingsRouter = router({
 						rating_count: count(ratings.rating),
 					})
 					.from(ratings)
+					.innerJoin(
+						profile,
+						and(
+							eq(ratings.userId, profile.userId),
+							eq(profile.deactivated, false),
+						),
+					)
 					.where(
 						and(
 							eq(ratings.resourceId, resourceId),
@@ -316,6 +401,7 @@ export const ratingsRouter = router({
 									: isNull(ratings.content)
 								: undefined,
 							followingWhere,
+							eq(ratings.deactivated, false),
 						),
 					)
 					.groupBy(ratings.rating)
@@ -340,6 +426,7 @@ export const ratingsRouter = router({
 					where: and(
 						eq(ratings.resourceId, resourceId),
 						eq(ratings.userId, userId),
+						eq(ratings.deactivated, false),
 					),
 				});
 				return userRating ? userRating : null;
@@ -407,7 +494,10 @@ export const ratingsRouter = router({
 			.input(z.object({ userId: z.string() }))
 			.query(async ({ input: { userId }, ctx: { db } }) => {
 				const total = await db.query.ratings.findMany({
-					where: eq(ratings.userId, userId),
+					where: and(
+						eq(ratings.userId, userId),
+						eq(ratings.deactivated, false),
+					),
 				});
 				return total.length;
 			}),
@@ -436,6 +526,7 @@ export const ratingsRouter = router({
 							inArray(ratings.resourceId, resourceIds),
 							eq(ratings.userId, userId),
 							eq(ratings.category, category),
+							eq(ratings.deactivated, false),
 						),
 					});
 				},
@@ -475,6 +566,7 @@ export const ratingsRouter = router({
 							userId,
 							parentId,
 							content,
+							deactivated: false,
 						},
 					});
 			}
@@ -508,6 +600,21 @@ export const ratingsRouter = router({
 				],
 			]);
 		}),
+	deactivate: moderatorProcedure
+		.input(DeactivateRatingSchema)
+		.mutation(async ({ ctx: { db }, input: { resourceId, userId } }) => {
+			await db
+				.update(ratings)
+				.set({
+					deactivated: true,
+				})
+				.where(
+					and(
+						eq(ratings.resourceId, resourceId),
+						eq(ratings.userId, userId),
+					),
+				);
+		}),
 	leaderboard: publicProcedure.query(async ({ ctx: { db } }) => {
 		return await db
 			.select({
@@ -516,6 +623,7 @@ export const ratingsRouter = router({
 			})
 			.from(ratings)
 			.leftJoin(profile, eq(ratings.userId, profile.userId))
+			.where(eq(ratings.deactivated, false))
 			.groupBy(profile.userId)
 			.orderBy(({ total }) => desc(total))
 			.limit(20);

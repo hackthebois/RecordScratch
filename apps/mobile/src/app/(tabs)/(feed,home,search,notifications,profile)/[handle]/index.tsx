@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
-import { ChevronRight } from "@/lib/icons/IconsLoader";
+import { ChevronRight, UserMinus } from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import {
@@ -24,6 +24,7 @@ import {
 	listResourceType,
 } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Shield, ShieldCheck } from "lucide-react-native";
 import { Suspense } from "react";
 import {
 	Platform,
@@ -210,10 +211,10 @@ const TopListsTab = ({
 
 export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 	const router = useRouter();
-
+	const userProfile = useAuth((s) => s.profile);
 	let profile: Profile | null = null;
 	if (isProfile) {
-		profile = useAuth((s) => s.profile);
+		profile = userProfile;
 	} else {
 		const { handle } = useLocalSearchParams<{ handle: string }>();
 		[profile] = api.profiles.get.useSuspenseQuery(handle);
@@ -253,6 +254,12 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 	const [topLists] = api.lists.topLists.useSuspenseQuery({
 		userId: profile.userId,
 	});
+
+	const { mutate: deactivateProfile } = api.profiles.deactivate.useMutation();
+
+	const deactivateButton = () => {
+		deactivateProfile({ userId: profile!.userId });
+	};
 
 	const options =
 		Platform.OS !== "web"
@@ -299,9 +306,24 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 										/>
 									</View>
 									<View className="flex-1 items-start justify-center gap-3">
-										<Text className="text-muted-foreground">
-											PROFILE
-										</Text>
+										<View className="flex flex-row items-center gap-2">
+											<Text className="text-muted-foreground">
+												PROFILE
+											</Text>
+											{userProfile?.role === "MOD" && (
+												<Button
+													variant="destructive"
+													style={{ height: 30 }}
+													onPress={deactivateButton}
+												>
+													<UserMinus
+														size={15}
+														className="color-black"
+													/>
+												</Button>
+											)}
+										</View>
+
 										<Text
 											className="hidden sm:block"
 											variant="h1"
@@ -312,6 +334,16 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 											<Pill>{`@${profile.handle}`}</Pill>
 											<Pill>{`Streak: ${streak ?? ""}`}</Pill>
 											<Pill>{`Likes: ${likes ?? ""}`}</Pill>
+											{profile.role === "MOD" && (
+												<Pill className="bg-red-300">
+													<View className="flex flex-row items-center">
+														<ShieldCheck
+															size={16}
+														/>
+														<Text>Moderator</Text>
+													</View>
+												</Pill>
+											)}
 										</View>
 										<Text className="truncate text-wrap">
 											{profile.bio || "No bio yet"}

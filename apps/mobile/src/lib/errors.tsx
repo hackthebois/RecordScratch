@@ -1,14 +1,13 @@
 import * as Sentry from "@sentry/react-native";
-import { useEffect } from "react";
 import env from "../env";
+import { Platform } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
-export const catchError = (error: any) => {
-	console.error("Error: ", error);
+export const catchError = async (error: any) => {
+	const { sessionId } = error;
+	console.error("Error: ", sessionId, error);
 	if (env.ENV !== "development") Sentry.captureException(error);
-};
-
-export const useCatchError = (error: any) => {
-	useEffect(() => {
-		catchError(error);
-	}, [error]);
+	if (Platform.OS !== "web") {
+		await SecureStore.deleteItemAsync("sessionId");
+	}
 };

@@ -18,8 +18,11 @@ function Skeleton({
 
 	React.useEffect(() => {
 		sv.value = withRepeat(
-			withSequence(withTiming(0.4, { duration }), withTiming(1, { duration })),
-			-1
+			withSequence(
+				withTiming(0.4, { duration }),
+				withTiming(1, { duration }),
+			),
+			-1,
 		);
 	}, []);
 
@@ -30,7 +33,7 @@ function Skeleton({
 	return (
 		<Animated.View
 			style={style}
-			className={cn("rounded-md bg-secondary dark:bg-muted", className)}
+			className={cn("bg-secondary dark:bg-muted rounded-md", className)}
 			{...props}
 		/>
 	);

@@ -43,7 +43,9 @@ export const ProfileHandleSchema = z
 		}
 		return true;
 	});
-export const ProfileBioSchema = z.string().max(200, "Must be less than 200 characters");
+export const ProfileBioSchema = z
+	.string()
+	.max(200, "Must be less than 200 characters");
 
 export const ProfileSchema = createSelectSchema(profile, {
 	name: ProfileNameSchema,
@@ -55,14 +57,16 @@ export type Profile = z.infer<typeof ProfileSchema>;
 export const CreateProfileSchema = ProfileSchema.pick({
 	name: true,
 	handle: true,
-	imageUrl: true,
 	bio: true,
 });
 export type CreateProfile = z.infer<typeof CreateProfileSchema>;
 
 export const WebProfilePhotoSchema = z
 	.custom<File>((v) => v instanceof File)
-	.refine((file) => file?.size <= 10 * 1024 * 1024, `Max image size is 10MB.`);
+	.refine(
+		(file) => file?.size <= 10 * 1024 * 1024,
+		`Max image size is 10MB.`,
+	);
 
 export const ProfilePhotoSchema = z
 	.object({
@@ -70,12 +74,15 @@ export const ProfilePhotoSchema = z
 		type: z.string(),
 		size: z.number(),
 	})
-	.refine((file) => file?.size <= 10 * 1024 * 1024, `Max image size is 10MB.`);
+	.refine(
+		(file) => file?.size <= 10 * 1024 * 1024,
+		`Max image size is 10MB.`,
+	);
 
 export const OnboardSchema = CreateProfileSchema.extend({
 	bio: z.string().optional(),
 	image: ProfilePhotoSchema.optional(),
-}).omit({ imageUrl: true });
+});
 export type Onboard = z.infer<typeof OnboardSchema>;
 
 export const UpdateProfileSchema = CreateProfileSchema;
@@ -89,11 +96,17 @@ export type WebOnboard = z.infer<typeof WebOnboardSchema>;
 export const WebUpdateProfileSchema = UpdateProfileSchema.extend({
 	bio: ProfileBioSchema.optional(),
 	image: WebProfilePhotoSchema.optional(),
-}).omit({ imageUrl: true });
+});
 export type WebUpdateProfile = z.infer<typeof WebUpdateProfileSchema>;
 
 export const UpdateProfileFormSchema = UpdateProfileSchema.extend({
 	bio: ProfileBioSchema.optional(),
 	image: ProfilePhotoSchema.optional(),
-}).omit({ imageUrl: true });
+});
 export type UpdateProfileForm = z.infer<typeof UpdateProfileFormSchema>;
+
+export const ProfileRoleSchema = ProfileSchema.pick({ role: true });
+export type ProfileRole = z.infer<typeof ProfileRoleSchema>;
+
+export const DeactivateProfileSchema = ProfileSchema.pick({ userId: true });
+export type Deactivate = z.infer<typeof DeactivateProfileSchema>;

@@ -2,11 +2,13 @@ import NotFoundScreen from "@/app/+not-found";
 import { Comment } from "@/components/Comment";
 import { Review } from "@/components/Review";
 import { WebWrapper } from "@/components/WebWrapper";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useRefreshByUser } from "@/lib/refresh";
-import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { SectionList, View } from "react-native";
+import { cn } from "@recordscratch/lib";
+import { CommentAndProfile } from "@recordscratch/types";
 
 const RatingPage = () => {
 	const { id, handle } = useLocalSearchParams<{
@@ -27,6 +29,33 @@ const RatingPage = () => {
 
 	const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch);
 
+	const [expandedSections, setExpandedSections] = useState(new Set<string>());
+
+	const handleToggle = useCallback((id: string) => {
+		setExpandedSections((expandedSections) => {
+			const next = new Set(expandedSections);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	}, []);
+
+	const [sections, setSections] = useState<
+		Array<CommentAndProfile & { data: CommentAndProfile[] }>
+	>([]);
+
+	useEffect(() => {
+		setSections(
+			comments.map(({ allreplies, ...rest }) => ({
+				...rest,
+				data: allreplies,
+			})),
+		);
+	}, [comments]);
+
 	if (!profile || !rating) return <NotFoundScreen />;
 
 	return (
@@ -37,28 +66,37 @@ const RatingPage = () => {
 				}}
 			/>
 			<View className="flex-1">
-				<FlashList
-					ListHeaderComponent={
-						<WebWrapper>
-							<Review {...rating} profile={profile} />
-							<View className="bg-muted h-[1px]" />
-						</WebWrapper>
-					}
-					data={comments}
-					renderItem={({ item }) => (
-						<WebWrapper>
-							<Comment comment={item} />
-						</WebWrapper>
-					)}
-					ItemSeparatorComponent={() => (
-						<WebWrapper>
-							<View className="bg-muted h-[1px]" />
-						</WebWrapper>
-					)}
-					estimatedItemSize={200}
-					refreshing={isRefetchingByUser}
-					onRefresh={refetchByUser}
-				/>
+				<WebWrapper>
+					<SectionList
+						ListHeaderComponent={
+							<>
+								<Review {...rating} profile={profile} />
+								<View className="bg-muted h-[1px]" />
+							</>
+						}
+						extraData={expandedSections}
+						sections={sections}
+						keyExtractor={(item) => item.id}
+						renderItem={({ section: { id }, item }) => {
+							const hidden = !expandedSections.has(id);
+							return (
+								<View
+									className={cn("ml-10", hidden && "hidden")}
+								>
+									<Comment comment={item} />
+								</View>
+							);
+						}}
+						renderSectionHeader={({ section }) => (
+							<Comment
+								comment={section}
+								onCommentPress={() => handleToggle(section.id)}
+							/>
+						)}
+						refreshing={isRefetchingByUser}
+						onRefresh={refetchByUser}
+					/>
+				</WebWrapper>
 			</View>
 		</>
 	);
