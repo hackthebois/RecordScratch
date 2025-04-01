@@ -216,7 +216,7 @@ export const Comment = ({
 			</Link>
 			<Text className="text-lg">{content}</Text>
 			{!hideActions ? (
-				<View className="flex flex-row items-center">
+				<View className="-ml-3 -my-2 flex flex-row items-center">
 					<LikeButton commentId={id} />
 					{!rootId ? (
 						<Suspense>

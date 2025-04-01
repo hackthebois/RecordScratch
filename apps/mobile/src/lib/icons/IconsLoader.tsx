@@ -44,6 +44,8 @@ import {
 	Trash2 as LucideTrash2,
 	User as LucideUser,
 	UserMinus as LucideUserMinus,
+	UserCheck as LucideUserCheck,
+	UserX as LucideUserX,
 	UserPen as LucideUserPen,
 	X as LucideX,
 	Frown as LuicideFrown,
@@ -114,6 +116,8 @@ export const Trash = iconWithClassName(LucideTrash);
 export const Trash2 = iconWithClassName(LucideTrash2);
 export const User = iconWithClassName(LucideUser);
 export const UserMinus = iconWithClassName(LucideUserMinus);
+export const UserCheck = iconWithClassName(LucideUserCheck);
+export const UserX = iconWithClassName(LucideUserX);
 export const UserPen = iconWithClassName(LucideUserPen);
 export const X = iconWithClassName(LucideX);
 export const Frown = iconWithClassName(LuicideFrown);

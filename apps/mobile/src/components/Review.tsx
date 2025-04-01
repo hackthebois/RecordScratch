@@ -200,7 +200,6 @@ export const Review = ({
 					resource={{ parentId, resourceId, category }}
 					showType
 					imageWidthAndHeight={60}
-					className={cn(deactivated && "bg-blue-300")}
 				/>
 				<View className="flex flex-col items-start gap-4">
 					<View className="flex w-full flex-col justify-between gap-4 text-lg sm:flex-row-reverse sm:items-center">

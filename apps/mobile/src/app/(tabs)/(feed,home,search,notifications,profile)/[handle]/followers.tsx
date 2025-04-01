@@ -10,6 +10,7 @@ import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import { View } from "react-native";
+import { Profile } from "@recordscratch/types";
 
 const types = ["followers", "following"];
 
@@ -66,13 +67,13 @@ const Followers = () => {
 					</View>
 				</WebWrapper>
 				<FlashList
-					data={followProfiles?.flatMap((item) => item.profile)}
+					data={followProfiles?.flatMap((item) => item?.profile as Profile)}
 					renderItem={({ item }) => (
 						<WebWrapper>
-							<ProfileItem
+							{item && <ProfileItem
 								profile={item}
 								isUser={profile!.userId === item.userId}
-							/>
+							/>} 
 						</WebWrapper>
 					)}
 					estimatedItemSize={60}
