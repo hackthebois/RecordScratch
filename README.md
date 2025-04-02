@@ -1,4 +1,4 @@
-![RecordScratch Banner](./apps/mobile/assets/icon.png)
+<img src="./apps/mobile/assets/icon.png" width="300" alt="Recordscratch Banner">
 
 # RecordScratch - https://recordscratch.app
 
