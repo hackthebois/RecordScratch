@@ -42,7 +42,7 @@ const CommentModal = () => {
 			// 	params: { id },
 			// });
 		},
-		onSettled: async() => {
+		onSettled: async () => {
 			await utils.comments.get.invalidate({
 				id,
 			});
@@ -54,10 +54,10 @@ const CommentModal = () => {
 				resourceId: comment.resourceId,
 				authorId: comment.authorId,
 			});
-			if (comment.rootId)
-				await utils.comments.count.reply.invalidate({
-					id: comment.rootId,
-				});
+
+			await utils.comments.count.reply.invalidate({
+				id: comment.rootId ?? comment.id,
+			});
 		},
 	});
 

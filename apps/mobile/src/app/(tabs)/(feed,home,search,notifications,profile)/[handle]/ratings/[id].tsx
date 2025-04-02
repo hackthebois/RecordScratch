@@ -6,7 +6,7 @@ import { api } from "@/components/Providers";
 import { useRefreshByUser } from "@/lib/refresh";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { SectionList, View } from "react-native";
+import { ScrollView, SectionList, View } from "react-native";
 import { cn } from "@recordscratch/lib";
 import { CommentAndProfile } from "@recordscratch/types";
 
@@ -65,9 +65,10 @@ const RatingPage = () => {
 					title: `${profile.name}'s Rating`,
 				}}
 			/>
-			<View className="flex-1">
+			<ScrollView>
 				<WebWrapper>
 					<SectionList
+						scrollEnabled={false}
 						ListHeaderComponent={
 							<>
 								<Review {...rating} profile={profile} />
@@ -97,7 +98,7 @@ const RatingPage = () => {
 						onRefresh={refetchByUser}
 					/>
 				</WebWrapper>
-			</View>
+			</ScrollView>
 		</>
 	);
 };
