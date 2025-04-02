@@ -63,3 +63,9 @@ export const FeedFiltersSchema = z.object({
 	ratingType: z.enum(["REVIEW", "RATING"]).optional(),
 });
 export type FeedFilters = z.infer<typeof FeedFiltersSchema>;
+
+export const DeactivateRatingSchema = RatingSchema.pick({
+	userId: true,
+	resourceId: true,
+});
+export type DeactivateForm = z.infer<typeof DeactivateRatingSchema>;

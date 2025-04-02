@@ -3,7 +3,7 @@ import { ReviewsList } from "@/components/ReviewsList";
 import { WebWrapper } from "@/components/WebWrapper";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { getQueryOptions } from "@/lib/deezer";
 import { Resource } from "@recordscratch/types";
 import { keepPreviousData, useSuspenseQuery } from "@tanstack/react-query";

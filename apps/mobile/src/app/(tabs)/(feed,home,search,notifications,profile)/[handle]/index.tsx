@@ -11,9 +11,15 @@ import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
-import { ChevronRight } from "@/lib/icons/IconsLoader";
+import {
+	ChevronRight,
+	Hand,
+	Trash,
+	UserCheck,
+	UserMinus,
+} from "@/lib/icons/IconsLoader";
 import { Settings } from "@/lib/icons/IconsLoader";
 import { getImageUrl } from "@/lib/image";
 import {
@@ -24,7 +30,8 @@ import {
 	listResourceType,
 } from "@recordscratch/types";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Suspense } from "react";
+import { Shield, ShieldCheck, User, UserX } from "lucide-react-native";
+import { Suspense, useState } from "react";
 import {
 	Platform,
 	Pressable,
@@ -32,6 +39,84 @@ import {
 	View,
 	useWindowDimensions,
 } from "react-native";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { cn } from "@recordscratch/lib";
+
+const ToggleAccountStatus = ({
+	isActive,
+	userId,
+}: {
+	isActive: boolean;
+	userId: string;
+}) => {
+	const [open, setOpen] = useState(false);
+
+	const { mutate: deactivateProfile } = api.profiles.deactivate.useMutation();
+	const { mutate: activateProfile } = api.profiles.activate.useMutation();
+
+	return (
+		<Dialog open={open}>
+			<DialogTrigger>
+				<Button
+					variant={isActive ? "destructive" : "secondary"}
+					className={cn(isActive ? "bg-red-300" : "bg-green-300")}
+					style={{ height: 30 }}
+					onPress={() => setOpen(true)}
+				>
+					{isActive ? (
+						<UserX size={15} className="color-black" />
+					) : (
+						<UserCheck size={15} className="color-black" />
+					)}
+				</Button>
+			</DialogTrigger>
+			<DialogContent className="max-w-450px">
+				<DialogTitle>
+					{isActive ? "Deactivate Account" : "Reactivate Account"}
+				</DialogTitle>
+				<DialogDescription>
+					{isActive
+						? "Do you want to deactivate this account for violating terms of service?"
+						: "Do you want to reactivate this account?"}
+				</DialogDescription>
+				<View className="mt-4 flex flex-row items-center justify-center gap-3">
+					<DialogClose>
+						<Button
+							variant={isActive ? "destructive" : "secondary"}
+							onPress={() => {
+								if (isActive) {
+									deactivateProfile({ userId });
+								} else {
+									activateProfile({ userId });
+								}
+								setOpen(false);
+							}}
+						>
+							<Text>
+								{isActive ? "Deactivate" : "Reactivate"}
+							</Text>
+						</Button>
+					</DialogClose>
+					<DialogClose>
+						<Button
+							variant="outline"
+							onPress={() => setOpen(false)}
+						>
+							<Text>Cancel</Text>
+						</Button>
+					</DialogClose>
+				</View>
+			</DialogContent>
+		</Dialog>
+	);
+};
 
 const ListsTab = ({
 	handle,
@@ -210,10 +295,10 @@ const TopListsTab = ({
 
 export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 	const router = useRouter();
-
+	const userProfile = useAuth((s) => s.profile);
 	let profile: Profile | null = null;
 	if (isProfile) {
-		profile = useAuth((s) => s.profile);
+		profile = userProfile;
 	} else {
 		const { handle } = useLocalSearchParams<{ handle: string }>();
 		[profile] = api.profiles.get.useSuspenseQuery(handle);
@@ -254,6 +339,12 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 		userId: profile.userId,
 	});
 
+	const { mutate: deactivateProfile } = api.profiles.deactivate.useMutation();
+
+	const deactivateButton = () => {
+		deactivateProfile({ userId: profile!.userId });
+	};
+
 	const options =
 		Platform.OS !== "web"
 			? {
@@ -276,6 +367,17 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 						),
 				}
 			: {};
+	if (profile.deactivated && userProfile?.role !== "MOD") {
+		return (
+			<View className="mx-4 flex-1 items-center justify-center gap-16">
+				<Hand size={100} color="red" fillOpacity={0} />
+				<Text variant="h2" className="text-center">
+					This account has been deactivated for violating our terms of
+					service.
+				</Text>
+			</View>
+		);
+	}
 
 	return (
 		<View className="flex flex-1">
@@ -299,9 +401,21 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 										/>
 									</View>
 									<View className="flex-1 items-start justify-center gap-3">
-										<Text className="text-muted-foreground">
-											PROFILE
-										</Text>
+										<View className="flex flex-row items-center gap-2">
+											<Text className="text-muted-foreground">
+												PROFILE
+											</Text>
+											{userProfile?.role === "MOD" &&
+												!isProfile && (
+													<ToggleAccountStatus
+														isActive={
+															!profile.deactivated
+														}
+														userId={profile.userId}
+													/>
+												)}
+										</View>
+
 										<Text
 											className="hidden sm:block"
 											variant="h1"
@@ -312,6 +426,17 @@ export const ProfilePage = ({ isProfile }: { isProfile: boolean }) => {
 											<Pill>{`@${profile.handle}`}</Pill>
 											<Pill>{`Streak: ${streak ?? ""}`}</Pill>
 											<Pill>{`Likes: ${likes ?? ""}`}</Pill>
+											{profile.role === "MOD" && (
+												<Pill className="bg-red-300">
+													<View className="flex flex-row items-center">
+														<ShieldCheck
+															size={16}
+															className="color-foreground"
+														/>
+														<Text>Moderator</Text>
+													</View>
+												</Pill>
+											)}
 										</View>
 										<Text className="truncate text-wrap">
 											{profile.bio || "No bio yet"}

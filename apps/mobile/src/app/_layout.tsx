@@ -25,7 +25,10 @@ import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../styles.css";
-import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
+import {
+	configureReanimatedLogger,
+	ReanimatedLogLevel,
+} from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultScreenOptions } from "@/lib/navigation";
 
@@ -150,7 +153,9 @@ const RootLayout = () => {
 		<AuthProvider>
 			<TRPCProvider>
 				<SafeAreaProvider>
-					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+					<ThemeProvider
+						value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
+					>
 						<PrefetchProfile />
 						<Stack screenOptions={defaultScreenOptions}>
 							<Stack.Screen
@@ -178,13 +183,19 @@ const RootLayout = () => {
 								}}
 							/>
 							<Stack.Screen
+								name="(auth)/deactivated"
+								options={{
+									headerShown: false,
+								}}
+							/>
+							{/* <Stack.Screen
 								name="(modals)"
 								options={{
 									title: "",
 									presentation: "modal",
 									animation: "slide_from_bottom",
 								}}
-							/>
+							/> */}
 							<Stack.Screen
 								name="(modals)/rating"
 								options={{

@@ -1,7 +1,7 @@
 import { Text } from "@/components/ui/text";
 import { UserAvatar } from "@/components/UserAvatar";
 import { WebWrapper } from "@/components/WebWrapper";
-import { api, RouterOutputs } from "@/lib/api";
+import { api, RouterOutputs } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
 import { BellOff } from "@/lib/icons/IconsLoader";
 import { Heart } from "@/lib/icons/IconsLoader";

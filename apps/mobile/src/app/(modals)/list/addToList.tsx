@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
 import { View, useWindowDimensions } from "react-native";
 import ListOfList from "@/components/List/ListOfLists";

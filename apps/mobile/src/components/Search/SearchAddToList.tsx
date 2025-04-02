@@ -1,5 +1,5 @@
 import Dialog from "@/components/CoreComponents/Dialog";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { Search } from "@/lib/icons/IconsLoader";
 import { useDebounce } from "@recordscratch/lib";
 import { useState } from "react";
@@ -67,7 +67,7 @@ export const SearchAddToList = ({
 					autoComplete="off"
 					placeholder="Search"
 					value={query}
-					className="bg-transparent p-2 text-lg outline-none w-full text-foreground"
+					className="text-foreground w-full bg-transparent p-2 text-lg outline-none"
 					onChangeText={(text) => setQuery(text)}
 				/>
 			</View>

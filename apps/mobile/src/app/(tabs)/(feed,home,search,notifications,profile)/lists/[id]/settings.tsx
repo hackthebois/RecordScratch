@@ -1,7 +1,7 @@
 import NotFoundScreen from "@/app/+not-found";
 import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { Button } from "@/components/ui/button";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { UpdateList, updateFormSchema } from "@recordscratch/types";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
@@ -44,7 +44,8 @@ const SettingsPage = () => {
 		onSettled: () => {
 			utils.lists.getUser.invalidate({ userId: list!.userId });
 			utils.lists.get.invalidate({ id: listId });
-			if (list?.onProfile) utils.lists.topLists.invalidate({ userId: list!.userId });
+			if (list?.onProfile)
+				utils.lists.topLists.invalidate({ userId: list!.userId });
 		},
 	}).mutate;
 
@@ -77,7 +78,10 @@ const SettingsPage = () => {
 		if (!loading) {
 			deleteResource({ id: listId });
 			router.dismissAll();
-			router.dismissTo({ pathname: "/[handle]", params: { handle: profile!.handle } });
+			router.dismissTo({
+				pathname: "/[handle]",
+				params: { handle: profile!.handle },
+			});
 		}
 	};
 
@@ -92,11 +96,11 @@ const SettingsPage = () => {
 				control={form.control}
 				name="onProfile"
 				render={({ field }) => (
-					<View className=" flex flex-row items-center gap-3">
+					<View className="flex flex-row items-center gap-3">
 						<Text className="mt-2">Show as Top 6?</Text>
 						<Switch {...field} onValueChange={field.onChange} />
 						{form.formState.errors.onProfile && (
-							<Text className="mt-2 text-destructive">
+							<Text className="text-destructive mt-2">
 								{form.formState.errors.onProfile.message}
 							</Text>
 						)}
@@ -113,12 +117,12 @@ const SettingsPage = () => {
 						<TextInput
 							{...field}
 							placeholder="Name"
-							className="self-stretch text-foreground border-border border rounded-md px-4 py-3"
+							className="text-foreground border-border self-stretch rounded-md border px-4 py-3"
 							autoComplete="off"
 							onChangeText={field.onChange}
 						/>
 						{form.formState.errors.name && (
-							<Text className="mt-2 text-destructive">
+							<Text className="text-destructive mt-2">
 								{form.formState.errors.name.message}
 							</Text>
 						)}
@@ -134,14 +138,14 @@ const SettingsPage = () => {
 						<TextInput
 							{...field}
 							placeholder="description"
-							className="self-stretch text-foreground border-border border rounded-md p-4 h-40"
+							className="text-foreground border-border h-40 self-stretch rounded-md border p-4"
 							multiline
 							autoComplete="off"
 							onChangeText={field.onChange}
 							value={field.value ?? ""}
 						/>
 						{form.formState.errors.description && (
-							<Text className="mt-2 text-destructive">
+							<Text className="text-destructive mt-2">
 								{form.formState.errors.description.message}
 							</Text>
 						)}
@@ -156,7 +160,11 @@ const SettingsPage = () => {
 			>
 				<Text>{loading ? "Loading..." : "Save"}</Text>
 			</Button>
-			<Button disabled={loading} variant="destructive" onPress={handleDelete}>
+			<Button
+				disabled={loading}
+				variant="destructive"
+				onPress={handleDelete}
+			>
 				<Text>Delete List</Text>
 			</Button>
 		</KeyboardAvoidingScrollView>

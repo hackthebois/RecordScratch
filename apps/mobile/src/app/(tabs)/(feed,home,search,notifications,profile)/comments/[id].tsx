@@ -1,7 +1,7 @@
 import NotFoundScreen from "@/app/+not-found";
 import { Comment } from "@/components/Comment";
 import { WebWrapper } from "@/components/WebWrapper";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useRefreshByUser } from "@/lib/refresh";
 import { FlashList } from "@shopify/flash-list";
 import { Stack, useLocalSearchParams } from "expo-router";

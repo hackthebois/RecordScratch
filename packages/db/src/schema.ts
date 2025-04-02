@@ -10,7 +10,6 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
-
 import { v4 as uuidv4 } from "uuid";
 
 const dates = {
@@ -81,12 +80,14 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
 	}),
 }));
 
+export const roleEnum = pgEnum("role", ["USER", "MOD"]);
+
 export const profile = pgTable("profile", {
 	userId: text("user_id").notNull().primaryKey(),
 	name: varchar("name", {
 		length: 50,
 	}).notNull(),
-	imageUrl: text("image_url"),
+	role: roleEnum("role").notNull().default(roleEnum.enumValues[0]),
 	handle: varchar("handle", {
 		length: 20,
 	})
@@ -95,6 +96,7 @@ export const profile = pgTable("profile", {
 	bio: varchar("bio", {
 		length: 200,
 	}),
+	deactivated: boolean("deactivated").notNull().default(false),
 	...dates,
 });
 
@@ -122,6 +124,7 @@ export const ratings = pgTable(
 		rating: smallint("rating").notNull(),
 		content: text("content"),
 		category: categoryEnum("category").notNull(),
+		deactivated: boolean("deactivated").notNull().default(false),
 		...dates,
 	},
 	(table) => [
@@ -177,6 +180,7 @@ export const lists = pgTable("lists", {
 	description: text("description"),
 	category: categoryEnum("category").notNull(),
 	onProfile: boolean("on_profile").default(false).notNull(),
+	deactivated: boolean("deactivated").notNull().default(false),
 	...dates,
 });
 
@@ -334,6 +338,7 @@ export const comments = pgTable("comments", {
 	parentId: text("parent_id"), // parent comment id (null if commenting to rating)
 	rootId: text("root_id"), // root comment id (null if commenting to rating)
 	content: text("content").notNull(),
+	deactivated: boolean("deactivated").notNull().default(false),
 	...dates,
 });
 
@@ -357,6 +362,14 @@ export const commentsRelations = relations(comments, ({ one, many }) => ({
 	}),
 	replies: many(comments, {
 		relationName: "replies",
+	}),
+	root: one(comments, {
+		fields: [comments.rootId],
+		references: [comments.id],
+		relationName: "allreplies",
+	}),
+	allreplies: many(comments, {
+		relationName: "allreplies",
 	}),
 }));
 

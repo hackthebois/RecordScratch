@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
 
 export const FollowButton = ({
@@ -38,16 +38,18 @@ export const FollowButton = ({
 		});
 	};
 
-	const { mutate: followUser, isPending: isFollow } = api.profiles.follow.useMutation({
-		onSettled: async () => {
-			await revalidate();
-		},
-	});
-	const { mutate: unFollowUser, isPending: isUnFollow } = api.profiles.unFollow.useMutation({
-		onSettled: async () => {
-			await revalidate();
-		},
-	});
+	const { mutate: followUser, isPending: isFollow } =
+		api.profiles.follow.useMutation({
+			onSettled: async () => {
+				await revalidate();
+			},
+		});
+	const { mutate: unFollowUser, isPending: isUnFollow } =
+		api.profiles.unFollow.useMutation({
+			onSettled: async () => {
+				await revalidate();
+			},
+		});
 
 	const following = isFollow ? true : isUnFollow ? false : isFollowing;
 

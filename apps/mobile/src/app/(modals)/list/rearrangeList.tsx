@@ -19,7 +19,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AlignJustify, Save, Trash2 } from "@/lib/icons/IconsLoader";
 import ReText from "@/components/ui/retext";

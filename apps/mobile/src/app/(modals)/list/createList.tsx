@@ -12,7 +12,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category, InsertList, insertListSchema } from "@recordscratch/types";
 import { useState } from "react";
@@ -24,7 +24,8 @@ import { useAuth } from "@/lib/auth";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 const CUSTOM_PORTAL_HOST_NAME = "modal-create-list";
-const WindowOverlay = Platform.OS === "ios" ? FullWindowOverlay : React.Fragment;
+const WindowOverlay =
+	Platform.OS === "ios" ? FullWindowOverlay : React.Fragment;
 
 const CreateListModal = () => {
 	const { categoryProp } = useLocalSearchParams<{
@@ -94,12 +95,12 @@ const CreateListModal = () => {
 						<TextInput
 							{...field}
 							placeholder="Name"
-							className="self-stretch border-border border rounded-md px-4 py-3 text-muted-foreground"
+							className="border-border text-muted-foreground self-stretch rounded-md border px-4 py-3"
 							autoComplete="off"
 							onChangeText={field.onChange}
 						/>
 						{form.formState.errors.name && (
-							<Text className="mt-2 text-destructive">
+							<Text className="text-destructive mt-2">
 								{form.formState.errors.name.message}
 							</Text>
 						)}
@@ -115,18 +116,23 @@ const CreateListModal = () => {
 							<Text>Category</Text>
 							<Select
 								{...field}
-								value={{ label: field.value, value: field.value }}
-								onValueChange={(option) => field.onChange(option?.value)}
+								value={{
+									label: field.value,
+									value: field.value,
+								}}
+								onValueChange={(option) =>
+									field.onChange(option?.value)
+								}
 							>
 								<SelectTrigger>
 									<SelectValue
-										className=" text-muted-foreground"
+										className="text-muted-foreground"
 										placeholder={"Select a Category..."}
 									/>
 								</SelectTrigger>
 								<SelectContent
 									insets={contentInsets}
-									className="w-full mt-[68px]"
+									className="mt-[68px] w-full"
 									portalHost={CUSTOM_PORTAL_HOST_NAME}
 									style={{ shadowOpacity: 0 }}
 								>
@@ -137,14 +143,17 @@ const CreateListModal = () => {
 										<SelectItem label="SONG" value="SONG">
 											SONGS
 										</SelectItem>
-										<SelectItem label="ARTIST" value="ARTIST">
+										<SelectItem
+											label="ARTIST"
+											value="ARTIST"
+										>
 											ARTISTS
 										</SelectItem>
 									</SelectGroup>
 								</SelectContent>
 							</Select>
 							{form.formState.errors.category && (
-								<Text className="mt-2 text-destructive">
+								<Text className="text-destructive mt-2">
 									{form.formState.errors.category.message}
 								</Text>
 							)}
@@ -161,14 +170,14 @@ const CreateListModal = () => {
 						<TextInput
 							{...field}
 							placeholder="description"
-							className="self-stretch text-muted-foreground border-border border rounded-md p-4 h-40"
+							className="text-muted-foreground border-border h-40 self-stretch rounded-md border p-4"
 							multiline
 							autoComplete="off"
 							onChangeText={field.onChange}
 							value={field.value ?? ""}
 						/>
 						{form.formState.errors.description && (
-							<Text className="mt-2 text-destructive">
+							<Text className="text-destructive mt-2">
 								{form.formState.errors.description.message}
 							</Text>
 						)}

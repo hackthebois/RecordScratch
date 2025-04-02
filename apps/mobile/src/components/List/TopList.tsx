@@ -1,5 +1,5 @@
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@recordscratch/lib";
 import {

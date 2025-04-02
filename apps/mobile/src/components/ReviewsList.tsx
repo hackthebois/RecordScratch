@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { useRefreshByUser } from "@/lib/refresh";
 import { RouterInputs } from "@recordscratch/api";
 import { ReviewType } from "@recordscratch/types";
@@ -43,7 +43,9 @@ export const ReviewsList = (
 					<View className="bg-muted h-[1px]" />
 				</WebWrapper>
 			)}
-			renderItem={({ item }) => <Review {...item} />}
+			renderItem={({ item }) => (
+				<Review {...item} feedInput={{ ...queryInput }} />
+			)}
 			ListFooterComponent={() =>
 				hasNextPage ? (
 					<ActivityIndicator size="large" color="#ff8500" />

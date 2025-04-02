@@ -8,7 +8,7 @@ import { RatingInfo } from "@/components/Rating/RatingInfo";
 import SongTable from "@/components/SongTable";
 import { WebWrapper } from "@/components/WebWrapper";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { getQueryOptions } from "@/lib/deezer";
 import { ChevronRight } from "@/lib/icons/IconsLoader";
 import { formatDuration } from "@recordscratch/lib";

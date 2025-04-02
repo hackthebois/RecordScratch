@@ -3,10 +3,11 @@ import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { WebWrapper } from "@/components/WebWrapper";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { Send } from "@/lib/icons/IconsLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TextInput, View, Platform, useWindowDimensions } from "react-native";
 import { z } from "zod";
@@ -36,15 +37,27 @@ const CommentModal = () => {
 		onSuccess: async () => {
 			await form.reset();
 			await router.back();
-			await router.navigate({
-				pathname: "/comments/[id]",
-				params: { id },
-			});
+			// await router.navigate({
+			// 	pathname: "/comments/[id]",
+			// 	params: { id },
+			// });
 		},
-		onSettled: () => {
-			utils.comments.get.invalidate({
+		onSettled: async() => {
+			await utils.comments.get.invalidate({
 				id,
 			});
+			await utils.comments.list.invalidate({
+				resourceId: comment.resourceId,
+				authorId: comment.authorId,
+			});
+			await utils.comments.count.rating.invalidate({
+				resourceId: comment.resourceId,
+				authorId: comment.authorId,
+			});
+			if (comment.rootId)
+				await utils.comments.count.reply.invalidate({
+					id: comment.rootId,
+				});
 		},
 	});
 

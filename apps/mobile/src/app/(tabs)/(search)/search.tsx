@@ -10,10 +10,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingScrollView } from "@/components/KeyboardAvoidingView";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
+import { api } from "@/components/Providers";
 import { deezerHelpers } from "@/lib/deezer";
 import { Search } from "@/lib/icons/IconsLoader";
 import { WebWrapper } from "@/components/WebWrapper";
+import { useAuth } from "@/lib/auth";
 
 type TabsType = Omit<SearchOptions, "query"> & {
 	label: string;
@@ -88,6 +89,8 @@ export default function SearchPage() {
 					["profiles", "all"].includes(tab.value),
 			},
 		);
+
+	const userProfile = useAuth((s) => s.profile);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right", "top"]}>
@@ -225,22 +228,31 @@ export default function SearchPage() {
 										))
 									: null}
 								{tab.value === "profiles" || tab.value === "all"
-									? profiles?.items.map((profile, index) => (
-											<ProfileItem
-												profile={profile}
-												key={index}
-												size={80}
-												onPress={() => {
-													// addRecent({
-													// 	id: profile.userId,
-													// 	type: "PROFILE",
-													// 	data: profile,
-													// });
-												}}
-												showType={tab.value === "all"}
-												isUser
-											/>
-										))
+									? profiles?.items.map((profile, index) => {
+											if (
+												profile.deactivated &&
+												userProfile?.role != "MOD"
+											)
+												return null;
+											return (
+												<ProfileItem
+													profile={profile}
+													key={index}
+													size={80}
+													onPress={() => {
+														// addRecent({
+														// 	id: profile.userId,
+														// 	type: "PROFILE",
+														// 	data: profile,
+														// });
+													}}
+													showType={
+														tab.value === "all"
+													}
+													isUser
+												/>
+											);
+										})
 									: null}
 							</>
 						)}
