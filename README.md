@@ -1,4 +1,4 @@
-![RecordScratch Banner](./apps/web/public/og-image.png)
+![RecordScratch Banner](./apps/mobile/assets/icon.png)
 
 # RecordScratch - https://recordscratch.app
 
@@ -15,12 +15,12 @@ Join here https://discord.gg/X3X9qrHMUJ
 
 ## Key Features
 
--   Create ratings and reviews
--   Search and explore new music
--   Read reviews
--   Customize your profile
--   Create Custom Lists
--   Follow your Friends
+- Create ratings and reviews
+- Search and explore new music
+- Read reviews
+- Customize your profile
+- Create Custom Lists
+- Follow your Friends
 
 ## Contributions
 
